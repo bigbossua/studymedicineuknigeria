@@ -8,7 +8,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 - Never commit `.env`, keys, or anything from `storage/app/private`. Secrets live only in GitHub Actions Secrets.
 - No deployment to production except by explicit `deploy-hostinger.yml` dispatch after staging passed; read-only inspection first.
 - Every public page must have a row in `docs/decision/page-asset-register.md`; do not add pages without evidence.
-- Healthcare subjects other than Medicine live in `data/healthcare/subjects.json` → `professions` (Admin → Subjects); only a PUBLISHED/INDEXING/MEASURING/UPDATE subject may have a public page, and its facts still go through `reference_facts`. Regenerate the register with `python3 ops/seo/build-register.py` after editing the taxonomy; never edit the CSV by hand.
+- Healthcare subjects other than Medicine live in `data/healthcare/subjects.json` → `professions` (Admin → Subjects); only a PUBLISHED/INDEXING/MEASURING/UPDATE subject may have a public page, and its facts still go through `reference_facts`. Regenerate the register and the knowledge graph with `python3 ops/seo/build-register.py && python3 ops/seo/build-knowledge-graph.py` after editing the taxonomy; never edit the CSV or `docs/seo/KNOWLEDGE-GRAPH.md` by hand.
 - Every indexable URL must have a live row in `data/seo/decision-register.csv` (one page per intent; statuses and reasons in `docs/seo/DECISION-ENGINE.md`); a test enforces it. Upgrade a thin page before adding a sibling.
 
 ## Commands

@@ -1,7 +1,22 @@
 <?php
 
+use App\Http\Controllers\Admin\ApplicationAdminController;
+use App\Http\Controllers\Admin\MiscAdminController;
+use App\Http\Controllers\Admin\ReferenceAdminController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Portal\ApplicationController;
+use App\Http\Controllers\Portal\ApprovalController;
+use App\Http\Controllers\Portal\DashboardController;
+use App\Http\Controllers\Portal\DocumentController;
+use App\Http\Controllers\Portal\MessageController;
+use App\Http\Controllers\Portal\PaymentController;
+use App\Http\Controllers\Portal\ProfileController;
+use App\Http\Controllers\Portal\SubmissionController;
+use App\Http\Controllers\Public\ContentController;
 use App\Http\Controllers\Public\PageController;
+use App\Http\Controllers\Public\SchoolController;
 use App\Http\Controllers\Public\SeoController;
+use App\Http\Controllers\Webhooks\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,10 +93,8 @@ Route::get('login', [AuthController::class, 'showLogin'])->middleware('guest')->
 use App\Http\Controllers\Admin\ApplicationAdminController;
 use App\Http\Controllers\Admin\MiscAdminController;
 use App\Http\Controllers\Admin\ReferenceAdminController;
-use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Portal\ApplicationController;
 use App\Http\Controllers\Portal\ApprovalController;
-use App\Http\Controllers\Portal\DashboardController;
 use App\Http\Controllers\Portal\DocumentController;
 use App\Http\Controllers\Portal\MessageController;
 use App\Http\Controllers\Portal\PaymentController;

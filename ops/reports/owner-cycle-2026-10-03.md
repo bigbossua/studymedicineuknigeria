@@ -70,6 +70,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Found**: the Stripe webhook and the three scheduled commands had no tests; only the 404 page was branded. **Changed**: signed-webhook tests, scheduler tests, 419/429/500/503 pages. **Tested / passed**: 49 tests.
 
+## Cycle 14 — portal payment, document and export coverage (stage 19)
+
+- **Changed**: tests for bank transfer → admin confirmation, encrypted passport round-trip with access log, data export; skeleton test removed. **Tested / passed**: 51 tests.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

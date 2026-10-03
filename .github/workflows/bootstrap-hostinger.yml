@@ -1,0 +1,71 @@
+name: Bootstrap Hostinger target (one-time)
+# Prepares ~/apps/smukn-<target> on the server: shared/.env (APP_KEY generated on the server), storage dirs, cron.
+# Does NOT touch the document root unless link_docroot=true (then backs it up first). Run after reviewing the inspection report.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target'
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+      app_url:
+        description: 'Public URL for this target (e.g. https://staging.studymedicineuknigeria.com)'
+        required: true
+      link_docroot:
+        description: 'Replace the document root with a symlink to current/public (backs up the existing one first)'
+        required: true
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+      docroot:
+        description: 'Document root path on the server (required if link_docroot=true), e.g. ~/domains/staging.studymedicineuknigeria.com/public_html'
+        required: false
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ github.event.inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check configuration
+        env:
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          DBN: ${{ secrets.SMUKN_DB_DATABASE }}
+          DBU: ${{ secrets.SMUKN_DB_USERNAME }}
+          DBP: ${{ secrets.SMUKN_DB_PASSWORD }}
+        run: |
+          m=""; [ -z "$HOST" ] && m="$m HOSTINGER_SSH_HOST"; [ -z "$USER" ] && m="$m HOSTINGER_SSH_USER"; [ -z "$KEY" ] && m="$m HOSTINGER_SSH_KEY"
+          [ -z "$DBN" ] && m="$m SMUKN_DB_DATABASE"; [ -z "$DBU" ] && m="$m SMUKN_DB_USERNAME"; [ -z "$DBP" ] && m="$m SMUKN_DB_PASSWORD"
+          [ -n "$m" ] && { echo "::error::Missing:$m (environment '${{ github.event.inputs.target }}' secrets/variables)"; exit 1; }; true
+      - name: Prepare SSH
+        env: { KEY: "${{ secrets.HOSTINGER_SSH_KEY }}", HOST: "${{ vars.HOSTINGER_SSH_HOST }}", PORT: "${{ vars.HOSTINGER_SSH_PORT || '65002' }}" }
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+      - name: Run bootstrap on server
+        env:
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          TARGET: ${{ github.event.inputs.target }}
+          APP_URL: ${{ github.event.inputs.app_url }}
+          LINK_DOCROOT: ${{ github.event.inputs.link_docroot == 'true' && '1' || '0' }}
+          DOCROOT: ${{ github.event.inputs.docroot }}
+          DB_DATABASE: ${{ secrets.SMUKN_DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.SMUKN_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.SMUKN_DB_PASSWORD }}
+          DB_HOST: ${{ vars.SMUKN_DB_HOST || '127.0.0.1' }}
+          MAIL_PASSWORD: ${{ secrets.SMUKN_MAIL_PASSWORD }}
+          STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          SITE_WHATSAPP: ${{ vars.SITE_WHATSAPP }}
+          SITE_LEGAL_NAME: ${{ vars.SITE_LEGAL_NAME }}
+        run: |
+          ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -p "$PORT" "$USER@$HOST" \
+            "TARGET='$TARGET' APP_URL='$APP_URL' LINK_DOCROOT='$LINK_DOCROOT' DOCROOT='$DOCROOT' DB_DATABASE='$DB_DATABASE' DB_USERNAME='$DB_USERNAME' DB_PASSWORD='$DB_PASSWORD' DB_HOST='$DB_HOST' MAIL_PASSWORD='$MAIL_PASSWORD' STRIPE_KEY='$STRIPE_KEY' STRIPE_SECRET='$STRIPE_SECRET' STRIPE_WEBHOOK_SECRET='$STRIPE_WEBHOOK_SECRET' SITE_WHATSAPP='$SITE_WHATSAPP' SITE_LEGAL_NAME='$SITE_LEGAL_NAME' bash -s" < ops/server-bootstrap.sh

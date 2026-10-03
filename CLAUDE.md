@@ -8,6 +8,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 - Never commit `.env`, keys, or anything from `storage/app/private`. Secrets live only in GitHub Actions Secrets.
 - No deployment to production except by explicit `deploy-hostinger.yml` dispatch after staging passed; read-only inspection first.
 - Every public page must have a row in `docs/decision/page-asset-register.md`; do not add pages without evidence.
+- Every indexable URL must have a live row in `data/seo/decision-register.csv` (one page per intent; statuses and reasons in `docs/seo/DECISION-ENGINE.md`); a test enforces it. Upgrade a thin page before adding a sibling.
 
 ## Commands
 ```bash

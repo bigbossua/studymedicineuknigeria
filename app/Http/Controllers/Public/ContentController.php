@@ -81,9 +81,14 @@ class ContentController extends Controller
     public function neco()
     {
         $st = $this->statements('waec_neco_statement');
+        $faqs = collect($this->faqItems())->whereIn('id', [3, 1, 21])->values();
+        $seo = $this->seo('NECO and UK Medicine: what medical schools say', 'Whether UK medical schools accept NECO for Medicine, how NECO is treated compared with WASSCE, where NECO English counts, and what route a NECO holder can take.', 'requirements.neco', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'NECO']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.requirements.neco', ['seo' => $this->seo('NECO and UK Medicine: what medical schools say', 'Whether UK medical schools accept NECO for Medicine, how NECO is treated compared with WASSCE, where NECO English counts, and what route a NECO holder can take.', 'requirements.neco', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'NECO']]),
-            'mentionsNeco' => $st->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false), 'all' => $st]);
+        return view('content.requirements.neco', ['seo' => $seo, 'faqs' => $faqs,
+            'mentionsNeco' => $st->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false), 'all' => $st,
+            'english' => $this->statements('english_requirement')->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false),
+            'accepting' => University::whereIn('international_policy', ['accepts', 'international_only'])->count()]);
     }
 
     public function alevels()
@@ -94,8 +99,21 @@ class ContentController extends Controller
 
     public function gem()
     {
-        return view('content.requirements.gem', ['seo' => $this->seo('Graduate Entry Medicine in the UK with a Nigerian degree', 'Which UK graduate-entry medicine programmes accept international applicants, the degree class and GAMSAT or UCAT they ask for, and the standard-entry alternative.', 'requirements.gem', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'Nigerian degree']]),
-            'gem' => $this->statements('gem_international'), 'gemCourses' => Course::with('university')->where('entry_type', 'graduate')->get()]);
+        $faqs = collect($this->faqItems())->whereIn('id', [31, 22, 21])->values();
+        $seo = $this->seo('Graduate Entry Medicine in the UK with a Nigerian degree', 'Which UK graduate-entry medicine programmes accept international applicants, the degree class and GAMSAT or UCAT they ask for, and the standard-entry alternative.', 'requirements.gem', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'Nigerian degree']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        // Published statements about international eligibility for graduate entry ("n/a" rows are schools with no GEM programme).
+        $gem = $this->statements('gem_international')->reject(fn ($f) => in_array(trim((string) $f->value_text), ['n/a', ''], true));
+        // Schools whose A101/A102/A109 programme was located but whose international eligibility was not: listed as such, never as "yes".
+        $unknown = ReferenceFact::with('subject')->where('subject_type', University::class)->where('key', 'gem_international')
+            ->where('verification_status', ReferenceFact::NOT_FOUND)->get()
+            ->filter(fn ($f) => preg_match('/A10\d|A1\d\d|GEP|GPEP|ScotGEM/i', (string) $f->value_text))->sortBy(fn ($f) => $f->subject?->name)->values();
+        // Every graduate-entry course in the directory (by UCAS code or entry type), grouped by the university's international policy.
+        $gemCourses = Course::with(['university', 'facts'])->where(fn ($q) => $q->where('entry_type', 'graduate')->orWhereIn('ucas_code', ['A101', 'A102', 'A109']))->get()
+            ->filter(fn ($c) => $c->university)->sortBy(fn ($c) => $c->university->name)->values();
+
+        return view('content.requirements.gem', ['seo' => $seo, 'gem' => $gem, 'unknown' => $unknown, 'gemCourses' => $gemCourses, 'faqs' => $faqs, 'ucat' => Topic::bySlug('ucat-2026')]);
     }
 
     public function english()

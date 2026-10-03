@@ -14,6 +14,7 @@
                 <h2>What universities publish about WAEC and NECO ({{ $waec->count() }} statements)</h2>
                 @include('content._statement-list', ['items' => $waec->take(6)])
                 <a href="{{ route('requirements.waec') }}" class="btn btn-tertiary mt-3">All {{ $waec->count() }} statements, and where WAEC English is accepted</a>
+                <p class="mt-3 text-[0.9375rem] text-ink-700">Hold NECO rather than WAEC? Most schools name WASSCE and are silent on NECO; the <a href="{{ route('requirements.neco') }}">NECO page</a> lists the schools that name it. A note on names: UK degrees are called MBBS, MBChB, MB BCh or BMBS depending on the university; they are the same primary medical qualification, and "MBBS in the UK" searches usually mean any of them.</p>
             </section>
             <section class="prose-site">
                 <h2>2. Which medical schools you can actually apply to</h2>

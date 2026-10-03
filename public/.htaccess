@@ -54,6 +54,8 @@
     ExpiresByType application/manifest+json "access plus 7 days"
 </IfModule>
 <IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
     <FilesMatch "\.(css|js|woff2)$">
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>

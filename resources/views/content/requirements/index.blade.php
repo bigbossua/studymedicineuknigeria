@@ -20,6 +20,7 @@
     <section class="mt-12 grid lg:grid-cols-12 gap-8">
         <div class="lg:col-span-8 prose-site">
             <h2>Requirements vary by medical school</h2>
+            <p>New to all of this? Start with the <a href="{{ route('medicine.nigeria') }}">guide for applicants from Nigeria</a>, which puts these ten requirements in order for a WAEC, <a href="{{ route('requirements.neco') }}">NECO</a>, A-level or degree holder, then come back here for the detail. The <a href="{{ route('medicine.index') }}">Medicine pillar</a> explains how the standard, graduate and foundation routes differ, and the <a href="{{ route('faq.index') }}">questions page</a> gives short answers with links back here.</p>
             <p>Two schools can ask for the same A-level grades and yet treat WASSCE English, the UCAT or a Nigerian degree differently. That is why we never write "UK medical schools accept X". Each page in this hub shows what individual schools publish, with the source and the date we last checked it, and the <a href="{{ route('schools.index') }}">directory</a> lets you compare them side by side.</p>
             <dl class="card not-prose mt-4">
                 <x-fact-row :fact="$ucas?->fact('deadline_medicine')" label="UCAS medicine deadline, 2027 entry" />

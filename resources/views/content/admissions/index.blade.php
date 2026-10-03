@@ -13,7 +13,7 @@
     </dl>
     <section class="mt-10 prose-site max-w-3xl"><h2>The process in order</h2>
         <ol>
-            <li><strong>Choose the route first.</strong> Standard entry (A100), <a href="{{ route('requirements.gem') }}">graduate entry</a> or a <a href="{{ route('medicine.foundation') }}">foundation or gateway year</a> depends on your qualifications; read <a href="{{ route('requirements.index') }}">what schools require</a> before anything else.</li>
+            <li><strong>Choose the route first.</strong> If you are applying from Nigeria, the <a href="{{ route('medicine.nigeria') }}">guide for Nigerian applicants</a> sets out which routes are open on WAEC, NECO, A-levels or a degree. Standard entry (A100), <a href="{{ route('requirements.gem') }}">graduate entry</a> or a <a href="{{ route('medicine.foundation') }}">foundation or gateway year</a> depends on your qualifications; read <a href="{{ route('requirements.index') }}">what schools require</a> before anything else.</li>
             <li><strong>Register for the admissions test in time.</strong> Most UK medical schools use the <a href="{{ route('admissions.ucat') }}">UCAT</a>, sat in the summer before you apply, with registration closing weeks earlier. Missing the window closes those schools for the cycle.</li>
             <li><strong>Shortlist schools that admit international applicants.</strong> Use the <a href="{{ route('schools.index') }}">directory</a>: international eligibility, test, fee and application route are listed per school with the source.</li>
             <li><strong>Apply through UCAS by the medicine deadline</strong> (mid-October in the year before entry) with up to four medicine choices, a personal statement and a reference. A few schools take <a href="{{ route('admissions.howto') }}">direct applications</a> instead.</li>
@@ -25,6 +25,7 @@
             <li>English evidence: where a school accepts WAEC English and where it asks for IELTS, and by when (<a href="{{ route('requirements.english') }}">English requirements</a>).</li>
             <li>Test centres and dates for the UCAT in Nigeria are limited; book as soon as registration opens.</li>
             <li>The four-choice rule for medicine: the fifth UCAS choice must be a different course.</li>
+            <li>Short answers to the questions applicants ask most are on the <a href="{{ route('faq.index') }}">questions page</a>.</li>
             <li>Each dated fact on this site carries a last-verified chip; the <a href="{{ route('admissions.ucas2027') }}">2027 timeline</a> is the page to re-check before each deadline.</li>
         </ul>
     </section>

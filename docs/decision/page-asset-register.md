@@ -67,6 +67,8 @@ Evidence keys: `02` = research/02 search demand · `05` = competitor research ·
 
 ## D. Register maintenance
 
+- From 2026-10-03 the per-intent decisions (clusters A–T, statuses RESEARCH → … → REJECTED with reasons) live in `data/seo/decision-register.csv`, explained in `docs/seo/DECISION-ENGINE.md` and enforced by `tests/Feature/SeoDecisionRegisterTest.php`. This register keeps the page-level build decisions; the decision register keeps the query-family decisions and the internal-link plan.
+
 - Each row becomes a record in `asset_register` (data model 17.2) with decision date and rationale.
 - Re-decide rows marked † when Semrush `ng` data and Search Console queries are available (DATA-AVAILABILITY).
 - A new page proposal requires the 14-point test in brief section 2, recorded here before any content is written.

@@ -3,13 +3,14 @@
     @include('content._page-head', ['eyebrow' => 'Fees', 'title' => 'UK medical school fees for international students', 'lede' => 'International tuition for Medicine at UK medical schools, one row per school, with the fee year, whether clinical years cost more, and the official source. Our approximate range is shown separately from official figures. Our service fee, if you use us, is separate from all of this.', 'seo' => $seo])
     @if($count)
     <section class="mt-8 card max-w-3xl border-l-4 border-l-navy-700" aria-label="Approximate market range">
-        <p class="eyebrow">Approximate market range (our aggregation of the official figures below)</p>
+        <h2 class="eyebrow">Approximate market range (our aggregation of the official figures below)</h2>
         <p class="mt-2 text-2xl font-serif font-semibold">£{{ number_format($min) }} – £{{ number_format($max) }} <span class="text-base font-sans font-normal text-ink-500">per year, across {{ $count }} schools with a published fee</span></p>
         <p class="mt-2 text-[0.875rem] text-ink-500">Clinical years are often charged at a higher rate; some schools include or add an NHS clinical placement levy; most reserve the right to annual increases. The row notes say where.</p>
     </section>
     @endif
     <section class="mt-8">
-        <table class="table-stack">
+        <h2>Published international fees by medical school</h2>
+        <table class="table-stack mt-4">
             <thead><tr><th>University</th><th>Course</th><th>International fee / year</th><th>Fee year</th><th>Clinical years differ?</th><th>Status · source</th></tr></thead>
             <tbody>
             @foreach($rows as $f)
@@ -38,6 +39,6 @@
         </div>
         <aside class="lg:col-span-4"><x-cta-band title="Know what the costs are. Ready to check your application?" :href="route('apply.index')" label="Apply Online" class="flex-col items-start" /></aside>
     </section>
-    <x-related :items="[['label' => 'Total cost of studying Medicine in the UK', 'url' => route('fees.total')], ['label' => 'Medical school directory', 'url' => route('schools.index')], ['label' => 'Requirements hub', 'url' => route('requirements.index')], ['label' => 'Services and pricing', 'url' => route('apply.services')]]" />
+    <x-related :items="[['label' => 'Study Medicine in the UK from Nigeria', 'url' => route('medicine.nigeria'), 'description' => 'The full guide: routes, schools, calendar and cost in one place'], ['label' => 'Total cost of studying Medicine in the UK', 'url' => route('fees.total')], ['label' => 'Medical school directory', 'url' => route('schools.index')], ['label' => 'Requirements hub', 'url' => route('requirements.index')], ['label' => 'Services and pricing', 'url' => route('apply.services')]]" />
 </article>
 </x-layouts.public>

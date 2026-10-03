@@ -14,6 +14,11 @@ class SecurityHeaders
         // One nonce per response; @vite stamps it on every script and style tag it emits.
         $nonce = Vite::useCspNonce();
         $response = $next($request);
+        // PHP adds X-Powered-By at SAPI level; drop it here and again in public/.htaccess for the web server.
+        if (! headers_sent()) {
+            header_remove('X-Powered-By');
+        }
+        $response->headers->remove('X-Powered-By');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'DENY');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');

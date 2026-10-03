@@ -42,6 +42,7 @@
                 <p class="eyebrow mb-3">Before anything else</p>
                 <h2 class="text-balance">Three things to know before you plan a UK medical degree</h2>
                 <p class="mt-4 text-ink-700">We publish what universities publish, university by university, and we say plainly where no information exists. Specific requirements, fees and dates appear on their own pages with sources and verification dates.</p>
+                <a href="{{ route('medicine.nigeria') }}" class="btn btn-secondary mt-5">Read the full guide for applicants from Nigeria</a>
             </div>
             <div class="lg:col-span-7 grid gap-4 sm:grid-cols-1">
                 <div class="card">

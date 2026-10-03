@@ -177,6 +177,15 @@ A read-only code audit (delegated, then every finding re-verified in the code) f
 
 Controls the audit confirmed sound are listed in `ops/reports/security-audit-2026-10-03.md`. 65 tests pass.
 
+## Stage 26: SEO decision engine, technical audit and intent upgrades (P4)
+
+Owner directive of 2026-10-03 ("Google organic growth + SEO + long-tail + internal linking + imagery").
+
+- **Decision engine**: `data/seo/decision-register.csv` (65 query families in clusters A–T) with intent, Nigerian relevance, Semrush database, observed SERP, competing URLs, current and recommended page, supporting pages, relevance score, sources, status and reason; `docs/seo/DECISION-ENGINE.md` defines the statuses (RESEARCH → VALIDATED → BUILD → DRAFT → REVIEW → PUBLISHED → INDEXING → MEASURING → UPDATE, REJECTED with reason) and the rules (one page per intent, upgrade before multiplying, evidence hierarchy, no fabricated metrics, no thin university pages, search-to-action chain). Semrush cells read DATA UNAVAILABLE until the owner's export is imported. `SeoDecisionRegisterTest` enforces vocabulary, reasons, sitemap coverage, live-row indexability, draft noindex and FAQ anchors.
+- **Technical audit (local build, 28 sitemap URLs)**: canonicals, trailing-slash and case redirects, query-string canonical, 404, robots, sitemap, OG/Twitter, JSON-LD, image alt and dimensions, snippet lengths all clean. Findings fixed: the core landing page had one in-body inbound link (now nine: home, every hub, FAQ, GEM and NECO pages, with a test); `/fees` had one H2 for 1,573 words (table and range card now headed); the FAQ had no headings (each question is an H2 inside its summary); the directory now emits `ItemList` JSON-LD when unfiltered; `X-Powered-By` is removed by the middleware and by `.htaccess`.
+- **Upgrade before multiplying**: graduate-entry page from 317 to about 1,200 words (two routes for a graduate, the one programme that publishes international eligibility, six GEM courses in the directory with published fees and the university's international policy, eleven programmes located whose international eligibility is not established, degree comparison, GAMSAT/UCAT windows, cost comparison, three FAQs with schema); NECO page from 379 to about 950 words (statements naming NECO, NECO English acceptance, WASSCE-only count, side-by-side table, route, three FAQs with schema). Nothing marked UNKNOWN was turned into a yes.
+- 73 tests pass. Settings diagnosis at 17:49 UTC: still nothing present in any scope; the 18:15 UTC self check-in will re-run it.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

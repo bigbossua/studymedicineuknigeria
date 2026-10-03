@@ -99,6 +99,11 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Changed**: end-to-end tests for registration → verification link → portal and the full password-reset loop (the gates every student passes); `CLAUDE.md` with the rules, commands and conventions for future sessions; university pages link to the how-to-apply route. **Tested / passed**: 68 tests, CI green. Settings diagnosis at 17:12 UTC still empty; next self check-in 18:15 UTC.
 
+## Cycle 22 — SEO decision engine and technical audit (stage 26)
+
+- **Inspected**: Actions settings (run 8, 17:49 UTC: all MISSING in repository scope and both environments); Semrush MCP (still `no_api_units`); every sitemap URL for canonical, robots, schema, headings, images and in-body internal links. **Found**: the core landing page had a single in-body inbound link; the fee guide and FAQ lacked heading structure; the directory had no list schema; PHP exposed `X-Powered-By`; the graduate-entry and NECO pages were the two thinnest intent pages. **Changed**: `data/seo/decision-register.csv` + `docs/seo/DECISION-ENGINE.md` (65 query families, statuses with reasons, link plan) with an enforcing test; nine contextual links to the core landing page; headings, ItemList, header removal; graduate-entry and NECO pages rewritten from the research evidence. **Tested / passed**: 73 tests; pages rendered locally with no errors.
+- **Owner (category B)**: unchanged below. For the SEO engine specifically: Semrush exports (database `ng`, then `uk`) for the 27 themes in `data/semrush/lookup-sheet.csv` and the question filter for the 18 seeds in research 02 §E, saved as `data/semrush/lookups-2026-10-03.csv`; the importer fills research 02 and the register's volume/KD cells.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

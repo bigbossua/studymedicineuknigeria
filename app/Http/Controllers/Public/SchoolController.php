@@ -48,6 +48,10 @@ class SchoolController extends Controller
             ->noindex($isFiltered)
             ->breadcrumbs([['label' => 'Medical Schools']])
             ->reviewed('2026-10-03', '2027');
+        if (! $isFiltered) {
+            $seo->jsonLd(['@type' => 'ItemList', 'name' => 'UK medical schools', 'numberOfItems' => $universities->count(),
+                'itemListElement' => $universities->values()->map(fn ($u, $i) => ['@type' => 'ListItem', 'position' => $i + 1, 'name' => $u->name, 'url' => route('schools.show', $u)])->all()]);
+        }
 
         return view('schools.index', compact('universities', 'filters', 'seo', 'isFiltered'));
     }

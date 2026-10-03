@@ -21,13 +21,13 @@ jobs:
     timeout-minutes: 30
     environment: ${{ github.event.inputs.target || 'staging' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Refuse production without explicit dispatch
         if: ${{ github.event_name != 'workflow_dispatch' && (github.event.inputs.target || 'staging') == 'production' }}
         run: echo "::error::Production deploys only via manual dispatch" && exit 1
       - uses: shivammathur/setup-php@v2
         with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_mysql', coverage: none }
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
       - name: Test before deploying
         run: |

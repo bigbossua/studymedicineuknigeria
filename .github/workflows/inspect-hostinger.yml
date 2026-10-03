@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check configuration
         env:
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}
@@ -47,7 +47,7 @@ jobs:
           # redact anything that looks like a password or key before it leaves the runner
           sed -i -E 's/(DB_PASSWORD|PASSWORD|SECRET|KEY|TOKEN)(=|\x27, \x27)[^ \x27"]+/\1\2[redacted]/Ig' out/*.txt
           echo "lines: $(wc -l < out/*.txt)"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: hostinger-inspection
           path: out/

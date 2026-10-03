@@ -43,7 +43,7 @@
             <section aria-labelledby="faq-h">
                 <h2 id="faq-h">Questions Nigerian applicants ask</h2>
                 <div class="mt-4 divide-y divide-ink-100">
-                    @foreach($faqs as $f)<details class="py-3"><summary class="cursor-pointer font-medium text-[1.0625rem]">{{ $f['q'] }}</summary><div class="mt-2 text-ink-700 text-[0.9375rem]">{!! $f['a'] !!}</div></details>@endforeach
+                    @foreach($faqs as $f)<details class="py-3" id="q{{ $f['id'] }}"><summary class="cursor-pointer font-medium text-[1.0625rem]">{{ $f['q'] }}</summary><div class="mt-2 text-ink-700 text-[0.9375rem]">{!! $f['a'] !!}</div></details>@endforeach
                 </div>
                 <a href="{{ route('faq.index') }}" class="btn btn-tertiary mt-3">All questions</a>
             </section>

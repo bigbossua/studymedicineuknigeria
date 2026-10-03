@@ -155,13 +155,19 @@ class ContentController extends Controller
             ->filter(fn ($f) => $f->subject && $f->subject->university)->sortBy(fn ($f) => $f->subject->university->name)->values();
     }
 
-    public function fees()
+    public function fees(Request $request)
     {
         $rows = $this->feeRows();
         $pub = $rows->filter(fn ($f) => $f->isPublishable() && $f->value_number);
+        // "Cheapest medical school" intent (register K01): the same table ordered by the lowest published fee first;
+        // schools without a publishable fee sink to the end. The canonical stays /fees because the content is identical.
+        $sort = $request->string('sort')->toString() === 'fee' ? 'fee' : 'name';
+        if ($sort === 'fee') {
+            $rows = $rows->sortBy(fn ($f) => ($f->isPublishable() && $f->value_number) ? $f->value_number : PHP_INT_MAX)->values();
+        }
 
         return view('content.fees.index', ['seo' => $this->seo('International fees at UK medical schools, 2026/27 to 2027/28', 'International tuition fees for Medicine at every UK medical school, with fee year, clinical-year differences and an official source for each figure.', 'fees.index', [['label' => 'Fees']]),
-            'rows' => $rows, 'min' => $pub->min('value_number'), 'max' => $pub->max('value_number'), 'count' => $pub->count(), 'visa' => Topic::bySlug('student-visa')]);
+            'rows' => $rows, 'sort' => $sort, 'min' => $pub->min('value_number'), 'max' => $pub->max('value_number'), 'count' => $pub->count(), 'visa' => Topic::bySlug('student-visa')]);
     }
 
     public function totalCost()

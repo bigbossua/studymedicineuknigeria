@@ -9,7 +9,11 @@
     </section>
     @endif
     <section class="mt-8">
-        <h2>Published international fees by medical school</h2>
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <h2>Published international fees by medical school</h2>
+            <nav class="text-[0.875rem]" aria-label="Sort order">Sort: <a href="{{ route('fees.index') }}" class="chip {{ $sort === 'name' ? 'chip-info' : 'chip-pending' }} no-underline" @if($sort === 'name') aria-current="true" @endif>by university</a> <a href="{{ route('fees.index', ['sort' => 'fee']) }}" class="chip {{ $sort === 'fee' ? 'chip-info' : 'chip-pending' }} no-underline" @if($sort === 'fee') aria-current="true" @endif>lowest published fee first</a></nav>
+        </div>
+        @if($sort === 'fee')<p class="mt-2 text-[0.9375rem] text-ink-700">"Cheapest" here means the lowest fee a university has published for the year shown; clinical years, annual increases and living costs can change the order of the real total. Schools with no publishable fee appear last.</p>@endif
         <table class="table-stack mt-4">
             <thead><tr><th>University</th><th>Course</th><th>International fee / year</th><th>Fee year</th><th>Clinical years differ?</th><th>Status · source</th></tr></thead>
             <tbody>

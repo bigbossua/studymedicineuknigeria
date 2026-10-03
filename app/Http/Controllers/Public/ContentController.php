@@ -126,7 +126,7 @@ class ContentController extends Controller
         // Schools whose A101/A102/A109 programme was located but whose international eligibility was not: listed as such, never as "yes".
         $unknown = ReferenceFact::with('subject')->where('subject_type', University::class)->where('key', 'gem_international')
             ->where('verification_status', ReferenceFact::NOT_FOUND)->get()
-            ->filter(fn ($f) => preg_match('/A10\d|A1\d\d|GEP|GPEP|ScotGEM/i', (string) $f->value_text))->sortBy(fn ($f) => $f->subject?->name)->values();
+            ->filter(fn ($f) => $f->isPublishable() && preg_match('/A10\d|A1\d\d|GEP|GPEP|ScotGEM/i', (string) $f->value_text))->sortBy(fn ($f) => $f->subject?->name)->values(); // research notes, so hidden in production like every unverified fact
         // Every graduate-entry course in the directory (by UCAS code or entry type), grouped by the university's international policy.
         $gemCourses = Course::with(['university', 'facts'])->where(fn ($q) => $q->where('entry_type', 'graduate')->orWhereIn('ucas_code', ['A101', 'A102', 'A109']))->get()
             ->filter(fn ($c) => $c->university)->sortBy(fn ($c) => $c->university->name)->values();

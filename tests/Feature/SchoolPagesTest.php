@@ -70,6 +70,8 @@ class SchoolPagesTest extends TestCase
         $fees = $this->get('/fees')->assertOk()->getContent();
         $this->assertStringContainsString('Being verified', $fees);
         $this->assertStringNotContainsString('£45,000', $fees);
+        $u->facts()->create(['key' => 'gem_international', 'value_text' => 'A101 page exists; international eligibility: DATA UNAVAILABLE', 'verification_status' => 'NOT_FOUND', 'source_type' => 'official']);
+        $this->assertStringNotContainsString('international eligibility not yet established (', $this->get('/requirements/nigerian-degree-graduate-entry')->assertOk()->getContent(), 'research notes about located programmes stay hidden in production');
     }
 
     public function test_the_faq_hub_carries_the_newly_sourced_answers_with_their_anchors(): void

@@ -76,7 +76,11 @@ class ContentController extends Controller
     // ---------------- Requirements ----------------
     public function requirements()
     {
-        return view('content.requirements.index', ['seo' => $this->seo('Requirements to study Medicine in the UK from Nigeria', 'What every UK medical school looks at: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants specifically must check.', 'requirements.index', [['label' => 'Requirements']]),
+        $faqs = collect($this->faqItems())->whereIn('id', [1, 2, 6, 21])->values();
+        $seo = $this->seo('Requirements to study Medicine in the UK from Nigeria', 'What every UK medical school looks at: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants specifically must check.', 'requirements.index', [['label' => 'Requirements']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.requirements.index', ['seo' => $seo, 'faqs' => $faqs, 'accepting' => University::whereIn('international_policy', ['accepts', 'international_only'])->count(),
             'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'english' => $this->statements('english_requirement')->count()]);
     }
 

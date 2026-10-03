@@ -17,6 +17,21 @@
             <li class="card flex flex-col"><span class="font-mono text-[0.8125rem] text-ink-500">{{ sprintf('%02d', $i + 1) }}</span><h2 class="text-xl font-serif font-semibold mt-1">{{ $h }}</h2><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $p }}</p><a href="{{ $u }}" class="btn btn-tertiary mt-3 self-start">{{ $l }}</a></li>
         @endforeach
     </ol>
+    <section class="mt-12 max-w-4xl">
+        <h2>Which route is yours? Start from what you hold today</h2>
+        <p class="mt-2 text-ink-700">UK medical schools treat Nigerian school-leaving results as the GCSE layer. The entry qualification is one of the rows below; each links to the page that shows what individual schools publish, with sources. {{ $accepting }} schools in our directory admit international undergraduate applicants.</p>
+        <table class="table-stack mt-4">
+            <thead><tr><th>You hold</th><th>Published route to Medicine</th><th>What to check first</th><th>Read</th></tr></thead>
+            <tbody>
+                <tr><td data-label="You hold">WAEC (WASSCE) or NECO only</td><td data-label="Route">A-levels or IB first, or a foundation year that publishes Medicine as a destination; no school in our review publishes direct entry on WASSCE or NECO alone</td><td data-label="Check">Which schools accept WAEC or NECO English; the GCSE-level grades schools ask for</td><td data-label="Read"><a href="{{ route('requirements.waec') }}">WAEC</a> · <a href="{{ route('requirements.neco') }}">NECO</a> · <a href="{{ route('medicine.foundation') }}">Foundation routes</a></td></tr>
+                <tr><td data-label="You hold">A-levels (Cambridge International) or IB, achieved or predicted</td><td data-label="Route">Standard entry (A100) with the UCAT</td><td data-label="Check">Chemistry and Biology in your subjects; the A* placement; the UCAT window</td><td data-label="Read"><a href="{{ route('requirements.alevels') }}">A-levels and IB</a> · <a href="{{ route('admissions.ucat') }}">UCAT</a></td></tr>
+                <tr><td data-label="You hold">A foundation or pathway year, current or completed</td><td data-label="Route">Progression only where the provider publishes it to named medical schools</td><td data-label="Check">The written progression conditions; whether the foundation is open on a Student visa</td><td data-label="Read"><a href="{{ route('medicine.foundation') }}">Foundation routes</a></td></tr>
+                <tr><td data-label="You hold">A Nigerian bachelor's degree</td><td data-label="Route">Graduate entry (A101/A102) where open to international applicants, or standard entry as a graduate</td><td data-label="Check">Degree class comparability; GAMSAT or UCAT; healthcare experience hours</td><td data-label="Read"><a href="{{ route('requirements.gem') }}">Graduate entry</a></td></tr>
+                <tr><td data-label="You hold">Any of the above, without an IELTS result</td><td data-label="Route">Unchanged, but the offer will be conditional on English evidence</td><td data-label="Check">Whether the school accepts WAEC or NECO English for Medicine; IELTS component minimums; result validity</td><td data-label="Read"><a href="{{ route('requirements.english') }}">English requirements</a></td></tr>
+            </tbody>
+        </table>
+        <p class="mt-3 text-[0.9375rem] text-ink-700">Seven questions in the <a href="{{ route('apply.eligibility') }}">eligibility check</a> apply this table to your own results and show the routes that appear open.</p>
+    </section>
     <section class="mt-12 grid lg:grid-cols-12 gap-8">
         <div class="lg:col-span-8 prose-site">
             <h2>Requirements vary by medical school</h2>
@@ -28,6 +43,10 @@
             </dl>
         </div>
         <aside class="lg:col-span-4"><x-cta-band title="Not sure whether your Nigerian qualifications meet the requirements?" :href="route('apply.eligibility')" label="Check your eligibility" class="flex-col items-start">Seven questions, no account needed.</x-cta-band></aside>
+    </section>
+    <section class="mt-12 max-w-3xl">
+        <h2>Questions about requirements</h2>
+        <div class="mt-4 divide-y divide-ink-100">@foreach($faqs as $f)<details class="py-3" id="q{{ $f['id'] }}"><summary class="cursor-pointer font-semibold">{{ $f['q'] }}</summary><div class="mt-2 text-ink-700 prose-site">{!! $f['a'] !!}</div></details>@endforeach</div>
     </section>
 </article>
 </x-layouts.public>

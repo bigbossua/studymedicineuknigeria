@@ -110,7 +110,7 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 ## Cycle 24 — university page depth, FAQ growth, regression tests (stage 28)
 
-- **Changed**: every university record page gained computed Nigerian-applicant guidance and a how-to-apply block built only from published facts, plus Course schema (Offer only for a VERIFIED fee); 29 of the 40 observed questions now have sourced FAQ answers; the expired-form page offers a real way back. **Tested / passed**: 77 tests including a new university-page suite (home-only wording, published-versus-missing statements, Offer gating); CI green.
+- **Changed**: every university record page gained computed Nigerian-applicant guidance and a how-to-apply block built only from published facts, plus Course schema (Offer only for a VERIFIED fee); 29 of the 40 observed questions now have sourced FAQ answers; the expired-form page offers a real way back. **Tested / passed**: 77 tests including a new university-page suite (home-only wording, published-versus-missing statements, Offer gating); CI green; `composer audit` now reachable and reports no advisories; `npm audit` clean. The requirements hub gained a what-you-hold → route → what-to-check table and four FAQs.
 
 ## Owner actions still required (unchanged, one place)
 

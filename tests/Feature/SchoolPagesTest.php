@@ -43,6 +43,10 @@ class SchoolPagesTest extends TestCase
         $u = $this->university('accepts');
         $u->facts()->create(['key' => 'waec_neco_statement', 'value_text' => 'WASSCE holders complete a recognised foundation programme first.', 'verification_status' => 'VERIFY-ON-PAGE', 'source_url' => 'https://example.ac.uk/nigeria', 'source_type' => 'official']);
         $this->get('/medical-schools')->assertOk()->assertSee('Published by the university');
+        $other = $this->university('home_only');
+        $filtered = $this->get('/medical-schools?waec=published')->assertOk()->assertSee('noindex', false)->getContent();
+        $this->assertStringContainsString($u->name, $filtered);
+        $this->assertStringNotContainsString($other->name, $filtered, 'schools without a statement drop out of the filter');
         $this->app['env'] = 'production';
         config(['site.publish_unverified' => false]);
         $html = $this->get('/medical-schools')->assertOk()->getContent();

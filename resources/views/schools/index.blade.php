@@ -8,7 +8,7 @@
             <x-reviewed :date="$seo->lastReviewed" :intake="$seo->intakeYear" class="mt-4" />
         </div>
 
-        <form method="get" action="{{ route('schools.index') }}" class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5 items-end" role="search" aria-label="Filter medical schools">
+        <form method="get" action="{{ route('schools.index') }}" class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-6 items-end" role="search" aria-label="Filter medical schools">
             <div class="field">
                 <label for="q" class="label">Search</label>
                 <input id="q" name="q" value="{{ $filters['q'] }}" class="input" placeholder="University or city">
@@ -35,6 +35,13 @@
                 <select id="test" name="test" class="input">
                     <option value="">All</option>
                     @foreach(['UCAT'=>'UCAT','GAMSAT'=>'GAMSAT','UCAT/GAMSAT'=>'UCAT or GAMSAT','NONE'=>'No test'] as $v=>$l)<option value="{{ $v }}" @selected($filters['test']===$v)>{{ $l }}</option>@endforeach
+                </select>
+            </div>
+            <div class="field">
+                <label for="waec" class="label">WAEC / NECO statement</label>
+                <select id="waec" name="waec" class="input">
+                    <option value="">Any</option>
+                    <option value="published" @selected($filters['waec']==='published')>Published by the university</option>
                 </select>
             </div>
             <div class="flex gap-2">

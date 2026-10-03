@@ -24,6 +24,7 @@ class SchoolController extends Controller
             'test' => $request->string('test')->toString(),                   // UCAT | GAMSAT | NONE
             'route' => $request->string('route')->toString(),                 // UCAS | DIRECT | BOTH
             'q' => $request->string('q')->toString(),
+            'waec' => $request->string('waec')->toString(),                   // published: the university publishes a WAEC/NECO statement we can show here
         ];
         if ($filters['nation']) {
             $q->where('nation', $filters['nation']);
@@ -36,6 +37,10 @@ class SchoolController extends Controller
         }
         if ($filters['test']) {
             $q->whereHas('courses', fn ($c) => $c->where('admissions_test', $filters['test']));
+        }
+        if ($filters['waec'] === 'published') {
+            $visible = (config('site.publish_unverified') || ! app()->isProduction()) ? [ReferenceFact::VERIFIED, ReferenceFact::VERIFY_ON_PAGE, ReferenceFact::REVIEW_DUE, ReferenceFact::SOURCE_CHANGED] : [ReferenceFact::VERIFIED];
+            $q->whereHas('facts', fn ($f) => $f->where('key', 'waec_neco_statement')->whereIn('verification_status', $visible));
         }
         if ($filters['route']) {
             $q->whereHas('courses', fn ($c) => $c->where('application_route', $filters['route']));

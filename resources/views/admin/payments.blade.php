@@ -1,0 +1,5 @@
+<x-layouts.admin :seo="$seo"><h1 class="text-h2">Payments</h1>
+    <p class="text-ink-700 mt-1">Received: {{ $totals->map(fn($s,$c)=>$c.' '.number_format($s/100,2))->join(' · ') ?: 'none yet' }}</p>
+    <div class="card mt-5 overflow-x-auto"><table class="text-[0.875rem]"><thead><tr><th>Date</th><th>Application</th><th>Student</th><th>Service</th><th>Amount</th><th>Method</th><th>Status</th><th>Stripe</th></tr></thead><tbody>
+        @foreach($payments as $p)<tr><td>{{ $p->created_at->format('j M Y') }}</td><td><a href="{{ route('admin.applications.show',$p->application) }}" class="font-mono">{{ $p->application->application_number }}</a></td><td>{{ $p->application->user->name }}</td><td>{{ $p->tierPrice?->tier?->code }} {{ $p->tierPrice?->component }}</td><td>{{ $p->formattedAmount() }}</td><td>{{ $p->method }}</td><td>{{ $p->statusLabel() }}</td><td class="font-mono text-[0.75rem]">{{ $p->stripe_payment_intent_id }}</td></tr>@endforeach
+    </tbody></table>{{ $payments->links() }}</div></x-layouts.admin>

@@ -1,0 +1,22 @@
+<x-layouts.admin :seo="$seo">
+    <h1 class="text-h2">Verification queue</h1>
+    <p class="text-ink-700 mt-1 max-w-3xl">Open the official source, confirm the value on the page, then mark it verified. Verified fees and deadlines fall due for review after 6 months, other facts after 12. Nothing unverified is shown to students in production.</p>
+    <div class="mt-4 flex flex-wrap gap-2 text-[0.875rem]">@foreach($counts as $s=>$c)<a href="{{ route('admin.reference.index',['status'=>$s]) }}" class="chip {{ $s===$status ? 'chip-info' : 'chip-pending' }}">{{ $s }} · {{ $c }}</a>@endforeach</div>
+    <form class="mt-3 flex gap-2"><input type="hidden" name="status" value="{{ $status }}"><select name="key" class="input max-w-xs"><option value="">All keys</option>@foreach($keys as $k)<option value="{{ $k }}" @selected(request('key')===$k)>{{ $k }}</option>@endforeach</select><button class="btn btn-secondary">Filter</button></form>
+    <div class="mt-5 space-y-3">
+        @foreach($facts as $f)
+            <form method="post" action="{{ route('admin.reference.update',$f) }}" class="card grid lg:grid-cols-12 gap-3 items-start">@csrf
+                <div class="lg:col-span-3"><p class="font-semibold">{{ $f->subject?->name ?? $f->subject?->title ?? class_basename($f->subject_type).' #'.$f->subject_id }}</p><p class="text-[0.8125rem] text-ink-500">{{ $f->subject_type==='App\\Models\\Course' ? $f->subject?->university?->name : '' }}</p><p class="font-mono text-[0.8125rem] mt-1">{{ $f->key }} @if($f->qualification_code)· {{ $f->qualification_code }}@endif</p><x-verified-badge :status="$f->verification_status" :date="$f->verified_at?->format('j M Y')" class="mt-1" /></div>
+                <div class="lg:col-span-5 space-y-2">
+                    @if($f->value_number !== null || str_ends_with($f->key,'_gbp'))<input name="value_number" value="{{ $f->value_number }}" class="input" placeholder="Number">@else<textarea name="value_text" class="input min-h-16">{{ $f->value_text ?? ($f->value_bool===null ? '' : ($f->value_bool?'Yes':'No')) }}</textarea>@endif
+                    <input name="academic_year" value="{{ $f->academic_year }}" class="input" placeholder="Academic year (e.g. 2026/27)">
+                    <input name="source_url" value="{{ $f->source_url }}" class="input" placeholder="Official source URL">
+                    @if($f->source_url)<a href="{{ $f->source_url }}" target="_blank" rel="noopener" class="text-[0.8125rem]">Open source ↗</a>@endif
+                </div>
+                <div class="lg:col-span-4 space-y-2"><textarea name="notes" class="input min-h-16" placeholder="Notes">{{ $f->notes }}</textarea>
+                    <div class="flex flex-wrap gap-2"><button name="decision" value="verify" class="btn btn-primary btn-sm">Verified on page</button><button name="decision" value="not_published" class="btn btn-secondary btn-sm">Not published</button><button name="decision" value="source_changed" class="btn btn-secondary btn-sm">Source changed</button><button name="decision" value="save" class="btn btn-tertiary">Save edits</button><button name="decision" value="archive" class="btn btn-tertiary text-danger-600">Archive</button></div></div>
+            </form>
+        @endforeach
+    </div>
+    {{ $facts->links() }}
+</x-layouts.admin>

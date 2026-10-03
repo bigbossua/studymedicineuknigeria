@@ -1,0 +1,41 @@
+# Implementation log
+
+Decisions made during the build, in order. Research and decision documents remain the source of truth for *what* and *why*; this log records *how* and any deviation.
+
+## 2026-10-03 — Stage 0: environment facts
+
+- Hostinger SSH (ports 22 and 65002) is unreachable from the build container (network policy), and no credentials have been supplied. The 16-point server report is therefore **not yet possible**. `ops/inspect-hostinger.sh` (read-only) is ready to run the moment access exists; results go to `ops/reports/`.
+- GitHub push is refused (403): the Claude GitHub App is not installed on `bigbossua/studymedicineuknigeria`. All work is committed locally on `claude/new-session-p6gdm6`.
+- Composer resolved Laravel 13.34 (PHP ^8.3). GitHub's zip host is blocked, so Composer runs with `--prefer-source` here; on the server a normal `composer install` works.
+
+## Stage 1: brand and foundation
+
+- Brand built from `brand/build.py`: Rod of Asclepius on a navy tile over a quiet saltire, one red point; Source Serif 4 + Inter. Favicon, manifest, OG, avatar and email header exported.
+- Tailwind v4 tokens in `resources/css/app.css`; fonts self-hosted (OFL).
+- SEO: `App\Support\Seo` object per page; JSON-LD Organization + BreadcrumbList (+ WebSite on home, CollegeOrUniversity on school pages); dynamic robots (disallow-all outside production); sitemap lists only routes carrying a `sitemap` default; 404 view; DB redirects + lowercase/no-trailing-slash canonicalisation as **global** middleware. **Deviation from 18.1:** canonical URLs have *no* trailing slash (Laravel convention).
+- Unbuilt register pages render a `noindex` placeholder and never enter the sitemap.
+
+## Stage 2: reference data
+
+- One polymorphic `reference_facts` table instead of separate fee/requirement/deadline tables (see 17.6). Importer is idempotent and never promotes to VERIFIED. 53 universities, 56 courses, 617 facts imported; 24 accept international applicants, 1 international-only, 6 home-only, 22 not yet established.
+- Directory + university pages render every fact with its verification chip; unverified facts are hidden in production unless `SITE_PUBLISH_UNVERIFIED=true`. University pages are `noindex` until staff publish them.
+
+## Stage 3: application platform
+
+- Auth: Laravel auth with email verification, rate-limited login, no-enumeration password reset. Roles student/staff/admin (2FA fields present; TOTP enforcement for staff is a follow-up).
+- Three state machines (application / document / submission) per docs 12, 14, 16. `StageResolver::resolve()` is the single derivation function; staff may only set judgement stages, and the controller refuses review/approval stages while the form, documents or payment are incomplete.
+- Checklist rules are data (`checklist_rules`); re-evaluated when relevant steps change.
+- Document pipeline: content-type sniffing, size limits, image re-encode (GD), PDF active-content rejection, ClamAV when present (else `scan_status=unavailable`), app-level encryption for passport and financial documents, UUID paths on the private disk, authenticated streamed downloads with access logging, sandboxed inline preview for staff.
+- Payments: Stripe Checkout (hosted) with webhook as source of truth and idempotent event storage; bank-transfer fallback with manual confirmation; prices are **null until set in admin** and nothing can be charged while null. Tier 3 is split into preparation + submission components.
+- Approval gate: package snapshot hashed; typed name, IP, user agent, declaration version stored; any package change after approval revokes it and returns the submission to PROPOSED; staff cannot mark PACKAGE_READY/SUBMITTED without a live authorisation. Agreement-gated routes (DIRECT_AGENT, UCAS_CENTRE) are refused because no agreement records exist.
+- Notifications: one `ApplicationNotification` per real event; staff alerts via `StaffNotification` to admin users. Queue driver database; scheduler runs the worker each minute (shared-hosting friendly). Reminders: 2/7/14/30-day inactivity, 3/10-day document, 2/7-day approval, max one per 48 h.
+- Admin: operations dashboard, application workspace (documents, form, submissions, messages, stage control, assignment, payments, timeline), leads, payments, services/prices, verification queue (the only place a fact becomes VERIFIED; fees/deadlines fall due after 6 months, others 12), universities publish toggle, redirects, users/roles, audit log. Every admin write is recorded in `admin_actions`.
+- Tests: 19 feature tests covering SEO behaviour, ownership, upload validation, the approval gate and role boundaries.
+
+## Open items carried forward
+
+1. Hostinger access → server report → deployment (docs/architecture/21).
+2. Release-1 public pages (register rows 2–23) with verification gating.
+3. Eligibility check (lead capture) and services/pricing page once prices are set.
+4. Staff TOTP enforcement; ClamAV on VPS; off-site encrypted backups.
+5. Legal pages (privacy, terms, application terms, refund policy) — drafts need owner/legal review before publication.

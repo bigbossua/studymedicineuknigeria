@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+// Shared-hosting friendly: everything runs from one cron line (docs/architecture/21.3 step 6)
+Schedule::command('queue:work --stop-when-empty --tries=3 --max-time=50')->everyMinute()->withoutOverlapping();
+Schedule::command('smukn:reminders')->dailyAt('08:10')->timezone('Africa/Lagos');
+Schedule::command('smukn:flag-review-due')->dailyAt('02:30');
+Schedule::command('smukn:expire-payments')->hourly();
+Schedule::command('queue:prune-failed --hours=720')->weekly();

@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(\App\Http\Middleware\HandleRedirects::class);
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        $middleware->alias(['staff' => \App\Http\Middleware\EnsureStaff::class]);
+        $middleware->validateCsrfTokens(except: ['webhooks/stripe']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

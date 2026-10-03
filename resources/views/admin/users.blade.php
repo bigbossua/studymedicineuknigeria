@@ -1,0 +1,4 @@
+<x-layouts.admin :seo="$seo"><h1 class="text-h2">Users</h1>
+    <div class="card mt-5 overflow-x-auto"><table class="text-[0.875rem]"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Applications</th><th>Verified</th><th>Last login</th></tr></thead><tbody>
+        @foreach($users as $u)<tr><td>{{ $u->name }}</td><td>{{ $u->email }}</td><td>@if(auth()->user()->isAdmin())<form method="post" action="{{ route('admin.users.role',$u) }}" class="flex gap-1">@csrf<select name="role" class="input min-h-9 py-1">@foreach(['student','staff','admin'] as $r)<option value="{{ $r }}" @selected($u->role===$r)>{{ $r }}</option>@endforeach</select><button class="btn btn-tertiary">Save</button></form>@else{{ $u->role }}@endif</td><td>{{ $u->applications_count }}</td><td>{{ $u->email_verified_at ? 'yes' : 'no' }}</td><td>{{ $u->last_login_at?->diffForHumans() ?? '—' }}</td></tr>@endforeach
+    </tbody></table>{{ $users->links() }}</div></x-layouts.admin>

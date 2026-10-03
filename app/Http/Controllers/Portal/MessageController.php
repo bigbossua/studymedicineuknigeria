@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Http\Controllers\Portal;
+
+use App\Http\Controllers\Controller;
+use App\Models\Application;
+use App\Support\Seo;
+use Illuminate\Http\Request;
+
+class MessageController extends Controller
+{
+    public function index(Application $application)
+    {
+        abort_unless($application->user_id === auth()->id(), 403);
+        $application->messages()->where('sender_user_id', '!=', auth()->id())->whereNull('read_at')->update(['read_at' => now()]);
+
+        return view('portal.messages', ['seo' => Seo::make('Messages')->noindex(), 'application' => $application, 'messages' => $application->messages()->with('sender')->get()]);
+    }
+
+    public function store(Request $request, Application $application)
+    {
+        abort_unless($application->user_id === auth()->id(), 403);
+        $data = $request->validate(['body' => 'required|string|max:4000']);
+        $application->messages()->create(['sender_user_id' => $request->user()->id, 'body' => $data['body']]);
+        $application->record('message.sent', [], $request->user()->id);
+        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('Message from student — '.$application->application_number, [\Illuminate\Support\Str::limit($data['body'], 300)], route('admin.applications.show', $application)));
+
+        return back()->with('status', 'Message sent. We reply in your portal and by email.');
+    }
+}

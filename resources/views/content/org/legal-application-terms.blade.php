@@ -9,7 +9,7 @@
     <h2>5. Our responsibilities</h2><ul><li>Review your profile against published requirements and tell you plainly what we find.</li><li>Review documents and give reasons when we return one.</li><li>Prepare the package and seek your explicit approval before any submission.</li><li>Keep your data secure and act only within the scope you approve.</li></ul>
     <h2>6. Approval and submission</h2><p>No application is submitted to any university without your recorded approval of the exact package. If the package changes after approval, your approval lapses and we ask again.</p>
     <h2>7. Admission decisions</h2><p>Admission, offers, conditions, interviews, scholarships and visas are decided solely by universities and official bodies. We do not and cannot influence them.</p>
-    <h2>8. Refunds</h2><p>See the <a href="{{ route('legal.refunds') }}">refund policy</a>, which forms part of these terms.</p>
+    <h2>8. Refunds</h2><p>See the <a href="{{ route('legal.refunds') }}">refund policy</a>, which forms part of these terms. These service terms sit alongside the website <a href="{{ route('legal.terms') }}">terms of use</a> and the <a href="{{ route('legal.privacy') }}">privacy notice</a>, which explains how your documents and personal data are handled.</p>
     <h2>9. Additional charges</h2><p>None, unless you ask for work outside your service and agree a written quote first.</p>
 </div></article>
 </x-layouts.public>

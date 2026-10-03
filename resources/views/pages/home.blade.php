@@ -70,6 +70,7 @@
             <div class="lg:col-span-5">
                 <p class="eyebrow mb-3">What this service is</p>
                 <h2 class="text-balance">Evidence. Guidance. Application.</h2>
+                <p class="mt-4 text-ink-700">An independent service, not an agent of any university. <a href="{{ route('about') }}">About us</a>, <a href="{{ route('status') }}">our status</a> and <a href="{{ route('verify') }}">how we verify</a> say exactly what we are and how we check what we publish; the <a href="{{ route('medicine.index') }}">Medicine pillar</a> explains how the routes, requirements, costs and calendar fit together.</p>
             </div>
             <div class="lg:col-span-7 grid sm:grid-cols-2 gap-6 text-[0.9375rem]">
                 <div>

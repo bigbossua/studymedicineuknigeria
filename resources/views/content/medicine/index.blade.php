@@ -23,7 +23,7 @@
             </ul>
 
             <h2>5. The calendar</h2>
-            <p>UCAS medicine applications close in mid-October the year before entry; the UCAT must be sat before that, between July and September. Interviews run from December to March, offers follow by May, and the deposit, Confirmation of Acceptance for Studies and Student visa process begins once you accept an offer and meet its conditions. Missing the UCAT window closes the UCAS route for that year at every school that requires it; a few schools take direct applications on their own calendars. Our <a href="{{ route('admissions.ucas2027') }}">2027 timeline</a> has the exact dates with sources.</p>
+            <p>UCAS medicine applications close in mid-October the year before entry; the UCAT must be sat before that, between July and September. Interviews run from December to March, offers follow by May, and the deposit, Confirmation of Acceptance for Studies and Student visa process begins once you accept an offer and meet its conditions. Missing the UCAT window closes the UCAS route for that year at every school that requires it; a few schools take direct applications on their own calendars. The <a href="{{ route('admissions.index') }}">admissions hub</a> puts the whole process in order and our <a href="{{ route('admissions.ucas2027') }}">2027 timeline</a> has the exact dates with sources.</p>
             <dl class="card mt-4">
                 <x-fact-row :fact="$ucas?->fact('deadline_medicine')" label="UCAS deadline for medicine, 2027 entry" />
                 <x-fact-row :fact="$ucat?->fact('testing_window')" label="UCAT testing window for 2027 entry" />

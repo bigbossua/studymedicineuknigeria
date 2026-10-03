@@ -189,6 +189,11 @@ Owner directive of 2026-10-03 ("Google organic growth + SEO + long-tail + intern
 - **P0 verification continued**: rate limits confirmed on every public write route (eligibility, register, login, password reset, verification resend, two-step setup and challenge, uploads, messages); password policy minimum 10 characters with letters and numbers on registration, reset and change; secure, HttpOnly, SameSite=Lax session cookies set by the server bootstrap; `npm audit` reports zero vulnerabilities (production and development); the fresh-account mobile journey and the 28-page crawl re-run clean after this stage.
 - 73 tests pass. Settings diagnosis at 17:49 UTC: still nothing present in any scope; the 18:15 UTC self check-in will re-run it.
 
+## Stage 27: knowledge-graph link pass and second security sweep (P0/P3)
+
+- **Internal links as a knowledge graph**: measured in-body inbound links for every sitemap page from `<main>` only. Pages below five inbound links received contextual, descriptive links where a reader would want them, not a related-articles block: home now introduces About, Our status, How we verify and the Medicine pillar; About links to How we verify, Contact and the Nigerian guide; How we verify's error-reporting paragraph links to Contact; the application terms link the website terms and privacy notice; the refund policy explains how to ask (Contact, portal messages) and what the pro-rata basis is (service terms); the eligibility consent already linked the privacy notice; how-to-apply and Our status link the services page; the pillar links the admissions hub. Every sitemap page now has at least one in-body inbound link besides the footer, and all hubs have four or more.
+- **Second security sweep**: raw Blade output is limited to trusted templates (mail layout, auth frame, our own FAQ HTML); every model with `$guarded = []` is written only through validated arrays (no `request->all()` anywhere); no `env()` calls outside config; portal write routes that create records or are irreversible gained rate limits (start application 10/10 min, deletion request 3/10 min, checkout and manual-transfer 10/10 min, password change 5/min); public write routes were already limited. 74 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

@@ -31,7 +31,7 @@
                 <li>Ask for the university's name and the agreement type for any claimed partnership, then look for the company on that university's published representative list.</li>
                 <li>Ask whether the service receives commission from universities and whether its fee is separate from university costs. Ours is, and we receive none.</li>
                 <li>Ask who submits the application and in whose account. With us, it is yours, and nothing is submitted without your recorded approval.</li>
-                <li>Ask for the refund policy and the service terms in writing before paying: <a href="{{ route('legal.application-terms') }}">ours</a> and <a href="{{ route('legal.refunds') }}">our refund policy</a> are published.</li>
+                <li>Ask what exactly is included for the fee (<a href="{{ route('apply.services') }}">our services page</a> lists deliverables and exclusions) and for the refund policy and the service terms in writing before paying: <a href="{{ route('legal.application-terms') }}">ours</a> and <a href="{{ route('legal.refunds') }}">our refund policy</a> are published.</li>
             </ol>
         </section>
         <section>

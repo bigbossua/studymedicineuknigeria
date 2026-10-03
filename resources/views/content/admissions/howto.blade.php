@@ -69,7 +69,7 @@
 
             <section class="prose-site">
                 <h2>7. How we fit in</h2>
-                <p>In your portal we collect your qualifications once, build a document checklist for the schools you are considering, review each document, give structural feedback on your statement, and prepare a complete package. For UCAS we produce a copy-across guide for every section. Only after you approve the package does submission begin, and where the university requires you to submit personally, you do, with us beside you. Admission decisions are made solely by universities; we make no claim about outcomes. Details on <a href="{{ route('apply.index') }}">Apply Online</a> and <a href="{{ route('status') }}">Our status</a>.</p>
+                <p>In your portal we collect your qualifications once, build a document checklist for the schools you are considering, review each document, give structural feedback on your statement, and prepare a complete package. For UCAS we produce a copy-across guide for every section. Only after you approve the package does submission begin, and where the university requires you to submit personally, you do, with us beside you. Admission decisions are made solely by universities; we make no claim about outcomes. What each service level includes and excludes is on the <a href="{{ route('apply.services') }}">services page</a>; details on <a href="{{ route('apply.index') }}">Apply Online</a> and <a href="{{ route('status') }}">Our status</a>.</p>
             </section>
 
             <section>

@@ -6,6 +6,7 @@
     <h2>After work has started</h2><p>A pro-rata refund based on the deliverables already completed, itemised on your invoice.</p>
     <h2>Submission component</h2><p>Refundable in full until you approve the proposed submission package; not refundable after submission has been made.</p>
     <h2>No route open</h2><p>If our assessment finds that no published UK medicine route is currently open to you and you choose not to proceed to foundation or alternative guidance, the assessment fee is refunded in full.</p>
+    <h2>How to ask</h2><p>Write to us through the <a href="{{ route('contact') }}">contact page</a> or from your portal messages, quoting your application number. The <a href="{{ route('legal.application-terms') }}">application service terms</a> set out what each service includes, which is the basis for any pro-rata calculation.</p>
     <h2>How refunds are paid</h2><p>To the original payment method (Stripe) or by bank transfer for bank-transfer payments, within 10 working days of agreement.</p>
     <h2>Not refundable</h2><p>University, UCAS, test, English test, visa and health-surcharge fees paid to third parties; and our fee where false documents or information were supplied.</p>
 </div></article>

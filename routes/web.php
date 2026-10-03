@@ -132,12 +132,12 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware(['auth', 'verified', '2fa'])->prefix('portal')->name('portal.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('start', [DashboardController::class, 'start'])->name('start');
+    Route::post('start', [DashboardController::class, 'start'])->middleware('throttle:10,10')->name('start');
     Route::get('profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('profile/password', [ProfileController::class, 'password'])->name('profile.password');
+    Route::put('profile/password', [ProfileController::class, 'password'])->middleware('throttle:5,1')->name('profile.password');
     Route::get('profile/export', [ProfileController::class, 'export'])->name('profile.export');
-    Route::post('profile/delete', [ProfileController::class, 'requestDeletion'])->name('profile.delete');
+    Route::post('profile/delete', [ProfileController::class, 'requestDeletion'])->middleware('throttle:3,10')->name('profile.delete');
 
     Route::prefix('{application}')->group(function () {
         Route::get('application', [ApplicationController::class, 'index'])->name('application.index');
@@ -149,9 +149,9 @@ Route::middleware(['auth', 'verified', '2fa'])->prefix('portal')->name('portal.'
         Route::post('documents/{document}', [DocumentController::class, 'upload'])->middleware('throttle:20,10')->name('documents.upload');
         Route::get('documents/{document}/v/{version}', [DocumentController::class, 'download'])->name('documents.download');
         Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
-        Route::post('payments/checkout', [PaymentController::class, 'checkout'])->name('payments.checkout');
+        Route::post('payments/checkout', [PaymentController::class, 'checkout'])->middleware('throttle:10,10')->name('payments.checkout');
         Route::get('payments/return', [PaymentController::class, 'return'])->name('payments.return');
-        Route::post('payments/manual', [PaymentController::class, 'manualTransfer'])->name('payments.manual');
+        Route::post('payments/manual', [PaymentController::class, 'manualTransfer'])->middleware('throttle:10,10')->name('payments.manual');
         Route::get('approve', [ApprovalController::class, 'show'])->name('approve.show');
         Route::post('approve', [ApprovalController::class, 'approve'])->name('approve.store');
         Route::post('approve/changes', [ApprovalController::class, 'requestChanges'])->name('approve.changes');

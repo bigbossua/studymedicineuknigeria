@@ -42,7 +42,7 @@
                 </ul>
             </section>
             <section id="report"><h2>Report an error</h2>
-                <p>If a figure or statement here differs from the official page, email <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a> with the page on this site, the official URL and what it says. We re-verify, correct the record and the new date shows on the page. Universities and medical schools are welcome to do the same; see <a href="{{ route('contact') }}">Contact</a>.</p>
+                <p>If a figure or statement here differs from the official page, email <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a> with the page on this site, the official URL and what it says. We re-verify, correct the record and the new date shows on the page. Universities and medical schools are welcome to do the same; see <a href="{{ route('contact') }}">Contact</a>. You can also use the <a href="{{ route('contact') }}">contact page</a>, which lists what to include.</p>
             </section>
         </div>
         <aside class="lg:col-span-4 space-y-6">

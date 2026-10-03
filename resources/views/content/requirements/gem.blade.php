@@ -34,7 +34,7 @@
                                     @default <span class="chip chip-notpublished">Not established</span>
                                 @endswitch
                             </div>
-                            <p class="text-[0.9375rem] text-ink-500 mt-1">{{ $c->title }}{{ $c->ucas_code ? ' · '.$c->ucas_code : '' }}{{ $c->admissions_test ? ' · '.$c->admissions_test : '' }}</p>
+                            <p class="text-[0.9375rem] text-ink-500 mt-1">{{ $c->title }}{{ $c->shortUcasCode() ? ' · '.$c->shortUcasCode() : '' }}{{ $c->admissions_test ? ' · '.$c->admissions_test : '' }}</p>
                             @if($fee)
                                 <p class="text-[0.875rem] mt-2">International fee: @if($fee->isPublishable() && $fee->value_number)<span class="font-semibold">{{ $fee->displayValue() }}</span> <span class="text-ink-500">/yr{{ $fee->academic_year ? ' · '.$fee->academic_year : '' }}</span>@elseif($fee->verification_status === 'NOT_PUBLISHED')<span class="text-ink-500">not published</span>@else<span class="text-ink-500">being verified</span>@endif <x-verified-badge :status="$fee->verification_status" :date="$fee->verified_at?->format('j M Y')" /></p>
                             @endif

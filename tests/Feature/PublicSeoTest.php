@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\ReferenceFact;
 use App\Models\Topic;
 use App\Models\University;
+use Database\Seeders\ReferenceDataSeeder;
 use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -123,5 +124,25 @@ class PublicSeoTest extends TestCase
         $this->get('/medical-schools/testville')->assertOk()->assertSee('noindex', false)->assertSee('No Nigeria-specific statement located');
         $u->update(['published' => true]);
         $this->get('/medical-schools/testville')->assertOk()->assertSee('index, follow', false);
+    }
+
+    public function test_no_unverified_fact_wording_reaches_any_public_page_in_production(): void
+    {
+        $this->seed(ReferenceDataSeeder::class);
+        $this->seed(TopicFactsSeeder::class);
+        $this->app['env'] = 'production';
+        config(['site.publish_unverified' => false]);
+        // Distinctive wording of every unverified fact (short values such as "AAA" or dates would match ordinary prose, so only sentences count).
+        $needles = ReferenceFact::where('verification_status', '!=', ReferenceFact::VERIFIED)->where('key', '!=', 'ucas_code')->where('key', 'not like', 'source\_%')->pluck('value_text')->filter(fn ($v) => $v && mb_strlen($v) >= 40 && ! str_starts_with($v, 'http'))->unique()->values();
+        $this->assertGreaterThan(100, $needles->count());
+        preg_match_all('#<loc>([^<]+)</loc>#', $this->get('/sitemap.xml')->getContent(), $m);
+        $paths = array_map(fn ($u) => parse_url($u, PHP_URL_PATH) ?: '/', $m[1]);
+        $paths[] = '/medical-schools/'.University::where('international_policy', 'accepts')->first()->slug;
+        foreach ($paths as $path) {
+            $html = html_entity_decode($this->get($path)->assertOk()->getContent());
+            foreach ($needles as $needle) {
+                $this->assertStringNotContainsString($needle, $html, "$path shows unverified wording in production: ".mb_substr($needle, 0, 60));
+            }
+        }
     }
 }

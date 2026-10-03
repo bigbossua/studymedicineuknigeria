@@ -19,7 +19,7 @@
         <header class="max-w-3xl">
             <p class="eyebrow mb-3">{{ $university->medical_school_name ?? 'Medical school' }}{{ $university->city ? ' · '.$university->city : '' }}{{ $university->nation ? ', '.$university->nation : '' }}</p>
             <h1 class="text-balance">{{ $university->name }}: Medicine for international applicants</h1>
-            <p class="lede mt-5">What this university publishes for international applicants to {{ $course?->title ?? 'Medicine' }}{{ $course?->ucas_code ? ' ('.$course->ucas_code.')' : '' }}, with each statement's official source. Where a Nigerian-specific requirement is not published, we say so.</p>
+            <p class="lede mt-5">What this university publishes for international applicants to {{ $course?->title ?? 'Medicine' }}{{ $course?->shortUcasCode() ? ' ('.$course->shortUcasCode().')' : '' }}, with each statement's official source. Where a Nigerian-specific requirement is not published, we say so.</p>
             <div class="mt-4 flex flex-wrap gap-2">
                 @switch($university->international_policy)
                     @case('accepts') <span class="chip chip-verified">International applicants: accepted</span> @break

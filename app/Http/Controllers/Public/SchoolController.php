@@ -88,8 +88,8 @@ class SchoolController extends Controller
 
         if ($course) {
             $courseLd = ['@type' => 'Course', 'name' => $course->title, 'provider' => ['@type' => 'CollegeOrUniversity', 'name' => $university->name], 'url' => $course->official_url ?? $university->website_url];
-            if ($course->ucas_code) {
-                $courseLd['courseCode'] = $course->ucas_code;
+            if ($course->shortUcasCode()) {
+                $courseLd['courseCode'] = $course->shortUcasCode();
             }
             // An Offer is emitted only for a fee the university publishes and we have verified on its page (architecture 18.3).
             $fee = $course->internationalFee();

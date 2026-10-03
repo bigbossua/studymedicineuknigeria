@@ -27,6 +27,16 @@ class Course extends Model
         return $this->facts->firstWhere('key', $key);
     }
 
+    /** The bare UCAS course code (e.g. A100); the imported field sometimes carries research notes that belong in facts, not in public labels. */
+    public function shortUcasCode(): ?string
+    {
+        if (! $this->ucas_code) {
+            return null;
+        }
+
+        return preg_match('/\b([A-Z]\d{3})\b/', $this->ucas_code, $m) ? $m[1] : null;
+    }
+
     /** Latest international fee fact (by academic year string, descending). */
     public function internationalFee(): ?ReferenceFact
     {

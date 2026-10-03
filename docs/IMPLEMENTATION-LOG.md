@@ -219,6 +219,10 @@ The network policy blocks every official domain from this environment, and the a
 - The FAQ hub is grouped into six themed sections (qualifications, tests and timing, costs, choosing schools, after graduation, deciding and about us) with a jump list; questions are H3s under group H2s. A new test enforces the search-to-action chain: every live informational page in the decision register must link in-body to the eligibility check or Apply Online.
 - **Production consistency**: the computed guidance on university pages now treats a statement as published only when it is also publishable in the current environment, so production never says "the university addresses it (statement above)" about a fact the reader cannot see. A production-mode test pins the rule for university pages and the fee guide (unverified wording and figures absent, placeholders present).
 
+## Stage 32: production sweep for unverified wording (P0/P5)
+
+- A new test renders every sitemap page and a university record in production mode and asserts that no unverified fact's wording (sentences of 40+ characters; UCAS codes and source URLs excepted) appears anywhere. It found one leak: the imported UCAS-code field sometimes carries research notes ("A100 (also A110 Medicine with Foundation Year, 6 years, North West England residents)") and was printed verbatim on the directory, fee guide, graduate-entry page, university pages, the approval screen and in Course schema. Every public rendering now uses the bare code (`Course::shortUcasCode()`); the notes remain in the facts where they belong. 83 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

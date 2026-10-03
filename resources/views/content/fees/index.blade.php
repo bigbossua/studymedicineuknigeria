@@ -21,7 +21,7 @@
                 @php $c = $f->subject; $u = $c->university; $cl = $c->facts->where('key','clinical_years_fee_differs')->first(); @endphp
                 <tr>
                     <td data-label="University"><a href="{{ route('schools.show', $u) }}">{{ $u->name }}</a>@if($u->international_policy==='home_only')<span class="chip chip-danger ml-1">home only</span>@endif</td>
-                    <td data-label="Course">{{ $c->title }}{{ $c->ucas_code ? ' · '.$c->ucas_code : '' }}</td>
+                    <td data-label="Course">{{ $c->title }}{{ $c->shortUcasCode() ? ' · '.$c->shortUcasCode() : '' }}</td>
                     <td data-label="Fee">@if($f->isPublishable() && $f->value_number)<span class="font-semibold">{{ $f->displayValue() }}</span>@elseif($f->verification_status==='NOT_PUBLISHED')<span class="text-ink-500">Not published / not open</span>@else<span class="text-ink-500">Being verified</span>@endif</td>
                     <td data-label="Fee year">{{ $f->academic_year ?? '—' }}</td>
                     <td data-label="Clinical years">{{ $cl ? ($cl->value_bool ? 'Yes' : 'No') : '—' }}</td>

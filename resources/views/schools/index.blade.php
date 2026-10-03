@@ -62,7 +62,7 @@
                         @endswitch
                     </div>
                     <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-[0.875rem]">
-                        <div><dt class="text-ink-500">Course</dt><dd class="font-medium">{{ $c?->title ?? 'Medicine' }}{{ $c?->ucas_code ? ' · '.$c->ucas_code : '' }}</dd></div>
+                        <div><dt class="text-ink-500">Course</dt><dd class="font-medium">{{ $c?->title ?? 'Medicine' }}{{ $c?->shortUcasCode() ? ' · '.$c->shortUcasCode() : '' }}</dd></div>
                         <div><dt class="text-ink-500">Admissions test</dt><dd class="font-medium">{{ match($c?->admissions_test) { 'UCAT' => 'UCAT', 'GAMSAT' => 'GAMSAT', 'UCAT/GAMSAT' => 'UCAT or GAMSAT', 'NONE' => 'None required', default => 'Not established' } }}</dd></div>
                         <div><dt class="text-ink-500">Application route</dt><dd class="font-medium">{{ match($c?->application_route) { 'UCAS' => 'UCAS', 'DIRECT' => 'Direct to university', 'BOTH' => 'UCAS or direct', default => 'Not established' } }}</dd></div>
                         <div>

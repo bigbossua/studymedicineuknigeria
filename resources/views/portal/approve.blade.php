@@ -7,7 +7,7 @@
         <section class="card mt-8"><p class="eyebrow mb-3">Where this application will go</p>
             <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-[0.9375rem]">
                 <div><dt class="text-ink-500">University</dt><dd class="font-semibold">{{ $submission->university?->name ?? '—' }}</dd></div>
-                <div><dt class="text-ink-500">Course</dt><dd class="font-semibold">{{ $submission->course?->title ?? 'Medicine' }}{{ $submission->course?->ucas_code ? ' ('.$submission->course->ucas_code.')' : '' }}</dd></div>
+                <div><dt class="text-ink-500">Course</dt><dd class="font-semibold">{{ $submission->course?->title ?? 'Medicine' }}{{ $submission->course?->shortUcasCode() ? ' ('.$submission->course->shortUcasCode().')' : '' }}</dd></div>
                 <div><dt class="text-ink-500">Intake</dt><dd class="font-semibold">{{ $submission->intake ?? $application->intake_year.' entry' }}</dd></div>
                 <div><dt class="text-ink-500">Who presses submit</dt><dd class="font-semibold">{{ $submission->routeLabel() }}</dd></div>
             </dl>

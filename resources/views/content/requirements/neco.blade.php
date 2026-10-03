@@ -38,7 +38,7 @@
 
             <section class="prose-site">
                 <h2>6. Your route with NECO</h2>
-                <p>Identical to the WAEC route: A-levels or IB and then standard entry with the UCAT, or a <a href="{{ route('medicine.foundation') }}">foundation programme that publishes Medicine as a destination</a>, or a degree first and then <a href="{{ route('requirements.gem') }}">graduate or standard entry as a graduate</a>. Of the UK medical schools in our directory, {{ $accepting }} accept international undergraduate applicants; the <a href="{{ route('schools.index') }}?international=accepts">directory</a> shows what each publishes. Our <a href="{{ route('apply.eligibility') }}">eligibility check</a> maps your answers to these routes.</p>
+                <p>Identical to the WAEC route: A-levels or IB and then standard entry with the UCAT, or a <a href="{{ route('medicine.foundation') }}">foundation programme that publishes Medicine as a destination</a>, or a degree first and then <a href="{{ route('requirements.gem') }}">graduate or standard entry as a graduate</a>. Of the UK medical schools in our directory, {{ $accepting }} accept international undergraduate applicants; the <a href="{{ route('schools.index') }}?international=accepts">directory</a> shows what each publishes, and its <a href="{{ route('schools.index') }}?waec=published">WAEC/NECO filter</a> narrows it to schools with a published statement. Our <a href="{{ route('apply.eligibility') }}">eligibility check</a> maps your answers to these routes.</p>
             </section>
 
             <section>

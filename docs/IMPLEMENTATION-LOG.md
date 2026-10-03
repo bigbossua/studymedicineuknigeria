@@ -226,7 +226,7 @@ The network policy blocks every official domain from this environment, and the a
 ## Stage 33: preview without deployment, directory signal (P1/P2)
 
 - **Preview**: a static snapshot of every public page (38 pages, six sample university records, real stylesheet and fonts) is published as a private artifact for the owner's visual review, and a `.devcontainer` lets the branch run as the live application in GitHub Codespaces from a browser (installs, migrates, seeds demo data, builds, forwards port 8000). Neither replaces staging; both exist because no Actions settings are present and nothing has ever been deployed.
-- **Directory cards** now say whether the university publishes a WAEC/NECO statement ("Published by the university" / "No Nigeria-specific statement located"), computed from the fact's publishability so production never implies a hidden statement; tested in production mode. 85 tests.
+- **Directory cards** now say whether the university publishes a WAEC/NECO statement ("Published by the university" / "No Nigeria-specific statement located"), computed from the fact's publishability so production never implies a hidden statement; tested in production mode, and a directory filter (`?waec=published`, noindex like every filter) narrows the list to those schools; the WAEC and NECO pages link to it. A priority-1-only worksheet (110 rows) was added for a first verification sitting. 85 tests.
 
 ## Open items carried forward
 

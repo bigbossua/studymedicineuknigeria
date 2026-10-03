@@ -14,6 +14,7 @@
                 @include('content._statement-list', ['items' => $english, 'empty' => 'No WAEC/NECO English acceptance statements recorded yet.'])</section>
             <section class="prose-site">
                 <h2>What this means for you</h2>
+                <p class="text-[0.9375rem] text-ink-700">Shortlist from the <a href="{{ route('schools.index') }}?waec=published">schools that publish a WAEC or NECO statement</a>; the directory marks the others as having no Nigeria-specific statement located.</p>
                 <ul>
                     <li><strong>WAEC only, strong sciences:</strong> plan A-levels (Chemistry, Biology and a third subject) or the IB, then standard entry with the UCAT; or a foundation programme that publishes Medicine as a destination. <a href="{{ route('medicine.foundation') }}">Foundation routes</a>.</li>
                     <li><strong>WAEC plus A-levels in progress:</strong> you are on the standard route; focus on predicted grades, the UCAT window and English evidence. <a href="{{ route('requirements.alevels') }}">A-levels page</a>.</li>

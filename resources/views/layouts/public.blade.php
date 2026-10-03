@@ -98,6 +98,7 @@
                 <ul class="space-y-2">
                     <li><a href="{{ route('about') }}">About</a></li>
                     <li><a href="{{ route('status') }}">Our status</a></li>
+                    <li><a href="{{ route('verify') }}">How we verify</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>
                     <li><a href="{{ route('legal.privacy') }}">Privacy</a></li>
                     <li><a href="{{ route('legal.terms') }}">Terms</a></li>

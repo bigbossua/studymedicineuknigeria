@@ -70,3 +70,16 @@ Evidence keys: `02` = research/02 search demand · `05` = competitor research ·
 - Each row becomes a record in `asset_register` (data model 17.2) with decision date and rationale.
 - Re-decide rows marked † when Semrush `ng` data and Search Console queries are available (DATA-AVAILABILITY).
 - A new page proposal requires the 14-point test in brief section 2, recorded here before any content is written.
+
+
+## Build status (2026-10-03)
+
+| Rows | State |
+|---|---|
+| 1–9, 11, 15–17, 19–23 | **Built and indexable**; in the sitemap (27 URLs). Row 23 now includes `/how-we-verify` (editorial and verification policy); a separate "document & data policy" is covered by the privacy notice and application terms. |
+| 10 (total cost), 25 (working in the UK) | **Built, gated**: `noindex` and out of the sitemap until their topic facts are verified (`PublishGate`); they become indexable automatically. |
+| 12 (university records) | **Built for all 53 schools**; each page `noindex` until staff mark the record published in Admin → Universities, so no thin or unverified school page can be indexed. |
+| 14 (Greater Manchester) | Served by the university record page. |
+| 13 (course pages) | Not built: no school yet has two courses with distinct verified data. |
+| 18 (foundation routes) | **Built**, indexable; statements shown only when verified. |
+| 24, 26–33 | Not built; conditions in the Decision column still unmet (evidence or data gates). Row 33 is answered inside the FAQ hub. |

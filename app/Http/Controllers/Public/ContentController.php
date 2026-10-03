@@ -301,6 +301,13 @@ class ContentController extends Controller
         return view('content.org.about', ['seo' => $this->seo('About Study Medicine UK Nigeria', 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine in the UK: who we are, how we work and what we never claim.', 'about', [['label' => 'About']], false)]);
     }
 
+    public function howWeVerify()
+    {
+        $counts = ReferenceFact::selectRaw('verification_status, count(*) c')->groupBy('verification_status')->pluck('c', 'verification_status');
+
+        return view('content.org.verify', ['seo' => $this->seo('How we verify what we publish', 'Our verification policy: which sources count, what each label next to a fact means, how often fees and deadlines are re-checked, and how to report an error.', 'verify', [['label' => 'How we verify']], false), 'counts' => $counts]);
+    }
+
     public function status()
     {
         return view('content.org.status', ['seo' => $this->seo('Our status: independence, registrations, agreements', 'A dated statement of our legal status, registrations, training and agreements. We hold no agreements with any university.', 'status', [['label' => 'Our status']], false)]);

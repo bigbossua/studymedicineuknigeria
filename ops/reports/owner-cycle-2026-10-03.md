@@ -66,6 +66,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Found**: notification emails had never been rendered by any test and used the unbranded framework theme. **Changed**: branded theme, rendering test for every type. **Tested / passed**: 42 tests; sample email rendered in Chromium.
 
+## Cycle 13 — payment webhook, scheduler and error pages (stage 18)
+
+- **Found**: the Stripe webhook and the three scheduled commands had no tests; only the 404 page was branded. **Changed**: signed-webhook tests, scheduler tests, 419/429/500/503 pages. **Tested / passed**: 49 tests.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

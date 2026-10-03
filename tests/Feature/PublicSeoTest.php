@@ -93,6 +93,16 @@ class PublicSeoTest extends TestCase
         $this->assertStringNotContainsString('/fees/cost-of-studying-medicine-in-the-uk', $this->get('/sitemap.xml')->getContent(), 'cost page still gated on costs-2026');
     }
 
+    public function test_error_pages_render_branded_and_noindex(): void
+    {
+        foreach (['419' => 'Your session expired', '429' => 'Too many requests', '500' => 'Something went wrong on our side', '503' => 'We are updating the site'] as $code => $heading) {
+            $html = view("errors.$code")->render();
+            $this->assertStringContainsString("<h1>$heading</h1>", $html, $code);
+            $this->assertStringContainsString('name="robots" content="noindex', $html, $code);
+            $this->assertStringContainsString(config('site.email'), $html, $code);
+        }
+    }
+
     public function test_unknown_pages_return_the_branded_404(): void
     {
         $this->get('/no-such-page')->assertNotFound()->assertSee('We could not find that page');

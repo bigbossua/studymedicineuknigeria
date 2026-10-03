@@ -117,6 +117,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - Mail theme published and branded: SMUKN header image (PNG, absolute URL), navy headings and buttons, warm paper background, footer with legal name, contact address and the independence statement. Applies to every notification including Laravel's email verification and password reset.
 - `NotificationRenderTest` renders all 14 `ApplicationNotification` branches, the staff alert and the two framework notifications to HTML and checks the application number in the subject, the greeting, the disclaimer, the brand header and a portal link. 42 tests pass.
 
+## Stage 18: payment, scheduler and error-page coverage (P2/P6)
+
+- `StripeWebhookTest` drives the real webhook endpoint with HMAC-signed payloads: unsigned or unconfigured requests refused (400/503); `checkout.session.completed` marks the payment SUCCEEDED once, records the event, notifies the student and mirrors `payment_completed` into the funnel; Stripe retries are acknowledged without re-processing; unpaid completions, expiry, failure, partial and full refunds and unknown payments all behave.
+- `ScheduledCommandsTest` covers `smukn:expire-payments`, `smukn:flag-review-due` and the reminder cadence (2-day inactivity reminder sent once, `--dry` sends nothing, withdrawn applications never reminded).
+- Branded, DB-free 419/429/500/503 error pages beside the existing 404, each noindex with the contact address; rendering test added. 49 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

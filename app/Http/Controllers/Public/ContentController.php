@@ -42,7 +42,11 @@ class ContentController extends Controller
     // ---------------- Medicine pillar ----------------
     public function medicine()
     {
-        return view('content.medicine.index', ['seo' => $this->seo('Study Medicine in the UK: routes, requirements and costs', 'How UK medical degrees work for international applicants: standard, graduate and foundation routes, what schools require, costs and the calendar to plan around.', 'medicine.index', [['label' => 'Medicine']]),
+        $faqs = collect($this->faqItems())->whereIn('id', [26, 33, 12])->values();
+        $seo = $this->seo('Study Medicine in the UK: routes, requirements and costs', 'How UK medical degrees work for international applicants: standard, graduate and foundation routes, what schools require, costs and the calendar to plan around.', 'medicine.index', [['label' => 'Medicine']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.medicine.index', ['seo' => $seo, 'faqs' => $faqs, 'gmc' => Topic::bySlug('gmc-registration'), 'homeOnly' => University::where('international_policy', 'home_only')->count(), 'total' => University::count(),
             'schools' => University::whereIn('international_policy', ['accepts', 'international_only'])->count(), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
     }
 

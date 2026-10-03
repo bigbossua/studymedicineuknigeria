@@ -1,0 +1,27 @@
+{
+  "note": "GEM programmes whose international eligibility was NOT researched (search budget exhausted). Course URLs only; status DATA UNAVAILABLE.",
+  "programmes": [
+    "Warwick MB ChB (graduate)",
+    "Swansea A101",
+    "Nottingham A101",
+    "Southampton BM4",
+    "St George's A101",
+    "QMUL GEP A101",
+    "Newcastle A101",
+    "KCL GPEP",
+    "Cambridge A101",
+    "Oxford A101",
+    "ScotGEM (Dundee/St Andrews)",
+    "Ulster",
+    "Worcester (Three Counties)",
+    "Sheffield A101",
+    "Liverpool A101",
+    "Cardiff A101",
+    "Birmingham A101",
+    "Surrey",
+    "Anglia Ruskin",
+    "Imperial A109",
+    "Manchester A101"
+  ],
+  "status": "DATA UNAVAILABLE (search budget)"
+}

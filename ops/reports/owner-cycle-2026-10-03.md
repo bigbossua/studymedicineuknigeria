@@ -86,6 +86,11 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 - **Category B (owner's browser)**: enter the five Actions settings (exact steps given in chat and in `access-check-2026-10-03b.md`); pick photographs per `docs/design/IMAGERY-BRIEF.md`; SEMrush exports when wanted (`docs/research/02` lists the queries to look up).
 - **Category A (done here)**: funnel view events, client interaction events, photograph pipeline and component, imagery brief. A self check-in re-runs the settings diagnosis at 15:45 UTC and continues the deployment cycle automatically if the settings are present.
 
+## Cycles 17–19 — sharing cards, server rules, trust page (stages 22+)
+
+- **Changed**: branded per-page Open Graph cards (30 static + on-demand university cards) for WhatsApp/social sharing; `public/.htaccess` with https and non-www canonical redirects, dotfile denial, asset caching and compression (smoke test checks the redirects on production); `/how-we-verify` editorial and verification policy page with live record counts, linked from every verification chip and the footer; Search Console / GA4 owner checklist; asset register build-status section; dynamic year bounds; fact-driven eligibility dates.
+- **Tested / passed**: 57 tests; cards and page rendered in Chromium. Settings diagnosis re-run at 15:03 and 15:14 UTC: still nothing present.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

@@ -27,7 +27,7 @@ class ContentController extends Controller
 
     private function seo(string $title, string $desc, string $route, array $crumbs, bool $article = true): Seo
     {
-        $s = Seo::make($title, $desc)->canonical(route($route))->breadcrumbs($crumbs)->reviewed(self::REVIEWED, '2027');
+        $s = Seo::make($title, $desc)->canonical(route($route))->breadcrumbs($crumbs)->reviewed(self::REVIEWED, $article ? '2027' : null);
 
         return $article ? $s->article() : $s;
     }

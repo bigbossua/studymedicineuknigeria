@@ -195,7 +195,7 @@ class ContentController extends Controller
         $d = $request->validate([
             'qualification' => 'required|in:waec_only,alevels_ib,foundation,nigerian_degree,other',
             'sciences' => 'required|in:yes,partial,no', 'english' => 'required|in:ielts,waec_english,none',
-            'ucat' => 'required|in:taken,planned,none', 'intake_year' => 'required|integer|min:2027|max:2030',
+            'ucat' => 'required|in:taken,planned,none', 'intake_year' => 'required|integer|min:'.(now()->year + 1).'|max:'.(now()->year + 4),
             'name' => 'required|string|max:160', 'email' => 'required|email|max:255', 'whatsapp' => 'nullable|string|max:32', 'consent' => 'required|accepted',
         ]);
         $r = $this->assess($d);

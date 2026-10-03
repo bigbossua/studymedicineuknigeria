@@ -34,7 +34,7 @@ class DashboardController extends Controller
 
     public function start(Request $request)
     {
-        $data = $request->validate(['service_tier_id' => 'required|exists:service_tiers,id', 'intake_year' => 'required|integer|min:2027|max:2030']);
+        $data = $request->validate(['service_tier_id' => 'required|exists:service_tiers,id', 'intake_year' => 'required|integer|min:'.(now()->year + 1).'|max:'.(now()->year + 4)]);
         $user = $request->user();
         if ($user->currentApplication() && ! $user->currentApplication()->isTerminal()) {
             return redirect()->route('portal.dashboard');

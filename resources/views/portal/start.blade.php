@@ -20,7 +20,7 @@
         @endforeach
         <div class="lg:col-span-3 card flex flex-col sm:flex-row sm:items-end gap-4 justify-between">
             <div class="field max-w-xs"><label for="intake_year" class="label">Intended entry year</label>
-                <select id="intake_year" name="intake_year" class="input">@foreach([2027,2028,2029] as $y)<option value="{{ $y }}" @selected(old('intake_year', 2028)==$y)>September {{ $y }}</option>@endforeach</select>
+                <select id="intake_year" name="intake_year" class="input">@foreach(range(now()->year + 1, now()->year + 3) as $y)<option value="{{ $y }}" @selected(old('intake_year', 2028)==$y)>September {{ $y }}</option>@endforeach</select>
                 <p class="hint">For 2027 UCAS medicine entry the deadline is 15 October 2026 and the UCAT window has closed; most students starting now plan for 2028.</p></div>
             <button type="submit" class="btn btn-primary btn-lg">Create my application</button>
         </div>

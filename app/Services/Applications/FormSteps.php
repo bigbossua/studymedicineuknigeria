@@ -31,13 +31,13 @@ class FormSteps
             ],
             'study' => [
                 'course_family' => 'required|in:medicine,graduate_medicine,foundation_medicine,dentistry,other',
-                'entry_type' => 'required|in:standard,graduate,foundation', 'intake_year' => 'required|integer|min:2027|max:2030',
+                'entry_type' => 'required|in:standard,graduate,foundation', 'intake_year' => 'required|integer|min:'.(now()->year + 1).'|max:'.(now()->year + 4),
                 'preferred_universities' => 'nullable|array|max:4', 'preferred_universities.*' => 'string|max:120',
                 'ucas_status' => 'required|in:not_started,started,submitted,offer',
             ],
             'secondary' => [
                 'sittings' => 'required|array|min:1', 'sittings.*.board' => 'required|in:WAEC,NECO,CAMBRIDGE,IB,OTHER',
-                'sittings.*.year' => 'required|integer|min:2005|max:2027', 'sittings.*.school' => 'nullable|string|max:160',
+                'sittings.*.year' => 'required|integer|min:2005|max:'.(now()->year + 1), 'sittings.*.school' => 'nullable|string|max:160',
                 'sittings.*.subjects' => 'required|array|min:3', 'sittings.*.subjects.*.subject' => 'required|string|max:64', 'sittings.*.subjects.*.grade' => 'required|string|max:8',
             ],
             'post_secondary' => [

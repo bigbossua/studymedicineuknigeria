@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Portal;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\TierPrice;
+use App\Models\User;
+use App\Notifications\StaffNotification;
 use App\Services\Applications\StageResolver;
 use App\Services\Payments\StripeService;
 use App\Support\Seo;
@@ -29,7 +31,9 @@ class PaymentController extends Controller
         $data = $request->validate(['tier_price_id' => 'required|exists:tier_prices,id', 'accept_terms' => 'required|accepted']);
         $price = TierPrice::with('tier')->findOrFail($data['tier_price_id']);
         abort_unless($price->service_tier_id === $application->service_tier_id && $price->amount_minor !== null, 403);
-        if (! $this->stripe->enabled()) return back()->with('error', 'Online card payment is not enabled yet. Please use the bank transfer option below.');
+        if (! $this->stripe->enabled()) {
+            return back()->with('error', 'Online card payment is not enabled yet. Please use the bank transfer option below.');
+        }
         $payment = $this->stripe->createCheckout($application, $price, $price->tier->terms_version);
 
         return redirect()->away($payment->checkout_url);
@@ -52,7 +56,7 @@ class PaymentController extends Controller
         abort_unless($price->service_tier_id === $application->service_tier_id && $price->amount_minor !== null, 403);
         $application->payments()->create(['tier_price_id' => $price->id, 'status' => 'MANUAL_REVIEW', 'amount_minor' => $price->amount_minor, 'currency' => $price->currency, 'method' => 'MANUAL_TRANSFER', 'terms_version_accepted' => $price->tier->terms_version ?? 'v1', 'note' => $data['reference'] ?? null]);
         $application->record('payment.manual_requested', ['amount' => $price->formatted()], $request->user()->id);
-        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('Bank transfer to confirm — '.$application->application_number, ['Amount '.$price->formatted().'. Reference: '.($data['reference'] ?? 'none').'.'], route('admin.applications.show', $application)));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('Bank transfer to confirm — '.$application->application_number, ['Amount '.$price->formatted().'. Reference: '.($data['reference'] ?? 'none').'.'], route('admin.applications.show', $application)));
 
         return back()->with('status', 'Thank you. We will confirm your transfer within one working day and update your application.');
     }

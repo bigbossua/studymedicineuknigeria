@@ -16,7 +16,9 @@ class ReferenceAdminController extends Controller
     {
         $status = $request->string('status')->toString() ?: ReferenceFact::VERIFY_ON_PAGE;
         $q = ReferenceFact::with('subject')->where('verification_status', $status)->orderBy('subject_type')->orderBy('subject_id')->orderBy('key');
-        if ($k = $request->string('key')->toString()) $q->where('key', $k);
+        if ($k = $request->string('key')->toString()) {
+            $q->where('key', $k);
+        }
 
         return view('admin.reference.index', ['seo' => Seo::make('Verification queue')->noindex(), 'facts' => $q->paginate(50)->withQueryString(), 'status' => $status,
             'keys' => ReferenceFact::select('key')->distinct()->orderBy('key')->pluck('key'), 'counts' => ReferenceFact::selectRaw('verification_status, count(*) c')->groupBy('verification_status')->pluck('c', 'verification_status')]);
@@ -30,16 +32,27 @@ class ReferenceAdminController extends Controller
             'source_url' => 'nullable|url|max:1024', 'notes' => 'nullable|string|max:2000',
         ]);
         $fact->fill(array_filter(['value_text' => $data['value_text'] ?? null, 'academic_year' => $data['academic_year'] ?? null, 'source_url' => $data['source_url'] ?? null, 'notes' => $data['notes'] ?? null], fn ($v) => $v !== null));
-        if (array_key_exists('value_number', $data) && $data['value_number'] !== null) $fact->value_number = $data['value_number'];
+        if (array_key_exists('value_number', $data) && $data['value_number'] !== null) {
+            $fact->value_number = $data['value_number'];
+        }
         switch ($data['decision']) {
             case 'verify':
-                if (! $fact->source_url) return back()->with('error', 'A fact cannot be verified without an official source URL.');
-                $fact->verification_status = ReferenceFact::VERIFIED; $fact->verified_at = now(); $fact->verified_by = $request->user()->id;
+                if (! $fact->source_url) {
+                    return back()->with('error', 'A fact cannot be verified without an official source URL.');
+                }
+                $fact->verification_status = ReferenceFact::VERIFIED;
+                $fact->verified_at = now();
+                $fact->verified_by = $request->user()->id;
                 $fact->review_due_at = now()->addMonths(str_contains($fact->key, 'fee') || str_contains($fact->key, 'deadline') ? 6 : 12);
                 break;
-            case 'not_published': $fact->verification_status = ReferenceFact::NOT_PUBLISHED; $fact->verified_at = now(); $fact->verified_by = $request->user()->id; break;
-            case 'source_changed': $fact->verification_status = ReferenceFact::SOURCE_CHANGED; break;
-            case 'archive': $fact->verification_status = ReferenceFact::ARCHIVED; break;
+            case 'not_published': $fact->verification_status = ReferenceFact::NOT_PUBLISHED;
+                $fact->verified_at = now();
+                $fact->verified_by = $request->user()->id;
+                break;
+            case 'source_changed': $fact->verification_status = ReferenceFact::SOURCE_CHANGED;
+                break;
+            case 'archive': $fact->verification_status = ReferenceFact::ARCHIVED;
+                break;
         }
         $fact->save();
         AdminAction::log('fact.'.$data['decision'], $fact, $data);

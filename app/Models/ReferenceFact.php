@@ -8,11 +8,17 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class ReferenceFact extends Model
 {
     public const VERIFIED = 'VERIFIED';
+
     public const VERIFY_ON_PAGE = 'VERIFY-ON-PAGE';
+
     public const NOT_PUBLISHED = 'NOT_PUBLISHED';
+
     public const NOT_FOUND = 'NOT_FOUND';
+
     public const REVIEW_DUE = 'REVIEW_DUE';
+
     public const SOURCE_CHANGED = 'SOURCE_CHANGED';
+
     public const ARCHIVED = 'ARCHIVED';
 
     protected $guarded = [];
@@ -41,14 +47,20 @@ class ReferenceFact extends Model
 
     public function displayValue(): ?string
     {
-        if ($this->value_text !== null) return $this->value_text;
+        if ($this->value_text !== null) {
+            return $this->value_text;
+        }
         if ($this->value_number !== null) {
             return str_ends_with($this->key, '_gbp')
                 ? '£'.number_format((float) $this->value_number, 0)
                 : rtrim(rtrim(number_format((float) $this->value_number, 2, '.', ','), '0'), '.');
         }
-        if ($this->value_bool !== null) return $this->value_bool ? 'Yes' : 'No';
-        if ($this->value_json !== null) return json_encode($this->value_json);
+        if ($this->value_bool !== null) {
+            return $this->value_bool ? 'Yes' : 'No';
+        }
+        if ($this->value_json !== null) {
+            return json_encode($this->value_json);
+        }
 
         return null;
     }

@@ -26,7 +26,9 @@ class ApplicationController extends Controller
     {
         $this->authorizeOwner($application);
         abort_unless(array_key_exists($step, FormSteps::all()), 404);
-        $steps = FormSteps::all(); $keys = array_keys($steps); $i = array_search($step, $keys, true);
+        $steps = FormSteps::all();
+        $keys = array_keys($steps);
+        $i = array_search($step, $keys, true);
 
         return view('portal.application.step', [
             'seo' => Seo::make($steps[$step]['title'].' — application')->noindex(), 'application' => $application, 'step' => $step, 'meta' => $steps[$step],
@@ -44,22 +46,32 @@ class ApplicationController extends Controller
             return $request->expectsJson() ? response()->json(['locked' => true], 423) : back()->with('error', 'This section is locked while your approved package is being submitted. Ask us to reopen it if something must change.');
         }
         $input = $request->except(['_token', '_method', 'intent']);
-        $form = $application->form ?? []; $form[$step] = $input;
+        $form = $application->form ?? [];
+        $form[$step] = $input;
         $validator = Validator::make($input, FormSteps::rules($step));
         $complete = ! $validator->fails();
-        $status = $application->section_status ?? []; $status[$step] = $complete ? 'complete' : 'incomplete';
+        $status = $application->section_status ?? [];
+        $status[$step] = $complete ? 'complete' : 'incomplete';
         $application->forceFill(['form' => $form, 'section_status' => $status, 'last_activity_at' => now()])->save();
         if ($complete && ($request->input('intent') === 'continue' || $request->expectsJson())) {
             $application->record('step.completed', ['step' => $step, 'step_title' => FormSteps::all()[$step]['title']], $request->user()->id);
         }
-        if (in_array($step, ['secondary', 'post_secondary', 'english', 'tests', 'referees', 'study'], true)) $this->checklist->refresh($application);
+        if (in_array($step, ['secondary', 'post_secondary', 'english', 'tests', 'referees', 'study'], true)) {
+            $this->checklist->refresh($application);
+        }
         $this->stages->sync($application);
 
-        if ($request->expectsJson()) return response()->json(['saved' => true, 'complete' => $complete, 'errors' => $validator->errors()]);
+        if ($request->expectsJson()) {
+            return response()->json(['saved' => true, 'complete' => $complete, 'errors' => $validator->errors()]);
+        }
 
         if ($request->input('intent') === 'continue') {
-            if (! $complete) return back()->withErrors($validator)->withInput();
-            $keys = array_keys(FormSteps::all()); $i = array_search($step, $keys, true);
+            if (! $complete) {
+                return back()->withErrors($validator)->withInput();
+            }
+            $keys = array_keys(FormSteps::all());
+            $i = array_search($step, $keys, true);
+
             return isset($keys[$i + 1]) ? redirect()->route('portal.application.step', [$application, $keys[$i + 1]]) : redirect()->route('portal.dashboard')->with('status', 'Your application form is complete.');
         }
 

@@ -16,18 +16,60 @@ class Application extends Model
         'hold_until' => 'date', 'last_activity_at' => 'datetime', 'stage' => Stage::class,
     ];
 
-    public function user(): BelongsTo { return $this->belongsTo(User::class); }
-    public function tier(): BelongsTo { return $this->belongsTo(ServiceTier::class, 'service_tier_id'); }
-    public function assignedStaff(): BelongsTo { return $this->belongsTo(User::class, 'assigned_staff_id'); }
-    public function events(): HasMany { return $this->hasMany(ApplicationEvent::class)->latest('created_at'); }
-    public function documents(): HasMany { return $this->hasMany(Document::class)->orderBy('id'); }
-    public function payments(): HasMany { return $this->hasMany(Payment::class)->latest(); }
-    public function submissions(): HasMany { return $this->hasMany(Submission::class); }
-    public function messages(): HasMany { return $this->hasMany(Message::class)->oldest(); }
-    public function authorisations(): HasMany { return $this->hasMany(Authorisation::class)->latest('approved_at'); }
-    public function reminders(): HasMany { return $this->hasMany(Reminder::class); }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
-    public function getRouteKeyName(): string { return 'application_number'; }
+    public function tier(): BelongsTo
+    {
+        return $this->belongsTo(ServiceTier::class, 'service_tier_id');
+    }
+
+    public function assignedStaff(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_staff_id');
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(ApplicationEvent::class)->latest('created_at');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class)->orderBy('id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class)->latest();
+    }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class);
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class)->oldest();
+    }
+
+    public function authorisations(): HasMany
+    {
+        return $this->hasMany(Authorisation::class)->latest('approved_at');
+    }
+
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(Reminder::class);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'application_number';
+    }
 
     public static function nextNumber(int $intakeYear): string
     {

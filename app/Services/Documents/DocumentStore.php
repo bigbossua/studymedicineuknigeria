@@ -36,8 +36,12 @@ class DocumentStore
         }
 
         $bytes = file_get_contents($file->getRealPath());
-        if ($mime === 'application/pdf') $this->assertSafePdf($bytes);
-        if (in_array($mime, ['image/jpeg', 'image/png'], true)) $bytes = $this->reencodeImage($bytes, $mime);
+        if ($mime === 'application/pdf') {
+            $this->assertSafePdf($bytes);
+        }
+        if (in_array($mime, ['image/jpeg', 'image/png'], true)) {
+            $bytes = $this->reencodeImage($bytes, $mime);
+        }
 
         $scan = $this->scan($file->getRealPath());
         if ($scan === 'infected') {
@@ -71,7 +75,9 @@ class DocumentStore
 
     private function assertSafePdf(string $bytes): void
     {
-        if (! str_starts_with($bytes, '%PDF')) throw ValidationException::withMessages(['file' => 'This does not appear to be a valid PDF.']);
+        if (! str_starts_with($bytes, '%PDF')) {
+            throw ValidationException::withMessages(['file' => 'This does not appear to be a valid PDF.']);
+        }
         foreach (['/JavaScript', '/JS ', '/Launch', '/EmbeddedFile', '/OpenAction', '/AA ', '/Encrypt'] as $needle) {
             if (str_contains($bytes, $needle)) {
                 throw ValidationException::withMessages(['file' => 'PDFs with scripts, embedded files or encryption are not accepted. Please export a plain PDF (for example, "Print to PDF").']);
@@ -81,17 +87,32 @@ class DocumentStore
 
     private function reencodeImage(string $bytes, string $mime): string
     {
-        if (! function_exists('imagecreatefromstring')) return $bytes; // GD unavailable: store as-is (flagged in DPIA)
+        if (! function_exists('imagecreatefromstring')) {
+            return $bytes;
+        } // GD unavailable: store as-is (flagged in DPIA)
         $img = @imagecreatefromstring($bytes);
-        if (! $img) throw ValidationException::withMessages(['file' => 'The image could not be read. Please upload a JPG or PNG.']);
-        $w = imagesx($img); $h = imagesy($img);
-        if ($w < 600 || $h < 600) { imagedestroy($img); throw ValidationException::withMessages(['file' => 'The image is too small to read. Please upload a clearer scan or photo (at least 600 pixels on each side).']); }
+        if (! $img) {
+            throw ValidationException::withMessages(['file' => 'The image could not be read. Please upload a JPG or PNG.']);
+        }
+        $w = imagesx($img);
+        $h = imagesy($img);
+        if ($w < 600 || $h < 600) {
+            imagedestroy($img);
+            throw ValidationException::withMessages(['file' => 'The image is too small to read. Please upload a clearer scan or photo (at least 600 pixels on each side).']);
+        }
         $max = 3000;
         if ($w > $max || $h > $max) {
-            $scale = $max / max($w, $h); $nw = (int) ($w * $scale); $nh = (int) ($h * $scale);
+            $scale = $max / max($w, $h);
+            $nw = (int) ($w * $scale);
+            $nh = (int) ($h * $scale);
             $dst = imagecreatetruecolor($nw, $nh);
-            if ($mime === 'image/png') { imagealphablending($dst, false); imagesavealpha($dst, true); }
-            imagecopyresampled($dst, $img, 0, 0, 0, 0, $nw, $nh, $w, $h); imagedestroy($img); $img = $dst;
+            if ($mime === 'image/png') {
+                imagealphablending($dst, false);
+                imagesavealpha($dst, true);
+            }
+            imagecopyresampled($dst, $img, 0, 0, 0, 0, $nw, $nh, $w, $h);
+            imagedestroy($img);
+            $img = $dst;
         }
         ob_start();
         $mime === 'image/png' ? imagepng($img, null, 6) : imagejpeg($img, null, 88);
@@ -103,11 +124,19 @@ class DocumentStore
     private function scan(string $path): string
     {
         $bin = trim((string) shell_exec('command -v clamdscan 2>/dev/null')) ?: trim((string) shell_exec('command -v clamscan 2>/dev/null'));
-        if (! $bin) return 'unavailable';
+        if (! $bin) {
+            return 'unavailable';
+        }
         $p = new Process([$bin, '--no-summary', $path]);
         $p->setTimeout(60);
-        try { $p->run(); } catch (\Throwable) { return 'unavailable'; }
+        try {
+            $p->run();
+        } catch (\Throwable) {
+            return 'unavailable';
+        }
 
-        return match ($p->getExitCode()) { 0 => 'clean', 1 => 'infected', default => 'unavailable' };
+        return match ($p->getExitCode()) {
+            0 => 'clean', 1 => 'infected', default => 'unavailable'
+        };
     }
 }

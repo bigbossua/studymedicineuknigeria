@@ -19,7 +19,10 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function showLogin() { return view('auth.login', ['seo' => Seo::make('Student portal login')->noindex()]); }
+    public function showLogin()
+    {
+        return view('auth.login', ['seo' => Seo::make('Student portal login')->noindex()]);
+    }
 
     public function login(Request $request): RedirectResponse
     {
@@ -84,7 +87,10 @@ class AuthController extends Controller
         return back()->with('status', 'We have sent a new verification link to '.$request->user()->email.'.');
     }
 
-    public function showForgot() { return view('auth.forgot', ['seo' => Seo::make('Reset your password')->noindex()]); }
+    public function showForgot()
+    {
+        return view('auth.forgot', ['seo' => Seo::make('Reset your password')->noindex()]);
+    }
 
     public function sendReset(Request $request): RedirectResponse
     {
@@ -95,7 +101,10 @@ class AuthController extends Controller
         return back()->with('status', 'If an account exists for that email, a reset link has been sent.');
     }
 
-    public function showReset(Request $request, string $token) { return view('auth.reset', ['seo' => Seo::make('Choose a new password')->noindex(), 'token' => $token, 'email' => $request->query('email')]); }
+    public function showReset(Request $request, string $token)
+    {
+        return view('auth.reset', ['seo' => Seo::make('Choose a new password')->noindex(), 'token' => $token, 'email' => $request->query('email')]);
+    }
 
     public function reset(Request $request): RedirectResponse
     {

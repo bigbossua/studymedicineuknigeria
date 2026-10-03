@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class AdminAction extends Model
 {
     public $timestamps = false;
+
     protected $guarded = [];
+
     protected $casts = ['payload' => 'array', 'created_at' => 'datetime'];
 
-    public function admin() { return $this->belongsTo(User::class, 'admin_user_id'); }
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_user_id');
+    }
 
     public static function log(string $action, ?Model $target = null, array $payload = []): void
     {

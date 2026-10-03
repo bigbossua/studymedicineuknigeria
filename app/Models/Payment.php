@@ -7,10 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     protected $guarded = [];
+
     protected $casts = ['succeeded_at' => 'datetime'];
 
-    public function application() { return $this->belongsTo(Application::class); }
-    public function tierPrice() { return $this->belongsTo(TierPrice::class, 'tier_price_id'); }
+    public function application()
+    {
+        return $this->belongsTo(Application::class);
+    }
+
+    public function tierPrice()
+    {
+        return $this->belongsTo(TierPrice::class, 'tier_price_id');
+    }
 
     public function formattedAmount(): string
     {

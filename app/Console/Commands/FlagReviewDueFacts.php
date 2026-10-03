@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 class FlagReviewDueFacts extends Command
 {
     protected $signature = 'smukn:flag-review-due';
+
     protected $description = 'Flag verified reference facts whose review date has passed';
 
     public function handle(): int

@@ -20,7 +20,9 @@ class StripeWebhookController extends Controller
             return response('Invalid signature', 400);
         }
         $record = StripeEvent::firstOrCreate(['stripe_event_id' => $event->id], ['type' => $event->type, 'payload' => json_decode($request->getContent(), true)]);
-        if ($record->processed_at) return response('Already processed', 200);
+        if ($record->processed_at) {
+            return response('Already processed', 200);
+        }
         $stripe->applyEvent($event);
         $record->update(['processed_at' => now()]);
 

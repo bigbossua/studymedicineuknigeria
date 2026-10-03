@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Portal;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\ServiceTier;
+use App\Models\User;
+use App\Notifications\ApplicationNotification;
+use App\Notifications\StaffNotification;
 use App\Services\Applications\ChecklistBuilder;
+use App\Services\Applications\FormSteps;
 use App\Services\Applications\StageResolver;
 use App\Support\Seo;
 use Illuminate\Http\Request;
@@ -25,7 +29,7 @@ class DashboardController extends Controller
         $application->load('events');
         [$label, $url, $kind] = $this->stages->nextAction($application);
 
-        return view('portal.dashboard', ['seo' => Seo::make('Your dashboard')->noindex(), 'application' => $application, 'next' => compact('label', 'url', 'kind'), 'steps' => \App\Services\Applications\FormSteps::all()]);
+        return view('portal.dashboard', ['seo' => Seo::make('Your dashboard')->noindex(), 'application' => $application, 'next' => compact('label', 'url', 'kind'), 'steps' => FormSteps::all()]);
     }
 
     public function start(Request $request)
@@ -43,8 +47,8 @@ class DashboardController extends Controller
         $this->checklist->refresh($application);
         $application->record('documents.generated', ['count' => $application->documents()->count()]);
         $this->stages->sync($application);
-        $user->notify(new \App\Notifications\ApplicationNotification($application, 'application.started'));
-        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('New application '.$application->application_number, [$user->name.' started '.$application->tier->name.' for '.$application->intake_year.' entry.'], route('admin.applications.show', $application)));
+        $user->notify(new ApplicationNotification($application, 'application.started'));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('New application '.$application->application_number, [$user->name.' started '.$application->tier->name.' for '.$application->intake_year.' entry.'], route('admin.applications.show', $application)));
 
         return redirect()->route('portal.application.step', [$application, 'personal'])->with('status', 'Your application '.$application->application_number.' has been created. Everything you enter is saved automatically.');
     }

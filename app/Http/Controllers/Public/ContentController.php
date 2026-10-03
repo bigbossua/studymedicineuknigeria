@@ -9,8 +9,11 @@ use App\Models\ReferenceFact;
 use App\Models\ServiceTier;
 use App\Models\Topic;
 use App\Models\University;
+use App\Models\User;
+use App\Notifications\StaffNotification;
 use App\Support\Seo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 /**
  * Release-1 public pages (docs/decision/page-asset-register.md, BUILD NOW rows). Every specific number, date or
@@ -23,10 +26,11 @@ class ContentController extends Controller
     private function seo(string $title, string $desc, string $route, array $crumbs, bool $article = true): Seo
     {
         $s = Seo::make($title, $desc)->canonical(route($route))->breadcrumbs($crumbs)->reviewed(self::REVIEWED, '2027');
+
         return $article ? $s->article() : $s;
     }
 
-    private function statements(string $key): \Illuminate\Support\Collection
+    private function statements(string $key): Collection
     {
         return ReferenceFact::with('subject')->where('subject_type', University::class)->where('key', $key)
             ->whereNotIn('verification_status', [ReferenceFact::NOT_FOUND, ReferenceFact::ARCHIVED])->get()
@@ -45,6 +49,7 @@ class ContentController extends Controller
         $faqs = collect($this->faqItems())->whereIn('id', [1, 12, 18, 22, 26, 33])->values();
         $seo = $this->seo('Study Medicine in the UK from Nigeria: an honest guide for 2027 and 2028 entry', 'What a Nigerian student with WAEC, NECO, A-levels or a degree needs to know before applying to UK medicine: which routes are open, what each school publishes, costs, the UCAT and UCAS calendar, and how to apply.', 'medicine.nigeria', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'From Nigeria']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
         return view('content.medicine.nigeria', ['seo' => $seo, 'waec' => $this->statements('waec_neco_statement'), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'fees' => $this->feeRows(), 'faqs' => $faqs,
             'accepting' => University::whereIn('international_policy', ['accepts', 'international_only'])->count(), 'homeOnly' => University::where('international_policy', 'home_only')->count()]);
     }
@@ -66,6 +71,7 @@ class ContentController extends Controller
     {
         $st = $this->statements('waec_neco_statement');
         $eng = $this->statements('english_requirement')->filter(fn ($f) => preg_match('/WAEC|WASSCE|NECO/i', $f->value_text ?? ''));
+
         return view('content.requirements.waec', ['seo' => $this->seo('WAEC (WASSCE) and UK Medicine: what each medical school publishes', 'Can you study Medicine in the UK with WAEC? University by university, what UK medical schools publish about WASSCE for Medicine, where WAEC English is accepted, and the routes that are actually open.', 'requirements.waec', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'WAEC']]),
             'specific' => $st->filter(fn ($f) => str_contains((string) $f->notes, 'Medicine-specific')), 'general' => $st->reject(fn ($f) => str_contains((string) $f->notes, 'Medicine-specific')), 'english' => $eng, 'qualification' => 'WAEC']);
     }
@@ -73,6 +79,7 @@ class ContentController extends Controller
     public function neco()
     {
         $st = $this->statements('waec_neco_statement');
+
         return view('content.requirements.neco', ['seo' => $this->seo('NECO and UK Medicine: what medical schools say about the NECO SSCE', 'Whether UK medical schools accept NECO for Medicine, how NECO is treated compared with WASSCE, where NECO English counts, and what route a NECO holder can take.', 'requirements.neco', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'NECO']]),
             'mentionsNeco' => $st->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false), 'all' => $st]);
     }
@@ -96,7 +103,7 @@ class ContentController extends Controller
     }
 
     // ---------------- Fees ----------------
-    private function feeRows(): \Illuminate\Support\Collection
+    private function feeRows(): Collection
     {
         return ReferenceFact::with('subject.university')->where('subject_type', Course::class)->where('key', 'international_fee_gbp')->get()
             ->groupBy('subject_id')->map(fn ($g) => $g->sortByDesc('academic_year')->first())->values()
@@ -107,6 +114,7 @@ class ContentController extends Controller
     {
         $rows = $this->feeRows();
         $pub = $rows->filter(fn ($f) => $f->isPublishable() && $f->value_number);
+
         return view('content.fees.index', ['seo' => $this->seo('UK medical school fees for international students (2026/27 and 2027/28)', 'International tuition fees for Medicine at UK medical schools, with fee year, whether clinical years cost more, and the official source for every figure. Approximate range shown separately from official fees.', 'fees.index', [['label' => 'Fees']]),
             'rows' => $rows, 'min' => $pub->min('value_number'), 'max' => $pub->max('value_number'), 'count' => $pub->count(), 'visa' => Topic::bySlug('student-visa')]);
     }
@@ -126,6 +134,7 @@ class ContentController extends Controller
     public function ucat()
     {
         $courses = Course::with('university')->whereHas('university', fn ($q) => $q->whereIn('international_policy', ['accepts', 'international_only']))->get();
+
         return view('content.admissions.ucat', ['seo' => $this->seo('UCAT for Nigerian students: dates, structure, fees and sitting the test in Nigeria', 'Everything a Nigerian applicant needs about the UCAT: the 2026 cycle dates, the three-section structure scored out of 2700, fees, Pearson VUE centres in Nigeria, which medical schools require it, and what a missed window means.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]),
             'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027'), 'byTest' => $courses->groupBy(fn ($c) => $c->admissions_test ?? 'NOT_PUBLISHED')]);
     }
@@ -139,6 +148,7 @@ class ContentController extends Controller
     public function howToApply()
     {
         $direct = Course::with('university')->whereIn('application_route', ['DIRECT', 'BOTH'])->get();
+
         return view('content.admissions.howto', ['seo' => $this->seo('How to apply to UK Medicine from Nigeria: UCAS and direct-application medical schools', 'Step by step: applying through UCAS as an individual, the four-choice rule, the personal statement format, references, document upload, and the medical schools that take direct applications.', 'admissions.howto', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'How to apply']]),
             'ucas' => Topic::bySlug('ucas-2027'), 'direct' => $direct]);
     }
@@ -157,6 +167,7 @@ class ContentController extends Controller
             $offer = $t->hasPrices() ? ['@type' => 'Offer', 'priceCurrency' => 'GBP', 'price' => number_format($t->prices->whereNotNull('amount_minor')->sum('amount_minor') / 100, 2, '.', '')] : null;
             $seo->jsonLd(array_filter(['@type' => 'Service', 'name' => $t->name, 'description' => $t->summary, 'provider' => ['@type' => 'Organization', 'name' => config('site.name')], 'offers' => $offer]));
         }
+
         return view('content.apply.services', ['seo' => $seo, 'tiers' => $tiers]);
     }
 
@@ -176,7 +187,7 @@ class ContentController extends Controller
         $r = $this->assess($d);
         Lead::create(['email' => strtolower($d['email']), 'name' => $d['name'], 'whatsapp' => $d['whatsapp'] ?? null, 'source_page' => route('apply.eligibility'), 'utm' => $request->only('utm_source', 'utm_medium', 'utm_campaign'), 'eligibility_answers' => collect($d)->except(['name', 'email', 'whatsapp', 'consent'])->all(), 'eligibility_result' => $r, 'status' => 'new']);
         $request->session()->put('lead', ['name' => $d['name'], 'email' => $d['email']]);
-        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('New lead: '.$d['name'], [$d['email'].' · '.$r['summary']], route('admin.leads')));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('New lead: '.$d['name'], [$d['email'].' · '.$r['summary']], route('admin.leads')));
 
         return redirect()->route('apply.eligibility')->with('eligibility_result', $r)->withInput();
     }
@@ -184,29 +195,43 @@ class ContentController extends Controller
     /** Cautious, rule-based route-category assessment (docs/decision/conversion-funnel-strategy.md §3). Never an eligibility verdict. */
     private function assess(array $d): array
     {
-        $routes = []; $reads = []; $tier = 'T1';
+        $routes = [];
+        $reads = [];
+        $tier = 'T1';
         switch ($d['qualification']) {
             case 'waec_only':
                 $routes[] = ['Standard-entry Medicine (A100) directly on WASSCE/NECO', 'closed', 'None of the UK medical schools we reviewed publishes direct entry on WASSCE or NECO alone; universities that address Nigeria route applicants through A-levels, the IB or a recognised foundation year.'];
                 $routes[] = ['Foundation year leading to Medicine', 'possible', 'A small number of foundation programmes publish Medicine as a destination and are open to international students. Progression is competitive and conditional.'];
                 $routes[] = ['A-levels or IB first, then standard entry', 'possible', 'The most common route; typical offers are AAA to A*AA including Chemistry and Biology, plus UCAT.'];
-                $reads = ['requirements.waec', 'medicine.foundation', 'requirements.alevels']; break;
+                $reads = ['requirements.waec', 'medicine.foundation', 'requirements.alevels'];
+                break;
             case 'alevels_ib':
                 $routes[] = ['Standard-entry Medicine (A100)', $d['sciences'] === 'yes' ? 'open' : 'conditional', $d['sciences'] === 'yes' ? 'Appears open subject to grades (typically AAA to A*AA including Chemistry and Biology), the UCAT and English evidence.' : 'Most schools require Chemistry and Biology (or another science) at A-level; check the subject rules of each school.'];
-                $reads = ['requirements.alevels', 'admissions.ucat', 'schools.index']; $tier = 'T2'; break;
+                $reads = ['requirements.alevels', 'admissions.ucat', 'schools.index'];
+                $tier = 'T2';
+                break;
             case 'foundation':
                 $routes[] = ['Progression from your foundation programme', 'conditional', 'Depends entirely on your provider\'s published progression agreement with named medical schools; confirm the exact conditions in writing.'];
-                $reads = ['medicine.foundation', 'schools.index']; break;
+                $reads = ['medicine.foundation', 'schools.index'];
+                break;
             case 'nigerian_degree':
                 $routes[] = ['Graduate Entry Medicine (A101/A102)', 'conditional', 'Only some graduate-entry programmes accept international applicants; our research confirmed few. Degree class and GAMSAT or UCAT requirements apply.'];
                 $routes[] = ['Standard-entry Medicine as a graduate', 'possible', 'Many schools accept graduates onto the five-year course, often on degree class plus UCAT.'];
-                $reads = ['requirements.gem', 'admissions.ucat', 'schools.index']; break;
+                $reads = ['requirements.gem', 'admissions.ucat', 'schools.index'];
+                break;
             default:
-                $routes[] = ['Assessment needed', 'conditional', 'Tell us more about your qualifications and we will map them to published requirements.']; $reads = ['requirements.index'];
+                $routes[] = ['Assessment needed', 'conditional', 'Tell us more about your qualifications and we will map them to published requirements.'];
+                $reads = ['requirements.index'];
         }
-        if ($d['english'] !== 'ielts') $routes[] = ['English language evidence', 'conditional', $d['english'] === 'waec_english' ? 'A few medical schools publish acceptance of WAEC/NECO English for Medicine; most ask for IELTS 7.0–7.5. Check the school.' : 'You will need recognised English evidence; Medicine typically requires IELTS 7.0–7.5 overall.'];
-        if ($d['ucat'] !== 'taken' && (int) $d['intake_year'] === 2027) $routes[] = ['2027 entry via UCAT schools', 'closed', 'The UCAT 2026 testing window closed on 24 September 2026 and the UCAS medicine deadline is 15 October 2026. For 2027, only schools that do not require the UCAT remain realistic; most applicants in your position plan for 2028.'];
-        if ($d['ucat'] === 'none' && (int) $d['intake_year'] >= 2028) $routes[] = ['UCAT', 'conditional', 'Most medical schools require the UCAT, sat in July–September of the year before entry. Plan to register in May/June '.((int) $d['intake_year'] - 1).'.'];
+        if ($d['english'] !== 'ielts') {
+            $routes[] = ['English language evidence', 'conditional', $d['english'] === 'waec_english' ? 'A few medical schools publish acceptance of WAEC/NECO English for Medicine; most ask for IELTS 7.0–7.5. Check the school.' : 'You will need recognised English evidence; Medicine typically requires IELTS 7.0–7.5 overall.'];
+        }
+        if ($d['ucat'] !== 'taken' && (int) $d['intake_year'] === 2027) {
+            $routes[] = ['2027 entry via UCAT schools', 'closed', 'The UCAT 2026 testing window closed on 24 September 2026 and the UCAS medicine deadline is 15 October 2026. For 2027, only schools that do not require the UCAT remain realistic; most applicants in your position plan for 2028.'];
+        }
+        if ($d['ucat'] === 'none' && (int) $d['intake_year'] >= 2028) {
+            $routes[] = ['UCAT', 'conditional', 'Most medical schools require the UCAT, sat in July–September of the year before entry. Plan to register in May/June '.((int) $d['intake_year'] - 1).'.'];
+        }
         $open = collect($routes)->pluck(1);
         $summary = $open->contains('open') ? 'Standard entry appears open subject to grades, UCAT and English.' : ($open->contains('possible') ? 'Standard entry is not open directly; foundation or A-level/IB routes appear possible.' : 'Routes depend on conditions that need checking.');
 
@@ -217,6 +242,7 @@ class ContentController extends Controller
     public function faqItems(): array
     {
         $r = fn ($n) => route($n);
+
         return [
             ['id' => 1, 'q' => 'Can I study Medicine in the UK with WAEC?', 'a' => 'Not directly onto the standard five-year degree at any medical school we reviewed. UK universities that publish a Nigeria page treat WASSCE as the equivalent of GCSEs and ask for A-levels, the IB or a recognised foundation year before Medicine. See what each school says on our <a href="'.$r('requirements.waec').'">WAEC page</a>.'],
             ['id' => 2, 'q' => 'Is WAEC accepted as a GCSE equivalent?', 'a' => 'Several universities publish exactly that: WASSCE with strong grades (often C6 or above, with B grades in English and Mathematics for some schools) covers the GCSE layer of a Medicine offer, while the main offer is made on A-levels or IB. Each school\'s wording is on our <a href="'.$r('requirements.waec').'">WAEC page</a>.'],
@@ -244,18 +270,32 @@ class ContentController extends Controller
         $items = collect($this->faqItems());
         $seo = $this->seo('Questions Nigerian applicants ask about UK Medicine', 'Straight answers, with sources, to the questions Nigerian students actually ask about studying Medicine in the UK: WAEC, NECO, UCAT, costs, which schools accept international students, and working afterwards.', 'faq.index', [['label' => 'FAQ']], false);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $items->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
         return view('content.faq.index', ['seo' => $seo, 'items' => $items]);
     }
 
     // ---------------- Organisation ----------------
-    public function about() { return view('content.org.about', ['seo' => $this->seo('About Study Medicine UK Nigeria', 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine in the UK. Who we are, how we work, and what we will never claim.', 'about', [['label' => 'About']], false)]); }
-    public function status() { return view('content.org.status', ['seo' => $this->seo('Our status: independence, registrations and agreements', 'A dated statement of our legal status, registrations, training and agreements. We hold no agreements with any university.', 'status', [['label' => 'Our status']], false)]); }
-    public function contact() { return view('content.org.contact', ['seo' => $this->seo('Contact', 'How to reach Study Medicine UK Nigeria by email or through your student portal.', 'contact', [['label' => 'Contact']], false)]); }
+    public function about()
+    {
+        return view('content.org.about', ['seo' => $this->seo('About Study Medicine UK Nigeria', 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine in the UK. Who we are, how we work, and what we will never claim.', 'about', [['label' => 'About']], false)]);
+    }
+
+    public function status()
+    {
+        return view('content.org.status', ['seo' => $this->seo('Our status: independence, registrations and agreements', 'A dated statement of our legal status, registrations, training and agreements. We hold no agreements with any university.', 'status', [['label' => 'Our status']], false)]);
+    }
+
+    public function contact()
+    {
+        return view('content.org.contact', ['seo' => $this->seo('Contact', 'How to reach Study Medicine UK Nigeria by email or through your student portal.', 'contact', [['label' => 'Contact']], false)]);
+    }
+
     public function legal(string $page)
     {
         $titles = ['privacy' => ['Privacy notice', 'legal.privacy'], 'terms' => ['Terms of use', 'legal.terms'], 'application-terms' => ['Application service terms', 'legal.application-terms'], 'refunds' => ['Refund policy', 'legal.refunds']];
         abort_unless(isset($titles[$page]), 404);
         [$title, $route] = $titles[$page];
+
         return view('content.org.legal-'.$page, ['seo' => $this->seo($title, $title.' for Study Medicine UK Nigeria.', $route, [['label' => $title]], false)]);
     }
 }

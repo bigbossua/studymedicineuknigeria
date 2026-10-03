@@ -21,11 +21,21 @@ class SchoolController extends Controller
             'route' => $request->string('route')->toString(),                 // UCAS | DIRECT | BOTH
             'q' => $request->string('q')->toString(),
         ];
-        if ($filters['nation']) $q->where('nation', $filters['nation']);
-        if ($filters['international']) $q->where('international_policy', $filters['international']);
-        if ($filters['q']) $q->where(fn ($w) => $w->where('name', 'like', '%'.$filters['q'].'%')->orWhere('city', 'like', '%'.$filters['q'].'%')->orWhere('medical_school_name', 'like', '%'.$filters['q'].'%'));
-        if ($filters['test']) $q->whereHas('courses', fn ($c) => $c->where('admissions_test', $filters['test']));
-        if ($filters['route']) $q->whereHas('courses', fn ($c) => $c->where('application_route', $filters['route']));
+        if ($filters['nation']) {
+            $q->where('nation', $filters['nation']);
+        }
+        if ($filters['international']) {
+            $q->where('international_policy', $filters['international']);
+        }
+        if ($filters['q']) {
+            $q->where(fn ($w) => $w->where('name', 'like', '%'.$filters['q'].'%')->orWhere('city', 'like', '%'.$filters['q'].'%')->orWhere('medical_school_name', 'like', '%'.$filters['q'].'%'));
+        }
+        if ($filters['test']) {
+            $q->whereHas('courses', fn ($c) => $c->where('admissions_test', $filters['test']));
+        }
+        if ($filters['route']) {
+            $q->whereHas('courses', fn ($c) => $c->where('application_route', $filters['route']));
+        }
 
         $universities = $q->get();
         $isFiltered = collect($filters)->filter()->isNotEmpty();
@@ -53,7 +63,9 @@ class SchoolController extends Controller
             ->jsonLd(['@type' => 'CollegeOrUniversity', 'name' => $university->name, 'url' => $university->website_url ?? $course?->official_url, 'address' => ['@type' => 'PostalAddress', 'addressLocality' => $university->city, 'addressCountry' => 'GB']]);
 
         // Public university pages stay noindex until the record is marked published by staff
-        if (! $university->published) $seo->noindex();
+        if (! $university->published) {
+            $seo->noindex();
+        }
 
         return view('schools.show', compact('university', 'course', 'seo'));
     }

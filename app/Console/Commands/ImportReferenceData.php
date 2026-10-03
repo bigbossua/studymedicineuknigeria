@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Course;
+use App\Models\ReferenceFact;
+use App\Models\University;
 use App\Services\Reference\DatasetImporter;
 use Illuminate\Console\Command;
 
@@ -15,9 +18,11 @@ class ImportReferenceData extends Command
     {
         $path = $this->option('path') ?: base_path('data');
         $log = $importer->run($path);
-        foreach ($log as $line) $this->line($line);
+        foreach ($log as $line) {
+            $this->line($line);
+        }
         $this->info(sprintf('Universities: %d · Courses: %d · Facts: %d',
-            \App\Models\University::count(), \App\Models\Course::count(), \App\Models\ReferenceFact::count()));
+            University::count(), Course::count(), ReferenceFact::count()));
 
         return self::SUCCESS;
     }

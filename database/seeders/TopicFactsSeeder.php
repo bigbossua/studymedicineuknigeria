@@ -14,7 +14,8 @@ class TopicFactsSeeder extends Seeder
 {
     public function run(): void
     {
-        $V = ReferenceFact::VERIFY_ON_PAGE; $NF = ReferenceFact::NOT_FOUND;
+        $V = ReferenceFact::VERIFY_ON_PAGE;
+        $NF = ReferenceFact::NOT_FOUND;
         $ucas = 'https://www.ucas.com/undergraduate/applying-university/ucas-undergraduate-when-apply';
         $ucat = 'https://www.ucat.ac.uk/ucat/dates-and-fees/';
         $ucatFee = 'https://www.ucat.ac.uk/ucat/registration-booking/test-fees-bursaries/';
@@ -82,8 +83,13 @@ class TopicFactsSeeder extends Seeder
             foreach ($facts as [$key, $type, $value, $src, $status, $notes]) {
                 $existing = $t->facts()->where('key', $key)->first();
                 $attrs = ['value_text' => $type === 'text' ? $value : null, 'value_number' => $type === 'number' ? $value : null, 'source_url' => $src, 'source_type' => 'official', 'applies_to' => 'international', 'academic_year' => $cycle, 'notes' => $notes];
-                if ($existing) { if ($existing->verification_status !== ReferenceFact::VERIFIED) $attrs['verification_status'] = $status; $existing->update($attrs); }
-                else $t->facts()->create($attrs + ['key' => $key, 'verification_status' => $status]);
+                if ($existing) {
+                    if ($existing->verification_status !== ReferenceFact::VERIFIED) {
+                        $attrs['verification_status'] = $status;
+                    } $existing->update($attrs);
+                } else {
+                    $t->facts()->create($attrs + ['key' => $key, 'verification_status' => $status]);
+                }
             }
         }
     }

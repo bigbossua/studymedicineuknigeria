@@ -7,6 +7,9 @@ use App\Enums\Stage;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Authorisation;
+use App\Models\User;
+use App\Notifications\ApplicationNotification;
+use App\Notifications\StaffNotification;
 use App\Services\Applications\StageResolver;
 use App\Support\Seo;
 use Illuminate\Http\Request;
@@ -36,7 +39,9 @@ class ApprovalController extends Controller
         $data = $request->validate(['typed_name' => 'required|string|max:160', 'confirm' => 'required|accepted', 'hash' => 'required|string']);
         $package = $this->package($application, $submission);
         $hash = hash('sha256', json_encode($package));
-        if (! hash_equals($hash, $data['hash'])) return back()->with('error', 'Your application changed while you were reviewing it. Please review the updated package and approve again.');
+        if (! hash_equals($hash, $data['hash'])) {
+            return back()->with('error', 'Your application changed while you were reviewing it. Please review the updated package and approve again.');
+        }
 
         $auth = Authorisation::create([
             'application_id' => $application->id, 'submission_id' => $submission->id, 'approved_by_user_id' => $request->user()->id, 'approved_at' => now(),
@@ -48,8 +53,8 @@ class ApprovalController extends Controller
         $application->forceFill(['stage_override' => null])->save();
         $application->record('student.approved', ['authorisation_id' => $auth->id, 'submission_id' => $submission->id], $request->user()->id);
         $this->stages->sync($application);
-        $request->user()->notify(new \App\Notifications\ApplicationNotification($application, 'student.approved', ['at' => now()->format('j F Y, H:i')]));
-        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('Student approved — '.$application->application_number, [$request->user()->name.' approved submission to '.($submission->university?->name ?? 'university').'.'], route('admin.applications.show', $application)));
+        $request->user()->notify(new ApplicationNotification($application, 'student.approved', ['at' => now()->format('j F Y, H:i')]));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('Student approved — '.$application->application_number, [$request->user()->name.' approved submission to '.($submission->university?->name ?? 'university').'.'], route('admin.applications.show', $application)));
 
         return redirect()->route('portal.submissions.index', $application)->with('status', 'Thank you. Your approval has been recorded. We will now prepare the final package.');
     }
@@ -62,7 +67,7 @@ class ApprovalController extends Controller
         $application->forceFill(['stage_override' => Stage::ACTION_REQUIRED->value])->save();
         $application->record('approval.declined', ['note' => $data['note']], $request->user()->id);
         $this->stages->sync($application);
-        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('Changes requested before approval — '.$application->application_number, [$data['note']], route('admin.applications.show', $application)));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('Changes requested before approval — '.$application->application_number, [$data['note']], route('admin.applications.show', $application)));
 
         return redirect()->route('portal.dashboard')->with('status', 'We have received your request. Our team will update the package and ask you to review it again.');
     }

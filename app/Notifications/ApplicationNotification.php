@@ -15,11 +15,16 @@ class ApplicationNotification extends Notification implements ShouldQueue
 
     public function __construct(public Application $application, public string $type, public array $data = []) {}
 
-    public function via(object $notifiable): array { return ['mail']; }
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
 
     public function toMail(object $notifiable): MailMessage
     {
-        $a = $this->application; $n = $a->application_number; $d = $this->data;
+        $a = $this->application;
+        $n = $a->application_number;
+        $d = $this->data;
         [$subject, $lines, $action, $url] = match ($this->type) {
             'application.started' => ["Your application has been started — $n", ["Your application number is $n. Keep it for every message with us.", 'Your progress saves automatically. You can leave and return at any time.'], 'Continue your application', route('portal.dashboard')],
             'document.requested' => ["Document required: {$d['title']} — $n", ["Our team has asked for: {$d['title']}.", $d['reason'] ?? ''], 'Upload now', route('portal.documents.index', $a)],
@@ -37,7 +42,9 @@ class ApplicationNotification extends Notification implements ShouldQueue
             default => ["Update on your application — $n", [$d['note'] ?? 'There is an update on your application.'], 'Open your portal', route('portal.dashboard')],
         };
         $m = (new MailMessage)->subject($subject)->greeting('Dear '.explode(' ', $notifiable->name)[0].',');
-        foreach (array_filter($lines) as $l) $m->line($l);
+        foreach (array_filter($lines) as $l) {
+            $m->line($l);
+        }
         $m->action($action, $url);
         $m->line('This email was sent because of an event on your application. Admission decisions are made solely by universities.');
         $m->salutation('Study Medicine UK Nigeria · '.config('site.email'));

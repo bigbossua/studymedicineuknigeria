@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Notifications\StaffNotification;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -36,7 +38,7 @@ class ProfileController extends Controller
         $user = $request->user()->load('applications.documents.versions', 'applications.events', 'applications.payments', 'applications.submissions.events', 'applications.messages', 'applications.authorisations');
         $data = ['exported_at' => now()->toIso8601String(), 'user' => $user->only('name', 'email', 'phone', 'whatsapp', 'country', 'nigeria_state', 'created_at'), 'applications' => $user->applications->toArray()];
 
-        return response()->streamDownload(fn () => print(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)), 'smukn-data-export-'.now()->format('Ymd').'.json', ['Content-Type' => 'application/json']);
+        return response()->streamDownload(fn () => print (json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)), 'smukn-data-export-'.now()->format('Ymd').'.json', ['Content-Type' => 'application/json']);
     }
 
     public function requestDeletion(Request $request)
@@ -44,7 +46,7 @@ class ProfileController extends Controller
         $request->validate(['confirm' => 'required|accepted']);
         $app = $request->user()->currentApplication();
         $app?->messages()->create(['sender_user_id' => $request->user()->id, 'body' => 'ACCOUNT DELETION REQUESTED by the student via their profile page.']);
-        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('Deletion request — '.$request->user()->email, ['The student requested account deletion. Check for legal hold (active submission) and action within 30 days.'], $app ? route('admin.applications.show', $app) : null));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('Deletion request — '.$request->user()->email, ['The student requested account deletion. Check for legal hold (active submission) and action within 30 days.'], $app ? route('admin.applications.show', $app) : null));
 
         return back()->with('status', 'We have received your deletion request and will complete it within 30 days unless a submission in progress requires us to retain records; we will tell you if so.');
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Portal;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Submission;
+use App\Services\Applications\StageResolver;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class SubmissionController extends Controller
         $submission->transition('SUBMITTED', null, 'Recorded by the student', $data['external_reference']);
         $submission->forceFill(['submitted_at' => $data['submitted_on'], 'submitted_by' => 'STUDENT'])->save();
         $application->record('submission.sent', ['submission_id' => $submission->id, 'by' => 'student'], $request->user()->id);
-        app(\App\Services\Applications\StageResolver::class)->sync($application);
+        app(StageResolver::class)->sync($application);
 
         return back()->with('status', 'Recorded. We will track the university\'s response with you.');
     }

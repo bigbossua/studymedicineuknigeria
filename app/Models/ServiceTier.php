@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ServiceTier extends Model
 {
     protected $guarded = [];
+
     protected $casts = ['deliverables' => 'array', 'exclusions' => 'array', 'active' => 'boolean'];
 
-    public function prices(): HasMany { return $this->hasMany(TierPrice::class)->where('active', true); }
+    public function prices(): HasMany
+    {
+        return $this->hasMany(TierPrice::class)->where('active', true);
+    }
 
     public function priceFor(string $component = 'full', string $currency = 'GBP'): ?TierPrice
     {

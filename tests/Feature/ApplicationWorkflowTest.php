@@ -24,6 +24,7 @@ class ApplicationWorkflowTest extends TestCase
     use RefreshDatabase;
 
     private User $student;
+
     private User $admin;
 
     protected function setUp(): void
@@ -151,7 +152,10 @@ class ApplicationWorkflowTest extends TestCase
         $this->assertSame(Stage::STUDENT_APPROVED, $a->fresh()->stage);
 
         // package changes after approval → authorisation invalidated when staff try to proceed
-        $a->refresh(); $form = $a->form; $form['personal']['legal_surname'] = 'Changed'; $a->forceFill(['form' => $form])->save();
+        $a->refresh();
+        $form = $a->form;
+        $form['personal']['legal_surname'] = 'Changed';
+        $a->forceFill(['form' => $form])->save();
         $this->actingAs($this->admin)->post("/admin/applications/{$a->application_number}/submissions/{$sub->id}", ['status' => 'PACKAGE_READY'])->assertSessionHas('error');
         $this->assertNotNull($auth->fresh()->revoked_at);
         $this->assertSame('PROPOSED', $sub->fresh()->status);

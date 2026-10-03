@@ -16,7 +16,9 @@ class ChecklistBuilder
         $required = []; // code => reason
         foreach (ChecklistRule::where('active', true)->orderBy('sort')->get() as $rule) {
             if ($this->matches($rule->predicate, $form)) {
-                foreach ($rule->require_codes as $code) $required[$code] ??= $rule->reason_text;
+                foreach ($rule->require_codes as $code) {
+                    $required[$code] ??= $rule->reason_text;
+                }
             }
         }
         $existing = $a->documents()->get()->keyBy('code');
@@ -38,10 +40,17 @@ class ChecklistBuilder
 
     public function matches(array $p, array $form): bool
     {
-        if (! empty($p['always'])) return true;
-        if (isset($p['all'])) return collect($p['all'])->every(fn ($q) => $this->matches($q, $form));
-        if (isset($p['any'])) return collect($p['any'])->contains(fn ($q) => $this->matches($q, $form));
+        if (! empty($p['always'])) {
+            return true;
+        }
+        if (isset($p['all'])) {
+            return collect($p['all'])->every(fn ($q) => $this->matches($q, $form));
+        }
+        if (isset($p['any'])) {
+            return collect($p['any'])->contains(fn ($q) => $this->matches($q, $form));
+        }
         $value = Arr::get($form, $p['field'] ?? '');
+
         return match ($p['op'] ?? 'eq') {
             'eq' => $value == ($p['value'] ?? null),
             'in' => in_array($value, (array) ($p['value'] ?? []), true),

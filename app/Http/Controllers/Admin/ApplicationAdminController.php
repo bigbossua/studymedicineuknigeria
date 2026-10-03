@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\DocumentStatus;
 use App\Enums\Stage;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Portal\ApprovalController;
 use App\Models\AdminAction;
 use App\Models\Application;
 use App\Models\Course;
@@ -15,7 +16,9 @@ use App\Models\University;
 use App\Models\User;
 use App\Notifications\ApplicationNotification;
 use App\Services\Applications\DocumentCatalogue;
+use App\Services\Applications\FormSteps;
 use App\Services\Applications\StageResolver;
+use App\Services\Documents\DocumentStore;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 
@@ -26,8 +29,12 @@ class ApplicationAdminController extends Controller
     public function index(Request $request)
     {
         $q = Application::with('user', 'tier', 'assignedStaff')->latest('last_activity_at');
-        if ($s = $request->string('stage')->toString()) $q->where('stage', $s);
-        if ($t = $request->string('q')->toString()) $q->where(fn ($w) => $w->where('application_number', 'like', "%$t%")->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%$t%")->orWhere('email', 'like', "%$t%")));
+        if ($s = $request->string('stage')->toString()) {
+            $q->where('stage', $s);
+        }
+        if ($t = $request->string('q')->toString()) {
+            $q->where(fn ($w) => $w->where('application_number', 'like', "%$t%")->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%$t%")->orWhere('email', 'like', "%$t%")));
+        }
 
         return view('admin.applications.index', ['seo' => Seo::make('Applications')->noindex(), 'applications' => $q->paginate(30)->withQueryString(), 'stages' => Stage::cases(), 'filters' => $request->only('stage', 'q')]);
     }
@@ -42,7 +49,7 @@ class ApplicationAdminController extends Controller
             'seo' => Seo::make($application->application_number)->noindex(), 'application' => $application,
             'staff' => User::whereIn('role', ['staff', 'admin'])->orderBy('name')->get(), 'catalogue' => DocumentCatalogue::TYPES,
             'universities' => University::orderBy('name')->get(), 'courses' => Course::with('university')->get(),
-            'steps' => \App\Services\Applications\FormSteps::all(), 'routes' => Submission::ROUTES,
+            'steps' => FormSteps::all(), 'routes' => Submission::ROUTES,
         ]);
     }
 
@@ -59,10 +66,14 @@ class ApplicationAdminController extends Controller
     {
         $data = $request->validate(['stage_override' => 'nullable|in:INTERNAL_REVIEW,ACTION_REQUIRED,READY_FOR_STUDENT_APPROVAL,ON_HOLD,CLOSED,CLEAR', 'note' => 'nullable|string|max:2000', 'hold_until' => 'nullable|date|after:today']);
         $v = $data['stage_override'];
-        if ($v === 'CLEAR') { $application->forceFill(['stage_override' => null, 'hold_until' => null])->save(); }
-        elseif ($v === 'ON_HOLD') { $application->forceFill(['stage_override' => $v, 'hold_until' => $data['hold_until'] ?? now()->addDays(30)])->save(); }
-        elseif ($v === 'CLOSED') { $application->forceFill(['stage_override' => $v, 'closed_at' => now(), 'closed_reason' => $data['note'] ?? null])->save(); $application->reminders()->whereNull('sent_at')->update(['cancelled_at' => now()]); }
-        else {
+        if ($v === 'CLEAR') {
+            $application->forceFill(['stage_override' => null, 'hold_until' => null])->save();
+        } elseif ($v === 'ON_HOLD') {
+            $application->forceFill(['stage_override' => $v, 'hold_until' => $data['hold_until'] ?? now()->addDays(30)])->save();
+        } elseif ($v === 'CLOSED') {
+            $application->forceFill(['stage_override' => $v, 'closed_at' => now(), 'closed_reason' => $data['note'] ?? null])->save();
+            $application->reminders()->whereNull('sent_at')->update(['cancelled_at' => now()]);
+        } else {
             if ($v === 'READY_FOR_STUDENT_APPROVAL' && ! $application->submissions()->where('status', 'PROPOSED')->exists()) {
                 return back()->with('error', 'Propose a submission target first; the student must see where the application will go before approving.');
             }
@@ -74,11 +85,19 @@ class ApplicationAdminController extends Controller
             }
             $application->forceFill(['stage_override' => $v])->save();
         }
-        $application->record(match ($v) { 'INTERNAL_REVIEW' => 'review.started', 'ACTION_REQUIRED' => 'action.required', 'READY_FOR_STUDENT_APPROVAL' => 'approval.requested', default => 'stage.changed' }, ['to' => $v, 'note' => $data['note'] ?? null], $request->user()->id);
-        if (! empty($data['note'])) $application->messages()->create(['sender_user_id' => $request->user()->id, 'body' => $data['note']]);
+        $application->record(match ($v) {
+            'INTERNAL_REVIEW' => 'review.started', 'ACTION_REQUIRED' => 'action.required', 'READY_FOR_STUDENT_APPROVAL' => 'approval.requested', default => 'stage.changed'
+        }, ['to' => $v, 'note' => $data['note'] ?? null], $request->user()->id);
+        if (! empty($data['note'])) {
+            $application->messages()->create(['sender_user_id' => $request->user()->id, 'body' => $data['note']]);
+        }
         $this->stages->sync($application);
-        if ($v === 'READY_FOR_STUDENT_APPROVAL') $application->user->notify(new ApplicationNotification($application, 'approval.requested'));
-        if ($v === 'ACTION_REQUIRED') $application->user->notify(new ApplicationNotification($application, 'action.required', ['note' => $data['note'] ?? null]));
+        if ($v === 'READY_FOR_STUDENT_APPROVAL') {
+            $application->user->notify(new ApplicationNotification($application, 'approval.requested'));
+        }
+        if ($v === 'ACTION_REQUIRED') {
+            $application->user->notify(new ApplicationNotification($application, 'action.required', ['note' => $data['note'] ?? null]));
+        }
         AdminAction::log('application.stage', $application, $data);
 
         return back()->with('status', 'Stage updated.');
@@ -105,13 +124,22 @@ class ApplicationAdminController extends Controller
     {
         abort_unless($document->application_id === $application->id, 404);
         $data = $request->validate(['decision' => 'required|in:accept,reject,replace,waive', 'reason' => 'required_unless:decision,accept|nullable|string|max:500']);
-        $to = match ($data['decision']) { 'accept' => DocumentStatus::ACCEPTED, 'reject' => DocumentStatus::REJECTED, 'replace' => DocumentStatus::REPLACEMENT_REQUIRED, 'waive' => DocumentStatus::NOT_REQUIRED };
+        $to = match ($data['decision']) {
+            'accept' => DocumentStatus::ACCEPTED, 'reject' => DocumentStatus::REJECTED, 'replace' => DocumentStatus::REPLACEMENT_REQUIRED, 'waive' => DocumentStatus::NOT_REQUIRED
+        };
         $document->transition($to, $request->user()->id, $data['reason'] ?? null);
         $application->record($to === DocumentStatus::ACCEPTED ? 'document.accepted' : 'document.rejected', ['title' => $document->title, 'reason' => $data['reason'] ?? null], $request->user()->id);
-        if ($to === DocumentStatus::ACCEPTED) $application->user->notify(new ApplicationNotification($application, 'document.accepted', ['title' => $document->title]));
-        if (in_array($to, [DocumentStatus::REJECTED, DocumentStatus::REPLACEMENT_REQUIRED], true)) $application->user->notify(new ApplicationNotification($application, 'document.rejected', ['title' => $document->title, 'reason' => $data['reason']]));
-        $before = $application->stage; $this->stages->sync($application->refresh());
-        if ($application->stage === Stage::DOCUMENTS_COMPLETE && $before !== Stage::DOCUMENTS_COMPLETE) $application->user->notify(new ApplicationNotification($application, 'documents.complete'));
+        if ($to === DocumentStatus::ACCEPTED) {
+            $application->user->notify(new ApplicationNotification($application, 'document.accepted', ['title' => $document->title]));
+        }
+        if (in_array($to, [DocumentStatus::REJECTED, DocumentStatus::REPLACEMENT_REQUIRED], true)) {
+            $application->user->notify(new ApplicationNotification($application, 'document.rejected', ['title' => $document->title, 'reason' => $data['reason']]));
+        }
+        $before = $application->stage;
+        $this->stages->sync($application->refresh());
+        if ($application->stage === Stage::DOCUMENTS_COMPLETE && $before !== Stage::DOCUMENTS_COMPLETE) {
+            $application->user->notify(new ApplicationNotification($application, 'documents.complete'));
+        }
         AdminAction::log('document.review', $document, $data);
 
         return back()->with('status', 'Document '.$to->label().'.');
@@ -132,7 +160,9 @@ class ApplicationAdminController extends Controller
         $application->submissions()->where('status', 'PROPOSED')->update(['status' => 'CLOSED']);
         $sub = $application->submissions()->create(['university_id' => $data['university_id'] ?? null, 'course_id' => $data['course_id'] ?? null, 'intake' => $data['intake'], 'route_code' => $data['route_code'], 'notes' => $data['notes'] ?? null, 'status' => 'PROPOSED']);
         $sub->events()->create(['from_status' => null, 'to_status' => 'PROPOSED', 'actor_user_id' => $request->user()->id, 'note' => 'Proposed by staff']);
-        foreach (array_values(array_filter(array_map('trim', explode("\n", $data['choices'] ?? '')))) as $i => $label) $sub->choices()->create(['label' => $label, 'choice_order' => $i + 1]);
+        foreach (array_values(array_filter(array_map('trim', explode("\n", $data['choices'] ?? '')))) as $i => $label) {
+            $sub->choices()->create(['label' => $label, 'choice_order' => $i + 1]);
+        }
         AdminAction::log('submission.propose', $sub, $data);
 
         return back()->with('status', 'Submission proposed. Set the stage to "Ready for student approval" when the package is ready for the student to review.');
@@ -145,8 +175,10 @@ class ApplicationAdminController extends Controller
         if (in_array($data['status'], ['PACKAGE_READY', 'SUBMITTED'], true)) {
             // Invariant: never without a live student authorisation (docs/architecture/12.5)
             $auth = $submission->authorisation;
-            if (! $auth || $auth->revoked_at) return back()->with('error', 'This submission has no valid student authorisation. It cannot be marked ready or submitted.');
-            $current = hash('sha256', json_encode(\App\Http\Controllers\Portal\ApprovalController::package($application, $submission->load('choices.course.university', 'university', 'course'))));
+            if (! $auth || $auth->revoked_at) {
+                return back()->with('error', 'This submission has no valid student authorisation. It cannot be marked ready or submitted.');
+            }
+            $current = hash('sha256', json_encode(ApprovalController::package($application, $submission->load('choices.course.university', 'university', 'course'))));
             if (! hash_equals($auth->snapshot_hash, $current)) {
                 $auth->update(['revoked_at' => now(), 'revoked_reason' => 'Package changed after approval']);
                 $submission->transition('PROPOSED', $request->user()->id, 'Approval invalidated: package changed');
@@ -154,6 +186,7 @@ class ApplicationAdminController extends Controller
                 $application->record('authorisation.invalidated', ['submission_id' => $submission->id], $request->user()->id);
                 $this->stages->sync($application);
                 $application->user->notify(new ApplicationNotification($application, 'approval.requested'));
+
                 return back()->with('error', 'The package changed after the student approved it. Their approval was cancelled and they have been asked to approve the updated package.');
             }
             if ($data['status'] === 'SUBMITTED' && in_array($submission->route_code, ['UCAS_STUDENT', 'DIRECT_PORTAL_STUDENT'], true) && empty($data['external_reference'])) {
@@ -179,7 +212,10 @@ class ApplicationAdminController extends Controller
         abort_unless($payment->application_id === $application->id && $payment->method === 'MANUAL_TRANSFER', 404);
         $data = $request->validate(['decision' => 'required|in:confirm,reject', 'note' => 'nullable|string|max:500']);
         $payment->update(['status' => $data['decision'] === 'confirm' ? 'SUCCEEDED' : 'REJECTED', 'succeeded_at' => $data['decision'] === 'confirm' ? now() : null, 'note' => trim(($payment->note ?? '').' '.($data['note'] ?? ''))]);
-        if ($data['decision'] === 'confirm') { $application->record('payment.succeeded', ['payment_id' => $payment->id, 'amount' => $payment->formattedAmount()], $request->user()->id); $application->user->notify(new ApplicationNotification($application, 'payment.succeeded', ['amount' => $payment->formattedAmount()])); }
+        if ($data['decision'] === 'confirm') {
+            $application->record('payment.succeeded', ['payment_id' => $payment->id, 'amount' => $payment->formattedAmount()], $request->user()->id);
+            $application->user->notify(new ApplicationNotification($application, 'payment.succeeded', ['amount' => $payment->formattedAmount()]));
+        }
         $this->stages->sync($application);
         AdminAction::log('payment.manual', $payment, $data);
 
@@ -198,12 +234,14 @@ class ApplicationAdminController extends Controller
     public function document(Request $request, Application $application, Document $document)
     {
         abort_unless($document->application_id === $application->id, 404);
-        $v = $document->currentVersion; abort_unless($v, 404);
+        $v = $document->currentVersion;
+        abort_unless($v, 404);
         \DB::table('document_access_log')->insert(['document_version_id' => $v->id, 'user_id' => $request->user()->id, 'ip' => $request->ip(), 'purpose' => 'preview', 'created_at' => now()]);
-        $bytes = app(\App\Services\Documents\DocumentStore::class)->contents($v);
+        $bytes = app(DocumentStore::class)->contents($v);
 
         // Inline preview for images/PDF inside a sandboxed iframe (CSP sandbox header); download for others
         $inline = in_array($v->mime, ['application/pdf', 'image/jpeg', 'image/png'], true);
+
         return response($bytes, 200, ['Content-Type' => $v->mime, 'Content-Disposition' => ($inline ? 'inline' : 'attachment').'; filename="'.$v->original_filename.'"', 'X-Content-Type-Options' => 'nosniff', 'Content-Security-Policy' => "sandbox; default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'", 'Cache-Control' => 'private, no-store']);
     }
 }

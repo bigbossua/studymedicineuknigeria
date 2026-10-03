@@ -38,7 +38,9 @@ class SeoController extends Controller
         $urls = [];
         foreach (Route::getRoutes() as $route) {
             $meta = $route->defaults['sitemap'] ?? null;
-            if (! $meta || ! in_array('GET', $route->methods(), true)) continue;
+            if (! $meta || ! in_array('GET', $route->methods(), true)) {
+                continue;
+            }
             $urls[] = [
                 'loc' => url($route->uri() === '/' ? '/' : '/'.trim($route->uri(), '/')),
                 'lastmod' => $meta['lastmod'] ?? null,
@@ -48,7 +50,9 @@ class SeoController extends Controller
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($urls as $u) {
             $xml .= "  <url>\n    <loc>".e($u['loc'])."</loc>\n";
-            if ($u['lastmod']) $xml .= '    <lastmod>'.e($u['lastmod'])."</lastmod>\n";
+            if ($u['lastmod']) {
+                $xml .= '    <lastmod>'.e($u['lastmod'])."</lastmod>\n";
+            }
             $xml .= '    <changefreq>'.e($u['changefreq'])."</changefreq>\n  </url>\n";
         }
         $xml .= "</urlset>\n";

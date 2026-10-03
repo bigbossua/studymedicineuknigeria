@@ -10,9 +10,18 @@ class Topic extends Model
 {
     protected $guarded = [];
 
-    public function facts(): MorphMany { return $this->morphMany(ReferenceFact::class, 'subject'); }
+    public function facts(): MorphMany
+    {
+        return $this->morphMany(ReferenceFact::class, 'subject');
+    }
 
-    public function fact(string $key): ?ReferenceFact { return $this->facts->firstWhere('key', $key); }
+    public function fact(string $key): ?ReferenceFact
+    {
+        return $this->facts->firstWhere('key', $key);
+    }
 
-    public static function bySlug(string $slug): ?self { return static::with('facts')->firstWhere('slug', $slug); }
+    public static function bySlug(string $slug): ?self
+    {
+        return static::with('facts')->firstWhere('slug', $slug);
+    }
 }

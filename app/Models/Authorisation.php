@@ -9,7 +9,9 @@ class Authorisation extends Model
     public const DECLARATION_VERSION = 'v1';
 
     public $timestamps = false;
+
     protected $guarded = [];
+
     protected $casts = ['approved_at' => 'datetime', 'revoked_at' => 'datetime', 'snapshot' => 'array'];
 
     public static function declarationText(string $university, string $course, string $intake): string

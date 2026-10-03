@@ -52,7 +52,9 @@ class DatasetImporter
         ];
         $low = Str::lower(str_replace('’', "'", $name));
         foreach ($joint as $needle => $slug) {
-            if (str_contains($low, $needle)) return $slug;
+            if (str_contains($low, $needle)) {
+                return $slug;
+            }
         }
         $n = preg_replace('/\s*\((.*?)\)\s*/', ' ', $name);
         $n = str_ireplace(['The University of ', 'University of ', ' University', 'The '], ['', '', '', ''], $n);
@@ -79,7 +81,9 @@ class DatasetImporter
         $key = str_replace(['’', 'medical school'], ["'", ''], $key);
         $key = trim($key);
         foreach ($aliases as $alias => $slug) {
-            if ($key === $alias || Str::startsWith($key, $alias.' ') ) return $slug;
+            if ($key === $alias || Str::startsWith($key, $alias.' ')) {
+                return $slug;
+            }
         }
 
         return Str::slug($key);
@@ -88,12 +92,15 @@ class DatasetImporter
     private function val(array $row, string $field): array
     {
         $f = $row[$field] ?? null;
-        if (! is_array($f)) return [$f, null, $f === null ? ReferenceFact::NOT_FOUND : ReferenceFact::VERIFY_ON_PAGE, null];
+        if (! is_array($f)) {
+            return [$f, null, $f === null ? ReferenceFact::NOT_FOUND : ReferenceFact::VERIFY_ON_PAGE, null];
+        }
         $status = match ($f['status'] ?? null) {
             'VERIFY-ON-PAGE' => ReferenceFact::VERIFY_ON_PAGE,
             'NOT PUBLISHED', 'NOT_PUBLISHED' => ReferenceFact::NOT_PUBLISHED,
             default => ReferenceFact::NOT_FOUND,
         };
+
         return [$f['value'] ?? null, $f['source'] ?? null, $status, $f['source_type'] ?? null];
     }
 
@@ -103,10 +110,15 @@ class DatasetImporter
             return; // nothing to record; absence is not a fact
         }
         $attrs = ['value_text' => null, 'value_number' => null, 'value_bool' => null, 'value_json' => null];
-        if (is_bool($value)) $attrs['value_bool'] = $value;
-        elseif (is_int($value) || is_float($value)) $attrs['value_number'] = $value;
-        elseif (is_array($value)) $attrs['value_json'] = $value;
-        elseif ($value !== null) $attrs['value_text'] = (string) $value;
+        if (is_bool($value)) {
+            $attrs['value_bool'] = $value;
+        } elseif (is_int($value) || is_float($value)) {
+            $attrs['value_number'] = $value;
+        } elseif (is_array($value)) {
+            $attrs['value_json'] = $value;
+        } elseif ($value !== null) {
+            $attrs['value_text'] = (string) $value;
+        }
 
         $match = ['key' => $key, 'academic_year' => $extra['academic_year'] ?? null, 'qualification_code' => $extra['qualification_code'] ?? null];
         $existing = $subject->facts()->where($match)->first();
@@ -131,7 +143,9 @@ class DatasetImporter
         $rows = json_decode(file_get_contents($file), true)['schools'] ?? [];
         foreach ($rows as $row) {
             [$name] = $this->val($row, 'university');
-            if (! $name) continue;
+            if (! $name) {
+                continue;
+            }
             $slug = self::slugFor($name);
             $name = self::DISPLAY_NAMES[$slug] ?? $name;
             [$msName] = $this->val($row, 'medical_school_name');
@@ -162,7 +176,11 @@ class DatasetImporter
 
             foreach (['international_accepted', 'international_places', 'gmc_status', 'msc_member', 'english_language_requirement', 'notes'] as $k) {
                 [$v, $src, $st, $type] = $this->val($row, $k);
-                if ($k === 'notes' && is_string($v)) { $this->fact($u, 'research_notes', $v, null, ReferenceFact::VERIFY_ON_PAGE, null, ['applies_to' => 'all']); continue; }
+                if ($k === 'notes' && is_string($v)) {
+                    $this->fact($u, 'research_notes', $v, null, ReferenceFact::VERIFY_ON_PAGE, null, ['applies_to' => 'all']);
+
+                    continue;
+                }
                 $this->fact($u, $k, $v, $src, $st, $type, ['applies_to' => $k === 'english_language_requirement' ? 'international' : 'all']);
             }
 
@@ -187,7 +205,9 @@ class DatasetImporter
                 [$v, $src, $st, $type] = $this->val($row, $k);
                 $key = $k === 'international_fee_per_year_gbp' ? 'international_fee_gbp' : $k;
                 $extra = $key === 'international_fee_gbp' ? ['academic_year' => '2026/27', 'notes' => 'From schools dataset; fee year assumed 2026/27 — confirm.'] : ['applies_to' => 'all'];
-                if ($key === 'international_fee_gbp' && is_string($v)) { $v = (float) preg_replace('/[^\d.]/', '', $v) ?: null; }
+                if ($key === 'international_fee_gbp' && is_string($v)) {
+                    $v = (float) preg_replace('/[^\d.]/', '', $v) ?: null;
+                }
                 $this->fact($course, $key, $v, $src, $st, $type, $extra);
             }
             $this->log[] = "school: {$u->name} ({$slug}) policy={$policy}";
@@ -200,7 +220,10 @@ class DatasetImporter
         foreach ($rows as $row) {
             $slug = self::slugFor($row['university']);
             $u = University::firstWhere('slug', $slug);
-            if (! $u) { $this->log[] = "fees: no university for {$row['university']} -> $slug (created)"; $u = University::create(['slug' => $slug, 'name' => $row['university'], 'international_policy' => 'not_published']); }
+            if (! $u) {
+                $this->log[] = "fees: no university for {$row['university']} -> $slug (created)";
+                $u = University::create(['slug' => $slug, 'name' => $row['university'], 'international_policy' => 'not_published']);
+            }
             $isGem = (bool) preg_match('/A101|A102|graduate/i', $row['course'] ?? '');
             $course = $u->courses()->where('entry_type', $isGem ? 'graduate' : 'standard')->first()
                 ?? Course::create(['university_id' => $u->id, 'slug' => $isGem ? 'graduate-entry' : 'medicine', 'title' => $row['course'] ?? 'Medicine', 'entry_type' => $isGem ? 'graduate' : 'standard', 'award' => $this->awardFrom($row['course'] ?? '')]);
@@ -230,7 +253,10 @@ class DatasetImporter
         foreach ($rows as $row) {
             $slug = self::slugFor($row['university']);
             $u = University::firstWhere('slug', $slug);
-            if (! $u) { $this->log[] = "statements: no university for {$row['university']} -> $slug (created)"; $u = University::create(['slug' => $slug, 'name' => $row['university'], 'international_policy' => 'not_published']); }
+            if (! $u) {
+                $this->log[] = "statements: no university for {$row['university']} -> $slug (created)";
+                $u = University::create(['slug' => $slug, 'name' => $row['university'], 'international_policy' => 'not_published']);
+            }
             $src = $row['sources'][0] ?? null;
             $status = ($row['status'] ?? '') === 'VERIFY-ON-PAGE' ? ReferenceFact::VERIFY_ON_PAGE : ReferenceFact::NOT_FOUND;
             $cycle = isset($row['entry_cycle']) ? $row['entry_cycle'].' entry' : null;
@@ -244,10 +270,16 @@ class DatasetImporter
             ];
             foreach ($map as $field => [$qual, $applies]) {
                 $v = $row[$field] ?? null;
-                if (! $v) continue;
+                if (! $v) {
+                    continue;
+                }
                 $st = $status;
-                if (preg_match('/NOT PUBLISHED|does not publish|No Nigeria/i', $v)) $st = ReferenceFact::NOT_PUBLISHED;
-                if (preg_match('/DATA UNAVAILABLE|NOT FOUND|not captured/i', $v) && $field !== 'waec_neco_statement') $st = ReferenceFact::NOT_FOUND;
+                if (preg_match('/NOT PUBLISHED|does not publish|No Nigeria/i', $v)) {
+                    $st = ReferenceFact::NOT_PUBLISHED;
+                }
+                if (preg_match('/DATA UNAVAILABLE|NOT FOUND|not captured/i', $v) && $field !== 'waec_neco_statement') {
+                    $st = ReferenceFact::NOT_FOUND;
+                }
                 $this->fact($u, $field, $v, $src, $st, 'official', ['qualification_code' => $qual, 'applies_to' => $applies, 'academic_year' => $cycle,
                     'notes' => $field === 'waec_neco_statement' && isset($row['waec_statement_is_medicine_specific']) ? ($row['waec_statement_is_medicine_specific'] ? 'Medicine-specific statement.' : 'General university statement; Medicine applicability must be confirmed.') : null]);
             }
@@ -260,29 +292,52 @@ class DatasetImporter
     private function awardFrom(string $title): ?string
     {
         foreach (['MB BChir', 'MB ChB', 'MBChB', 'MB BCh', 'MBBCh', 'BM BCh', 'BMBS', 'MBBS', 'BM BS', 'MB BS'] as $a) {
-            if (stripos($title, $a) !== false) return str_replace(' ', '', $a) === 'MBChB' ? 'MBChB' : $a;
+            if (stripos($title, $a) !== false) {
+                return str_replace(' ', '', $a) === 'MBChB' ? 'MBChB' : $a;
+            }
         }
+
         return null;
     }
 
     private function routeFrom($v): ?string
     {
-        if (! is_string($v)) return null;
+        if (! is_string($v)) {
+            return null;
+        }
         $u = Str::upper($v);
-        if (str_contains($u, 'UCAS') && (str_contains($u, 'DIRECT') || str_contains($u, 'OR'))) return 'BOTH';
-        if (str_contains($u, 'UCAS')) return 'UCAS';
-        if (str_contains($u, 'DIRECT')) return 'DIRECT';
+        if (str_contains($u, 'UCAS') && (str_contains($u, 'DIRECT') || str_contains($u, 'OR'))) {
+            return 'BOTH';
+        }
+        if (str_contains($u, 'UCAS')) {
+            return 'UCAS';
+        }
+        if (str_contains($u, 'DIRECT')) {
+            return 'DIRECT';
+        }
+
         return null;
     }
 
     private function testFrom($v): ?string
     {
-        if (! is_string($v)) return null;
+        if (! is_string($v)) {
+            return null;
+        }
         $u = Str::upper($v);
-        if (str_contains($u, 'GAMSAT') && str_contains($u, 'UCAT')) return 'UCAT/GAMSAT';
-        if (str_contains($u, 'UCAT')) return 'UCAT';
-        if (str_contains($u, 'GAMSAT')) return 'GAMSAT';
-        if (str_contains($u, 'NONE') || str_contains($u, 'NO ')) return 'NONE';
+        if (str_contains($u, 'GAMSAT') && str_contains($u, 'UCAT')) {
+            return 'UCAT/GAMSAT';
+        }
+        if (str_contains($u, 'UCAT')) {
+            return 'UCAT';
+        }
+        if (str_contains($u, 'GAMSAT')) {
+            return 'GAMSAT';
+        }
+        if (str_contains($u, 'NONE') || str_contains($u, 'NO ')) {
+            return 'NONE';
+        }
+
         return 'NOT_PUBLISHED';
     }
 }

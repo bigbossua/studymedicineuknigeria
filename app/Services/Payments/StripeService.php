@@ -5,7 +5,9 @@ namespace App\Services\Payments;
 use App\Models\Application;
 use App\Models\Payment;
 use App\Models\TierPrice;
+use App\Notifications\ApplicationNotification;
 use Stripe\Checkout\Session;
+use Stripe\Event;
 use Stripe\StripeClient;
 
 class StripeService
@@ -42,7 +44,9 @@ class StripeService
                 ? ['price' => $price->stripe_price_id, 'quantity' => 1]
                 : ['quantity' => 1, 'price_data' => ['currency' => strtolower($price->currency), 'unit_amount' => $price->amount_minor, 'product_data' => ['name' => $price->tier->name.($price->component !== 'full' ? ' — '.ucfirst($price->component) : ''), 'description' => 'Application '.$a->application_number]]]],
         ];
-        if (config('services.stripe.adaptive_pricing')) $params['adaptive_pricing'] = ['enabled' => true];
+        if (config('services.stripe.adaptive_pricing')) {
+            $params['adaptive_pricing'] = ['enabled' => true];
+        }
 
         $session = $this->client()->checkout->sessions->create($params);
         $payment->forceFill(['stripe_checkout_session_id' => $session->id, 'stripe_payment_intent_id' => is_string($session->payment_intent) ? $session->payment_intent : null])->save();
@@ -53,40 +57,63 @@ class StripeService
     }
 
     /** Idempotent webhook application. Returns true when the event changed state. */
-    public function applyEvent(\Stripe\Event $event): bool
+    public function applyEvent(Event $event): bool
     {
         $obj = $event->data->object;
         $payment = null;
-        if (isset($obj->metadata->payment_id)) $payment = Payment::find((int) $obj->metadata->payment_id);
-        if (! $payment && $obj instanceof Session) $payment = Payment::where('stripe_checkout_session_id', $obj->id)->first();
-        if (! $payment && isset($obj->payment_intent)) $payment = Payment::where('stripe_payment_intent_id', is_string($obj->payment_intent) ? $obj->payment_intent : $obj->payment_intent->id ?? null)->first();
-        if (! $payment && isset($obj->id) && str_starts_with((string) $obj->id, 'pi_')) $payment = Payment::where('stripe_payment_intent_id', $obj->id)->first();
-        if (! $payment) return false;
+        if (isset($obj->metadata->payment_id)) {
+            $payment = Payment::find((int) $obj->metadata->payment_id);
+        }
+        if (! $payment && $obj instanceof Session) {
+            $payment = Payment::where('stripe_checkout_session_id', $obj->id)->first();
+        }
+        if (! $payment && isset($obj->payment_intent)) {
+            $payment = Payment::where('stripe_payment_intent_id', is_string($obj->payment_intent) ? $obj->payment_intent : $obj->payment_intent->id ?? null)->first();
+        }
+        if (! $payment && isset($obj->id) && str_starts_with((string) $obj->id, 'pi_')) {
+            $payment = Payment::where('stripe_payment_intent_id', $obj->id)->first();
+        }
+        if (! $payment) {
+            return false;
+        }
 
         $a = $payment->application;
         switch ($event->type) {
             case 'checkout.session.completed':
             case 'checkout.session.async_payment_succeeded':
-                if (($obj->payment_status ?? 'paid') !== 'paid') return false;
-                if ($payment->status === 'SUCCEEDED') return false;
+                if (($obj->payment_status ?? 'paid') !== 'paid') {
+                    return false;
+                }
+                if ($payment->status === 'SUCCEEDED') {
+                    return false;
+                }
                 $payment->forceFill(['status' => 'SUCCEEDED', 'succeeded_at' => now(), 'stripe_payment_intent_id' => is_string($obj->payment_intent ?? null) ? $obj->payment_intent : $payment->stripe_payment_intent_id])->save();
                 $a->record('payment.succeeded', ['payment_id' => $payment->id, 'amount' => $payment->formattedAmount()]);
-                $a->user->notify(new \App\Notifications\ApplicationNotification($a, 'payment.succeeded', ['amount' => $payment->formattedAmount()]));
+                $a->user->notify(new ApplicationNotification($a, 'payment.succeeded', ['amount' => $payment->formattedAmount()]));
+
                 return true;
             case 'checkout.session.expired':
-                if ($payment->status === 'INITIATED') { $payment->update(['status' => 'EXPIRED']); return true; }
+                if ($payment->status === 'INITIATED') {
+                    $payment->update(['status' => 'EXPIRED']);
+
+                    return true;
+                }
+
                 return false;
             case 'payment_intent.payment_failed':
                 $payment->update(['status' => 'FAILED', 'note' => $obj->last_payment_error->message ?? null]);
                 $a->record('payment.failed', ['payment_id' => $payment->id]);
+
                 return true;
             case 'charge.refunded':
                 $refunded = (int) ($obj->amount_refunded ?? 0);
                 $payment->update(['refunded_minor' => $refunded, 'status' => $refunded >= $payment->amount_minor ? 'REFUNDED_FULL' : 'REFUNDED_PARTIAL']);
+
                 return true;
             case 'charge.dispute.created':
                 $payment->update(['status' => 'DISPUTED']);
                 $a->record('payment.disputed', ['payment_id' => $payment->id]);
+
                 return true;
         }
 

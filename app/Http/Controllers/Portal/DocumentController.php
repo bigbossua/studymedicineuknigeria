@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Document;
 use App\Models\DocumentVersion;
+use App\Models\User;
+use App\Notifications\StaffNotification;
 use App\Services\Applications\DocumentCatalogue;
 use App\Services\Applications\StageResolver;
 use App\Services\Documents\DocumentStore;
@@ -47,7 +49,7 @@ class DocumentController extends Controller
         $version = $this->store->store($document, $request->file('file'), $request->user()->id);
         $application->record('document.uploaded', ['document_id' => $document->id, 'title' => $document->title, 'version' => $version->version], $request->user()->id);
         $this->stages->sync($application);
-        \App\Models\User::where('role', 'admin')->get()->each->notify(new \App\Notifications\StaffNotification('Document uploaded — '.$application->application_number, [$document->title.' v'.$version->version.' awaits review.'], route('admin.applications.show', $application)));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('Document uploaded — '.$application->application_number, [$document->title.' v'.$version->version.' awaits review.'], route('admin.applications.show', $application)));
 
         return redirect()->route('portal.documents.index', $application)->with('status', $document->title.' received — under review.');
     }
@@ -60,7 +62,7 @@ class DocumentController extends Controller
         \DB::table('document_access_log')->insert(['document_version_id' => $version->id, 'user_id' => $user->id, 'ip' => $request->ip(), 'purpose' => 'download', 'created_at' => now()]);
         $bytes = $this->store->contents($version);
 
-        return response()->streamDownload(fn () => print($bytes), $version->original_filename, [
+        return response()->streamDownload(fn () => print ($bytes), $version->original_filename, [
             'Content-Type' => $version->mime, 'X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'private, no-store', 'Content-Length' => strlen($bytes),
         ]);
     }

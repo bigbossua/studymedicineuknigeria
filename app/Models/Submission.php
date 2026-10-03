@@ -15,26 +15,58 @@ class Submission extends Model
     ];
 
     protected $guarded = [];
+
     protected $casts = ['submitted_at' => 'datetime'];
 
-    public function application() { return $this->belongsTo(Application::class); }
-    public function university() { return $this->belongsTo(University::class); }
-    public function course() { return $this->belongsTo(Course::class); }
-    public function choices() { return $this->hasMany(SubmissionChoice::class)->orderBy('choice_order'); }
-    public function events() { return $this->hasMany(SubmissionEvent::class)->latest('created_at'); }
-    public function authorisation() { return $this->belongsTo(Authorisation::class); }
+    public function application()
+    {
+        return $this->belongsTo(Application::class);
+    }
+
+    public function university()
+    {
+        return $this->belongsTo(University::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function choices()
+    {
+        return $this->hasMany(SubmissionChoice::class)->orderBy('choice_order');
+    }
+
+    public function events()
+    {
+        return $this->hasMany(SubmissionEvent::class)->latest('created_at');
+    }
+
+    public function authorisation()
+    {
+        return $this->belongsTo(Authorisation::class);
+    }
 
     public function transition(string $to, ?int $actorId = null, ?string $note = null, ?string $ref = null): void
     {
         $from = $this->status;
         $this->status = $to;
-        if ($ref) $this->external_reference = $ref;
-        if ($to === 'SUBMITTED') { $this->submitted_at = now(); $this->submitted_by = $actorId ? (string) $actorId : 'STUDENT'; }
+        if ($ref) {
+            $this->external_reference = $ref;
+        }
+        if ($to === 'SUBMITTED') {
+            $this->submitted_at = now();
+            $this->submitted_by = $actorId ? (string) $actorId : 'STUDENT';
+        }
         $this->save();
         $this->events()->create(['from_status' => $from, 'to_status' => $to, 'actor_user_id' => $actorId, 'note' => $note, 'external_reference' => $ref]);
     }
 
-    public function routeLabel(): string { return self::ROUTES[$this->route_code] ?? $this->route_code; }
+    public function routeLabel(): string
+    {
+        return self::ROUTES[$this->route_code] ?? $this->route_code;
+    }
 
     public function statusLabel(): string
     {

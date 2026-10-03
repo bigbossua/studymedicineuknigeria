@@ -41,7 +41,9 @@ class DocumentCatalogue
     public static function allowedMimes(string $code): array
     {
         $out = [];
-        foreach (self::TYPES[$code]['formats'] ?? ['pdf'] as $ext) $out = array_merge($out, self::MIME[$ext]);
+        foreach (self::TYPES[$code]['formats'] ?? ['pdf'] as $ext) {
+            $out = array_merge($out, self::MIME[$ext]);
+        }
 
         return $out;
     }

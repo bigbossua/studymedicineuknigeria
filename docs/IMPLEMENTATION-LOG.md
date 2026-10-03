@@ -205,6 +205,14 @@ Owner directive of 2026-10-03 ("Google organic growth + SEO + long-tail + intern
 - **Requirements hub** gained a "which route is yours" table (what you hold → published route → what to check first → page) and four FAQs; **Admissions hub** gained a "where are you today" table (position in the cycle → what it means → the one next step) and three FAQs. Both hubs now answer their head intent on the page rather than only routing.
 - **Eligibility check (friction found by running it as different applicants)**: the headline above the route map was a generic sentence chosen from the route statuses, so a Nigerian graduate was told "foundation or A-level/IB routes appear possible". The headline is now written per qualification (WAEC/NECO, A-levels/IB, foundation, degree), with a regression test. `#direct` anchor added to the how-to-apply page for the direct-application schools.
 
+## Stage 30: fact verification from any browser (P5)
+
+The network policy blocks every official domain from this environment, and the admin verification queue needs a deployed site. Neither should hold up the 636 pending facts, so verification now runs as a worksheet:
+
+- `php artisan smukn:facts-export` writes `data/verification/worksheet-YYYY-MM-DD.csv`: every VERIFY-ON-PAGE, NOT_FOUND and REVIEW_DUE fact with its exact wording, source URL and a stable reference (`subject:slug:key:year`, never a database id), ordered by priority (1 cycle dates, fees and visa figures; 2 Nigerian-applicant statements; 3 the rest). The 2026-10-03 worksheet is committed.
+- The reviewer opens each source in their own browser and fills `decision` (verified / not_published / source_changed / archive), `verified_value` only when the page wording differs, `new_source_url`, `reviewer_note` and `verified_on`.
+- `php artisan smukn:facts-import decisions.csv [--dry-run]` applies the decisions: `verified` is refused without a source URL and a date; values are replaced only from `verified_value`; review-due dates follow the admin rules (six months for fees and deadlines, twelve otherwise); notes record the review; an admin-audit row is written; re-running is a no-op. `ops/deploy.sh` replays every committed `decisions-*.csv` after migrations so staging and production carry the same decisions. Round-trip test added.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

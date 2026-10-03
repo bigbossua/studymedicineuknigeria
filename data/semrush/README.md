@@ -13,7 +13,9 @@ recorded here. Nothing on the site quotes a Semrush figure unless it appears in 
    Save as `lookups-YYYY-MM-DD.csv` in this folder (keep the header row).
 2. Run `php artisan smukn:semrush-import data/semrush/lookups-YYYY-MM-DD.csv`. It rewrites the demand table in
    `docs/research/02-nigerian-search-demand.md` from "DATA UNAVAILABLE" to the recorded figures with the lookup date,
-   and prints the queries whose evidence now supports or refutes a planned page in `docs/decision/page-asset-register.md`.
+   prints the queries whose evidence now supports or refutes a planned page in `docs/decision/page-asset-register.md`,
+   and copies volume and difficulty into the SEO decision register rows named in the `register_ids` column
+   (`data/seo/decision-register.csv`, see `docs/seo/DECISION-ENGINE.md`), noting database, date and keyword in each row's sources.
 3. Commit the CSV and the regenerated research doc.
 
 Rules: never type a figure you did not read in Semrush; a blank cell is a valid result; Nigerian database first.

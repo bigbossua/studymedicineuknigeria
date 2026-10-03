@@ -8,12 +8,26 @@ Design system 19.7: real UK academic and clinical learning settings and Nigerian
 2. Download the original. Rename it to the slug in the table (`home-hero.jpg`) and place it in `brand/photos/`.
 3. Add an entry to `brand/photos/manifest.json` → `photos`:
    ```json
-   {"slug": "home-hero", "alt": "…descriptive alt text…", "credit": "Photographer Name / Unsplash", "source_url": "https://unsplash.com/photos/…", "licence": "Unsplash License", "focal": "50% 35%"}
+   {"slug": "home-hero", "page": "/ (hero, right column)", "alt": "…descriptive alt text…", "credit": "Photographer Name / Unsplash", "source_url": "https://unsplash.com/photos/…", "licence": "Unsplash License", "focal": "50% 35%"}
    ```
    Alt text describes what is literally in the frame, never who the people are. Attribution is not legally required by the Unsplash License but we always record it.
 4. Run `php artisan smukn:images`. It writes WebP + JPEG at 480/960/1440 px and a blurred placeholder to `public/images/photos/` (originals never ship) and refreshes `public/images/photos/manifest.json`.
 5. The page uses `<x-photo slug="home-hero" sizes="…" :priority="true" />`. A slot whose photo is not built renders nothing, so pages never break while the set is incomplete.
 6. Commit `brand/photos/manifest.json` and the generated `public/images/photos/*` (originals in `brand/photos/*.jpg` are git-ignored to keep the repository small).
+
+## The record kept for every image
+
+Owner directive 2026-10-03: every photograph used on the site has a record. The two manifests together hold it:
+
+| Field | Where | Who fills it |
+|---|---|---|
+| Source and photographer credit | `brand/photos/manifest.json` → `credit`, `source_url`, `licence` | owner, from the Unsplash page |
+| Page and slot it is used on | `manifest.json` → `page` (free text, e.g. `/admissions/ucat (header)`) | owner (the slot table below says where each slug renders) |
+| Alt text | `manifest.json` → `alt` (what is literally in the frame; never who the people are) | owner |
+| Original dimensions | `public/images/photos/manifest.json` → `width`, `height` | `smukn:images` |
+| Filenames and optimisation | `public/images/photos/manifest.json` → `sizes` (WebP and JPEG at 480/960/1440 px, blurred placeholder), `generated_at` | `smukn:images` |
+
+Nothing is published without the `licence` and `source_url` fields (the build command refuses the entry).
 
 ## Shot list (priority order)
 

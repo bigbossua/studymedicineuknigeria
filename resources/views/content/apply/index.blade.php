@@ -24,6 +24,15 @@
     </div>
     <a href="{{ route('apply.services') }}" class="btn btn-tertiary mt-4">Full list of what is included and excluded</a>
 </section>
+<section class="container-site pb-14 grid lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-5"><h2 class="text-balance">What you need before you create an account</h2><p class="mt-3 text-ink-700 text-[0.9375rem]">Nothing is taken when you create an account or start an application; a service fee applies only to the level you choose and is shown before you pay. You can start today with incomplete information and add documents as you obtain them.</p></div>
+    <div class="lg:col-span-7"><ul class="grid sm:grid-cols-2 gap-3 text-[0.9375rem]">
+        @foreach([['An email address you check', 'Verification, document feedback and messages from us arrive there.'], ['Your name as written in your international passport', 'It must match across UCAS, the university and the visa; we check every document against it.'], ['Your qualifications so far', 'WAEC or NECO results, A-levels or IB (achieved or predicted), any degree, any English test; the eligibility check maps them to open routes.'], ['An intake year in mind', 'The year you want to start decides every deadline in your plan; we show the calendar for it.']] as [$h, $p])
+            <li class="card"><p class="font-semibold">{{ $h }}</p><p class="mt-1 text-ink-700">{{ $p }}</p></li>
+        @endforeach
+    </ul>
+    <div class="mt-6 divide-y divide-ink-100">@foreach($faqs as $f)<details class="py-3" id="q{{ $f['id'] }}"><summary class="cursor-pointer font-semibold">{{ $f['q'] }}</summary><div class="mt-2 text-ink-700 prose-site text-[0.9375rem]">{!! $f['a'] !!}</div></details>@endforeach</div></div>
+</section>
 <section class="bg-navy-50 border-y border-ink-200"><div class="container-site py-12 grid lg:grid-cols-12 gap-8">
     <div class="lg:col-span-5"><h2>What we promise, and what we never claim</h2></div>
     <div class="lg:col-span-7 text-[0.9375rem] text-ink-700 space-y-2">

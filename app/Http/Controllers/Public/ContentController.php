@@ -214,8 +214,11 @@ class ContentController extends Controller
     public function apply()
     {
         Funnel::track('apply_viewed');
+        $faqs = collect($this->faqItems())->whereIn('id', [40, 12])->values();
+        $applySeo = $this->seo('Apply Online: application support for Nigerian applicants', 'Create your account, enter your qualifications once, upload the documents that apply to you, approve your package and track submission. No guarantees claimed.', 'apply.index', [['label' => 'Apply Online']], false);
+        $applySeo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.apply.index', ['seo' => $this->seo('Apply Online: application support for Nigerian applicants', 'Create your account, enter your qualifications once, upload the documents that apply to you, approve your package and track submission. No guarantees claimed.', 'apply.index', [['label' => 'Apply Online']], false), 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
+        return view('content.apply.index', ['seo' => $applySeo, 'faqs' => $faqs, 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
     }
 
     public function services()

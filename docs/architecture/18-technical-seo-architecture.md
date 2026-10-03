@@ -85,4 +85,4 @@ Custom 404 with search + top paths; 410 for deliberately removed pages; `redirec
 
 ## 18.10 Measurement (brief 9, 55)
 
-GA4 with consent mode; events in 12.9; server-side mirror table; Search Console property verified via DNS; monthly export of GSC queries filtered `country=NGA` into `asset_register.semrush_json`/notes for the research loop (brief 54, 99).
+GA4 with consent mode (implemented stage 10: optional `SITE_GA4_ID`, consent banner, public pages only); events in 12.9; server-side mirror table (`funnel_events`, Admin → Funnel); Search Console property verified via DNS; monthly export of GSC queries filtered `country=NGA` into `asset_register.semrush_json`/notes for the research loop (brief 54, 99).

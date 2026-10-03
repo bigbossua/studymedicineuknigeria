@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdminAction;
+use App\Models\FunnelEvent;
 use App\Models\Lead;
 use App\Models\Payment;
 use App\Models\ServiceTier;
@@ -110,6 +111,28 @@ class MiscAdminController extends Controller
         AdminAction::log('two_factor.reset', $user);
 
         return back()->with('status', "Two-step verification removed for {$user->email}. They will enrol again at next sign-in.");
+    }
+
+    public function funnel(Request $request)
+    {
+        $days = (int) $request->integer('days', 30);
+        $days = in_array($days, [7, 30, 90, 365], true) ? $days : 30;
+        $since = now()->subDays($days);
+        $counts = FunnelEvent::where('occurred_at', '>=', $since)->selectRaw('name, count(*) c, count(distinct coalesce(application_hash, visitor_hash, user_id)) u')->groupBy('name')->get()->keyBy('name');
+        $rows = [];
+        $prev = null;
+        foreach (FunnelEvent::ORDER as $name) {
+            $u = (int) ($counts[$name]->u ?? 0);
+            $rows[] = ['name' => $name, 'events' => (int) ($counts[$name]->c ?? 0), 'unique' => $u, 'of_previous' => $prev ? ($prev > 0 ? round($u / $prev * 100) : null) : null];
+            if ($u > 0) {
+                $prev = $u;
+            }
+        }
+        $other = $counts->except(FunnelEvent::ORDER)->sortByDesc('c');
+        $byTier = FunnelEvent::where('occurred_at', '>=', $since)->whereIn('name', ['application_started', 'payment_completed', 'submitted'])->whereNotNull('tier')->selectRaw('tier, name, count(distinct application_hash) c')->groupBy('tier', 'name')->get()->groupBy('tier');
+        $sources = FunnelEvent::where('occurred_at', '>=', $since)->where('name', 'lead_created')->selectRaw("coalesce(json_extract(utm, '$.utm_source'), '(direct / organic)') src, count(*) c")->groupBy('src')->orderByDesc('c')->take(10)->get();
+
+        return view('admin.funnel', ['seo' => Seo::make('Funnel')->noindex(), 'days' => $days, 'rows' => $rows, 'other' => $other, 'byTier' => $byTier, 'sources' => $sources, 'total' => FunnelEvent::count()]);
     }
 
     public function audit()

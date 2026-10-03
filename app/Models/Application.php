@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Stage;
+use App\Support\Funnel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -81,6 +82,7 @@ class Application extends Model
     public function record(string $type, array $payload = [], ?int $actorId = null): ApplicationEvent
     {
         $this->forceFill(['last_activity_at' => now()])->saveQuietly();
+        Funnel::fromApplicationEvent($this, $type, $payload, $actorId);
 
         return $this->events()->create(['type' => $type, 'payload' => $payload, 'actor_user_id' => $actorId]);
     }

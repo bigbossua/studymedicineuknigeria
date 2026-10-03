@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Lead;
 use App\Models\User;
+use App\Support\Funnel;
 use App\Support\Seo;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -71,6 +72,7 @@ class AuthController extends Controller
         $user = User::create($data + ['country' => 'NG']);
         Lead::where('email', Str::lower($data['email']))->whereNull('user_id')->update(['user_id' => $user->id, 'status' => 'converted']);
         event(new Registered($user));
+        Funnel::track('account_created', [], null, $user->id);
         Auth::login($user);
         $request->session()->regenerate();
 

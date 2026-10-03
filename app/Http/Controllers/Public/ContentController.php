@@ -11,6 +11,7 @@ use App\Models\Topic;
 use App\Models\University;
 use App\Models\User;
 use App\Notifications\StaffNotification;
+use App\Support\Funnel;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -186,6 +187,7 @@ class ContentController extends Controller
         ]);
         $r = $this->assess($d);
         Lead::create(['email' => strtolower($d['email']), 'name' => $d['name'], 'whatsapp' => $d['whatsapp'] ?? null, 'source_page' => route('apply.eligibility'), 'utm' => $request->only('utm_source', 'utm_medium', 'utm_campaign'), 'eligibility_answers' => collect($d)->except(['name', 'email', 'whatsapp', 'consent'])->all(), 'eligibility_result' => $r, 'status' => 'new']);
+        Funnel::track('lead_created', ['qualification' => $d['qualification'], 'intake_year' => (int) $d['intake_year'], 'tier' => $r['tier'] ?? null]);
         $request->session()->put('lead', ['name' => $d['name'], 'email' => $d['email']]);
         User::where('role', 'admin')->get()->each->notify(new StaffNotification('New lead: '.$d['name'], [$d['email'].' · '.$r['summary']], route('admin.leads')));
 

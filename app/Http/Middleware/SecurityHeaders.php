@@ -24,13 +24,14 @@ class SecurityHeaders
         // Enforced since stage 8. Scripts: only our Vite bundles (nonce) – no inline handlers exist in the views.
         // Styles: Vite bundle plus inline style attributes (progress widths); fonts self-hosted; Stripe Checkout is a
         // hosted redirect so only form-action/frame-src need its hosts. JSON-LD data blocks are not subject to script-src.
+        $ga = config('site.ga4_id') && ! $request->is('portal*', 'admin*'); // third-party analytics never load inside the portal or admin
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'nonce-{$nonce}'",
+            "script-src 'self' 'nonce-{$nonce}'".($ga ? ' https://www.googletagmanager.com' : ''),
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: https:",
             "font-src 'self'",
-            "connect-src 'self'",
+            "connect-src 'self'".($ga ? ' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com' : ''),
             'frame-src https://checkout.stripe.com https://js.stripe.com',
             "frame-ancestors 'none'",
             "object-src 'none'",

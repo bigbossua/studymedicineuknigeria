@@ -16,6 +16,7 @@
     <link rel="preload" href="/fonts/SourceSerif4-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Inter-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('partials.analytics')
     @stack('head')
 </head>
 <body class="min-h-screen flex flex-col {{ $bodyClass ?? '' }}">
@@ -118,6 +119,7 @@
     <a href="{{ route('apply.index') }}" class="btn btn-primary">Apply Online</a>
 </div>
 @endunless
+@stack('body-end')
 @stack('scripts')
 </body>
 </html>

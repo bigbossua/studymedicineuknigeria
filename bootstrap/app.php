@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SecurityHeaders::class);
         $middleware->alias(['staff' => EnsureStaff::class, '2fa' => EnsureTwoFactor::class]);
         $middleware->validateCsrfTokens(except: ['webhooks/stripe']);
+        $middleware->encryptCookies(except: ['smukn_consent']); // plain value so the layout can decide whether to show the banner
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

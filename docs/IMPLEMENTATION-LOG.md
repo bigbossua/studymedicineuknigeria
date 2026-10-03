@@ -69,6 +69,13 @@ Decisions made during the build, in order. Research and decision documents remai
 - `ops/backup.sh` (server side, fed over SSH) dumps the database with a private defaults file (no password on the command line), adds `shared/.env` and the private document store for the weekly full scope, writes a manifest, encrypts with AES-256-CBC/PBKDF2 from `BACKUP_PASSPHRASE`, checksums, and prunes its own staging copies. Tested locally against a fake target: decrypts with the right passphrase, refuses the wrong one, passphrase never touches disk.
 - `.github/workflows/backup-hostinger.yml`: daily db / weekly full schedule plus manual dispatch; same configuration guard as the other Hostinger workflows plus `BACKUP_PASSPHRASE`; fetches, verifies the checksum, confirms the payload is not readable unencrypted, uploads as an artifact with short retention. `ops/RESTORE.md` documents restore and the quarterly restore test.
 
+## Stage 10: funnel measurement (P7) – first-party events and consent-gated GA4
+
+- `funnel_events` table + `App\Support\Funnel` mirror the reporting events of 12.9 server-side: `lead_created` (eligibility check), `account_created` (registration) and every application event through one hook in `Application::record()` (`application_started`, `step_completed`, `document_uploaded/accepted/rejected`, `payment_started/completed`, `approval_requested`, `student_approved`, `submitted`, `university_response`, `application_withdrawn`). Rows hold a sha256 of the application number, a keyed hash of the session id, tier, intake year, source page and UTM parameters – never names, emails or application numbers. Tracking never throws.
+- Admin → Funnel: unique counts per step for 7/30/90/365 days, conversion of each step from the previous one, split by service tier, lead sources by `utm_source`, and the current analytics configuration.
+- GA4 is optional and off by default: `SITE_GA4_ID` blank means no third-party request and no banner. When set, public pages show a consent banner (first-party cookie `smukn_consent`, one year); `app.js` loads gtag only after *Accept analytics*, with ad storage denied, IP anonymisation and Google signals off, and forwards the queued public-site events (`lead_created`, `account_created`). The portal and admin never load it and their CSP never includes Google hosts. Privacy notice updated accordingly.
+- Tests: 34 pass (4 new). Browser check: banner on first visit, decline sets the cookie and sends nothing, accept loads the tag and pushes the lead event once, the admin funnel renders.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

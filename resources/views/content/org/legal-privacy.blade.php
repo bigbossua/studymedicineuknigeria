@@ -10,6 +10,6 @@
     <h2>How long we keep it</h2><p>Active applications for the cycle. Documents are deleted 12 months after an application closes; application records are anonymised after 24 months, except payment records (6 years) and approval records (6 years) which keep dates and fingerprints but not documents. Access logs are kept 24 months. Backups expire on a 30-day cycle.</p>
     <h2>Security</h2><p>Documents are stored privately, never at public URLs, scanned on upload, encrypted where most sensitive, and every access is logged. Staff access is role-based.</p>
     <h2>Your rights</h2><p>You can access, correct, export and delete your data, object to or restrict processing, and withdraw consent. Use the Profile page in your portal or email us. You may complain to the UK Information Commissioner's Office or the Nigeria Data Protection Commission.</p>
-    <h2>Cookies</h2><p>We use strictly necessary cookies for sign-in and security. Analytics cookies are set only with your consent.</p>
+    <h2>Cookies</h2><p>We use strictly necessary cookies for sign-in and security. Google Analytics cookies are set on the public site only if you choose <em>Accept analytics</em> in the banner; you can change your mind by clearing cookies for this site. The student portal never loads third-party analytics. Separately, we keep first-party counts of application steps (for example “application started”, “document uploaded”) that contain no names, email addresses or application numbers, to improve the service.</p>
 </div></article>
 </x-layouts.public>

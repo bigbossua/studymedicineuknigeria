@@ -38,7 +38,7 @@ A statement of what exists, what is verified, and what is not, taken before any 
 - **P4** Research gaps: 20 schools with identity-only records; fee year unconfirmed for several; visa fee, living costs, UCAT fee not found; all facts need on-page verification (admin queue).
 - **P5** Semrush/GSC/GA4 unavailable in this environment → demand evidence is SERP observation only; asset-register rows marked † need re-confirmation.
 - **P6** Portal and admin have no dark mode; some admin tables are dense on mobile.
-- **P7** GA4 not wired (no property); server-side analytics table exists in the design but not implemented.
+- **P7** ~~server-side analytics table~~ implemented (stage 10: `funnel_events` + Admin → Funnel); GA4 loader is consent-gated and switches on only when the owner supplies `SITE_GA4_ID` (no property yet).
 
 ## 4. What must not be rebuilt
 

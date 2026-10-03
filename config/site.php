@@ -14,6 +14,10 @@ return [
     'og_image' => '/images/brand/og-default.png',
     'status_statement' => 'StudyMedicineUKNigeria is an independent application-support service. We are not an agent of, or affiliated with, any university, UCAS, the British Council, the GMC or any other body unless expressly stated on our Our status page. We do not receive commission from any university.',
 
+    // GA4 measurement ID (G-XXXXXXX). Blank = no third-party analytics at all. When set, the public site shows a
+    // consent banner and loads gtag only after consent; the portal and admin never load it (funnel_events covers them).
+    'ga4_id' => env('SITE_GA4_ID'),
+
     // Facts whose verification_status is not VERIFIED are hidden in production unless this is true.
     'publish_unverified' => env('SITE_PUBLISH_UNVERIFIED', false),
 

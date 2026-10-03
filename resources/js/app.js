@@ -36,3 +36,30 @@ document.addEventListener('submit', (e) => {
     const form = e.target.closest('form[data-confirm]');
     if (form && !window.confirm(form.dataset.confirm)) e.preventDefault();
 });
+
+// Consent-gated Google Analytics 4 (public site only). Nothing loads until the visitor accepts;
+// the choice is kept in a first-party cookie for a year. See config/site.php ga4_id.
+(() => {
+    const id = document.querySelector('meta[name="ga4-id"]')?.content;
+    if (!id) return;
+    const nonce = document.querySelector('meta[name="csp-nonce"]')?.content || '';
+    const cookie = () => document.cookie.split('; ').find((c) => c.startsWith('smukn_consent='))?.split('=')[1];
+    const remember = (v) => { document.cookie = `smukn_consent=${v}; Max-Age=31536000; Path=/; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`; };
+    const load = () => {
+        if (window.__smuknGa) return;
+        window.__smuknGa = true;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'granted' });
+        window.gtag('js', new Date());
+        window.gtag('config', id, { anonymize_ip: true, allow_google_signals: false });
+        const s = document.createElement('script');
+        s.async = true; s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`; if (nonce) s.setAttribute('nonce', nonce);
+        document.head.appendChild(s);
+        const pending = document.querySelector('meta[name="funnel-events"]')?.content;
+        if (pending) { try { JSON.parse(pending).forEach((e) => window.gtag('event', e.name, e.params || {})); } catch (e) { /* ignore */ } }
+    };
+    const banner = document.querySelector('[data-consent-banner]');
+    banner?.querySelectorAll('[data-consent]').forEach((b) => b.addEventListener('click', () => { remember(b.dataset.consent); banner.remove(); if (b.dataset.consent === 'granted') load(); }));
+    if (cookie() === 'granted') load();
+})();

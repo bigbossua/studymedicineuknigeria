@@ -40,6 +40,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 - **Changed**: conditional brand suffix, every title/description rewritten, legal descriptions, guard test over the sitemap, real content on both hubs.
 - **Tested / passed**: 35 tests; re-crawl shows zero title/description findings.
 
+## Cycle 7 — P6 accessibility (stage 12)
+
+- **Inspected**: axe-core over 55 pages (public desktop/mobile, portal, admin). **Found**: 7 rule failures (contrast, landmarks, unlabelled selects/inputs, scroll regions, pagination ARIA, empty headers). **Changed**: all fixed, custom pagination view. **Tested / passed**: re-run zero violations; 35 tests.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

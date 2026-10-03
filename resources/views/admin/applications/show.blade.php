@@ -15,13 +15,13 @@
                         <td>@if($d->currentVersion)<a href="{{ route('admin.applications.document',[$a,$d]) }}" target="_blank" rel="noopener">v{{ $d->currentVersion->version }} ↗</a><br><span class="text-ink-500">{{ round($d->currentVersion->size_bytes/1024) }} KB · scan: {{ $d->currentVersion->scan_status }}{{ $d->currentVersion->encrypted ? ' · encrypted' : '' }}</span>@else —@endif</td>
                         <td>@if($d->currentVersion && in_array($d->status->value,['UPLOADED','UNDER_REVIEW','ACCEPTED']))
                             <form method="post" action="{{ route('admin.applications.document.review',[$a,$d]) }}" class="flex flex-col gap-1">@csrf
-                                <select name="decision" class="input min-h-9 py-1 text-[0.8125rem]"><option value="accept">Accept</option><option value="reject">Reject (reason)</option><option value="replace">Request replacement</option><option value="waive">Waive (not required)</option></select>
+                                <select name="decision" class="input min-h-9 py-1 text-[0.8125rem]" aria-label="Document decision"><option value="accept">Accept</option><option value="reject">Reject (reason)</option><option value="replace">Request replacement</option><option value="waive">Waive (not required)</option></select>
                                 <input name="reason" class="input min-h-9 py-1 text-[0.8125rem]" placeholder="Reason (shown to student)"><button class="btn btn-secondary btn-sm">Apply</button></form>
                         @elseif($d->status->value==='REQUIRED')<form method="post" action="{{ route('admin.applications.document.review',[$a,$d]) }}">@csrf<input type="hidden" name="decision" value="waive"><input type="hidden" name="reason" value="Waived by staff"><button class="btn btn-tertiary text-[0.8125rem]">Waive</button></form>@endif</td></tr>
                 @endforeach</tbody></table>
                 <details class="mt-4"><summary class="cursor-pointer text-[0.9375rem] font-medium">Request a document</summary>
                     <form method="post" action="{{ route('admin.applications.document.request',$a) }}" class="grid sm:grid-cols-3 gap-2 mt-2">@csrf
-                        <select name="code" class="input">@foreach($catalogue as $code=>$m)<option value="{{ $code }}">{{ $m['title'] }}</option>@endforeach</select>
+                        <select name="code" class="input" aria-label="Document type to request">@foreach($catalogue as $code=>$m)<option value="{{ $code }}">{{ $m['title'] }}</option>@endforeach</select>
                         <input name="title" class="input" placeholder="Custom title (optional)"><input name="reason" required class="input" placeholder="Why it is needed (shown to student)">
                         <button class="btn btn-secondary sm:col-span-3">Request document</button></form></details>
             </section>
@@ -41,7 +41,7 @@
                         @if($s->external_reference)<p class="text-[0.875rem]">Reference: <span class="font-mono">{{ $s->external_reference }}</span></p>@endif
                         @if(!in_array($s->status,['PROPOSED','CLOSED']))
                         <form method="post" action="{{ route('admin.applications.submission.update',[$a,$s]) }}" class="grid sm:grid-cols-4 gap-2 mt-3">@csrf
-                            <select name="status" class="input">@foreach(['PACKAGE_READY','SUBMITTED','ACKNOWLEDGED','INTERVIEW','OFFER_CONDITIONAL','OFFER_UNCONDITIONAL','REJECTED','WAITLISTED','ACCEPTED_BY_STUDENT','DECLINED','CLOSED'] as $st)<option value="{{ $st }}">{{ $st }}</option>@endforeach</select>
+                            <select name="status" class="input" aria-label="New submission status">@foreach(['PACKAGE_READY','SUBMITTED','ACKNOWLEDGED','INTERVIEW','OFFER_CONDITIONAL','OFFER_UNCONDITIONAL','REJECTED','WAITLISTED','ACCEPTED_BY_STUDENT','DECLINED','CLOSED'] as $st)<option value="{{ $st }}">{{ $st }}</option>@endforeach</select>
                             <input name="external_reference" class="input" placeholder="Reference (UCAS ID / university ref)"><input name="note" class="input" placeholder="Note (sent to student for responses)"><button class="btn btn-secondary">Update</button></form>
                         @endif
                         <ul class="mt-2 text-[0.8125rem] text-ink-500">@foreach($s->events as $e)<li>{{ $e->created_at->format('j M H:i') }} → {{ $e->to_status }} {{ $e->note }}</li>@endforeach</ul>
@@ -49,10 +49,10 @@
                 @endforeach
                 <details><summary class="cursor-pointer text-[0.9375rem] font-medium">Propose a submission target</summary>
                     <form method="post" action="{{ route('admin.applications.submission.propose',$a) }}" class="grid sm:grid-cols-2 gap-2 mt-2">@csrf
-                        <select name="university_id" class="input"><option value="">University (optional for UCAS multi-choice)</option>@foreach($universities as $u)<option value="{{ $u->id }}">{{ $u->name }}</option>@endforeach</select>
-                        <select name="course_id" class="input"><option value="">Course</option>@foreach($courses as $c)<option value="{{ $c->id }}">{{ $c->university->name }} — {{ $c->title }} {{ $c->ucas_code }}</option>@endforeach</select>
+                        <select name="university_id" class="input" aria-label="University"><option value="">University (optional for UCAS multi-choice)</option>@foreach($universities as $u)<option value="{{ $u->id }}">{{ $u->name }}</option>@endforeach</select>
+                        <select name="course_id" class="input" aria-label="Course"><option value="">Course</option>@foreach($courses as $c)<option value="{{ $c->id }}">{{ $c->university->name }} — {{ $c->title }} {{ $c->ucas_code }}</option>@endforeach</select>
                         <input name="intake" class="input" value="September {{ $a->intake_year }}" required>
-                        <select name="route_code" class="input">@foreach($routes as $code=>$label)<option value="{{ $code }}">{{ $code }}</option>@endforeach</select>
+                        <select name="route_code" class="input" aria-label="Application route">@foreach($routes as $code=>$label)<option value="{{ $code }}">{{ $code }}</option>@endforeach</select>
                         <textarea name="choices" class="input sm:col-span-2 min-h-20" placeholder="UCAS choices, one per line (max 4 medicine + 1 other)"></textarea>
                         <textarea name="notes" class="input sm:col-span-2 min-h-16" placeholder="Internal notes"></textarea>
                         <button class="btn btn-secondary sm:col-span-2">Propose</button></form>
@@ -60,7 +60,7 @@
             </section>
 
             <section class="card"><p class="eyebrow mb-3">Messages</p>
-                <ol class="space-y-2 max-h-96 overflow-y-auto">@foreach($a->messages as $m)<li class="text-[0.9375rem] {{ $m->sender_user_id===$a->user_id ? '' : 'pl-6' }}"><span class="text-ink-500 text-[0.8125rem]">{{ $m->sender->name }} · {{ $m->created_at->format('j M H:i') }}</span><p class="whitespace-pre-line">{{ $m->body }}</p></li>@endforeach</ol>
+                <ol class="space-y-2 max-h-96 overflow-y-auto" tabindex="0" aria-label="Messages">@foreach($a->messages as $m)<li class="text-[0.9375rem] {{ $m->sender_user_id===$a->user_id ? '' : 'pl-6' }}"><span class="text-ink-500 text-[0.8125rem]">{{ $m->sender->name }} · {{ $m->created_at->format('j M H:i') }}</span><p class="whitespace-pre-line">{{ $m->body }}</p></li>@endforeach</ol>
                 <form method="post" action="{{ route('admin.applications.reply',$a) }}" class="mt-3 flex flex-col gap-2">@csrf<textarea name="body" required class="input min-h-20" placeholder="Reply to the student"></textarea><button class="btn btn-secondary self-start">Send reply</button></form>
             </section>
         </div>
@@ -68,21 +68,21 @@
         <aside class="space-y-6">
             <section class="card"><p class="eyebrow mb-3">Stage control</p>
                 <form method="post" action="{{ route('admin.applications.stage',$a) }}" class="space-y-2">@csrf
-                    <select name="stage_override" class="input"><option value="INTERNAL_REVIEW">Start internal review</option><option value="ACTION_REQUIRED">Action required from student</option><option value="READY_FOR_STUDENT_APPROVAL">Ready for student approval</option><option value="ON_HOLD">On hold</option><option value="CLOSED">Close</option><option value="CLEAR">Clear override (derive)</option></select>
+                    <select name="stage_override" class="input" aria-label="Set stage"><option value="INTERNAL_REVIEW">Start internal review</option><option value="ACTION_REQUIRED">Action required from student</option><option value="READY_FOR_STUDENT_APPROVAL">Ready for student approval</option><option value="ON_HOLD">On hold</option><option value="CLOSED">Close</option><option value="CLEAR">Clear override (derive)</option></select>
                     <input name="hold_until" type="date" class="input" placeholder="Hold until"><textarea name="note" class="input min-h-16" placeholder="Note to student (sent as a message)"></textarea>
                     <button class="btn btn-primary w-full">Apply</button></form>
                 <p class="hint mt-2">Derived stages (form, documents, payment, submission) update automatically; only judgement stages are set here.</p>
             </section>
             <section class="card"><p class="eyebrow mb-3">Assignment and notes</p>
                 <form method="post" action="{{ route('admin.applications.assign',$a) }}" class="space-y-2">@csrf
-                    <select name="assigned_staff_id" class="input"><option value="">Unassigned</option>@foreach($staff as $s)<option value="{{ $s->id }}" @selected($a->assigned_staff_id===$s->id)>{{ $s->name }}</option>@endforeach</select>
+                    <select name="assigned_staff_id" class="input" aria-label="Assigned staff member"><option value="">Unassigned</option>@foreach($staff as $s)<option value="{{ $s->id }}" @selected($a->assigned_staff_id===$s->id)>{{ $s->name }}</option>@endforeach</select>
                     <textarea name="staff_notes" class="input min-h-24" placeholder="Internal notes (never shown to student)">{{ $a->staff_notes }}</textarea><button class="btn btn-secondary w-full">Save</button></form></section>
             <section class="card"><p class="eyebrow mb-3">Payments</p>
                 @forelse($a->payments as $p)<div class="text-[0.875rem] border-t border-ink-100 py-2 first:border-0"><p>{{ $p->formattedAmount() }} · {{ $p->method }} · <span class="font-medium">{{ $p->statusLabel() }}</span></p><p class="text-ink-500">{{ $p->created_at->format('j M Y') }} {{ $p->note }}</p>
-                    @if($p->status==='MANUAL_REVIEW')<form method="post" action="{{ route('admin.applications.payment.confirm',[$a,$p]) }}" class="flex gap-1 mt-1">@csrf<select name="decision" class="input min-h-9 py-1"><option value="confirm">Confirm received</option><option value="reject">Not received</option></select><input name="note" class="input min-h-9 py-1" placeholder="Note"><button class="btn btn-secondary btn-sm">Go</button></form>@endif</div>
+                    @if($p->status==='MANUAL_REVIEW')<form method="post" action="{{ route('admin.applications.payment.confirm',[$a,$p]) }}" class="flex gap-1 mt-1">@csrf<select name="decision" aria-label="Payment decision" class="input min-h-9 py-1"><option value="confirm">Confirm received</option><option value="reject">Not received</option></select><input name="note" class="input min-h-9 py-1" placeholder="Note"><button class="btn btn-secondary btn-sm">Go</button></form>@endif</div>
                 @empty<p class="text-[0.875rem] text-ink-500">No payments.</p>@endforelse
                 <p class="hint mt-2">Gate: {{ $a->tier?->payment_gate }} · Prices: {{ $a->tier?->hasPrices() ? 'set' : 'not set' }}</p></section>
-            <section class="card"><p class="eyebrow mb-3">Timeline</p><ol class="text-[0.8125rem] space-y-1 max-h-80 overflow-y-auto">@foreach($a->events as $e)<li><span class="text-ink-500">{{ $e->created_at->format('j M H:i') }}</span> {{ $e->humanLabel() }}{{ $e->actor ? ' · '.$e->actor->name : '' }}</li>@endforeach</ol></section>
+            <section class="card"><p class="eyebrow mb-3">Timeline</p><ol class="text-[0.8125rem] space-y-1 max-h-80 overflow-y-auto" tabindex="0" aria-label="Timeline">@foreach($a->events as $e)<li><span class="text-ink-500">{{ $e->created_at->format('j M H:i') }}</span> {{ $e->humanLabel() }}{{ $e->actor ? ' · '.$e->actor->name : '' }}</li>@endforeach</ol></section>
         </aside>
     </div>
 </x-layouts.admin>

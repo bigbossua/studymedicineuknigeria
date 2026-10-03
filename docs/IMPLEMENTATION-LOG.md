@@ -83,6 +83,11 @@ Decisions made during the build, in order. Research and decision documents remai
 - Contact page: what to include, response expectations, what we do not do, how a medical school can request a re-verification. Admissions hub: the process in order (route → test → shortlist → UCAS → interviews → offer/deposit/CAS/visa) and what applicants from Nigeria most often miss, every step linking to its sourced page.
 - Tests: 35 pass.
 
+## Stage 12: accessibility audit (P6)
+
+- axe-core 4.13 (WCAG 2.0/2.1/2.2 A+AA and best-practice rules) run in Chromium over 32 public pages (desktop and mobile with the menu open), 10 portal pages and 13 admin pages. Found: low-contrast step numbers and the amber verification chip, the floating CTA outside any landmark, 9 unlabelled selects and 38 unlabelled inputs in admin forms, two scroll regions without keyboard access, a prohibited ARIA attribute in Laravel's default pagination, two empty table headers.
+- Fixed all of them: `text-ink-500` step numbers, a darker `warning-700` token for the chip, `<aside aria-label>` for the floating CTA, `aria-label`s on every admin control, `tabindex="0"` plus labels on scroll regions, a site pagination view registered through `Paginator::defaultView`, screen-reader-only header text. Re-run: zero violations on all 55 pages.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

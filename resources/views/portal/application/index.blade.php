@@ -4,7 +4,7 @@
     <ol class="mt-8 grid gap-3 md:grid-cols-2">
         @foreach($steps as $i => $meta)
             <li><a href="{{ route('portal.application.step', [$application, $i]) }}" class="card card-link flex items-center justify-between gap-3">
-                <div><span class="font-mono text-[0.8125rem] text-ink-300">Step {{ $loop->iteration }}</span><p class="font-semibold">{{ $meta['title'] }}</p><p class="text-[0.875rem] text-ink-500">{{ $meta['intro'] }}</p></div>
+                <div><span class="font-mono text-[0.8125rem] text-ink-500">Step {{ $loop->iteration }}</span><p class="font-semibold">{{ $meta['title'] }}</p><p class="text-[0.875rem] text-ink-500">{{ $meta['intro'] }}</p></div>
                 @if($application->sectionComplete($i))<span class="chip chip-verified shrink-0">Complete</span>@else<span class="chip chip-review shrink-0">To do</span>@endif
             </a></li>
         @endforeach

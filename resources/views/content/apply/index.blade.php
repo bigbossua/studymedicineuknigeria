@@ -11,7 +11,7 @@
         <div class="lg:col-span-5 card-raised">
             <p class="eyebrow mb-3">What happens, in order</p>
             <ol class="space-y-3 text-[0.9375rem]">
-                @foreach(['Choose a service level and create your application number', 'Complete nine short sections, saved automatically', 'Upload the documents on your personal checklist; each is reviewed', 'We review your file and propose where it should go', 'You approve the exact package; only then does submission begin', 'Track the university\'s response in your portal'] as $i => $s)<li class="flex gap-3"><span class="font-mono text-ink-300">0{{ $i+1 }}</span><span>{{ $s }}</span></li>@endforeach
+                @foreach(['Choose a service level and create your application number', 'Complete nine short sections, saved automatically', 'Upload the documents on your personal checklist; each is reviewed', 'We review your file and propose where it should go', 'You approve the exact package; only then does submission begin', 'Track the university\'s response in your portal'] as $i => $s)<li class="flex gap-3"><span class="font-mono text-ink-500">0{{ $i+1 }}</span><span>{{ $s }}</span></li>@endforeach
             </ol>
         </div>
     </div>

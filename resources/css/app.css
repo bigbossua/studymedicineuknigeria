@@ -51,6 +51,7 @@
   --color-success-600: #1F7A4D;
   --color-success-100: #E4F3EB;
   --color-warning-600: #9A6A00;
+  --color-warning-700: #6E4A00;
   --color-warning-100: #FBF3DC;
   --color-danger-600: #B3261E;
   --color-danger-100: #F9E5E3;
@@ -126,7 +127,7 @@
   .chip { @apply inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-[0.75rem] font-semibold leading-none font-sans whitespace-nowrap; }
   .chip-verified { @apply bg-success-100 text-success-600; }
   .chip-pending { @apply bg-ink-100 text-ink-700; }
-  .chip-review { @apply bg-warning-100 text-warning-600; }
+  .chip-review { @apply bg-warning-100 text-warning-700; }
   .chip-notpublished { @apply border border-ink-300 text-ink-500 bg-paper; }
   .chip-info { @apply bg-info-100 text-info-600; }
   .chip-danger { @apply bg-danger-100 text-danger-600; }

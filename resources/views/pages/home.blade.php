@@ -24,7 +24,7 @@
                             ['Apply Online', 'A structured application with a personal document checklist', route('apply.index')],
                         ] as $i => [$label, $desc, $url])
                             <li class="flex gap-4">
-                                <span class="font-mono text-ink-300 text-sm pt-0.5">0{{ $i + 1 }}</span>
+                                <span class="font-mono text-ink-500 text-sm pt-0.5">0{{ $i + 1 }}</span>
                                 <div><a href="{{ $url }}" class="font-semibold no-underline hover:underline">{!! $label !!}</a><span class="block text-ink-500">{{ $desc }}</span></div>
                             </li>
                         @endforeach
@@ -106,7 +106,7 @@
                 ['Approve, then submit', 'You review the complete package and authorise it. Only then does submission begin, by the route the university requires.'],
             ] as $i => [$h, $p])
                 <li class="card">
-                    <span class="font-mono text-sm text-ink-300">Step {{ $i + 1 }}</span>
+                    <span class="font-mono text-sm text-ink-500">Step {{ $i + 1 }}</span>
                     <h3 class="mt-2">{{ $h }}</h3>
                     <p class="mt-2 text-ink-700 text-[0.9375rem]">{{ $p }}</p>
                 </li>

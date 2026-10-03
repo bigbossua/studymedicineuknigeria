@@ -115,9 +115,9 @@
 </footer>
 
 @unless(($hideFloatingCta ?? false))
-<div data-floating-cta class="floating-cta">
+<aside data-floating-cta class="floating-cta" aria-label="Apply shortcut">
     <a href="{{ route('apply.index') }}" class="btn btn-primary">Apply Online</a>
-</div>
+</aside>
 @endunless
 @stack('body-end')
 @stack('scripts')

@@ -88,6 +88,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - axe-core 4.13 (WCAG 2.0/2.1/2.2 A+AA and best-practice rules) run in Chromium over 32 public pages (desktop and mobile with the menu open), 10 portal pages and 13 admin pages. Found: low-contrast step numbers and the amber verification chip, the floating CTA outside any landmark, 9 unlabelled selects and 38 unlabelled inputs in admin forms, two scroll regions without keyboard access, a prohibited ARIA attribute in Laravel's default pagination, two empty table headers.
 - Fixed all of them: `text-ink-500` step numbers, a darker `warning-700` token for the chip, `<aside aria-label>` for the floating CTA, `aria-label`s on every admin control, `tabindex="0"` plus labels on scroll regions, a site pagination view registered through `Paginator::defaultView`, screen-reader-only header text. Re-run: zero violations on all 55 pages.
 
+## Stage 13: Working in the UK page with a publish gate (P4/P5)
+
+- New `/working-in-the-uk` (asset register row 25) built from research record 10 and the seeded `student-visa`, `graduate-visa` and `gmc-registration` topic facts: Student visa work rules and maintenance, the six steps from final year to Foundation Year 1 (MLA → UKFP application → allocation → GMC provisional registration → Health and Care Worker visa → full registration), the Graduate visa as fallback with the 2027 change, and the prioritisation Bill labelled as proposal. Every figure is a fact row with chip and source; a "where to check for yourself" list points to GOV.UK, GMC, UKFPO, NHS England and the BMA.
+- `App\Support\PublishGate` (`topics-verified:slug,…`): a fact-driven page is `noindex` and absent from the sitemap until every non-archived fact of its topics is VERIFIED or NOT_PUBLISHED; NOT_FOUND keeps it out. The route declares the gate in its sitemap default and `SeoController` honours it. The total-cost page now uses the same gate instead of a permanent noindex. The admin verification queue is therefore the switch that publishes both pages.
+- Footer "Understand" column and the Medicine pillar's related links point to the page. Test covers rendering, gating and the flip to indexable. 36 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

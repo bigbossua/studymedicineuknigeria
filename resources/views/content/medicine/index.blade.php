@@ -32,6 +32,6 @@
             <div class="card"><p class="eyebrow mb-3">How we write these pages</p><p class="text-[0.9375rem] text-ink-700">Explanations are ours. Every specific requirement, fee or date is a separate record with an official source and a verification date, and is hidden until a reviewer has confirmed it on the official page.</p></div>
         </aside>
     </div>
-    <x-related :items="[['label' => 'From Nigeria: the honest guide', 'url' => route('medicine.nigeria')], ['label' => 'WAEC and UK Medicine', 'url' => route('requirements.waec')], ['label' => 'Fee guide', 'url' => route('fees.index')], ['label' => 'UCAT for Nigerian students', 'url' => route('admissions.ucat')]]" />
+    <x-related :items="[['label' => 'From Nigeria: the honest guide', 'url' => route('medicine.nigeria')], ['label' => 'WAEC and UK Medicine', 'url' => route('requirements.waec')], ['label' => 'Fee guide', 'url' => route('fees.index')], ['label' => 'UCAT for Nigerian students', 'url' => route('admissions.ucat')], ['label' => 'Working in the UK', 'url' => route('working.index'), 'description' => 'Visa work rules, GMC registration, Foundation training and what is changing.']]" />
 </article>
 </x-layouts.public>

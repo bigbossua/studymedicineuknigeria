@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\ReferenceFact;
+use App\Models\Topic;
 use App\Models\University;
+use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -72,6 +75,22 @@ class PublicSeoTest extends TestCase
             $this->assertGreaterThanOrEqual(100, mb_strlen($desc), "$path description too short: $desc");
             $this->assertSame(1, preg_match_all('#<h1[\s>]#', $html), "$path must have exactly one h1");
         }
+    }
+
+    public function test_fact_gated_pages_enter_the_index_only_when_their_topics_are_verified(): void
+    {
+        $this->seed(TopicFactsSeeder::class);
+        $this->get('/working-in-the-uk')->assertOk()->assertSee('name="robots" content="noindex', false)->assertSee('Verification in progress');
+        $this->assertStringNotContainsString('/working-in-the-uk', $this->get('/sitemap.xml')->getContent());
+        $this->assertStringNotContainsString('/fees/cost-of-studying-medicine-in-the-uk', $this->get('/sitemap.xml')->getContent());
+
+        $topics = Topic::whereIn('slug', ['student-visa', 'graduate-visa', 'gmc-registration'])->pluck('id');
+        ReferenceFact::where('subject_type', Topic::class)->whereIn('subject_id', $topics)->where('verification_status', ReferenceFact::NOT_FOUND)->update(['verification_status' => ReferenceFact::NOT_PUBLISHED]);
+        ReferenceFact::where('subject_type', Topic::class)->whereIn('subject_id', $topics)->where('verification_status', ReferenceFact::VERIFY_ON_PAGE)->update(['verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now()]);
+
+        $this->get('/working-in-the-uk')->assertOk()->assertSee('name="robots" content="index, follow', false)->assertDontSee('Verification in progress');
+        $this->assertStringContainsString('/working-in-the-uk', $this->get('/sitemap.xml')->getContent());
+        $this->assertStringNotContainsString('/fees/cost-of-studying-medicine-in-the-uk', $this->get('/sitemap.xml')->getContent(), 'cost page still gated on costs-2026');
     }
 
     public function test_unknown_pages_return_the_branded_404(): void

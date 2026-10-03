@@ -44,6 +44,11 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Inspected**: axe-core over 55 pages (public desktop/mobile, portal, admin). **Found**: 7 rule failures (contrast, landmarks, unlabelled selects/inputs, scroll regions, pagination ARIA, empty headers). **Changed**: all fixed, custom pagination view. **Tested / passed**: re-run zero violations; 35 tests.
 
+## Cycle 8 — P4/P5 Working in the UK page + publish gate (stage 13)
+
+- **Changed**: new page from research 10 with fact rows; `PublishGate` makes fact-driven pages indexable only when their topics are verified in Admin → Verification (also applied to the total-cost page). **Tested / passed**: 36 tests; page renders with the verification notice locally.
+- **Remains**: the owner (or staff) verifies the GOV.UK / GMC / UKFPO facts in the verification queue; the page then enters the sitemap automatically.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

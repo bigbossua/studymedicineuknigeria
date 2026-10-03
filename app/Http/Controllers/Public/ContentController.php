@@ -12,6 +12,7 @@ use App\Models\University;
 use App\Models\User;
 use App\Notifications\StaffNotification;
 use App\Support\Funnel;
+use App\Support\PublishGate;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -122,8 +123,18 @@ class ContentController extends Controller
 
     public function totalCost()
     {
-        return view('content.fees.total', ['seo' => $this->seo('Total cost of studying Medicine in the UK from Nigeria', 'Tuition, visa, Immigration Health Surcharge, maintenance funds, tests and living costs added up for a five- or six-year UK medical degree, with every figure sourced.', 'fees.total', [['label' => 'Fees', 'url' => route('fees.index')], ['label' => 'Total cost']])->noindex(),
+        return view('content.fees.total', ['seo' => $this->seo('Total cost of studying Medicine in the UK from Nigeria', 'Tuition, visa, Immigration Health Surcharge, maintenance funds, tests and living costs added up for a five- or six-year UK medical degree, with every figure sourced.', 'fees.total', [['label' => 'Fees', 'url' => route('fees.index')], ['label' => 'Total cost']])->noindex(! PublishGate::passes('topics-verified:student-visa,costs-2026,ucat-2026,ucas-2027')),
             'visa' => Topic::bySlug('student-visa'), 'costs' => Topic::bySlug('costs-2026'), 'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027'), 'fees' => $this->feeRows()->filter(fn ($f) => $f->isPublishable() && $f->value_number)]);
+    }
+
+    // ---------------- Working in the UK ----------------
+    public function working()
+    {
+        $gate = 'topics-verified:student-visa,graduate-visa,gmc-registration';
+        $seo = $this->seo('Working in the UK during and after a medical degree', 'Student visa work rules, the MLA and GMC provisional registration, the Foundation Programme and visa sponsorship, the Graduate visa change from 2027, and what is still proposed.', 'working.index', [['label' => 'Working in the UK']])
+            ->noindex(! PublishGate::passes($gate));
+
+        return view('content.working.index', ['seo' => $seo, 'visa' => Topic::bySlug('student-visa'), 'grad' => Topic::bySlug('graduate-visa'), 'gmc' => Topic::bySlug('gmc-registration'), 'gated' => ! PublishGate::passes($gate)]);
     }
 
     // ---------------- Admissions ----------------

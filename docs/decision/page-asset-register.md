@@ -37,7 +37,7 @@ Evidence keys: `02` = research/02 search demand · `05` = competitor research ·
 | # | Page | URL | Why not now | Trigger to build |
 |---|---|---|---|---|
 | 24 | Why study Medicine in the UK? (factual hub) | `/study-medicine-in-the-uk/why-study-medicine-in-the-uk/` | demand is implicit (Nairaland "is UK medicine right for me"); content must be fact-led (course structure, MLA, Foundation Programme) and the prioritisation-of-UK-graduates policy is in flux (`10`) | after `10` gaps closed; keep ≤ 1 page |
-| 25 | Working in the UK during and after medical school | `/working-in-the-uk/` | BMA owns the SERP (`02` q16); rules changing (Graduate visa 18 months from 1 Jan 2027; prioritisation Bill) | build as one carefully dated page once GOV.UK/GMC facts are VERIFIED; link out to BMA |
+| 25 | Working in the UK during and after medical school | `/working-in-the-uk/` | BMA owns the SERP (`02` q16); rules changing (Graduate visa 18 months from 1 Jan 2027; prioritisation Bill) | **built 2026-10-03** as `/working-in-the-uk/`, noindex and out of the sitemap until its three topics are VERIFIED (PublishGate); links out to GOV.UK, GMC, UKFPO, NHS England, BMA |
 | 26 | Interviews (MMI) for international applicants | `/admissions/interviews/` | useful but not Nigeria-differentiated yet | after release 1, with online-interview policies per school |
 | 27 | Personal statement (3 questions) and documents | `/admissions/personal-statement/`, `/admissions/documents/` | portal checklist covers documents; statement guidance is widely available | later, to support Tier 2 |
 | 28 | Compare medical schools | `/medical-schools/compare/` (noindex tool) | depends on directory data density | when ≥ 20 schools have fee + test + route + deadline verified |

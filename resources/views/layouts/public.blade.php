@@ -80,6 +80,7 @@
                     <li><a href="{{ route('fees.index') }}">Fees &amp; costs</a></li>
                     <li><a href="{{ route('schools.index') }}">UK medical schools</a></li>
                     <li><a href="{{ route('admissions.index') }}">Admissions &amp; UCAT</a></li>
+                    <li><a href="{{ route('working.index') }}">Working in the UK</a></li>
                 </ul>
             </div>
             <div>

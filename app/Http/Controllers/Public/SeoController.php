@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Support\PublishGate;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
@@ -38,7 +39,7 @@ class SeoController extends Controller
         $urls = [];
         foreach (Route::getRoutes() as $route) {
             $meta = $route->defaults['sitemap'] ?? null;
-            if (! $meta || ! in_array('GET', $route->methods(), true)) {
+            if (! $meta || ! in_array('GET', $route->methods(), true) || ! PublishGate::passes($meta['gate'] ?? null)) {
                 continue;
             }
             $urls[] = [

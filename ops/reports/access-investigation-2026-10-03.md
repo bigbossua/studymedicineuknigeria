@@ -51,3 +51,10 @@ After that, the deployment agent needs its credentials, which the session is pre
 
 - DNS for studymedicineuknigeria.com resolved to 145.223.124.33 at 12:16 UTC and to 147.79.79.12 at 12:25 UTC; both are Hostinger ranges. hPanel's SSH Access page is authoritative for the SSH hostname.
 - The repository on GitHub is **public**. The application contains no secrets, but the owner should decide whether it should be private before the first push. (The Actions route works for either.)
+
+## 7. Update — 2026-10-03 13:05 UTC: GitHub blocker cleared
+
+- The owner installed the Claude GitHub App on `bigbossua/studymedicineuknigeria` (only). `git push` succeeded; branch `claude/new-session-p6gdm6` is now on GitHub at the same commit as the local HEAD and is the repository's default branch.
+- Pre-push secret scan: no `.env`, keys, SQLite database or private storage files are tracked; no secret patterns in tracked content. `vendor/`, `node_modules/` and `public/build/` are absent on GitHub as intended.
+- The push triggered the CI workflow on a clean runner: Composer install, asset build, Pint and the 21-test suite **passed** (run 37124727045).
+- Remaining: the Hostinger inspection and deploy workflows must be registered by GitHub Actions (dispatch-only workflows can take a few minutes to appear), and the repository needs the SSH secret and connection variables before any run can reach the server.

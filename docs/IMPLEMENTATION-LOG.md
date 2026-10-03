@@ -112,6 +112,11 @@ Decisions made during the build, in order. Research and decision documents remai
 - With a local SSH server standing in for Hostinger, the whole chain was executed for real: inspection → bootstrap → deploy → serve → smoke-tested deploy → forced failure with automatic rollback → encrypted backup fetched and decrypted. Record: `ops/reports/deployment-rehearsal-2026-10-03.md`.
 - Three script defects fixed (crontab absence, MySQL-only bootstrap, rollback PHP binary). Route/config/view/event caching confirmed to work on this codebase.
 
+## Stage 17: branded transactional email (P6)
+
+- Mail theme published and branded: SMUKN header image (PNG, absolute URL), navy headings and buttons, warm paper background, footer with legal name, contact address and the independence statement. Applies to every notification including Laravel's email verification and password reset.
+- `NotificationRenderTest` renders all 14 `ApplicationNotification` branches, the staff alert and the two framework notifications to HTML and checks the application number in the subject, the greeting, the disclaimer, the brand header and a portal link. 42 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

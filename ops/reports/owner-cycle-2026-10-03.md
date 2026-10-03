@@ -62,6 +62,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Tested / passed**: inspect, bootstrap, two deploys, smoke, rollback and backup against a local SSH server (`ops/reports/deployment-rehearsal-2026-10-03.md`). **Failed then fixed**: crontab guard, DB override, rollback PHP binary.
 
+## Cycle 12 — transactional email (stage 17)
+
+- **Found**: notification emails had never been rendered by any test and used the unbranded framework theme. **Changed**: branded theme, rendering test for every type. **Tested / passed**: 42 tests; sample email rendered in Chromium.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

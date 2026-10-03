@@ -145,6 +145,13 @@ Decisions made during the build, in order. Research and decision documents remai
 - Links shared on WhatsApp, X and LinkedIn now carry a branded 1200×630 card with the page title: `App\Support\OgImage` renders with GD and the self-hosted fonts (converted to TTF in `brand/fonts/ttf`), `php artisan smukn:og` builds one card per sitemap page (29 committed under `public/images/og`, keyed by route name), `Seo::resolvedImage()` picks the card for the current route and falls back to the brand default. University pages get an on-demand card at `/images/og/schools/{slug}.png`, cached as a file and refreshed when the record changes. `og:image:alt` added. Build requests carry `X-SMUKN-Build` so they never count as visitors.
 - Also this cycle: intake and sitting year bounds derive from the current year; the eligibility check's 2027 dates come from verified facts or stay generic. 57 tests pass.
 
+## Stage 23: trust page, server rules and FAQ growth (P4/P6/P8)
+
+- `/how-we-verify`: the editorial and verification policy as a public page (source hierarchy, what every label means, review cadence, what we never do, how to report an error, live counts from the reference database). Every verification chip across the site now links to it; footer link added; register row 23 updated with a build-status section for all rows.
+- `public/.htaccess`: canonical https and non-www 301s (health endpoint exempt), dotfile and source-map denial, one-year immutable caching for fingerprinted CSS/JS/fonts, 30-day images, Brotli/gzip for text. The production smoke test checks both redirects.
+- FAQ hub: seven more answers from the observed-question list in research 02 §C, each sourced from our own verified pages or official bodies (foundation year vs A-levels, "best" schools, Arts to Medicine, UCAT slot scarcity, naira conversion, acceptance rates, out-of-scope PLAB question); the working-after-graduation answer now links to the Working in the UK page. 25 published answers, all in the FAQPage JSON-LD.
+- Re-crawl: 28 indexable pages, all in the sitemap, no broken links, no snippet findings. 57 tests pass. Settings diagnosis at 15:14 UTC: still nothing present.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

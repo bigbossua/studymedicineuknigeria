@@ -25,3 +25,14 @@ A live read-only inspection is **not possible** from this session. Nothing about
 3. **Tooling**: with network access restored, `openssh-client` can be installed in the container, or the inspection script `ops/inspect-hostinger.sh` can be run from any machine that can reach the server and its output pasted into `ops/reports/`.
 
 Alternative if the above cannot be granted: run `ops/inspect-hostinger.sh` yourself over SSH (it is read-only) and share the output file; the 16-point report, staging deployment and backups will proceed from it.
+
+## Second attempt — 2026-10-03 12:25 UTC (after the public key was added in hPanel)
+
+| Check | Result |
+|---|---|
+| `HOSTINGER_SSH_HOST` / `_PORT` / `_USER` / `_PRIVATE_KEY` visible in this session | **Not present.** Environment variables are injected when a session starts; values added after this session began are not visible here. |
+| Private key generated earlier (`~/.ssh/smukn_hostinger_ed25519`) | Present in the container; public key fingerprint SHA256:pNlSaOJ/4ejc+fO1HHoWWDNmqTiNfGVMlkDq+OtfMRc. |
+| DNS | studymedicineuknigeria.com now resolves to 147.79.79.12 (earlier 145.223.124.33). |
+| SSH to 147.79.79.12 and 145.223.124.33 on ports 65002 and 22, with the key | **Connection timed out** on all four (TCP never completes). The failure is at the network layer, before authentication; no SSH banner was received, so key acceptance could not be tested. |
+
+Conclusion unchanged: the Claude cloud environment's network policy does not allow outbound SSH to the Hostinger host. No inspection, backup or deployment action has been taken.

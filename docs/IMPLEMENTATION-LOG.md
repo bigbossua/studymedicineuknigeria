@@ -76,6 +76,13 @@ Decisions made during the build, in order. Research and decision documents remai
 - GA4 is optional and off by default: `SITE_GA4_ID` blank means no third-party request and no banner. When set, public pages show a consent banner (first-party cookie `smukn_consent`, one year); `app.js` loads gtag only after *Accept analytics*, with ad storage denied, IP anonymisation and Google signals off, and forwards the queued public-site events (`lead_created`, `account_created`). The portal and admin never load it and their CSP never includes Google hosts. Privacy notice updated accordingly.
 - Tests: 34 pass (4 new). Browser check: banner on first visit, decline sets the cookie and sends nothing, accept loads the tag and pushes the lead event once, the admin funnel renders.
 
+## Stage 11: snippet hygiene and thin hubs (P5/P6)
+
+- A local Chromium crawl of all 27 indexable pages (sitemap + links) found no broken links and full sitemap coverage, but 19 titles over 65 characters (the brand suffix pushed them to 80–130), 17 descriptions over 165 characters and 4 under 70, and two hubs with little visible copy.
+- Fixed: `Seo::fullTitle()` keeps the brand suffix only while the whole title fits in 65 characters; every public title shortened to ≤ 60 characters (H1s unchanged, they are set in the views); every description rewritten to 110–165 characters; legal pages given real descriptions; university page titles use `short_name`. `PublicSeoTest` now walks the sitemap and fails on any title > 65, description outside 100–165, or a page without exactly one H1.
+- Contact page: what to include, response expectations, what we do not do, how a medical school can request a re-verification. Admissions hub: the process in order (route → test → shortlist → UCAS → interviews → offer/deposit/CAS/visa) and what applicants from Nigeria most often miss, every step linking to its sourced page.
+- Tests: 35 pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

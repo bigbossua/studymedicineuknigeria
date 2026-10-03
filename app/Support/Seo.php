@@ -97,8 +97,10 @@ class Seo
     public function fullTitle(): string
     {
         $site = config('site.name');
+        $full = "{$this->title} | {$site}";
 
-        return str_contains($this->title, $site) ? $this->title : "{$this->title} | {$site}";
+        // Search snippets truncate around 60–65 characters: keep the brand suffix only while it fits.
+        return (str_contains($this->title, $site) || mb_strlen($full) > 65) ? $this->title : $full;
     }
 
     public function resolvedCanonical(): string

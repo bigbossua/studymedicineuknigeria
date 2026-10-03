@@ -33,6 +33,13 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 - **Changed**: `funnel_events` first-party event mirror (no PII), Admin → Funnel, optional consent-gated GA4 (`SITE_GA4_ID`), privacy notice wording.
 - **Tested / passed**: 34 tests; browser: banner → decline sends nothing; accept loads the tag once and forwards `lead_created`; portal/admin never include Google hosts.
 
+## Cycle 6 — P5 snippet hygiene and thin hubs (stage 11)
+
+- **Inspected**: Chromium crawl of all public pages (titles, descriptions, H1s, alt text, JSON-LD, links, sitemap coverage).
+- **Found**: no broken links; 19 over-long titles, 21 descriptions outside limits, contact and admissions hubs thin.
+- **Changed**: conditional brand suffix, every title/description rewritten, legal descriptions, guard test over the sitemap, real content on both hubs.
+- **Tested / passed**: 35 tests; re-crawl shows zero title/description findings.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

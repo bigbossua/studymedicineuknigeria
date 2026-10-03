@@ -41,7 +41,7 @@ class SchoolController extends Controller
         $isFiltered = collect($filters)->filter()->isNotEmpty();
 
         $seo = Seo::make('UK Medical School Directory for International Applicants',
-            'Every UK medical school with its international eligibility, admissions test, application route and published international fee, each with an official source and a last-verified date.')
+            'Every UK medical school with its international eligibility, admissions test, application route and published international fee, each with an official source and date.')
             ->canonical(route('schools.index'))
             ->noindex($isFiltered)
             ->breadcrumbs([['label' => 'Medical Schools']])
@@ -54,7 +54,7 @@ class SchoolController extends Controller
     {
         $university->load(['courses.facts', 'facts']);
         $course = $university->primaryCourse();
-        $seo = Seo::make($university->name.' — Medicine for international applicants',
+        $seo = Seo::make(($university->short_name ?: $university->name).' Medicine: international entry',
             "What {$university->name} publishes for international and Nigerian applicants to Medicine: eligibility, entry requirements, admissions test, fees, application route, with official sources and verification dates.")
             ->canonical(route('schools.show', $university))
             ->article()

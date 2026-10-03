@@ -16,5 +16,6 @@
         <section class="card"><p class="eyebrow mb-2">Outcomes</p><p class="text-[0.9375rem]">We cannot and do not guarantee offers, interviews, visas or scholarships. All admissions decisions are made solely by universities.</p></section>
         <p class="text-[0.8125rem] text-ink-500">This page was last updated on 3 October 2026.</p>
     </div>
+    <x-related :items="[['label' => 'About us', 'url' => route('about'), 'description' => 'Who we are and how we work.'], ['label' => 'Application service terms', 'url' => route('legal.application-terms'), 'description' => 'What the paid service does and does not include.'], ['label' => 'Contact', 'url' => route('contact'), 'description' => 'How to reach us and what to include.']]" />
 </article>
 </x-layouts.public>

@@ -54,6 +54,26 @@ class PublicSeoTest extends TestCase
         $this->assertNotSame($m[1], $this->get('/')->headers->get('Content-Security-Policy'), 'nonce changes per response');
     }
 
+    public function test_every_sitemap_page_fits_search_snippets_and_has_one_h1(): void
+    {
+        $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
+        preg_match_all('#<loc>([^<]+)</loc>#', $xml, $m);
+        $this->assertNotEmpty($m[1]);
+        foreach ($m[1] as $url) {
+            $path = parse_url($url, PHP_URL_PATH) ?: '/';
+            $html = $this->get($path)->assertOk()->getContent();
+            preg_match('#<title>(.*?)</title>#s', $html, $t);
+            preg_match('#<meta name="description" content="([^"]*)"#', $html, $d);
+            $title = html_entity_decode($t[1] ?? '');
+            $desc = html_entity_decode($d[1] ?? '');
+            $this->assertLessThanOrEqual(65, mb_strlen($title), "$path title too long: $title");
+            $this->assertGreaterThanOrEqual(25, mb_strlen($title), "$path title too short: $title");
+            $this->assertLessThanOrEqual(165, mb_strlen($desc), "$path description too long (".mb_strlen($desc).')');
+            $this->assertGreaterThanOrEqual(100, mb_strlen($desc), "$path description too short: $desc");
+            $this->assertSame(1, preg_match_all('#<h1[\s>]#', $html), "$path must have exactly one h1");
+        }
+    }
+
     public function test_unknown_pages_return_the_branded_404(): void
     {
         $this->get('/no-such-page')->assertNotFound()->assertSee('We could not find that page');

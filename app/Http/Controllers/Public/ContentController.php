@@ -41,14 +41,14 @@ class ContentController extends Controller
     // ---------------- Medicine pillar ----------------
     public function medicine()
     {
-        return view('content.medicine.index', ['seo' => $this->seo('Study Medicine in the UK: routes, requirements, costs and timeline', 'How UK medical degrees work for international applicants: standard, graduate and foundation routes, what medical schools require, what it costs, and the calendar you must plan around.', 'medicine.index', [['label' => 'Medicine']]),
+        return view('content.medicine.index', ['seo' => $this->seo('Study Medicine in the UK: routes, requirements and costs', 'How UK medical degrees work for international applicants: standard, graduate and foundation routes, what schools require, costs and the calendar to plan around.', 'medicine.index', [['label' => 'Medicine']]),
             'schools' => University::whereIn('international_policy', ['accepts', 'international_only'])->count(), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
     }
 
     public function nigeria()
     {
         $faqs = collect($this->faqItems())->whereIn('id', [1, 12, 18, 22, 26, 33])->values();
-        $seo = $this->seo('Study Medicine in the UK from Nigeria: an honest guide for 2027 and 2028 entry', 'What a Nigerian student with WAEC, NECO, A-levels or a degree needs to know before applying to UK medicine: which routes are open, what each school publishes, costs, the UCAT and UCAS calendar, and how to apply.', 'medicine.nigeria', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'From Nigeria']]);
+        $seo = $this->seo('Study Medicine in the UK from Nigeria: 2027 and 2028 entry', 'What a Nigerian student with WAEC, NECO, A-levels or a degree must know before applying to UK medicine: open routes, what schools publish, costs and key dates.', 'medicine.nigeria', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'From Nigeria']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.medicine.nigeria', ['seo' => $seo, 'waec' => $this->statements('waec_neco_statement'), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'fees' => $this->feeRows(), 'faqs' => $faqs,
@@ -57,14 +57,14 @@ class ContentController extends Controller
 
     public function foundation()
     {
-        return view('content.medicine.foundation', ['seo' => $this->seo('Foundation and gateway routes to Medicine for international students', 'Which foundation years publish Medicine as a destination, which are home-only, and how a Nigerian WASSCE or NECO holder can use them: each statement with its source.', 'medicine.foundation', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'Foundation routes']]),
+        return view('content.medicine.foundation', ['seo' => $this->seo('Foundation and gateway routes to UK Medicine', 'Which foundation years publish Medicine as a destination, which are home-only, and how a WASSCE or NECO holder can use them, each statement with its source.', 'medicine.foundation', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'Foundation routes']]),
             'routes' => $this->statements('foundation_route'), 'foundationCourses' => Course::with('university')->where('entry_type', 'foundation')->get()]);
     }
 
     // ---------------- Requirements ----------------
     public function requirements()
     {
-        return view('content.requirements.index', ['seo' => $this->seo('What do I need to study Medicine in the UK? Requirements for Nigerian applicants', 'The ten things every UK medical school looks at, from academic qualifications and admissions tests to English, references and deadlines, with what Nigerian applicants specifically need to check.', 'requirements.index', [['label' => 'Requirements']]),
+        return view('content.requirements.index', ['seo' => $this->seo('Requirements to study Medicine in the UK from Nigeria', 'What every UK medical school looks at: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants specifically must check.', 'requirements.index', [['label' => 'Requirements']]),
             'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'english' => $this->statements('english_requirement')->count()]);
     }
 
@@ -73,7 +73,7 @@ class ContentController extends Controller
         $st = $this->statements('waec_neco_statement');
         $eng = $this->statements('english_requirement')->filter(fn ($f) => preg_match('/WAEC|WASSCE|NECO/i', $f->value_text ?? ''));
 
-        return view('content.requirements.waec', ['seo' => $this->seo('WAEC (WASSCE) and UK Medicine: what each medical school publishes', 'Can you study Medicine in the UK with WAEC? University by university, what UK medical schools publish about WASSCE for Medicine, where WAEC English is accepted, and the routes that are actually open.', 'requirements.waec', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'WAEC']]),
+        return view('content.requirements.waec', ['seo' => $this->seo('WAEC (WASSCE) and UK Medicine: what schools publish', 'Can you study Medicine in the UK with WAEC? School by school, what UK medical schools publish about WASSCE, where WAEC English counts, and which routes are open.', 'requirements.waec', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'WAEC']]),
             'specific' => $st->filter(fn ($f) => str_contains((string) $f->notes, 'Medicine-specific')), 'general' => $st->reject(fn ($f) => str_contains((string) $f->notes, 'Medicine-specific')), 'english' => $eng, 'qualification' => 'WAEC']);
     }
 
@@ -81,25 +81,25 @@ class ContentController extends Controller
     {
         $st = $this->statements('waec_neco_statement');
 
-        return view('content.requirements.neco', ['seo' => $this->seo('NECO and UK Medicine: what medical schools say about the NECO SSCE', 'Whether UK medical schools accept NECO for Medicine, how NECO is treated compared with WASSCE, where NECO English counts, and what route a NECO holder can take.', 'requirements.neco', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'NECO']]),
+        return view('content.requirements.neco', ['seo' => $this->seo('NECO and UK Medicine: what medical schools say', 'Whether UK medical schools accept NECO for Medicine, how NECO is treated compared with WASSCE, where NECO English counts, and what route a NECO holder can take.', 'requirements.neco', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'NECO']]),
             'mentionsNeco' => $st->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false), 'all' => $st]);
     }
 
     public function alevels()
     {
-        return view('content.requirements.alevels', ['seo' => $this->seo('A-levels for UK Medicine from Nigeria: grades, subjects and how international applicants are assessed', 'Typical A-level and IB requirements for UK medicine (A100), which subjects are compulsory, how Cambridge International A-levels taken in Nigeria are treated, and what each school publishes.', 'requirements.alevels', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'A-levels']]),
+        return view('content.requirements.alevels', ['seo' => $this->seo('A-levels for UK Medicine from Nigeria: grades and subjects', 'Typical A-level and IB requirements for UK medicine (A100), the compulsory subjects, and how Cambridge International A-levels taken in Nigeria are treated.', 'requirements.alevels', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'A-levels']]),
             'reqs' => $this->statements('a_level_requirement')]);
     }
 
     public function gem()
     {
-        return view('content.requirements.gem', ['seo' => $this->seo('Graduate Entry Medicine in the UK with a Nigerian degree', 'Which UK graduate-entry medicine programmes accept international applicants, what degree class they ask for, the GAMSAT or UCAT requirement, and the alternative of applying to standard-entry Medicine as a graduate.', 'requirements.gem', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'Nigerian degree']]),
+        return view('content.requirements.gem', ['seo' => $this->seo('Graduate Entry Medicine in the UK with a Nigerian degree', 'Which UK graduate-entry medicine programmes accept international applicants, the degree class and GAMSAT or UCAT they ask for, and the standard-entry alternative.', 'requirements.gem', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'Nigerian degree']]),
             'gem' => $this->statements('gem_international'), 'gemCourses' => Course::with('university')->where('entry_type', 'graduate')->get()]);
     }
 
     public function english()
     {
-        return view('content.requirements.english', ['seo' => $this->seo('English language requirements for UK Medicine: IELTS scores and WAEC English', 'What English evidence UK medical schools publish for international applicants, typical IELTS bands for Medicine, where WAEC or NECO English is accepted instead, and the visa rule.', 'requirements.english', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'English language']]),
+        return view('content.requirements.english', ['seo' => $this->seo('English requirements for UK Medicine: IELTS and WAEC English', 'English evidence UK medical schools publish for international applicants: typical IELTS bands for Medicine, where WAEC or NECO English counts, and the visa rule.', 'requirements.english', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'English language']]),
             'nigeriaPage' => $this->statements('english_requirement'), 'courseLevel' => $this->statements('english_language_requirement')]);
     }
 
@@ -116,33 +116,33 @@ class ContentController extends Controller
         $rows = $this->feeRows();
         $pub = $rows->filter(fn ($f) => $f->isPublishable() && $f->value_number);
 
-        return view('content.fees.index', ['seo' => $this->seo('UK medical school fees for international students (2026/27 and 2027/28)', 'International tuition fees for Medicine at UK medical schools, with fee year, whether clinical years cost more, and the official source for every figure. Approximate range shown separately from official fees.', 'fees.index', [['label' => 'Fees']]),
+        return view('content.fees.index', ['seo' => $this->seo('International fees at UK medical schools, 2026/27 to 2027/28', 'International tuition fees for Medicine at every UK medical school, with fee year, clinical-year differences and an official source for each figure.', 'fees.index', [['label' => 'Fees']]),
             'rows' => $rows, 'min' => $pub->min('value_number'), 'max' => $pub->max('value_number'), 'count' => $pub->count(), 'visa' => Topic::bySlug('student-visa')]);
     }
 
     public function totalCost()
     {
-        return view('content.fees.total', ['seo' => $this->seo('Total cost of studying Medicine in the UK from Nigeria', 'Tuition, visa, Immigration Health Surcharge, maintenance funds, tests and living costs added together for a five- or six-year UK medical degree, with every figure sourced and the arithmetic shown.', 'fees.total', [['label' => 'Fees', 'url' => route('fees.index')], ['label' => 'Total cost']])->noindex(),
+        return view('content.fees.total', ['seo' => $this->seo('Total cost of studying Medicine in the UK from Nigeria', 'Tuition, visa, Immigration Health Surcharge, maintenance funds, tests and living costs added up for a five- or six-year UK medical degree, with every figure sourced.', 'fees.total', [['label' => 'Fees', 'url' => route('fees.index')], ['label' => 'Total cost']])->noindex(),
             'visa' => Topic::bySlug('student-visa'), 'costs' => Topic::bySlug('costs-2026'), 'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027'), 'fees' => $this->feeRows()->filter(fn ($f) => $f->isPublishable() && $f->value_number)]);
     }
 
     // ---------------- Admissions ----------------
     public function admissions()
     {
-        return view('content.admissions.index', ['seo' => $this->seo('Admissions: UCAS, UCAT, interviews and how to apply to UK Medicine', 'The UK medicine admissions process for international applicants in one place: the UCAS calendar, the UCAT, interviews, and the schools that use a different route.', 'admissions.index', [['label' => 'Admissions']]), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
+        return view('content.admissions.index', ['seo' => $this->seo('UK Medicine admissions: UCAS, UCAT, interviews, how to apply', 'The UK medicine admissions process for international applicants in one place: the UCAS calendar, the UCAT, interviews, and the schools that use a different route.', 'admissions.index', [['label' => 'Admissions']]), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
     }
 
     public function ucat()
     {
         $courses = Course::with('university')->whereHas('university', fn ($q) => $q->whereIn('international_policy', ['accepts', 'international_only']))->get();
 
-        return view('content.admissions.ucat', ['seo' => $this->seo('UCAT for Nigerian students: dates, structure, fees and sitting the test in Nigeria', 'Everything a Nigerian applicant needs about the UCAT: the 2026 cycle dates, the three-section structure scored out of 2700, fees, Pearson VUE centres in Nigeria, which medical schools require it, and what a missed window means.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]),
+        return view('content.admissions.ucat', ['seo' => $this->seo('UCAT for Nigerian students: dates, fees and test centres', 'The UCAT for applicants in Nigeria: 2026 cycle dates, the three-section structure scored out of 2700, fees, Pearson VUE centres in Nigeria and who requires it.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]),
             'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027'), 'byTest' => $courses->groupBy(fn ($c) => $c->admissions_test ?? 'NOT_PUBLISHED')]);
     }
 
     public function ucas2027()
     {
-        return view('content.admissions.ucas2027', ['seo' => $this->seo('UCAS deadlines and timeline for Medicine, 2027 entry (and planning for 2028)', 'Every UCAS date that matters for medicine for 2027 entry, the UCAT window that precedes it, the interview and offer season, and the sequence to visa and arrival, written for applicants in Nigeria.', 'admissions.ucas2027', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAS 2027']]),
+        return view('content.admissions.ucas2027', ['seo' => $this->seo('UCAS deadlines for Medicine, 2027 entry (and 2028 planning)', 'Every UCAS date that matters for medicine for 2027 entry, the UCAT window before it, the interview and offer season, and the steps to visa and arrival.', 'admissions.ucas2027', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAS 2027']]),
             'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'visa' => Topic::bySlug('student-visa')]);
     }
 
@@ -150,20 +150,20 @@ class ContentController extends Controller
     {
         $direct = Course::with('university')->whereIn('application_route', ['DIRECT', 'BOTH'])->get();
 
-        return view('content.admissions.howto', ['seo' => $this->seo('How to apply to UK Medicine from Nigeria: UCAS and direct-application medical schools', 'Step by step: applying through UCAS as an individual, the four-choice rule, the personal statement format, references, document upload, and the medical schools that take direct applications.', 'admissions.howto', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'How to apply']]),
+        return view('content.admissions.howto', ['seo' => $this->seo('How to apply to UK Medicine from Nigeria: UCAS and direct', 'Step by step: applying through UCAS as an individual, the four-choice rule, personal statement, references, documents, and the schools that take direct applications.', 'admissions.howto', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'How to apply']]),
             'ucas' => Topic::bySlug('ucas-2027'), 'direct' => $direct]);
     }
 
     // ---------------- Apply Online ----------------
     public function apply()
     {
-        return view('content.apply.index', ['seo' => $this->seo('Apply Online: structured application support for Nigerian medical applicants', 'Create your account, enter your qualifications once, upload the documents that apply to you, approve your package, and track submission. Transparent services, no guarantees, no university partnerships claimed.', 'apply.index', [['label' => 'Apply Online']], false), 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
+        return view('content.apply.index', ['seo' => $this->seo('Apply Online: application support for Nigerian applicants', 'Create your account, enter your qualifications once, upload the documents that apply to you, approve your package and track submission. No guarantees claimed.', 'apply.index', [['label' => 'Apply Online']], false), 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
     }
 
     public function services()
     {
         $tiers = ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get();
-        $seo = $this->seo('Services and pricing', 'What each level of application support includes and excludes, when work begins, and our refund terms. Our fee is separate from university tuition and application fees.', 'apply.services', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Services']], false);
+        $seo = $this->seo('Services and pricing for UK Medicine application support', 'What each level of application support includes and excludes, when work begins and our refund terms. Our fee is separate from university tuition and fees.', 'apply.services', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Services']], false);
         foreach ($tiers as $t) {
             $offer = $t->hasPrices() ? ['@type' => 'Offer', 'priceCurrency' => 'GBP', 'price' => number_format($t->prices->whereNotNull('amount_minor')->sum('amount_minor') / 100, 2, '.', '')] : null;
             $seo->jsonLd(array_filter(['@type' => 'Service', 'name' => $t->name, 'description' => $t->summary, 'provider' => ['@type' => 'Organization', 'name' => config('site.name')], 'offers' => $offer]));
@@ -270,7 +270,7 @@ class ContentController extends Controller
     public function faq()
     {
         $items = collect($this->faqItems());
-        $seo = $this->seo('Questions Nigerian applicants ask about UK Medicine', 'Straight answers, with sources, to the questions Nigerian students actually ask about studying Medicine in the UK: WAEC, NECO, UCAT, costs, which schools accept international students, and working afterwards.', 'faq.index', [['label' => 'FAQ']], false);
+        $seo = $this->seo('Questions Nigerian applicants ask about UK Medicine', 'Straight, sourced answers to what Nigerian students ask about UK Medicine: WAEC, NECO, UCAT, costs, which schools accept international students, working after.', 'faq.index', [['label' => 'FAQ']], false);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $items->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.faq.index', ['seo' => $seo, 'items' => $items]);
@@ -279,25 +279,30 @@ class ContentController extends Controller
     // ---------------- Organisation ----------------
     public function about()
     {
-        return view('content.org.about', ['seo' => $this->seo('About Study Medicine UK Nigeria', 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine in the UK. Who we are, how we work, and what we will never claim.', 'about', [['label' => 'About']], false)]);
+        return view('content.org.about', ['seo' => $this->seo('About Study Medicine UK Nigeria', 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine in the UK: who we are, how we work and what we never claim.', 'about', [['label' => 'About']], false)]);
     }
 
     public function status()
     {
-        return view('content.org.status', ['seo' => $this->seo('Our status: independence, registrations and agreements', 'A dated statement of our legal status, registrations, training and agreements. We hold no agreements with any university.', 'status', [['label' => 'Our status']], false)]);
+        return view('content.org.status', ['seo' => $this->seo('Our status: independence, registrations, agreements', 'A dated statement of our legal status, registrations, training and agreements. We hold no agreements with any university.', 'status', [['label' => 'Our status']], false)]);
     }
 
     public function contact()
     {
-        return view('content.org.contact', ['seo' => $this->seo('Contact', 'How to reach Study Medicine UK Nigeria by email or through your student portal.', 'contact', [['label' => 'Contact']], false)]);
+        return view('content.org.contact', ['seo' => $this->seo('Contact Study Medicine UK Nigeria', 'How to reach Study Medicine UK Nigeria: email, the student portal messages that keep everything on your record, response times and what to include.', 'contact', [['label' => 'Contact']], false)]);
     }
 
     public function legal(string $page)
     {
-        $titles = ['privacy' => ['Privacy notice', 'legal.privacy'], 'terms' => ['Terms of use', 'legal.terms'], 'application-terms' => ['Application service terms', 'legal.application-terms'], 'refunds' => ['Refund policy', 'legal.refunds']];
+        $titles = [
+            'privacy' => ['Privacy notice', 'legal.privacy', 'How Study Medicine UK Nigeria collects, uses, stores and protects personal data and application documents under UK GDPR and the Nigeria Data Protection Act.'],
+            'terms' => ['Terms of use', 'legal.terms', 'The terms on which you may use this website and its information: accuracy and verification dates, no guarantee of admission, and your responsibilities as a reader.'],
+            'application-terms' => ['Application service terms', 'legal.application-terms', 'The terms of our paid application-support service: what is and is not included, when work begins, your approval before any submission, and how we handle documents.'],
+            'refunds' => ['Refund policy', 'legal.refunds', 'When fees for application support are refundable, how to ask for a refund, the timings, and what happens if you withdraw before or after we begin work on your file.'],
+        ];
         abort_unless(isset($titles[$page]), 404);
-        [$title, $route] = $titles[$page];
+        [$title, $route, $description] = $titles[$page];
 
-        return view('content.org.legal-'.$page, ['seo' => $this->seo($title, $title.' for Study Medicine UK Nigeria.', $route, [['label' => $title]], false)]);
+        return view('content.org.legal-'.$page, ['seo' => $this->seo($title, $description, $route, [['label' => $title]], false)]);
     }
 }

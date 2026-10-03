@@ -376,7 +376,22 @@ class ContentController extends Controller
         $seo = $this->seo('Questions Nigerian applicants ask about UK Medicine', 'Straight, sourced answers to what Nigerian students ask about UK Medicine: WAEC, NECO, UCAT, costs, which schools accept international students, working after.', 'faq.index', [['label' => 'FAQ']], false);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $items->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.faq.index', ['seo' => $seo, 'items' => $items]);
+        // Grouped by the question a reader is really asking; any id not listed falls into the last group.
+        $groups = [
+            'Can my Nigerian qualifications get me in?' => [1, 2, 3, 5, 6, 8, 9, 10, 17],
+            'Tests, applying and timing' => [12, 13, 18, 19, 20, 21, 30, 31],
+            'Costs and funding' => [22, 23, 24, 28],
+            'Choosing medical schools' => [15, 26, 27],
+            'After graduation' => [32, 33, 34],
+            'Deciding, and about this service' => [14, 40],
+        ];
+        $placed = collect($groups)->flatten();
+        $grouped = collect($groups)->map(fn ($ids) => $items->whereIn('id', $ids)->values())->filter->isNotEmpty();
+        if ($items->whereNotIn('id', $placed)->isNotEmpty()) {
+            $grouped['Other questions'] = $items->whereNotIn('id', $placed)->values();
+        }
+
+        return view('content.faq.index', ['seo' => $seo, 'items' => $items, 'grouped' => $grouped]);
     }
 
     // ---------------- Organisation ----------------

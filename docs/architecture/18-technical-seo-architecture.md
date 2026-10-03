@@ -32,7 +32,7 @@ Status: ARCHITECTURE. Derived from brief sections 40, 97, 100, 101. Implemented 
 /login /register /portal/*                     private, noindex
 ```
 
-Rules: trailing slash canonical; www→non-www (or vice versa, pick one) 301; HTTP→HTTPS 301; lowercase enforced; query-string filtered directory pages are `canonical` to the unfiltered directory except a small whitelist of valuable filter combinations that get static friendly URLs (e.g. `/medical-schools/accepting-international-students/`, `/medical-schools/no-ucat/` — only if the asset register approves).
+Rules: **no trailing slash** is canonical (decided 2026-10-03: Laravel strips trailing slashes natively, so `/x/` 301s to `/x`; the URL examples above are shown with slashes only for readability); www→non-www (or vice versa, pick one) 301; HTTP→HTTPS 301; lowercase enforced; query-string filtered directory pages are `canonical` to the unfiltered directory except a small whitelist of valuable filter combinations that get static friendly URLs (e.g. `/medical-schools/accepting-international-students/`, `/medical-schools/no-ucat/` — only if the asset register approves).
 
 ## 18.2 Indexation controls
 

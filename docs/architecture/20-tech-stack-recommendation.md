@@ -15,13 +15,13 @@ Status: RECOMMENDATION (needs one confirmation from the owner: which Hostinger p
 
 ## 20.2 Recommendation
 
-**Laravel 12 (PHP 8.3) monolith** · MySQL 8 · Blade templates + Livewire 3 (or Alpine.js) for interactive forms · Tailwind CSS v4 with custom design tokens · Stripe PHP SDK (Checkout) · Laravel queues (database driver on shared hosting, Redis on VPS) · Laravel scheduler via cron · Mail via SMTP (Hostinger mailbox) or a transactional provider free tier · Private filesystem disk (local on VPS / S3-compatible if available).
+**Laravel 13 (PHP 8.3) monolith** · MySQL 8 · Blade templates + Livewire 3 (or Alpine.js) for interactive forms · Tailwind CSS v4 with custom design tokens · Stripe PHP SDK (Checkout) · Laravel queues (database driver on shared hosting, Redis on VPS) · Laravel scheduler via cron · Mail via SMTP (Hostinger mailbox) or a transactional provider free tier · Private filesystem disk (local on VPS / S3-compatible if available).
 
 Why this over alternatives:
 
 | Option | Fit | Verdict |
 |---|---|---|
-| **Laravel monolith** | runs on every Hostinger tier that has PHP 8.3 + MySQL + SSH + cron (Business/Cloud/VPS); Composer available; batteries included for auth, 2FA, signed URLs, file storage, queues, mail, Stripe (Cashier), policies | **Recommended** |
+| **Laravel monolith** (Laravel 13.34 resolved by Composer on 2026-10-03; requires PHP ^8.3) | runs on every Hostinger tier that has PHP 8.3 + MySQL + SSH + cron (Business/Cloud/VPS); Composer available; batteries included for auth, 2FA, signed URLs, file storage, queues, mail, Stripe (Cashier), policies | **Recommended** |
 | Next.js + Postgres | excellent DX, but needs a Node runtime (Hostinger Node support is plan-dependent) or a second host; splits public/private into two deployables; more moving parts for £0 | not recommended now |
 | WordPress + plugins | fast to start, but portal/documents/payments via plugins is insecure and un-bespoke; explicitly contrary to the brief's visual goals | rejected |
 | Static site (Astro) + separate portal app | best raw performance for public pages, but two codebases, two design implementations, and the directory data must feed both | reconsider only if public traffic outgrows the monolith |
@@ -51,3 +51,9 @@ Why this over alternatives:
 ## 20.6 Open question for the owner
 
 > **Which Hostinger plan is active (Single/Premium/Business shared, Cloud, or VPS), and does it expose SSH, cron and MySQL?** The recommendation holds for all; the answer decides queue/scanner/backup details in 20.3.
+
+## 20.7 Implementation log
+
+- 2026-10-03 — Composer resolved **Laravel 13.34.0** (framework requires PHP ^8.3). The repository root is now the Laravel application; research/decision docs remain under `docs/`. Vendor packages are not committed; `composer install` runs on the server.
+- 2026-10-03 — Front-end: Vite + Tailwind CSS v4 (Laravel default) with design tokens from document 19 defined in `resources/css/app.css` as CSS custom properties and `@theme` tokens. Fonts self-hosted from `public/fonts/` (OFL; see `brand/fonts/LICENSES.md`).
+- 2026-10-03 — SSH to the Hostinger host (ports 22 and 65002) is blocked from the build container by the session network policy, and no credentials have been supplied yet. `ops/inspect-hostinger.sh` is a read-only inspection script to run as soon as access exists; the 16-point server report depends on it.

@@ -12,8 +12,8 @@ Explicitly avoided: stock "happy students with laptops" hero collages; gradients
 
 | Role | Face (self-hosted, open licence) | Fallback | Notes |
 |---|---|---|---|
-| Display / H1–H2 | **Fraunces** (variable, optical sizes) or **Source Serif 4** | Georgia, serif | serif signals institution and longevity; use opsz for crisp small sizes |
-| Body / UI / forms / tables | **Inter** (variable) or **Public Sans** | system-ui, sans-serif | Public Sans is the US-web-design-system face; Inter is more neutral. Pick one; never both |
+| Display / H1–H2 | **Source Serif 4** (variable, optical sizes) — DECIDED 2026-10-03 (Fraunces rejected as too playful for an institutional voice) | Georgia, serif | serif signals institution and longevity; use opsz for crisp small sizes |
+| Body / UI / forms / tables | **Inter** (variable) — DECIDED 2026-10-03 | system-ui, sans-serif | neutral, excellent at small sizes in tables and forms |
 | Monospace (application numbers, codes) | **JetBrains Mono** | ui-monospace | application numbers, UCAS codes, hashes |
 
 Scale (rem; fluid with `clamp`): 0.75 · 0.875 · 1 · 1.125 · 1.25 · 1.5 · 1.875 · 2.25 · 3 · 3.75. Body 1rem/1.6; tables 0.875rem/1.45; H1 `clamp(2rem, 1.2rem + 3vw, 3.75rem)` with letter-spacing −0.01em. Max line length 68ch for prose.
@@ -83,3 +83,13 @@ British English. Precise, warm, unhurried. We say "published requirement", "offi
 ## 19.9 Accessibility and QA checklist per component
 
 Contrast, focus ring (2px navy offset 2px), keyboard order, aria for status chips (`aria-label="Document status: under review"`), reduced-motion respected, 200% zoom layout, screen-reader-only text for icon buttons.
+
+## 19.10 Brand identity (built 2026-10-03; generator `brand/build.py`)
+
+**Symbol.** A navy rounded tile carrying a minimal Rod of Asclepius: a heavier white staff with a two-loop serpent that passes behind, in front, behind, so the mark is read as medicine (not a cross, and not a caduceus). Behind it a quiet saltire in a slightly lighter navy supplies the UK reference by borrowing the diagonal geometry of the Union flag without rendering a flag. A single red point at the head of the staff is the only use of the accent red, tying the mark to the one primary action colour on the site. At 16px the tile, staff and red point survive; the saltire fades to texture by design.
+
+**Wordmark.** "Study Medicine" in Source Serif 4 (wght 600, opsz 40) over "UK · NIGERIA" in Inter (wght 560, tracked caps). Lockups: horizontal (header), horizontal reverse (navy surfaces), stacked (documents, social), wordmark only, symbol only, mono symbol (print, watermark).
+
+**Files.** `brand/logo/*.svg` are the masters (text converted to outlines, so no font dependency); `brand/favicon/` holds favicon.svg/.ico, 16–512 PNGs, apple-touch-icon, maskable icon and `site.webmanifest`; `brand/social/og-default.png` (1200×630) and `avatar-1024.png`; `brand/email/email-header@2x.png`. Web copies live under `public/` and `public/images/brand/`.
+
+**Rules.** Minimum clear space = the red point's diameter × 2 around the tile. Never recolour the tile outside navy/white. Never place the symbol on photographs without the tile. Never pair with university logos.

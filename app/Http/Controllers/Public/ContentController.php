@@ -165,7 +165,11 @@ class ContentController extends Controller
     {
         $courses = Course::with('university')->whereHas('university', fn ($q) => $q->whereIn('international_policy', ['accepts', 'international_only']))->get();
 
-        return view('content.admissions.ucat', ['seo' => $this->seo('UCAT for Nigerian students: dates, fees and test centres', 'The UCAT for applicants in Nigeria: 2026 cycle dates, the three-section structure scored out of 2700, fees, Pearson VUE centres in Nigeria and who requires it.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]),
+        $faqs = collect($this->faqItems())->whereIn('id', [18, 19, 20])->values();
+        $seo = $this->seo('UCAT for Nigerian students: dates, fees and test centres', 'The UCAT for applicants in Nigeria: 2026 cycle dates, the three-section structure scored out of 2700, fees, Pearson VUE centres in Nigeria and who requires it.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.admissions.ucat', ['seo' => $seo, 'faqs' => $faqs,
             'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027'), 'byTest' => $courses->groupBy(fn ($c) => $c->admissions_test ?? 'NOT_PUBLISHED')]);
     }
 

@@ -112,6 +112,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Changed**: every university record page gained computed Nigerian-applicant guidance and a how-to-apply block built only from published facts, plus Course schema (Offer only for a VERIFIED fee); 29 of the 40 observed questions now have sourced FAQ answers; the expired-form page offers a real way back. **Tested / passed**: 77 tests including a new university-page suite (home-only wording, published-versus-missing statements, Offer gating); CI green; `composer audit` now reachable and reports no advisories; `npm audit` clean. The requirements hub gained a what-you-hold → route → what-to-check table and four FAQs.
 
+## Cycle 25 — hub depth, eligibility fix, fee ordering (stage 29)
+
+- **Inspected**: the eligibility check as a WAEC-only applicant and as a Nigerian graduate (browser), the hubs' depth, the fee guide against the "cheapest" intent. **Found**: the route-map headline was generic and told a graduate that A-level/IB routes appear possible. **Changed**: headline written per qualification with a regression test; requirements hub "which route is yours" table; admissions hub "where are you today" table; fee guide orderable by lowest published fee (canonical unchanged, with a plain note on what cheapest means); `ops/qa/link-graph.py` added for future link audits. **Tested / passed**: 79 tests; crawl 28/28 clean; CI green.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

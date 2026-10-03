@@ -108,6 +108,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Inspected**: in-body inbound links for all 28 sitemap pages; raw output, mass assignment, `env()` use and unthrottled write routes. **Found**: seven pages with fewer than five in-body inbound links (About 1, Terms 0, Contact 2, Privacy 2, Services 3, Pillar 3, Admissions 4); portal record-creating routes without rate limits. **Changed**: contextual links where a reader needs them (no generic related blocks); throttles on application start, deletion request, checkout, manual transfer and password change. **Tested / passed**: 74 tests; crawl 28/28 clean; Actions settings re-check at 18:19 UTC still MISSING; next self check-in 19:16 UTC.
 
+## Cycle 24 — university page depth, FAQ growth, regression tests (stage 28)
+
+- **Changed**: every university record page gained computed Nigerian-applicant guidance and a how-to-apply block built only from published facts, plus Course schema (Offer only for a VERIFIED fee); 29 of the 40 observed questions now have sourced FAQ answers; the expired-form page offers a real way back. **Tested / passed**: 77 tests including a new university-page suite (home-only wording, published-versus-missing statements, Offer gating); CI green.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

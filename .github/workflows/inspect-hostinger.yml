@@ -13,35 +13,35 @@ jobs:
       - uses: actions/checkout@v7
       - name: Check configuration
         env:
-          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
-          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST || secrets.HOSTINGER_SSH_HOST }}
+          USER: ${{ vars.HOSTINGER_SSH_USER || secrets.HOSTINGER_SSH_USER }}
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
         run: |
           missing=""
-          [ -z "$HOST" ] && missing="$missing HOSTINGER_SSH_HOST(variable)"
-          [ -z "$USER" ] && missing="$missing HOSTINGER_SSH_USER(variable)"
+          [ -z "$HOST" ] && missing="$missing HOSTINGER_SSH_HOST(variable or secret)"
+          [ -z "$USER" ] && missing="$missing HOSTINGER_SSH_USER(variable or secret)"
           [ -z "$KEY" ]  && missing="$missing HOSTINGER_SSH_KEY(secret)"
           if [ -n "$missing" ]; then echo "::error::Missing repository settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1; fi
       - name: Prepare SSH
         env:
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
-          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST || secrets.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || secrets.HOSTINGER_SSH_PORT || '65002' }}
         run: |
           install -d -m 700 ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
           ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"
       - name: Connectivity and authentication check
         env:
-          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
-          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
-          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST || secrets.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || secrets.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER || secrets.HOSTINGER_SSH_USER }}
         run: ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'echo "connected as $(whoami) on $(hostname)"'
       - name: Run read-only inspection
         env:
-          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
-          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
-          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST || secrets.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || secrets.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER || secrets.HOSTINGER_SSH_USER }}
         run: |
           mkdir -p out
           ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -p "$PORT" "$USER@$HOST" 'bash -s' < ops/inspect-hostinger.sh > out/inspect-$(date -u +%F).txt 2>&1 || true

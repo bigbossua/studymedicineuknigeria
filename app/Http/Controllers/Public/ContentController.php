@@ -58,8 +58,15 @@ class ContentController extends Controller
 
     public function foundation()
     {
-        return view('content.medicine.foundation', ['seo' => $this->seo('Foundation and gateway routes to UK Medicine', 'Which foundation years publish Medicine as a destination, which are home-only, and how a WASSCE or NECO holder can use them, each statement with its source.', 'medicine.foundation', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'Foundation routes']]),
-            'routes' => $this->statements('foundation_route'), 'foundationCourses' => Course::with('university')->where('entry_type', 'foundation')->get()]);
+        $faqs = collect($this->faqItems())->whereIn('id', [8, 9])->values();
+        $seo = $this->seo('Foundation and gateway routes to UK Medicine', 'Which foundation years publish Medicine as a destination, which are home-only, and how a WASSCE or NECO holder can use them, each statement with its source.', 'medicine.foundation', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'Foundation routes']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+        $routes = $this->statements('foundation_route');
+
+        return view('content.medicine.foundation', ['seo' => $seo, 'faqs' => $faqs,
+            'published' => $routes->where('verification_status', '!=', ReferenceFact::NOT_PUBLISHED)->values(),
+            'notPublished' => $routes->where('verification_status', ReferenceFact::NOT_PUBLISHED)->values(),
+            'foundationCourses' => Course::with('university')->where('entry_type', 'foundation')->get()]);
     }
 
     // ---------------- Requirements ----------------
@@ -93,8 +100,11 @@ class ContentController extends Controller
 
     public function alevels()
     {
-        return view('content.requirements.alevels', ['seo' => $this->seo('A-levels for UK Medicine from Nigeria: grades and subjects', 'Typical A-level and IB requirements for UK medicine (A100), the compulsory subjects, and how Cambridge International A-levels taken in Nigeria are treated.', 'requirements.alevels', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'A-levels']]),
-            'reqs' => $this->statements('a_level_requirement')]);
+        $faqs = collect($this->faqItems())->whereIn('id', [9, 17])->values();
+        $seo = $this->seo('A-levels for UK Medicine from Nigeria: grades and subjects', 'Typical A-level and IB requirements for UK medicine (A100), the compulsory subjects, and how Cambridge International A-levels taken in Nigeria are treated.', 'requirements.alevels', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'A-levels']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.requirements.alevels', ['seo' => $seo, 'faqs' => $faqs, 'reqs' => $this->statements('a_level_requirement'), 'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027')]);
     }
 
     public function gem()

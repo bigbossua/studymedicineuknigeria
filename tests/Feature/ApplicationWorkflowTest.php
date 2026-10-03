@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\DocumentStatus;
 use App\Enums\Stage;
+use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Application;
 use App\Models\Authorisation;
 use App\Models\ServiceTier;
@@ -12,6 +13,7 @@ use App\Models\University;
 use App\Models\User;
 use App\Services\Applications\FormSteps;
 use App\Services\Applications\StageResolver;
+use App\Support\Totp;
 use Database\Seeders\PlatformSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -35,7 +37,13 @@ class ApplicationWorkflowTest extends TestCase
         $this->seed(PlatformSeeder::class);
         $this->student = User::factory()->create(['email_verified_at' => now()]);
         $this->admin = User::factory()->create(['email_verified_at' => now()]);
-        $this->admin->forceFill(['role' => 'admin'])->save();
+        $this->admin->forceFill(['role' => 'admin', 'two_factor_secret' => Totp::generateSecret(), 'two_factor_confirmed_at' => now()])->save();
+    }
+
+    /** Staff requests carry the passed two-factor challenge for this session. */
+    private function asAdmin(): static
+    {
+        return $this->actingAs($this->admin)->withSession([EnsureTwoFactor::SESSION_KEY => $this->admin->id]);
     }
 
     private function startApplication(): Application
@@ -113,13 +121,13 @@ class ApplicationWorkflowTest extends TestCase
     {
         $a = $this->startApplication();
         $this->actingAs($this->student)->get("/portal/{$a->application_number}/approve")->assertNotFound();
-        $this->actingAs($this->admin)->post("/admin/applications/{$a->application_number}/stage", ['stage_override' => 'READY_FOR_STUDENT_APPROVAL'])->assertSessionHas('error');
+        $this->asAdmin()->post("/admin/applications/{$a->application_number}/stage", ['stage_override' => 'READY_FOR_STUDENT_APPROVAL'])->assertSessionHas('error');
     }
 
     public function test_agreement_gated_submission_routes_are_refused(): void
     {
         $a = $this->startApplication();
-        $this->actingAs($this->admin)->post("/admin/applications/{$a->application_number}/submissions", ['intake' => 'September 2028', 'route_code' => 'DIRECT_AGENT'])->assertSessionHas('error');
+        $this->asAdmin()->post("/admin/applications/{$a->application_number}/submissions", ['intake' => 'September 2028', 'route_code' => 'DIRECT_AGENT'])->assertSessionHas('error');
         $this->assertSame(0, Submission::count());
     }
 
@@ -129,14 +137,14 @@ class ApplicationWorkflowTest extends TestCase
         $this->completeForm($a);
         $a->documents()->get()->each(fn ($d) => $d->transition(DocumentStatus::ACCEPTED, $this->admin->id));
         $u = University::create(['slug' => 'leics', 'name' => 'University of Leicester', 'international_policy' => 'accepts']);
-        $this->actingAs($this->admin)->post("/admin/applications/{$a->application_number}/submissions", ['university_id' => $u->id, 'intake' => 'September 2028', 'route_code' => 'UCAS_STUDENT', 'choices' => 'Leicester A100'])->assertSessionHas('status');
+        $this->asAdmin()->post("/admin/applications/{$a->application_number}/submissions", ['university_id' => $u->id, 'intake' => 'September 2028', 'route_code' => 'UCAS_STUDENT', 'choices' => 'Leicester A100'])->assertSessionHas('status');
         $sub = Submission::first();
 
         // staff cannot mark submitted before the student approves
-        $this->actingAs($this->admin)->post("/admin/applications/{$a->application_number}/submissions/{$sub->id}", ['status' => 'SUBMITTED', 'external_reference' => 'X'])->assertSessionHas('error');
+        $this->asAdmin()->post("/admin/applications/{$a->application_number}/submissions/{$sub->id}", ['status' => 'SUBMITTED', 'external_reference' => 'X'])->assertSessionHas('error');
         $this->assertSame('PROPOSED', $sub->fresh()->status);
 
-        $this->actingAs($this->admin)->post("/admin/applications/{$a->application_number}/stage", ['stage_override' => 'READY_FOR_STUDENT_APPROVAL'])->assertSessionHas('status');
+        $this->asAdmin()->post("/admin/applications/{$a->application_number}/stage", ['stage_override' => 'READY_FOR_STUDENT_APPROVAL'])->assertSessionHas('status');
         app(StageResolver::class)->sync($a->fresh());
         $this->assertSame(Stage::READY_FOR_STUDENT_APPROVAL, $a->fresh()->stage);
 
@@ -156,7 +164,7 @@ class ApplicationWorkflowTest extends TestCase
         $form = $a->form;
         $form['personal']['legal_surname'] = 'Changed';
         $a->forceFill(['form' => $form])->save();
-        $this->actingAs($this->admin)->post("/admin/applications/{$a->application_number}/submissions/{$sub->id}", ['status' => 'PACKAGE_READY'])->assertSessionHas('error');
+        $this->asAdmin()->post("/admin/applications/{$a->application_number}/submissions/{$sub->id}", ['status' => 'PACKAGE_READY'])->assertSessionHas('error');
         $this->assertNotNull($auth->fresh()->revoked_at);
         $this->assertSame('PROPOSED', $sub->fresh()->status);
     }

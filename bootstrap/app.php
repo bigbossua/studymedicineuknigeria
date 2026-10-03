@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureStaff;
+use App\Http\Middleware\EnsureTwoFactor;
 use App\Http\Middleware\HandleRedirects;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
@@ -17,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(HandleRedirects::class);
         $middleware->append(SecurityHeaders::class);
-        $middleware->alias(['staff' => EnsureStaff::class]);
+        $middleware->alias(['staff' => EnsureStaff::class, '2fa' => EnsureTwoFactor::class]);
         $middleware->validateCsrfTokens(except: ['webhooks/stripe']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

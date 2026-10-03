@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ApplicationAdminController;
 use App\Http\Controllers\Admin\MiscAdminController;
 use App\Http\Controllers\Admin\ReferenceAdminController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Portal\ApplicationController;
 use App\Http\Controllers\Portal\ApprovalController;
 use App\Http\Controllers\Portal\DashboardController;
@@ -109,6 +110,15 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('portal.dashboard')->with('status', 'Your email address is verified.');
     })->middleware('signed')->name('verification.verify');
     Route::post('email/verification-notification', [AuthController::class, 'resendVerification'])->middleware('throttle:6,1')->name('verification.send');
+
+    Route::prefix('two-factor')->name('two-factor.')->group(function () {
+        Route::get('setup', [TwoFactorController::class, 'setup'])->name('setup');
+        Route::post('setup', [TwoFactorController::class, 'confirm'])->middleware('throttle:10,1')->name('confirm');
+        Route::get('recovery-codes', [TwoFactorController::class, 'recoveryCodes'])->name('recovery-codes');
+        Route::get('challenge', [TwoFactorController::class, 'challenge'])->name('challenge');
+        Route::post('challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:10,1')->name('verify');
+        Route::post('disable', [TwoFactorController::class, 'disable'])->name('disable');
+    });
 });
 
 /*
@@ -116,7 +126,7 @@ Route::middleware('auth')->group(function () {
 | Student portal (private, noindex)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified'])->prefix('portal')->name('portal.')->group(function () {
+Route::middleware(['auth', 'verified', '2fa'])->prefix('portal')->name('portal.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('start', [DashboardController::class, 'start'])->name('start');
     Route::get('profile', [ProfileController::class, 'show'])->name('profile');
@@ -155,7 +165,7 @@ Route::post('webhooks/stripe', StripeWebhookController::class)->name('webhooks.s
 | Admin (staff + admin roles)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified', 'staff'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'staff', '2fa'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('applications', [ApplicationAdminController::class, 'index'])->name('applications.index');
     Route::get('applications/{application}', [ApplicationAdminController::class, 'show'])->name('applications.show');
@@ -182,5 +192,6 @@ Route::middleware(['auth', 'verified', 'staff'])->prefix('admin')->name('admin.'
     Route::delete('redirects/{id}', [MiscAdminController::class, 'redirectDelete'])->name('redirects.delete');
     Route::get('users', [MiscAdminController::class, 'users'])->name('users');
     Route::post('users/{user}/role', [MiscAdminController::class, 'userRole'])->name('users.role');
+    Route::post('users/{user}/two-factor/reset', [MiscAdminController::class, 'userTwoFactorReset'])->name('users.two-factor.reset');
     Route::get('audit', [MiscAdminController::class, 'audit'])->name('audit');
 });

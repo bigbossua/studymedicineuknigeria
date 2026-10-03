@@ -14,6 +14,15 @@
             <div class="field"><label for="password" class="label">New password</label><input id="password" name="password" type="password" autocomplete="new-password" class="input"></div>
             <div class="field"><label for="password_confirmation" class="label">Confirm new password</label><input id="password_confirmation" name="password_confirmation" type="password" class="input"></div>
             <button class="btn btn-secondary">Change password</button></form>
+        <section class="card space-y-3"><p class="eyebrow">Two-step verification</p>
+            @if($user->hasTwoFactorEnabled())
+                <p class="text-[0.9375rem] text-ink-700">On. Each sign-in asks for a code from your authenticator app.</p>
+                <form method="post" action="{{ route('two-factor.disable') }}" class="flex flex-wrap items-end gap-3">@csrf<div class="field"><label for="tf_current_password" class="label">Current password</label><input id="tf_current_password" name="current_password" type="password" autocomplete="current-password" class="input"></div><button class="btn btn-tertiary">Switch off</button></form>
+            @else
+                <p class="text-[0.9375rem] text-ink-700">Off. Adding a code from an authenticator app protects your documents if your password is ever stolen.</p>
+                <a href="{{ route('two-factor.setup') }}" class="btn btn-secondary">Set up two-step verification</a>
+            @endif
+        </section>
         <section class="card space-y-3"><p class="eyebrow">Your data</p>
             <p class="text-[0.9375rem] text-ink-700">Download everything we hold about you, or ask us to delete your account. Deletion is completed within 30 days unless an in-progress submission requires us to retain records; we will tell you if so.</p>
             <div class="flex flex-col sm:flex-row gap-3"><a href="{{ route('portal.profile.export') }}" class="btn btn-secondary">Download my data (JSON)</a>

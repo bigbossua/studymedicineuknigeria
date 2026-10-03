@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Lead;
 use App\Models\User;
 use App\Support\Seo;
@@ -37,6 +38,7 @@ class AuthController extends Controller
         }
         RateLimiter::clear($key);
         $request->session()->regenerate();
+        $request->session()->forget(EnsureTwoFactor::SESSION_KEY); // every sign-in repeats the authenticator step
         $request->user()->forceFill(['last_login_at' => now()])->saveQuietly();
 
         return redirect()->intended($request->user()->isStaff() ? route('admin.dashboard') : route('portal.dashboard'));

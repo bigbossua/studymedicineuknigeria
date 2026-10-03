@@ -50,10 +50,18 @@ Decisions made during the build, in order. Research and decision documents remai
 - Selected architecture: **GitHub Actions as the deployment agent** (runner → SSH → Hostinger) with `inspect-hostinger.yml` (read-only report as artifact) and `deploy-hostinger.yml` (tests, then `ops/deploy.sh staging|production` with backup and rollback). Private key lives only in GitHub Actions Secrets.
 - Blocked on one owner action: installing the Claude GitHub App on the repository; then adding the Actions secret and variables.
 
+## Stage 7: staff two-step verification (P0)
+
+- `App\Support\Totp` implements RFC 6238 (SHA-1, 6 digits, 30 s) with no new dependency; `TwoFactorTest` checks it against the RFC test vectors. Secrets and bcrypt-hashed recovery codes are stored with Laravel's encrypted casts (APP_KEY), never in plain text.
+- `EnsureTwoFactor` middleware (alias `2fa`) sits on the portal and admin groups: staff/admin accounts without an authenticator are sent to `/two-factor/setup` and cannot reach `/admin` or `/portal` until enrolled; every account with it enabled must pass `/two-factor/challenge` once per session, and a fresh sign-in clears the pass. A code is accepted once only (replay refused inside the ±30 s window); 8 wrong attempts lock the challenge for 15 minutes; both POSTs are route-throttled.
+- Enrolment shows a manual setup key plus an `otpauth://` link (no QR library yet; a self-hosted QR renderer is a follow-up), then eight single-use recovery codes shown once.
+- Students may enrol from their profile and switch it off with their password; staff cannot switch it off. Admins can reset another account's authenticator from Users (audited as `two_factor.reset`); lock-out recovery for the last admin is `php artisan smukn:two-factor-reset <email>` on the server.
+- Tests: 29 pass (8 new). Workflow tests now carry the passed challenge in the session for staff requests.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).
 2. Release-1 public pages (register rows 2–23) with verification gating.
 3. Eligibility check (lead capture) and services/pricing page once prices are set.
-4. Staff TOTP enforcement; ClamAV on VPS; off-site encrypted backups.
+4. ClamAV on VPS; off-site encrypted backups; QR rendering on the two-step setup page.
 5. Legal pages (privacy, terms, application terms, refund policy) — drafts need owner/legal review before publication.

@@ -100,6 +100,18 @@ class MiscAdminController extends Controller
         return back()->with('status', 'Role updated.');
     }
 
+    public function userTwoFactorReset(Request $request, User $user)
+    {
+        abort_unless($request->user()->isAdmin(), 403);
+        if ($user->id === $request->user()->id) {
+            return back()->with('error', 'Reset your own authenticator from the server shell (smukn:two-factor-reset), not from here.');
+        }
+        $user->forceFill(['two_factor_secret' => null, 'two_factor_confirmed_at' => null, 'two_factor_recovery_codes' => null])->save();
+        AdminAction::log('two_factor.reset', $user);
+
+        return back()->with('status', "Two-step verification removed for {$user->email}. They will enrol again at next sign-in.");
+    }
+
     public function audit()
     {
         return view('admin.audit', ['seo' => Seo::make('Audit log')->noindex(), 'actions' => AdminAction::with('admin')->latest('created_at')->paginate(100)]);

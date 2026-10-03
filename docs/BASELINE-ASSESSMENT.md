@@ -21,7 +21,7 @@ A statement of what exists, what is verified, and what is not, taken before any 
 | Public site | 27 indexable pages (home, Medicine pillar, Nigerian landing, foundation routes, requirements hub + WAEC/NECO/A-levels/GEM/English, fee guide, admissions hub + UCAT/UCAS 2027/how to apply, FAQ, Apply Online, services, eligibility, About, Our status, Contact, 4 legal drafts) plus the medical-school directory and 53 university records; total-cost page noindex until inputs verified | route sweep (all 200), screenshots, tests |
 | SEO | per-page canonical/description/robots; Organization, BreadcrumbList, WebSite, CollegeOrUniversity, Service and FAQPage JSON-LD; dynamic robots (disallow-all outside production); sitemap of published routes only; DB redirects + lowercase/no-trailing-slash canonicalisation (global middleware); branded 404 | tests, curl |
 | Reference data | universities (53), courses (56), reference_facts (617 + 36 topic facts) each with source URL and verification status; importer idempotent; **0 facts VERIFIED** so far; in production unverified facts are hidden | DB counts |
-| Accounts | registration, email verification, rate-limited login, no-enumeration reset; roles student/staff/admin; 2FA columns present but **TOTP not enforced yet** | tests |
+| Accounts | registration, email verification, rate-limited login, no-enumeration reset; roles student/staff/admin; **TOTP enforced for staff/admin** (enrol before any admin page, challenge per session, single-use codes, recovery codes, admin reset, console lock-out recovery) | tests (TwoFactorTest) |
 | Applications | numbered `SMN-YYYY-NNNNNN`, 9 autosaving steps, derived stage resolver, next-action engine, data-driven checklist (10 rules), withdraw | tests, browser flow |
 | Documents | content sniffing, size limits, image re-encode, PDF active-content rejection, ClamAV when present, encryption for passport/financial, private UUID storage, logged downloads, staff sandboxed preview | tests, browser flow |
 | Payments | Stripe Checkout + webhook (idempotent event log), bank-transfer fallback with manual confirmation; **prices null → nothing chargeable**; **no Stripe keys configured** | code review; not exercised against Stripe |
@@ -32,7 +32,7 @@ A statement of what exists, what is verified, and what is not, taken before any 
 
 ## 3. Known gaps (ordered by the brief's priority scale)
 
-- **P0** Staff TOTP enforcement not implemented; CSP is report-only; no off-site encrypted backup job yet (depends on server). ClamAV availability depends on hosting tier.
+- **P0** ~~Staff TOTP enforcement~~ done (stage 7); CSP is report-only; no off-site encrypted backup job yet (depends on server). ClamAV availability depends on hosting tier.
 - **P1** Server unknown; `.env` and database do not exist on the server; staging subdomain not created; cron not installed. All prepared in `ops/` and the Actions workflows; blocked only on Actions settings.
 - **P2** Service prices unset (by design until the owner decides); Stripe keys and SMTP password not configured; eligibility logic is rule-based and cautious but not yet reviewed by a qualified admissions reviewer.
 - **P4** Research gaps: 20 schools with identity-only records; fee year unconfirmed for several; visa fee, living costs, UCAT fee not found; all facts need on-page verification (admin queue).

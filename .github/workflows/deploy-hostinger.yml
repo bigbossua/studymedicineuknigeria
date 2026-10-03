@@ -1,4 +1,5 @@
 name: Deploy to Hostinger
+# Registered with GitHub Actions on 2026-10-03.
 # Builds the Laravel release on the runner and deploys it with ops/deploy.sh (release directories, backup,
 # symlink switch, smoke test, automatic rollback). Staging first; production only by explicit dispatch.
 on:

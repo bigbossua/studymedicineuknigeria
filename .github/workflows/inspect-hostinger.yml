@@ -1,4 +1,5 @@
 name: Inspect Hostinger (read-only)
+# Registered with GitHub Actions on 2026-10-03.
 # Runs ops/inspect-hostinger.sh over SSH from a GitHub runner (which has normal outbound network access)
 # and uploads the output as an artifact. Nothing on the server is modified.
 on:

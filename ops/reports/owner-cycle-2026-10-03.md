@@ -91,6 +91,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 - **Changed**: branded per-page Open Graph cards (30 static + on-demand university cards) for WhatsApp/social sharing; `public/.htaccess` with https and non-www canonical redirects, dotfile denial, asset caching and compression (smoke test checks the redirects on production); `/how-we-verify` editorial and verification policy page with live record counts, linked from every verification chip and the footer; Search Console / GA4 owner checklist; asset register build-status section; dynamic year bounds; fact-driven eligibility dates.
 - **Tested / passed**: 57 tests; cards and page rendered in Chromium. Settings diagnosis re-run at 15:03 and 15:14 UTC: still nothing present.
 
+## Cycle 20 — security audit and fixes (stage 25)
+
+- **Inspected**: delegated read-only audit of authorisation, two-step, documents, payments, sessions, leakage and file writes; every finding re-verified in code. **Found**: 10 issues, two high (student two-step bypass with the password alone; email-verification links fatal because of a missing import). **Changed**: all fixed with regression tests; PDF check now inflates streams and decodes name escapes. **Tested / passed**: 66 tests. Record: `ops/reports/security-audit-2026-10-03.md`.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

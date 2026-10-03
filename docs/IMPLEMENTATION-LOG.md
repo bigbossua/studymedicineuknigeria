@@ -173,7 +173,7 @@ A read-only code audit (delegated, then every finding re-verified in the code) f
 | Low | Any staff member could redirect any path, including sign-in, to an external URL | admin only, relative targets, private and auth paths refused |
 | Low | A late `payment_intent.payment_failed` could downgrade a settled payment | ignored unless the payment is still INITIATED |
 | Info | JSON-LD without `JSON_HEX_TAG` | added |
-| Low (open) | The plain-text PDF active-content check cannot see compressed object streams | documented; ClamAV on the server and the sandboxed preview remain the controls; a real PDF parser is on the backlog |
+| Low | The plain-text PDF active-content check could not see compressed object streams or `#xx` name escapes | the check now inflates every stream it can and decodes name escapes before scanning (tests with a Flate-hidden `/JavaScript` and `/J#61vaScript`); ClamAV on the server and the sandboxed preview remain second-line controls |
 
 Controls the audit confirmed sound are listed in `ops/reports/security-audit-2026-10-03.md`. 65 tests pass.
 
@@ -182,5 +182,5 @@ Controls the audit confirmed sound are listed in `ops/reports/security-audit-202
 1. Hostinger access → server report → deployment (docs/architecture/21).
 2. Release-1 public pages (register rows 2–23) with verification gating.
 3. Eligibility check (lead capture) and services/pricing page once prices are set.
-4. ClamAV on VPS; QR rendering on the two-step setup page; first real backup run and restore test once server access exists; PDF parsing with a real library (the plain-text active-content check is bypassable by compressed object streams).
+4. ClamAV on VPS; QR rendering on the two-step setup page; first real backup run and restore test once server access exists.
 5. Legal pages (privacy, terms, application terms, refund policy) — drafts need owner/legal review before publication.

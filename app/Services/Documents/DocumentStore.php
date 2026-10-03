@@ -96,14 +96,39 @@ class DocumentStore
         }
     }
 
+    /**
+     * Refuses PDFs that carry scripts, launch actions, embedded files or encryption. Looks at the raw
+     * bytes, at every stream the file can inflate (object streams hide dictionaries from a plain scan)
+     * and at name-escaped spellings such as /J#61vaScript.
+     */
     private function assertSafePdf(string $bytes): void
     {
         if (! str_starts_with($bytes, '%PDF')) {
             throw ValidationException::withMessages(['file' => 'This does not appear to be a valid PDF.']);
         }
-        foreach (['/JavaScript', '/JS ', '/Launch', '/EmbeddedFile', '/OpenAction', '/AA ', '/Encrypt'] as $needle) {
-            if (str_contains($bytes, $needle)) {
-                throw ValidationException::withMessages(['file' => 'PDFs with scripts, embedded files or encryption are not accepted. Please export a plain PDF (for example, "Print to PDF").']);
+        $haystacks = [$bytes];
+        if (preg_match_all('/stream\r?\n(.*?)\r?\nendstream/s', $bytes, $m)) {
+            foreach (array_slice($m[1], 0, 2000) as $stream) {
+                $inflated = @gzuncompress($stream);
+                if ($inflated === false) {
+                    $inflated = @gzinflate($stream);
+                }
+                if ($inflated === false && strlen($stream) > 2) {
+                    $inflated = @gzinflate(substr($stream, 2));
+                }
+                if (is_string($inflated) && $inflated !== '') {
+                    $haystacks[] = $inflated;
+                }
+            }
+        }
+        $needles = ['/JavaScript', '/JS', '/Launch', '/EmbeddedFile', '/OpenAction', '/AA', '/Encrypt', '/RichMedia', '/XFA'];
+        foreach ($haystacks as $h) {
+            // decode #xx name escapes so /J#61vaScript reads as /JavaScript
+            $decoded = preg_replace_callback('/#([0-9A-Fa-f]{2})/', fn ($x) => chr(hexdec($x[1])), $h) ?? $h;
+            foreach ($needles as $needle) {
+                if (preg_match('#'.preg_quote($needle, '#').'(?![A-Za-z])#', $decoded)) {
+                    throw ValidationException::withMessages(['file' => 'PDFs with scripts, embedded files, forms or encryption are not accepted. Please export a plain PDF (for example, "Print to PDF").']);
+                }
             }
         }
     }

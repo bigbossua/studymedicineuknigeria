@@ -169,4 +169,23 @@ class PortalPaymentsAndDocumentsTest extends TestCase
         $this->price->update(['active' => false]);
         $this->actingAs($this->student)->post("/portal/$n/payments/manual", ['tier_price_id' => $this->price->id, 'accept_terms' => 1])->assertNotFound();
     }
+
+    public function test_pdf_active_content_is_caught_inside_compressed_streams_and_name_escapes(): void
+    {
+        $doc = $this->application->documents()->where('code', 'PASSPORT')->first();
+        $n = $this->application->application_number;
+        $pdf = fn (string $body) => "%PDF-1.5\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n".$body."\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
+        $compressed = gzcompress('<< /Type /Action /S /JavaScript /JS (app.alert(1)) >>');
+        $hidden = $pdf("3 0 obj\n<< /Type /ObjStm /Filter /FlateDecode /Length ".strlen($compressed)." >>\nstream\n".$compressed."\nendstream\nendobj");
+        $escaped = $pdf("3 0 obj\n<< /S /J#61vaScript /JS (x) >>\nendobj");
+        $plain = $pdf("3 0 obj\n<< /Type /Page /Parent 2 0 R >>\nendobj");
+
+        foreach (['hidden' => $hidden, 'escaped' => $escaped] as $label => $bytes) {
+            $file = UploadedFile::fake()->createWithContent("$label.pdf", $bytes);
+            $this->actingAs($this->student)->post("/portal/$n/documents/{$doc->id}", ['file' => $file])->assertSessionHasErrors('file');
+        }
+        $this->assertSame(0, $doc->fresh()->versions()->count());
+        $this->actingAs($this->student)->post("/portal/$n/documents/{$doc->id}", ['file' => UploadedFile::fake()->createWithContent('plain.pdf', $plain)])->assertRedirect();
+        $this->assertSame(1, $doc->fresh()->versions()->count());
+    }
 }

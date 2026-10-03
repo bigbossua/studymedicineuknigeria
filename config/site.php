@@ -18,6 +18,9 @@ return [
     'staging_basic_user' => env('STAGING_BASIC_USER'),
     'staging_basic_password' => env('STAGING_BASIC_PASSWORD'),
 
+    // Set to any value (e.g. the review date) once a solicitor has reviewed the legal pages; clears the launch checklist item.
+    'legal_reviewed' => env('SITE_LEGAL_REVIEWED'),
+
     // GA4 measurement ID (G-XXXXXXX). Blank = no third-party analytics at all. When set, the public site shows a
     // consent banner and loads gtag only after consent; the portal and admin never load it (funnel_events covers them).
     'ga4_id' => env('SITE_GA4_ID'),

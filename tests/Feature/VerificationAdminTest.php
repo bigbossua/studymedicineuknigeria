@@ -6,6 +6,7 @@ use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\ReferenceFact;
 use App\Models\User;
 use App\Support\Totp;
+use Database\Seeders\PlatformSeeder;
 use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -48,5 +49,13 @@ class VerificationAdminTest extends TestCase
         $this->assertSame(ReferenceFact::VERIFY_ON_PAGE, $fact->fresh()->verification_status);
 
         $this->actingAs(User::factory()->create())->post('/admin/verification/bulk', ['decision' => 'verify', 'fact_ids' => [$fact->id]])->assertForbidden();
+    }
+
+    public function test_admin_dashboard_shows_the_launch_checklist_with_live_state(): void
+    {
+        $this->seed(PlatformSeeder::class);
+        $this->seed(TopicFactsSeeder::class);
+        $r = $this->admin()->get('/admin')->assertOk()->assertSee('Launch readiness')->assertSee('Reference facts verified')->assertSee('no prices yet', false)->assertSee('STRIPE_SECRET not set');
+        $this->assertMatchesRegularExpression('/\d+ of 8 complete/', $r->getContent());
     }
 }

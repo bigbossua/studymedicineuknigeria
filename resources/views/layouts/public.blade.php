@@ -110,7 +110,7 @@
     </div>
     <div class="border-t border-ink-200">
         <div class="container-site py-5 flex flex-col sm:flex-row gap-2 sm:items-center justify-between text-[0.8125rem] text-ink-500">
-            <p>&copy; {{ date('Y') }} {{ config('site.legal_name') ?? config('site.name') }}. <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a></p>
+            <p>&copy; {{ date('Y') }} {{ config('site.legal_name') ?? config('site.name') }}. <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a>@if(config('site.whatsapp')) · <a href="https://wa.me/{{ config('site.whatsapp') }}?text={{ rawurlencode('Hello, I have a question about studying Medicine in the UK.') }}" rel="noopener" target="_blank">WhatsApp</a>@endif</p>
             <p>Information is checked against official sources and shows a last-verified date. Admission decisions are made solely by universities.</p>
         </div>
     </div>

@@ -103,6 +103,15 @@ class PublicSeoTest extends TestCase
         }
     }
 
+    public function test_whatsapp_links_appear_only_when_a_number_is_configured(): void
+    {
+        config(['site.whatsapp' => null]);
+        $this->get('/apply-online')->assertOk()->assertDontSee('wa.me', false);
+        config(['site.whatsapp' => '2348000000000']);
+        $this->get('/apply-online')->assertOk()->assertSee('https://wa.me/2348000000000', false);
+        $this->get('/contact')->assertOk()->assertSee('https://wa.me/2348000000000', false);
+    }
+
     public function test_unknown_pages_return_the_branded_404(): void
     {
         $this->get('/no-such-page')->assertNotFound()->assertSee('We could not find that page');

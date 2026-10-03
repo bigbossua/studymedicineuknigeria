@@ -95,6 +95,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Inspected**: delegated read-only audit of authorisation, two-step, documents, payments, sessions, leakage and file writes; every finding re-verified in code. **Found**: 10 issues, two high (student two-step bypass with the password alone; email-verification links fatal because of a missing import). **Changed**: all fixed with regression tests; PDF check now inflates streams and decodes name escapes. **Tested / passed**: 66 tests. Record: `ops/reports/security-audit-2026-10-03.md`.
 
+## Cycle 21 — auth flow coverage and handover notes
+
+- **Changed**: end-to-end tests for registration → verification link → portal and the full password-reset loop (the gates every student passes); `CLAUDE.md` with the rules, commands and conventions for future sessions; university pages link to the how-to-apply route. **Tested / passed**: 68 tests, CI green. Settings diagnosis at 17:12 UTC still empty; next self check-in 18:15 UTC.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

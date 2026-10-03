@@ -76,7 +76,7 @@ class Application extends Model
     {
         $seq = (int) (static::max('id') ?? 0) + 1;
 
-        return sprintf('SMN-%d-%06d', $intakeYear, $seq);
+        return sprintf('SMUKN-%d-%06d', $intakeYear, $seq);
     }
 
     public function record(string $type, array $payload = [], ?int $actorId = null): ApplicationEvent

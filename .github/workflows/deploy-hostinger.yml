@@ -53,6 +53,8 @@ jobs:
           PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
           USER: ${{ vars.HOSTINGER_SSH_USER }}
           SITE_URL: ${{ (github.event.inputs.target || 'staging') == 'production' && 'https://studymedicineuknigeria.com' || vars.STAGING_URL }}
+          # staging sits behind HTTP basic auth (StagingGate); the smoke test must present the credentials
+          SMOKE_AUTH: ${{ (github.event.inputs.target || 'staging') != 'production' && vars.STAGING_BASIC_USER != '' && format('{0}:{1}', vars.STAGING_BASIC_USER, secrets.STAGING_BASIC_PASSWORD) || '' }}
         run: |
           export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new"
           ops/deploy.sh "$USER@$HOST" "$PORT" "$TARGET" "$SITE_URL"

@@ -74,7 +74,7 @@ class ApplicationWorkflowTest extends TestCase
     public function test_starting_an_application_issues_a_number_and_a_personalised_checklist(): void
     {
         $a = $this->startApplication();
-        $this->assertMatchesRegularExpression('/^SMN-2028-\d{6}$/', $a->application_number);
+        $this->assertMatchesRegularExpression('/^SMUKN-2028-\d{6}$/', $a->application_number);
         $codes = $a->documents()->pluck('code')->all();
         $this->assertContains('PASSPORT', $codes);
         $this->assertContains('STATEMENT', $codes);

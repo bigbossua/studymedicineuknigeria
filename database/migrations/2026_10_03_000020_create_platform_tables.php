@@ -64,7 +64,7 @@ return new class extends Migration
 
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->string('application_number', 24)->unique(); // SMN-2027-000123
+            $table->string('application_number', 24)->unique(); // SMUKN-2027-000123
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('service_tier_id')->nullable()->constrained()->nullOnDelete();
             $table->unsignedSmallInteger('intake_year');

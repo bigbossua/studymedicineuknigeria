@@ -58,3 +58,10 @@ After that, the deployment agent needs its credentials, which the session is pre
 - Pre-push secret scan: no `.env`, keys, SQLite database or private storage files are tracked; no secret patterns in tracked content. `vendor/`, `node_modules/` and `public/build/` are absent on GitHub as intended.
 - The push triggered the CI workflow on a clean runner: Composer install, asset build, Pint and the 21-test suite **passed** (run 37124727045).
 - Remaining: the Hostinger inspection and deploy workflows must be registered by GitHub Actions (dispatch-only workflows can take a few minutes to appear), and the repository needs the SSH secret and connection variables before any run can reach the server.
+
+## 8. Update — 2026-10-03 13:30 UTC: deployment agent verified on GitHub
+
+- Repository published: default branch `claude/new-session-p6gdm6`; CI passed on every push (6 runs). Framework-skeleton workflows removed; remaining: CI, Inspect Hostinger (read-only), Deploy to Hostinger, Dependabot updates. Dependabot PR #1 (Actions version bumps) is open and untouched.
+- Both Hostinger workflows registered after a re-index push (GitHub had indexed only the push-triggered CI workflow from the first push).
+- Dispatched the inspection workflow with no credentials configured (run 37125079386): it failed at "Check configuration" with the intended message naming the missing settings, and all SSH steps were skipped. No connection to the server was attempted. The guard works.
+- Blocked on: `HOSTINGER_SSH_KEY` (secret) and `HOSTINGER_SSH_HOST`, `HOSTINGER_SSH_PORT`, `HOSTINGER_SSH_USER` (variables) in the repository's Actions settings.

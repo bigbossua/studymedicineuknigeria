@@ -135,6 +135,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Found**: the passport document card carried the personal-statement reason (one rule, one reason, two documents). **Changed**: two rules with their own reasons; old rule removed on reseed. The worksheet has 110 priority-1 rows across 55 official pages (UCAS 12, UCAT 12, visa 7, GMC 5, then the fee rows), so the dates and fees students act on can be verified in one sitting.
 
+## Cycle 28 — viewable build without deployment (stage 33)
+
+- **Owner asked** for a URL to inspect the current build. **Found**: nothing has ever been deployed (zero deploy runs; settings MISSING at 19:17 UTC, run 11). **Changed**: published a private static snapshot of all public pages as an artifact; added a devcontainer so Codespaces runs the live application from a browser with the demo accounts; directory cards gained a WAEC-statement indicator. **Tested / passed**: 85 tests; CI green.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

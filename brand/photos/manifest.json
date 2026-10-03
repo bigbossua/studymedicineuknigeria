@@ -1,0 +1,4 @@
+{
+  "_readme": "One entry per photograph. Drop the original (JPEG or PNG, longest side >= 2400px) in this folder named <slug>.jpg|png, then run: php artisan smukn:images. Only entries with a licence recorded are built. Never add photos that imply a partnership with a named university or show real students who are clients.",
+  "photos": []
+}

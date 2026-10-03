@@ -81,6 +81,11 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 - **Changed**: diagnosis workflow (presence-only, re-runnable by the owner); inspection accepts host/user/port from variables or secrets.
 - **Blocked**: genuine credential availability. No access fabricated, nothing deployed.
 
+## Cycle 16 — owner-assisted work split (stage 20)
+
+- **Category B (owner's browser)**: enter the five Actions settings (exact steps given in chat and in `access-check-2026-10-03b.md`); pick photographs per `docs/design/IMAGERY-BRIEF.md`; SEMrush exports when wanted (`docs/research/02` lists the queries to look up).
+- **Category A (done here)**: funnel view events, client interaction events, photograph pipeline and component, imagery brief. A self check-in re-runs the settings diagnosis at 15:45 UTC and continues the deployment cycle automatically if the settings are present.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

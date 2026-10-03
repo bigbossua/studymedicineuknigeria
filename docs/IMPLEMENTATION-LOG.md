@@ -128,6 +128,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - `PortalPaymentsAndDocumentsTest`: card checkout refused while Stripe is unconfigured; bank transfer creates a MANUAL_REVIEW payment, alerts admins and mirrors `payment_started`; a price from another tier is refused; admin confirmation succeeds the payment, notifies the student, mirrors `payment_completed` and is audited; students cannot confirm their own transfer. Passport image upload: re-encoded and scaled to ≤ 3000 px, encrypted at rest (`.png.enc`, no PNG signature on disk), streamed back decrypted with `no-store`, access logged; other students 403, staff allowed. GDPR export streams JSON with the account and application record.
 - Skeleton `ExampleTest` removed. 51 tests, 700+ assertions pass.
 
+## Stage 20: view-level funnel events and the photograph pipeline (P7/P6)
+
+- First-party funnel now starts at discovery: `course_viewed` (medical school page, slug only) and `apply_viewed` (Apply Online landing) are recorded server-side and forwarded to GA4 after consent; `apply_click` (with placement: header, hero, floating, footer, CTA band) and `eligibility_started` fire client-side only when gtag is loaded. Admin → Funnel shows the two new top-of-funnel steps. Stale `Disallow: /medical-schools/compare/` removed from robots (no such route).
+- Photograph pipeline for the owner's Unsplash workflow: `brand/photos/manifest.json` + originals → `php artisan smukn:images` → WebP/JPEG at 480/960/1440 px, blurred inline placeholder, public manifest; `<x-photo>` renders a `<picture>` with srcset, dimensions, lazy loading, alt and credit, and renders nothing while a slot is empty. Brief and shot list: `docs/design/IMAGERY-BRIEF.md`. Originals are git-ignored.
+- Tests: 53 pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

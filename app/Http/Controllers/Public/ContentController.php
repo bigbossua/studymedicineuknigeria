@@ -168,6 +168,8 @@ class ContentController extends Controller
     // ---------------- Apply Online ----------------
     public function apply()
     {
+        Funnel::track('apply_viewed');
+
         return view('content.apply.index', ['seo' => $this->seo('Apply Online: application support for Nigerian applicants', 'Create your account, enter your qualifications once, upload the documents that apply to you, approve your package and track submission. No guarantees claimed.', 'apply.index', [['label' => 'Apply Online']], false), 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
     }
 

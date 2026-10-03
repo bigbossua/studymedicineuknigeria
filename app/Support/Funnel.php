@@ -15,7 +15,7 @@ use Throwable;
 final class Funnel
 {
     /** Events that may also be sent to GA4 (public site, after consent). Portal events stay first-party only. */
-    private const CLIENT_EVENTS = ['lead_created', 'account_created'];
+    private const CLIENT_EVENTS = ['course_viewed', 'apply_viewed', 'lead_created', 'account_created'];
 
     /** application_events type → reporting event name, with the payload keys worth keeping. */
     private const FROM_APPLICATION_EVENT = [
@@ -93,6 +93,6 @@ final class Funnel
     /** Only low-cardinality, non-identifying parameters go client-side. */
     private static function clientParams(array $properties): array
     {
-        return array_intersect_key($properties, array_flip(['qualification', 'intake_year', 'tier', 'route']));
+        return array_intersect_key($properties, array_flip(['qualification', 'intake_year', 'tier', 'route', 'school']));
     }
 }

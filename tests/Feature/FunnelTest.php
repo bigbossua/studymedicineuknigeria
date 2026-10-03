@@ -6,9 +6,11 @@ use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Application;
 use App\Models\FunnelEvent;
 use App\Models\ServiceTier;
+use App\Models\University;
 use App\Models\User;
 use App\Support\Totp;
 use Database\Seeders\PlatformSeeder;
+use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -61,6 +63,21 @@ class FunnelTest extends TestCase
         $this->assertDatabaseHas('funnel_events', ['name' => 'payment_completed']);
         $this->assertDatabaseMissing('funnel_events', ['name' => 'message_sent']);
         $this->assertSame('staff', FunnelEvent::where('name', 'payment_completed')->first()->properties['actor']);
+    }
+
+    public function test_public_page_views_feed_the_funnel_without_personal_data(): void
+    {
+        $this->seed(ReferenceDataSeeder::class);
+        $u = University::first();
+        $this->get('/medical-schools/'.$u->slug)->assertOk();
+        $e = FunnelEvent::where('name', 'course_viewed')->first();
+        $this->assertNotNull($e);
+        $this->assertSame($u->slug, $e->properties['school']);
+        $this->assertNull($e->user_id);
+
+        config(['site.ga4_id' => 'G-TEST123']);
+        $this->get('/apply-online')->assertOk()->assertSee('name="funnel-events"', false)->assertSee('apply_viewed', false);
+        $this->assertDatabaseHas('funnel_events', ['name' => 'apply_viewed']);
     }
 
     public function test_admin_funnel_page_shows_steps_and_conversion(): void

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\University;
+use App\Support\Funnel;
 use App\Support\Seo;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -66,6 +67,8 @@ class SchoolController extends Controller
         if (! $university->published) {
             $seo->noindex();
         }
+
+        Funnel::track('course_viewed', ['school' => $university->slug]);
 
         return view('schools.show', compact('university', 'course', 'seo'));
     }

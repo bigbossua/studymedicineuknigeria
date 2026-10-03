@@ -59,6 +59,16 @@ document.addEventListener('submit', (e) => {
         const pending = document.querySelector('meta[name="funnel-events"]')?.content;
         if (pending) { try { JSON.parse(pending).forEach((e) => window.gtag('event', e.name, e.params || {})); } catch (e) { /* ignore */ } }
     };
+    // Public-site interaction events (sent only once gtag is loaded, i.e. after consent)
+    const send = (name, params) => { if (window.__smuknGa && typeof window.gtag === 'function') window.gtag('event', name, params || {}); };
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href*="/apply-online"]');
+        if (!a || !a.classList.contains('btn')) return;
+        const where = a.closest('header') ? 'header' : a.closest('footer') ? 'footer' : a.closest('[data-floating-cta]') ? 'floating' : a.closest('.cta-band') ? 'cta_band' : 'content';
+        send('apply_click', { location: where, page: location.pathname });
+    });
+    const elig = document.querySelector('form[action$="/eligibility"]');
+    if (elig) elig.addEventListener('input', () => send('eligibility_started', { page: location.pathname }), { once: true });
     const banner = document.querySelector('[data-consent-banner]');
     banner?.querySelectorAll('[data-consent]').forEach((b) => b.addEventListener('click', () => { remember(b.dataset.consent); banner.remove(); if (b.dataset.consent === 'granted') load(); }));
     if (cookie() === 'granted') load();

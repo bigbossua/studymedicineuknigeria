@@ -25,3 +25,8 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# photograph originals stay out of git; derivatives in public/images/photos are committed
+brand/photos/*.jpg
+brand/photos/*.jpeg
+brand/photos/*.png

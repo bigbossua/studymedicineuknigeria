@@ -19,7 +19,6 @@ class SeoController extends Controller
             'Disallow: /login',
             'Disallow: /register',
             'Disallow: /password/',
-            'Disallow: /medical-schools/compare/',
             'Disallow: /*?*',
             '',
             'Sitemap: '.url('/sitemap.xml'),

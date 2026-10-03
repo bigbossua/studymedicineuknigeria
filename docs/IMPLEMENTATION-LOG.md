@@ -39,6 +39,11 @@ Decisions made during the build, in order. Research and decision documents remai
 - Sitemap now lists 27 published URLs; the only built page kept out is the total-cost page.
 - Tests: 21 feature tests pass.
 
+## Stage 5: deployment tooling (server access still pending)
+
+- `.env.production.example` names every secret the server needs; `ops/deploy.sh` implements the release-directory method (local build → rsync → shared `.env`/storage links → DB backup → migrate → cache → symlink switch → smoke test → automatic rollback); `.github/workflows/ci.yml` runs Pint and the test suite. Code formatted with Pint.
+- Still blocked: SSH to Hostinger (network policy and no credentials), therefore the 16-point server report and the first deployment. GitHub push is still refused (Claude GitHub App not installed on the repository).
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

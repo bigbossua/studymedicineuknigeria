@@ -7,7 +7,7 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 | Area | State |
 |---|---|
 | Code | HEAD on `claude/new-session-p6gdm6`, 84 tests green (incl. a production-mode sweep that no unverified wording reaches any public page, which found and fixed three leaks today: UCAS-code notes, GMC-status wording, research notes in two course titles and one school name), CI green on every push; 28 indexable pages crawl clean; axe zero violations; fresh-account journey clean |
-| Deployment | Ready (inspect → bootstrap → deploy → smoke → rollback rehearsed) but **blocked**: no Actions secrets or variables exist in any scope (last check 19:09 UTC, run 10); next self check-in 19:16 UTC |
+| Deployment | Ready (inspect → bootstrap → deploy → smoke → rollback rehearsed) but **blocked**: no Actions secrets or variables exist in any scope (last check 19:17 UTC, run 11); next self check-in 19:16 UTC |
 | Facts | 636 pending (535 VERIFY-ON-PAGE, 101 NOT_FOUND); official domains are blocked from this environment, so verification runs from the owner's browser via `data/verification/worksheet-2026-10-03.csv` (110 priority-1 rows across 55 pages) |
 | SEO | Decision register with 65 query families and reasons (`data/seo/decision-register.csv`, Admin → SEO); 22-point technical audit clean; eleven intent pages upgraded; Semrush figures await the owner's export |
 | Conversion | Eligibility → account → application → documents → payments → export tested on a phone viewport; two wording defects found and fixed today (route-map headline, passport checklist reason) |

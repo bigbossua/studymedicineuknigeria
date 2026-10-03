@@ -5,6 +5,7 @@
             <p class="eyebrow mb-4">Apply Online</p>
             <h1 class="text-balance">A structured application you can leave and return to</h1>
             <p class="lede mt-6 max-w-[34rem]">Create your account, enter your qualifications once, upload only the documents that apply to you, and approve your package before anything is submitted. Your work is saved from the first field.</p>
+            <x-photo slug="apply" class="mt-6" ratio="16/9" sizes="(min-width: 1024px) 40vw, 100vw" />
             <div class="mt-8 flex flex-col sm:flex-row gap-3"><a href="{{ route('register') }}" class="btn btn-primary btn-lg">Create your account</a><a href="{{ route('apply.eligibility') }}" class="btn btn-secondary btn-lg">Check your eligibility first</a></div>
             <p class="mt-5 text-[0.875rem] text-ink-500">Already registered? <a href="{{ route('login') }}">Sign in</a>.</p>
         </div>

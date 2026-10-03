@@ -1,6 +1,7 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
     @include('content._page-head', ['eyebrow' => 'Nigeria → United Kingdom · Medicine', 'title' => 'Study Medicine in the UK from Nigeria: the honest guide', 'lede' => 'If you hold WAEC or NECO, A-levels, the IB or a Nigerian degree and want to become a doctor in the UK, this page tells you which routes are genuinely open, what it costs, when things happen, and how to apply, with every claim traceable to a university or official page.', 'seo' => $seo])
+    <x-photo slug="nigeria-guide" class="mt-8 max-w-3xl" ratio="16/9" sizes="(min-width: 1024px) 48rem, 100vw" />
 
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 space-y-12">

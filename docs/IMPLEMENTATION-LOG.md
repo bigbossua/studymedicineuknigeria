@@ -134,6 +134,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - Photograph pipeline for the owner's Unsplash workflow: `brand/photos/manifest.json` + originals → `php artisan smukn:images` → WebP/JPEG at 480/960/1440 px, blurred inline placeholder, public manifest; `<x-photo>` renders a `<picture>` with srcset, dimensions, lazy loading, alt and credit, and renders nothing while a slot is empty. Brief and shot list: `docs/design/IMAGERY-BRIEF.md`. Originals are git-ignored.
 - Tests: 53 pass.
 
+## Stage 21: owner-browser research loop (P8)
+
+- Semrush remains without API units, so lookups are made in the owner's Semrush tab and recorded in `data/semrush/lookup-sheet.csv` (27 query themes from research 02). `php artisan smukn:semrush-import <csv>` copies only recorded figures into the research table, dated, and lists themes whose demand now supports a register row. Blank cells stay "DATA UNAVAILABLE". Test covers the import and the no-invention rule.
+- Photo slots wired on the home hero, the Nigeria guide, the directory and Apply Online; each renders nothing until its photograph is built, so the pages are unchanged today.
+- Settings diagnosis re-run at 15:03 UTC: still nothing present in any scope. 54 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

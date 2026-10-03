@@ -13,6 +13,7 @@
                 <p class="mt-6 text-[0.875rem] text-ink-500 max-w-[34rem]">Independent application support. Every requirement, fee and deadline we publish names its official source and shows the date we last verified it.</p>
             </div>
             <div class="lg:col-span-5">
+                <x-photo slug="home-hero" class="mb-6 hidden lg:block" ratio="4/3" :priority="true" sizes="(min-width: 1024px) 40vw, 100vw" />
                 <div class="card-raised">
                     <p class="eyebrow mb-4">Where most Nigerian applicants start</p>
                     <ol class="space-y-3 text-[0.9375rem]">

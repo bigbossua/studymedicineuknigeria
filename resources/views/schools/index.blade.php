@@ -4,6 +4,7 @@
             <p class="eyebrow mb-3">Directory</p>
             <h1 class="text-balance">UK medical schools: who accepts international applicants, and what they publish</h1>
             <p class="lede mt-5">Filter by nation, international eligibility, admissions test and application route. Every value shows whether it has been verified on the official page. We do not rank schools.</p>
+        <x-photo slug="directory" class="mt-8 max-w-4xl" ratio="21/9" sizes="(min-width: 1024px) 56rem, 100vw" />
             <x-reviewed :date="$seo->lastReviewed" :intake="$seo->intakeYear" class="mt-4" />
         </div>
 

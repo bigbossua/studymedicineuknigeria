@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\University;
+use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -82,5 +83,18 @@ class SchoolPagesTest extends TestCase
         }
         $this->assertStringContainsString('We do not rank or recommend A-level providers', $html);
         $this->assertSame(1, substr_count($html, '"@type":"FAQPage"'));
+    }
+
+    public function test_structural_fields_carry_names_not_research_notes(): void
+    {
+        // Titles and school names print everywhere without a verification gate, so research notes must live in facts or dataset notes, never in them.
+        $this->seed(ReferenceDataSeeder::class);
+        foreach (Course::all() as $c) {
+            $this->assertLessThanOrEqual(70, mb_strlen($c->title), "course title too long for a name: {$c->title}");
+            $this->assertDoesNotMatchRegularExpression('/not confirmed|not found|no A100|in this session|GMC lists/i', $c->title, $c->title);
+        }
+        foreach (University::all() as $u) {
+            $this->assertDoesNotMatchRegularExpression('/not confirmed|not found|in this session|GMC lists/i', (string) $u->medical_school_name, (string) $u->medical_school_name);
+        }
     }
 }

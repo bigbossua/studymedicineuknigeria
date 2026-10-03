@@ -1162,7 +1162,7 @@
         "source_type": "regulator"
       },
       "main_ug_course_name": {
-        "value": "Graduate Entry Medicine MBChB (graduate-entry only; no A100 found)",
+        "value": "Graduate Entry Medicine MBChB",
         "source": "https://www.ucas.com/explore/courses/7d3115e0-ac14-40a5-b5c1-651d60e2f470/graduate-entry-medicine?studyYear=2027",
         "status": "VERIFY-ON-PAGE",
         "source_type": "official"
@@ -1244,7 +1244,8 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "notes": [
-        "Graduate-entry only: relevant to Nigerian applicants who already hold a degree, not school leavers."
+        "Graduate-entry only: relevant to Nigerian applicants who already hold a degree, not school leavers.",
+        "Graduate-entry programme only; no A100 (school-leaver) course found."
       ],
       "last_researched": "2026-10-03"
     },
@@ -2949,7 +2950,7 @@
         "source_type": "official"
       },
       "medical_school_name": {
-        "value": "University of Greater Manchester Medical School (GMC lists 'University of Greater Manchester School of Medicine')",
+        "value": "University of Greater Manchester Medical School",
         "source": "https://medicine.greatermanchester.ac.uk/undergraduate-medical-school/",
         "status": "VERIFY-ON-PAGE",
         "source_type": "official"
@@ -3070,7 +3071,8 @@
         "First intake year: 2026 is the earliest entry year referenced on the site (INFERENCE - not stated explicitly as 'first intake' in captured snippets).",
         "No Nigerian qualification (WAEC/NECO) equivalence surfaced: NOT FOUND IN THIS SESSION.",
         "Admissions contact per site: medicineadmissions@greatermanchester.ac.uk (VERIFY-ON-PAGE).",
-        "No partnership with any other institution is stated here; none should be asserted."
+        "No partnership with any other institution is stated here; none should be asserted.",
+        "The GMC lists the school as 'University of Greater Manchester School of Medicine'."
       ],
       "last_researched": "2026-10-03"
     },
@@ -5557,7 +5559,7 @@
         "source_type": "regulator"
       },
       "main_ug_course_name": {
-        "value": "Medicine BSc (Hons) - pre-clinical; students transfer to a partner school for clinical years (transfer detail NOT confirmed in this session)",
+        "value": "Medicine BSc (Hons), pre-clinical",
         "source": "https://www.st-andrews.ac.uk/subjects/medicine/medicine-bsc-a100/",
         "status": "VERIFY-ON-PAGE",
         "source_type": "official"
@@ -5630,7 +5632,9 @@
         "source": null,
         "status": "NOT FOUND IN THIS SESSION"
       },
-      "notes": [],
+      "notes": [
+        "Students transfer to a partner school for the clinical years; transfer detail not confirmed in research."
+      ],
       "last_researched": "2026-10-03"
     },
     {

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\ReferenceFact;
+use App\Models\Topic;
 use App\Models\University;
 use App\Support\Funnel;
 use App\Support\OgImage;
@@ -84,6 +86,19 @@ class SchoolController extends Controller
             ->reviewed('2026-10-03', '2027')
             ->jsonLd(['@type' => 'CollegeOrUniversity', 'name' => $university->name, 'url' => $university->website_url ?? $course?->official_url, 'address' => ['@type' => 'PostalAddress', 'addressLocality' => $university->city, 'addressCountry' => 'GB']]);
 
+        if ($course) {
+            $courseLd = ['@type' => 'Course', 'name' => $course->title, 'provider' => ['@type' => 'CollegeOrUniversity', 'name' => $university->name], 'url' => $course->official_url ?? $university->website_url];
+            if ($course->ucas_code) {
+                $courseLd['courseCode'] = $course->ucas_code;
+            }
+            // An Offer is emitted only for a fee the university publishes and we have verified on its page (architecture 18.3).
+            $fee = $course->internationalFee();
+            if ($fee && $fee->verification_status === ReferenceFact::VERIFIED && $fee->value_number) {
+                $courseLd['offers'] = ['@type' => 'Offer', 'category' => 'International tuition fee per year', 'price' => (string) $fee->value_number, 'priceCurrency' => 'GBP'];
+            }
+            $seo->jsonLd($courseLd);
+        }
+
         // Public university pages stay noindex until the record is marked published by staff
         if (! $university->published) {
             $seo->noindex();
@@ -91,6 +106,6 @@ class SchoolController extends Controller
 
         Funnel::track('course_viewed', ['school' => $university->slug]);
 
-        return view('schools.show', compact('university', 'course', 'seo'));
+        return view('schools.show', ['university' => $university, 'course' => $course, 'seo' => $seo, 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
     }
 }

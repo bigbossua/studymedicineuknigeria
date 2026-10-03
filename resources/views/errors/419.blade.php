@@ -4,7 +4,8 @@
             <p class="eyebrow mb-3">419</p>
             <h1>Your session expired</h1>
             <p class="lede mt-5">For your security, forms expire after an hour of inactivity. Go back and submit the form again.</p>
-            <div class="mt-8 flex flex-wrap gap-3"><a href="{{ url('/') }}" class="btn btn-primary">Go to the home page</a><a href="{{ url('/login') }}" class="btn btn-secondary">Student portal</a></div>
+            @php $back = url()->previous(); $internal = str_starts_with($back, url('/')) && $back !== url()->current(); @endphp
+            <div class="mt-8 flex flex-wrap gap-3">@if($internal)<a href="{{ $back }}" class="btn btn-primary">Go back to the form</a><a href="{{ url('/') }}" class="btn btn-secondary">Home</a>@else<a href="{{ url('/') }}" class="btn btn-primary">Go to the home page</a>@endif<a href="{{ url('/login') }}" class="btn btn-secondary">Student portal</a></div>
             <p class="mt-8 text-[0.875rem] text-ink-500">Need help now? Email <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a> and quote the time this happened.</p>
         </div>
     </section>

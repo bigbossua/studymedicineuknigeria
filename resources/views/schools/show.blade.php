@@ -73,6 +73,38 @@
                     @endif
                 </section>
 
+                <section aria-labelledby="h-meaning" class="prose-site">
+                    <h2 id="h-meaning">What this means if you are applying from Nigeria</h2>
+                    @php
+                        $waecF = $university->fact('waec_neco_statement'); $engF = $university->fact('english_requirement') ?? $university->fact('english_language_requirement');
+                        $foundF = $university->fact('foundation_route'); $gemF = $university->fact('gem_international'); $placesF = $university->fact('international_places');
+                        $published = fn ($f) => $f && ! in_array($f->verification_status, ['NOT_FOUND', 'NOT_PUBLISHED'], true) && trim((string) $f->value_text) !== '' && ! str_starts_with(trim((string) $f->value_text), 'n/a');
+                    @endphp
+                    <ul>
+                        @switch($university->international_policy)
+                            @case('home_only')<li><strong>Not open to you.</strong> This school publishes that it admits home students only; it is listed so that you do not spend an application choice on it. The <a href="{{ route('schools.index') }}?international=accepts">directory filter</a> shows the schools that do admit international applicants.</li>@break
+                            @case('international_only')<li><strong>Open, and international-only</strong> for the current cohort according to the university's published pages. Check the application route and fee below; there is no home-student comparison to rely on.</li>@break
+                            @case('accepts')<li><strong>Open to international applicants</strong>{{ $published($placesF) ? ' with a published number of international places: '.$placesF->displayValue().'.' : '; the number of international places is not published in our records.' }} International applicants are usually ranked against each other, so the admissions test matters as much as grades.</li>@break
+                            @default<li><strong>International eligibility not yet established</strong> in our records. Ask the admissions team the one question that matters before anything else: does the school consider applicants who need a Student visa?</li>
+                        @endswitch
+                        <li><strong>Your WAEC or NECO:</strong> {{ $published($waecF) ? 'the university addresses it (statement above). Read the exact wording: in every case we have recorded, WASSCE or NECO is the GCSE layer and the entry qualification is A-levels, the IB, a recognised foundation year or a degree.' : 'no Nigeria-specific statement located; treat WASSCE or NECO as the GCSE layer and plan on A-levels, the IB, a foundation year that leads to Medicine, or a degree.' }} <a href="{{ route('requirements.waec') }}">WAEC statements for every school</a>.</li>
+                        <li><strong>English:</strong> {{ $published($engF) ? 'the published requirement is above; where it names WAEC or NECO English, confirm that the rule applies to Medicine, which usually carries a higher bar.' : 'no school-specific statement located; Medicine typically asks for IELTS 7.0 to 7.5 with component minimums.' }} <a href="{{ route('requirements.english') }}">English requirements</a>.</li>
+                        <li><strong>Foundation route:</strong> {{ $published($foundF) ? 'a foundation programme is named above; progression to Medicine counts only where the university publishes it.' : 'no foundation route to Medicine is published for international applicants in our records.' }} <a href="{{ route('medicine.foundation') }}">Foundation routes that publish Medicine as a destination</a>.</li>
+                        <li><strong>Graduates:</strong> {{ $published($gemF) ? 'the graduate-entry statement is above.' : 'graduate-entry eligibility for international applicants is not established here; graduates can usually apply to the standard course on degree class plus the admissions test.' }} <a href="{{ route('requirements.gem') }}">Graduate entry with a Nigerian degree</a>.</li>
+                    </ul>
+                </section>
+
+                <section aria-labelledby="h-apply">
+                    <h2 id="h-apply">How to apply to this school</h2>
+                    <dl class="card mt-4">
+                        <div class="grid sm:grid-cols-12 gap-y-1 py-2 border-b border-ink-100"><dt class="sm:col-span-4 text-ink-500 text-[0.875rem]">Application route</dt><dd class="sm:col-span-8 font-medium">{{ match($course?->application_route) { 'UCAS' => 'UCAS, by the medicine deadline', 'DIRECT' => 'Directly to the university, on its own calendar', 'BOTH' => 'UCAS or directly to the university', default => 'Not established' } }}</dd></div>
+                        <div class="grid sm:grid-cols-12 gap-y-1 py-2 border-b border-ink-100"><dt class="sm:col-span-4 text-ink-500 text-[0.875rem]">Admissions test</dt><dd class="sm:col-span-8 font-medium">{{ match($course?->admissions_test) { 'UCAT' => 'UCAT, sat the summer before you apply', 'GAMSAT' => 'GAMSAT', 'UCAT/GAMSAT' => 'UCAT or GAMSAT depending on route', 'NONE' => 'No admissions test published for international applicants', default => 'Not established' } }}</dd></div>
+                        @if(($course?->application_route ?? null) !== 'DIRECT')<x-fact-row :fact="$ucas?->fact('deadline_medicine')" label="UCAS medicine deadline (2027 entry)" />@endif
+                        @if(in_array($course?->admissions_test, ['UCAT', 'UCAT/GAMSAT'], true))<x-fact-row :fact="$ucat?->fact('testing_window')" label="UCAT testing window (2027 entry)" />@endif
+                    </dl>
+                    <p class="mt-3 text-[0.9375rem] text-ink-700">The full process, including references, the three-question statement and document upload, is on <a href="{{ route('admissions.howto') }}">how to apply</a>; dates are on the <a href="{{ route('admissions.ucas2027') }}">timeline</a>. Our service prepares and checks your application with you; the university alone decides.</p>
+                </section>
+
                 <section aria-labelledby="h-other">
                     <h2 id="h-other">Other recorded facts</h2>
                     <div class="mt-4 space-y-3">

@@ -49,6 +49,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 - **Changed**: new page from research 10 with fact rows; `PublishGate` makes fact-driven pages indexable only when their topics are verified in Admin → Verification (also applied to the total-cost page). **Tested / passed**: 36 tests; page renders with the verification notice locally.
 - **Remains**: the owner (or staff) verifies the GOV.UK / GMC / UKFPO facts in the verification queue; the page then enters the sitemap automatically.
 
+## Cycle 9 — operations readiness (P8)
+
+- **Found**: `composer audit` cannot reach packagist from this environment; no uptime monitoring; no email authentication guidance. **Changed**: Dependabot now covers Composer and npm (security advisories and grouped minor/patch PRs); `uptime-check.yml` runs the smoke tests every 30 minutes once `PRODUCTION_URL` exists and keeps one incident issue open while failing; `docs/ops/EMAIL-DELIVERABILITY.md` lists the SPF/DKIM/DMARC steps. `npm audit`: 0 vulnerabilities.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:
@@ -60,5 +64,7 @@ GitHub → repository → Settings → Secrets and variables → Actions:
 | Variable | `HOSTINGER_SSH_PORT` | `65002` (shared) or `22` (VPS) |
 | Variable | `HOSTINGER_SSH_USER` | hPanel SSH username |
 | Secret | `BACKUP_PASSPHRASE` | long random passphrase, kept in the owner's password manager |
+
+Also, before the first student registers: the DNS/mailbox steps in `docs/ops/EMAIL-DELIVERABILITY.md` (SPF, DKIM, DMARC), and after the first production deployment the repository variable `PRODUCTION_URL` so `uptime-check.yml` starts monitoring.
 
 Then run **Inspect Hostinger** (Actions → Run workflow) and the live server report follows from its artifact. Nothing is deployed until that report is reviewed.

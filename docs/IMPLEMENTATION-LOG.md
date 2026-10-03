@@ -94,6 +94,13 @@ Decisions made during the build, in order. Research and decision documents remai
 - `App\Support\PublishGate` (`topics-verified:slug,…`): a fact-driven page is `noindex` and absent from the sitemap until every non-archived fact of its topics is VERIFIED or NOT_PUBLISHED; NOT_FOUND keeps it out. The route declares the gate in its sitemap default and `SeoController` honours it. The total-cost page now uses the same gate instead of a permanent noindex. The admin verification queue is therefore the switch that publishes both pages.
 - Footer "Understand" column and the Medicine pillar's related links point to the page. Test covers rendering, gating and the flip to indexable. 36 tests pass.
 
+## Stage 14: operations readiness (P8)
+
+- Dependabot extended to Composer and npm (packagist's advisory API is unreachable from the development environment, so advisories arrive as Dependabot alerts/PRs instead); `npm audit` reports 0 vulnerabilities.
+- `uptime-check.yml`: scheduled smoke tests against `PRODUCTION_URL` every 30 minutes, one incident issue opened/commented while failing and closed automatically on recovery; inert until the variable is set after the first production deployment.
+- `docs/ops/EMAIL-DELIVERABILITY.md`: SPF, DKIM, DMARC and mailbox checklist for the Hostinger-hosted `info@` address, with verification commands.
+- Not done: Larastan could not be installed (Composer needs GitHub source clones through the proxy and the request is refused); static analysis stays on the backlog for a session with package access.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

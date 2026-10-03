@@ -74,6 +74,13 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Changed**: tests for bank transfer → admin confirmation, encrypted passport round-trip with access log, data export; skeleton test removed. **Tested / passed**: 51 tests.
 
+## Cycle 15 — access verification after "credentials configured"
+
+- **Inspected**: inspection workflow runs #3 and #4, a new "Diagnose Actions settings" workflow (repository scope and every environment), direct SSH and this environment's variables.
+- **Found**: the repository has no Actions secrets or variables anywhere; the two environments that exist were created by earlier runs and are empty; direct SSH remains blocked. Full record: `ops/reports/access-check-2026-10-03b.md`.
+- **Changed**: diagnosis workflow (presence-only, re-runnable by the owner); inspection accepts host/user/port from variables or secrets.
+- **Blocked**: genuine credential availability. No access fabricated, nothing deployed.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

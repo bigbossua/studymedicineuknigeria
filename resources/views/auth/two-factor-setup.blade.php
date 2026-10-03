@@ -10,7 +10,7 @@
         @csrf
         <div class="field"><label for="code" class="label">6-digit code</label><input id="code" name="code" inputmode="numeric" pattern="[0-9 ]*" autocomplete="one-time-code" required autofocus class="input font-mono tracking-widest text-[1.25rem] @error('code') input-error @enderror"></div>
         <button type="submit" class="btn btn-primary w-full btn-lg">Confirm and continue</button>
-        <p class="text-center text-[0.875rem] text-ink-500"><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sign out</a></p>
+        <p class="text-center text-[0.875rem] text-ink-500"><button type="submit" form="logout-form" class="underline">Sign out</button></p>
     </form>
     <form id="logout-form" method="post" action="{{ route('logout') }}" class="hidden">@csrf</form>
 </x-layouts.auth>

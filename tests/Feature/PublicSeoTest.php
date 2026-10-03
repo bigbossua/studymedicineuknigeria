@@ -41,6 +41,19 @@ class PublicSeoTest extends TestCase
         $this->assertStringContainsString('no-store', $r->headers->get('Cache-Control'));
     }
 
+    public function test_content_security_policy_is_enforced_with_a_per_response_nonce(): void
+    {
+        $r = $this->get('/')->assertOk()->assertHeaderMissing('Content-Security-Policy-Report-Only');
+        $csp = $r->headers->get('Content-Security-Policy');
+        $this->assertStringContainsString("script-src 'self' 'nonce-", $csp);
+        $this->assertStringContainsString("frame-ancestors 'none'", $csp);
+        $this->assertStringNotContainsString("script-src 'self' 'unsafe-inline'", $csp);
+        preg_match("/'nonce-([^']+)'/", $csp, $m);
+        $this->assertStringContainsString('nonce="'.$m[1].'"', $r->getContent(), 'Vite tags must carry the response nonce');
+        $this->assertDoesNotMatchRegularExpression('/\son(click|submit|load|change)=/i', $r->getContent(), 'no inline event handlers');
+        $this->assertNotSame($m[1], $this->get('/')->headers->get('Content-Security-Policy'), 'nonce changes per response');
+    }
+
     public function test_unknown_pages_return_the_branded_404(): void
     {
         $this->get('/no-such-page')->assertNotFound()->assertSee('We could not find that page');

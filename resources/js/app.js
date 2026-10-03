@@ -30,3 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// Confirmation prompts without inline handlers (CSP): <form data-confirm="Are you sure?">
+document.addEventListener('submit', (e) => {
+    const form = e.target.closest('form[data-confirm]');
+    if (form && !window.confirm(form.dataset.confirm)) e.preventDefault();
+});

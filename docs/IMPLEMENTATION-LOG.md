@@ -58,6 +58,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - Students may enrol from their profile and switch it off with their password; staff cannot switch it off. Admins can reset another account's authenticator from Users (audited as `two_factor.reset`); lock-out recovery for the last admin is `php artisan smukn:two-factor-reset <email>` on the server.
 - Tests: 29 pass (8 new). Workflow tests now carry the passed challenge in the session for staff requests.
 
+## Stage 8: Content Security Policy enforced (P0)
+
+- `SecurityHeaders` now sends an enforced `Content-Security-Policy` instead of report-only: `script-src 'self' 'nonce-…'` (Laravel Vite nonce, new per response), `style-src 'self' 'unsafe-inline'` (inline width on the step progress bar only), `font-src 'self'` (self-hosted fonts), `connect-src 'self'`, `frame-ancestors 'none'`, `object-src 'none'`, `form-action 'self' https://checkout.stripe.com`, Stripe hosts in `frame-src` for the hosted Checkout redirect. `js.stripe.com` is not loaded anywhere, so it is not in `script-src`.
+- Removed every inline event handler (logout links now submit the hidden form via `form=`; the admin reset confirmation uses `data-confirm` handled in `app.js`). JSON-LD data blocks are unaffected by `script-src`.
+- Verified: PublicSeoTest asserts the header, the nonce on the Vite tags and the absence of inline handlers; a Chromium sweep of 9 public, 8 portal and 11 admin pages (mobile nav toggle, autosave fetch, two-step challenge, data-confirm dialog) produced zero CSP violations.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

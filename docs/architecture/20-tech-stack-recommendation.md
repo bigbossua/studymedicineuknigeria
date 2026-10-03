@@ -29,7 +29,7 @@ Why this over alternatives:
 ## 20.3 Hosting layout (assumption: Hostinger Business/Cloud shared plan; adjust if VPS)
 
 - Document root → `public/` only. Application code, `storage/`, `.env` above the web root.
-- HTTPS enforced (Hostinger free SSL), HSTS, security headers (CSP report-only first, then enforce), `X-Robots-Tag` on private routes.
+- HTTPS enforced (Hostinger free SSL), HSTS, security headers (CSP enforced with a per-response nonce since stage 8), `X-Robots-Tag` on private routes.
 - Cron: `* * * * * php artisan schedule:run` (reminders, verification-due job, reconciliation, sitemap regeneration).
 - Queue: `queue:work --stop-when-empty` every minute from cron on shared hosting; supervisor on VPS.
 - Backups: Hostinger daily backups + weekly encrypted DB dump + documents to off-site object storage (encrypted) — required because documents are irreplaceable for students.

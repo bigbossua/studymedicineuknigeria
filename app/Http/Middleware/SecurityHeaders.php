@@ -4,12 +4,15 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // One nonce per response; @vite stamps it on every script and style tag it emits.
+        $nonce = Vite::useCspNonce();
         $response = $next($request);
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'DENY');
@@ -18,8 +21,24 @@ class SecurityHeaders
         if ($request->isSecure() || app()->isProduction()) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
-        // Report-only first; tighten to enforce after launch monitoring (docs/architecture/20.3)
-        $response->headers->set('Content-Security-Policy-Report-Only', "default-src 'self'; script-src 'self' https://js.stripe.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://api.stripe.com; frame-src https://checkout.stripe.com https://js.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com");
+        // Enforced since stage 8. Scripts: only our Vite bundles (nonce) – no inline handlers exist in the views.
+        // Styles: Vite bundle plus inline style attributes (progress widths); fonts self-hosted; Stripe Checkout is a
+        // hosted redirect so only form-action/frame-src need its hosts. JSON-LD data blocks are not subject to script-src.
+        $csp = implode('; ', [
+            "default-src 'self'",
+            "script-src 'self' 'nonce-{$nonce}'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: https:",
+            "font-src 'self'",
+            "connect-src 'self'",
+            'frame-src https://checkout.stripe.com https://js.stripe.com',
+            "frame-ancestors 'none'",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self' https://checkout.stripe.com",
+        ]);
+        $response->headers->set('Content-Security-Policy', $csp);
+        $response->headers->remove('Content-Security-Policy-Report-Only');
 
         $private = $request->is('portal*', 'admin*', 'login', 'register', 'password*', 'email*', 'documents*', 'webhooks*');
         if ($private) {

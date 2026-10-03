@@ -36,7 +36,7 @@ if [ -n "$SITE_URL" ]; then
   echo "== smoke $SITE_URL =="
   if ! ops/smoke.sh "$SITE_URL"; then
     echo "SMOKE FAILED — rolling back"
-    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && cd $APP/current && php artisan config:cache && php artisan route:cache && php artisan view:cache && echo rolled back to \$PREV; fi"
+    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); PHP=\$(command -v php83 || command -v php8.3 || command -v php); if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && cd $APP/current && \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && echo rolled back to \$PREV; else echo 'no previous release to roll back to'; fi"
     exit 1
   fi
 fi

@@ -28,7 +28,7 @@ APP_LOCALE=en
 APP_TIMEZONE=UTC
 LOG_CHANNEL=daily
 LOG_LEVEL=warning
-DB_CONNECTION=mysql
+DB_CONNECTION=${DB_CONNECTION:-mysql}
 DB_HOST=${DB_HOST:-127.0.0.1}
 DB_PORT=3306
 DB_DATABASE=$DB_DATABASE
@@ -60,13 +60,17 @@ ENV
 fi
 
 # Database reachability check (no schema changes here; migrations run in deploy.sh)
-if command -v mysql >/dev/null; then
+if [ "${DB_CONNECTION:-mysql}" = mysql ] && command -v mysql >/dev/null; then
   mysql -h"${DB_HOST:-127.0.0.1}" -u"$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1" "$DB_DATABASE" >/dev/null 2>&1 && echo "database reachable" || echo "WARNING: database not reachable with the supplied credentials"
 fi
 
 # Cron: scheduler every minute (adds once)
 CRON_LINE="* * * * * cd $APP/current && $PHP artisan schedule:run >> /dev/null 2>&1"
-( crontab -l 2>/dev/null | grep -vF "$APP/current && " ; echo "$CRON_LINE" ) | crontab - && echo "cron installed for $TARGET"
+if command -v crontab >/dev/null; then
+  ( crontab -l 2>/dev/null | grep -vF "$APP/current && " ; echo "$CRON_LINE" ) | crontab - && echo "cron installed for $TARGET"
+else
+  echo "WARNING: crontab not available; add this line in hPanel → Cron Jobs: $CRON_LINE"
+fi
 
 # Document root link — explicit opt-in only, with backup of whatever is there
 if [ "${LINK_DOCROOT:-0}" = "1" ]; then

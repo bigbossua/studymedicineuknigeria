@@ -58,6 +58,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 - **Found**: architecture 21.6 promised HTTP basic auth on staging but nothing implemented it; the verification queue forced one fact at a time against a 533-fact backlog. **Changed**: `StagingGate` + wiring; *Verify by source* bulk view. **Tested / passed**: 40 tests.
 - **Owner follow-up**: add repository variable `STAGING_BASIC_USER` and secret `STAGING_BASIC_PASSWORD` before bootstrapping staging (optional but recommended).
 
+## Cycle 11 — deployment rehearsal (stage 16)
+
+- **Tested / passed**: inspect, bootstrap, two deploys, smoke, rollback and backup against a local SSH server (`ops/reports/deployment-rehearsal-2026-10-03.md`). **Failed then fixed**: crontab guard, DB override, rollback PHP binary.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

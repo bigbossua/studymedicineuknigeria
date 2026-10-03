@@ -107,6 +107,11 @@ Decisions made during the build, in order. Research and decision documents remai
 - Admin → Verification → *Verify by source*: pending facts grouped by official source URL, ordered by how many facts each page unlocks; one form per source with every fact pre-selected and two bulk decisions (verified on this page / not published on this page). Facts without a source URL are never bulk-verified. The single-fact and bulk paths share one transition method; bulk actions are audited with the fact ids. This is the intended route through the 533-fact backlog.
 - Tests: 40 pass (4 new).
 
+## Stage 16: deployment lifecycle rehearsal (P1)
+
+- With a local SSH server standing in for Hostinger, the whole chain was executed for real: inspection → bootstrap → deploy → serve → smoke-tested deploy → forced failure with automatic rollback → encrypted backup fetched and decrypted. Record: `ops/reports/deployment-rehearsal-2026-10-03.md`.
+- Three script defects fixed (crontab absence, MySQL-only bootstrap, rollback PHP binary). Route/config/view/event caching confirmed to work on this codebase.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

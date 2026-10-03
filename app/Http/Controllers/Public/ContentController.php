@@ -242,7 +242,13 @@ class ContentController extends Controller
             $routes[] = ['English language evidence', 'conditional', $d['english'] === 'waec_english' ? 'A few medical schools publish acceptance of WAEC/NECO English for Medicine; most ask for IELTS 7.0–7.5. Check the school.' : 'You will need recognised English evidence; Medicine typically requires IELTS 7.0–7.5 overall.'];
         }
         if ($d['ucat'] !== 'taken' && (int) $d['intake_year'] === 2027) {
-            $routes[] = ['2027 entry via UCAT schools', 'closed', 'The UCAT 2026 testing window closed on 24 September 2026 and the UCAS medicine deadline is 15 October 2026. For 2027, only schools that do not require the UCAT remain realistic; most applicants in your position plan for 2028.'];
+            // Dates come from the verified topic facts when publishable; otherwise the sentence stays generic rather than quoting an unverified date.
+            $window = Topic::bySlug('ucat-2026')?->fact('testing_window');
+            $deadline = Topic::bySlug('ucas-2027')?->fact('deadline_medicine');
+            $dates = ($window?->isPublishable() && $deadline?->isPublishable())
+                ? "The UCAT 2026 testing window ran {$window->displayValue()} and the UCAS medicine deadline is {$deadline->displayValue()}."
+                : 'The UCAT for 2027 entry is sat in the summer of 2026 and the UCAS medicine deadline falls in mid-October 2026.';
+            $routes[] = ['2027 entry via UCAT schools', 'closed', $dates.' Without a UCAT result, only schools that do not require the UCAT remain realistic for 2027; most applicants in your position plan for 2028.'];
         }
         if ($d['ucat'] === 'none' && (int) $d['intake_year'] >= 2028) {
             $routes[] = ['UCAT', 'conditional', 'Most medical schools require the UCAT, sat in July–September of the year before entry. Plan to register in May/June '.((int) $d['intake_year'] - 1).'.'];

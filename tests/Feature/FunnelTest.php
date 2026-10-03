@@ -34,7 +34,12 @@ class FunnelTest extends TestCase
         $this->assertSame(2027, $e->intake_year);
         $this->assertSame('whatsapp', $e->utm['utm_source']);
         $this->assertNotNull($e->visitor_hash);
-        $this->assertStringNotContainsString('ada', strtolower(json_encode($e->toArray())));
+        // No personal data in the event: check the surname and the mailbox domain (a hex hash can never contain 'k', 'o' or '.'), not a short substring a random hash could contain.
+        $json = strtolower(json_encode($e->toArray()));
+        $this->assertStringNotContainsString('okonkwo', $json);
+        $this->assertStringNotContainsString('example.test', $json);
+        $this->assertArrayNotHasKey('name', $e->properties);
+        $this->assertArrayNotHasKey('email', $e->properties);
 
         $this->post('/register', ['name' => 'Ada Okonkwo', 'email' => 'ada@example.test', 'password' => 'Longpass12345', 'password_confirmation' => 'Longpass12345', 'terms' => 1])->assertRedirect();
         $this->assertDatabaseHas('funnel_events', ['name' => 'account_created', 'user_id' => User::first()->id]);

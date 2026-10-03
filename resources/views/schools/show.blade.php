@@ -108,6 +108,7 @@
             ['label' => 'WAEC and UK Medicine', 'url' => route('requirements.waec'), 'description' => 'What each medical school says about WASSCE'],
             ['label' => 'Fee guide', 'url' => route('fees.index'), 'description' => 'International fees by school, with fee years'],
             ['label' => 'UCAT for Nigerian students', 'url' => route('admissions.ucat'), 'description' => 'Windows, fees and test centres'],
+            ['label' => 'How to apply: UCAS or direct', 'url' => route('admissions.howto'), 'description' => 'The application route this school uses, step by step'],
             ['label' => 'All medical schools', 'url' => route('schools.index'), 'description' => 'Back to the directory'],
         ]" />
     </article>

@@ -65,7 +65,7 @@ chmod 600 "$OUT/$NAME.tar.enc" "$OUT/$NAME.tar.enc.sha256"
 
 # 4. Keep the local off-site staging area small: 7 days of db, 2 full copies
 find "$OUT" -name "smukn-$TARGET-db-*.tar.enc*" -mtime +7 -delete 2>/dev/null || true
-ls -1t "$OUT"/smukn-"$TARGET"-full-*.tar.enc 2>/dev/null | tail -n +3 | while read -r f; do rm -f "$f" "$f.sha256"; done
+(ls -1t "$OUT"/smukn-"$TARGET"-full-*.tar.enc 2>/dev/null || true) | tail -n +3 | while read -r f; do rm -f "$f" "$f.sha256"; done
 
 echo "backup=$OUT/$NAME.tar.enc"
 echo "size=$(stat -c %s "$OUT/$NAME.tar.enc")"

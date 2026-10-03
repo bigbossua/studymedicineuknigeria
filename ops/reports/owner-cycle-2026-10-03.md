@@ -119,4 +119,6 @@ GitHub → repository → Settings → Secrets and variables → Actions:
 
 Also, before the first student registers: the DNS/mailbox steps in `docs/ops/EMAIL-DELIVERABILITY.md` (SPF, DKIM, DMARC), and after the first production deployment the repository variable `PRODUCTION_URL` so `uptime-check.yml` starts monitoring.
 
+**New, optional but high-value (category B, two minutes):** the cloud environment's network policy blocks every official domain (ucat.ac.uk, ucas.com, gov.uk, gmc-uk.org and the university sites), so the 535 VERIFY-ON-PAGE facts cannot be checked from here. In the session's title bar open the cloud environment menu → Edit → Network access, and either choose a broader access level or Custom with these domains under Allowed domains (keep the default package-manager list): `ucat.ac.uk`, `ucas.com`, `gov.uk`, `gmc-uk.org`, `medschools.ac.uk`, `foundationprogramme.nhs.uk`, `bma.org.uk`, `ukcisa.org.uk`, and `ac.uk`. Steps: https://code.claude.com/docs/en/cloud-environments#network-access. Once allowed, the next session can read each official page and move facts to VERIFIED with the exact wording, which un-gates the total-cost and working pages automatically.
+
 Then run **Inspect Hostinger** (Actions → Run workflow) and the live server report follows from its artifact. Nothing is deployed until that report is reviewed.

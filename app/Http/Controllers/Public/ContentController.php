@@ -369,7 +369,11 @@ class ContentController extends Controller
 
     public function status()
     {
-        return view('content.org.status', ['seo' => $this->seo('Our status: independence, registrations, agreements', 'A dated statement of our legal status, registrations, training and agreements. We hold no agreements with any university.', 'status', [['label' => 'Our status']], false)]);
+        $faqs = collect($this->faqItems())->whereIn('id', [40])->values();
+        $seo = $this->seo('Our status: independence, registrations, agreements', 'A dated statement of our legal status, registrations, training and agreements. We hold no agreements with any university.', 'status', [['label' => 'Our status']], false);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.org.status', ['seo' => $seo, 'faqs' => $faqs]);
     }
 
     public function contact()

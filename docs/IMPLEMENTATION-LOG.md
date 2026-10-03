@@ -44,6 +44,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - `.env.production.example` names every secret the server needs; `ops/deploy.sh` implements the release-directory method (local build → rsync → shared `.env`/storage links → DB backup → migrate → cache → symlink switch → smoke test → automatic rollback); `.github/workflows/ci.yml` runs Pint and the test suite. Code formatted with Pint.
 - Still blocked: SSH to Hostinger (network policy and no credentials), therefore the 16-point server report and the first deployment. GitHub push is still refused (Claude GitHub App not installed on the repository).
 
+## Stage 6: live-access investigation and deployment agent
+
+- Direct SSH from the Claude cloud environment is impossible by network policy; the Claude GitHub App is not installed on the repository, so no publishing route (git, REST, MCP) works from a Claude session yet. Full record: `ops/reports/access-investigation-2026-10-03.md`.
+- Selected architecture: **GitHub Actions as the deployment agent** (runner → SSH → Hostinger) with `inspect-hostinger.yml` (read-only report as artifact) and `deploy-hostinger.yml` (tests, then `ops/deploy.sh staging|production` with backup and rollback). Private key lives only in GitHub Actions Secrets.
+- Blocked on one owner action: installing the Claude GitHub App on the repository; then adding the Actions secret and variables.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

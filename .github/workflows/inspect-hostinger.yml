@@ -1,0 +1,54 @@
+name: Inspect Hostinger (read-only)
+# Runs ops/inspect-hostinger.sh over SSH from a GitHub runner (which has normal outbound network access)
+# and uploads the output as an artifact. Nothing on the server is modified.
+on:
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check configuration
+        env:
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+        run: |
+          missing=""
+          [ -z "$HOST" ] && missing="$missing HOSTINGER_SSH_HOST(variable)"
+          [ -z "$USER" ] && missing="$missing HOSTINGER_SSH_USER(variable)"
+          [ -z "$KEY" ]  && missing="$missing HOSTINGER_SSH_KEY(secret)"
+          if [ -n "$missing" ]; then echo "::error::Missing repository settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1; fi
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
+          ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"
+      - name: Connectivity and authentication check
+        env:
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+        run: ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'echo "connected as $(whoami) on $(hostname)"'
+      - name: Run read-only inspection
+        env:
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+        run: |
+          mkdir -p out
+          ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -p "$PORT" "$USER@$HOST" 'bash -s' < ops/inspect-hostinger.sh > out/inspect-$(date -u +%F).txt 2>&1 || true
+          # redact anything that looks like a password or key before it leaves the runner
+          sed -i -E 's/(DB_PASSWORD|PASSWORD|SECRET|KEY|TOKEN)(=|\x27, \x27)[^ \x27"]+/\1\2[redacted]/Ig' out/*.txt
+          echo "lines: $(wc -l < out/*.txt)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hostinger-inspection
+          path: out/
+          retention-days: 7

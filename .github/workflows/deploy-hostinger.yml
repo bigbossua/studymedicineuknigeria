@@ -1,0 +1,57 @@
+name: Deploy to Hostinger
+# Builds the Laravel release on the runner and deploys it with ops/deploy.sh (release directories, backup,
+# symlink switch, smoke test, automatic rollback). Staging first; production only by explicit dispatch.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Deployment target'
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+  push:
+    branches: [staging]
+
+concurrency: deploy-${{ github.event.inputs.target || 'staging' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ github.event.inputs.target || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refuse production without explicit dispatch
+        if: ${{ github.event_name != 'workflow_dispatch' && (github.event.inputs.target || 'staging') == 'production' }}
+        run: echo "::error::Production deploys only via manual dispatch" && exit 1
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_mysql', coverage: none }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - name: Test before deploying
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          cp .env.example .env && php artisan key:generate
+          npm ci --no-audit --no-fund && npm run build
+          php artisan test
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+        run: |
+          [ -n "$KEY" ] || { echo "::error::HOSTINGER_SSH_KEY secret missing"; exit 1; }
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
+          ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+      - name: Deploy
+        env:
+          TARGET: ${{ github.event.inputs.target || 'staging' }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          SITE_URL: ${{ (github.event.inputs.target || 'staging') == 'production' && 'https://studymedicineuknigeria.com' || vars.STAGING_URL }}
+        run: |
+          export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new"
+          ops/deploy.sh "$USER@$HOST" "$PORT" "$TARGET" "$SITE_URL"

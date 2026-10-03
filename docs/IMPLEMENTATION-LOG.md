@@ -216,6 +216,7 @@ The network policy blocks every official domain from this environment, and the a
 ## Stage 31: document checklist wording (P8)
 
 - Reviewing the fresh-account journey screenshots showed the passport card explaining itself with the personal-statement reason, because one checklist rule required both documents and carried a single reason. The rule is now two rules with their own reasons (passport: the name-matching rule across documents, UCAS and the visa; statement: reviewed against the three UCAS questions); the seeder removes the old combined rule on existing databases.
+- The FAQ hub is grouped into six themed sections (qualifications, tests and timing, costs, choosing schools, after graduation, deciding and about us) with a jump list; questions are H3s under group H2s. A new test enforces the search-to-action chain: every live informational page in the decision register must link in-body to the eligibility check or Apply Online.
 
 ## Open items carried forward
 

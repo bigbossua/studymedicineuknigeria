@@ -92,6 +92,22 @@ class SeoDecisionRegisterTest extends TestCase
         }
     }
 
+    public function test_every_live_informational_page_offers_a_next_step_towards_eligibility_or_apply_online(): void
+    {
+        // Search-to-action chain (DECISION-ENGINE.md rule 6): trust and legal pages (cluster T) and the apply pages themselves are exempt.
+        $targets = [route('apply.eligibility'), route('apply.index'), route('register')];
+        foreach ($this->rows() as $r) {
+            $path = strtok($r['current_url'], '#');
+            if (! in_array($r['status'], self::LIVE, true) || $r['cluster'] === 'T' || $r['cluster'] === 'A' || str_contains($path, '{') || str_contains($path, '?') || $path === '—') {
+                continue;
+            }
+            $html = $this->get($path)->assertOk()->getContent();
+            $main = substr($html, strpos($html, '<main'), strpos($html, '</main>') - strpos($html, '<main'));
+            $found = collect($targets)->contains(fn ($t) => str_contains($main, 'href="'.$t.'"'));
+            $this->assertTrue($found, "{$r['id']} $path has no in-body link to the eligibility check or Apply Online");
+        }
+    }
+
     public function test_directory_emits_an_item_list_and_hubs_carry_faq_schema_where_questions_are_visible(): void
     {
         $this->get('/medical-schools')->assertOk()->assertSee('"@type":"ItemList"', false);

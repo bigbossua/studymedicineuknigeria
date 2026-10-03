@@ -200,6 +200,11 @@ Owner directive of 2026-10-03 ("Google organic growth + SEO + long-tail + intern
 - **FAQ hub**: 29 of the 40 observed questions now have sourced answers (added: NECO acceptance and NECO English, A-level school choice without recommendations, the step-by-step process, "is Medicine right for me"), each pointing at the page that holds the detail.
 - **Expired-form page (419)** offers a real "go back to the form" link to the previous internal page instead of only home and login.
 
+## Stage 29: hub depth and an eligibility headline fix (P2/P4/P8)
+
+- **Requirements hub** gained a "which route is yours" table (what you hold → published route → what to check first → page) and four FAQs; **Admissions hub** gained a "where are you today" table (position in the cycle → what it means → the one next step) and three FAQs. Both hubs now answer their head intent on the page rather than only routing.
+- **Eligibility check (friction found by running it as different applicants)**: the headline above the route map was a generic sentence chosen from the route statuses, so a Nigerian graduate was told "foundation or A-level/IB routes appear possible". The headline is now written per qualification (WAEC/NECO, A-levels/IB, foundation, degree), with a regression test. `#direct` anchor added to the how-to-apply page for the direct-application schools.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

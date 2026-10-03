@@ -183,7 +183,11 @@ class ContentController extends Controller
     // ---------------- Admissions ----------------
     public function admissions()
     {
-        return view('content.admissions.index', ['seo' => $this->seo('UK Medicine admissions: UCAS, UCAT, interviews, how to apply', 'The UK medicine admissions process for international applicants in one place: the UCAS calendar, the UCAT, interviews, and the schools that use a different route.', 'admissions.index', [['label' => 'Admissions']]), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
+        $faqs = collect($this->faqItems())->whereIn('id', [12, 20, 30])->values();
+        $seo = $this->seo('UK Medicine admissions: UCAS, UCAT, interviews, how to apply', 'The UK medicine admissions process for international applicants in one place: the UCAS calendar, the UCAT, interviews, and the schools that use a different route.', 'admissions.index', [['label' => 'Admissions']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.admissions.index', ['seo' => $seo, 'faqs' => $faqs, 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
     }
 
     public function ucat()
@@ -310,7 +314,14 @@ class ContentController extends Controller
             $routes[] = ['UCAT', 'conditional', 'Most medical schools require the UCAT, sat in July–September of the year before entry. Plan to register in May/June '.((int) $d['intake_year'] - 1).'.'];
         }
         $open = collect($routes)->pluck(1);
-        $summary = $open->contains('open') ? 'Standard entry appears open subject to grades, UCAT and English.' : ($open->contains('possible') ? 'Standard entry is not open directly; foundation or A-level/IB routes appear possible.' : 'Routes depend on conditions that need checking.');
+        // The headline must describe the applicant's own qualification, not a generic route list.
+        $summary = match ($d['qualification']) {
+            'waec_only' => 'Standard entry is not open directly on WAEC or NECO; a foundation year that leads to Medicine, or A-levels/IB first, appear possible.',
+            'alevels_ib' => $open->contains('open') ? 'Standard entry appears open subject to grades, the UCAT and English evidence.' : 'Standard entry depends on your subjects: Chemistry and Biology (or another science) are required almost everywhere.',
+            'foundation' => 'Progression to Medicine depends entirely on your provider\'s published agreement with named medical schools.',
+            'nigerian_degree' => 'Graduate entry is conditional on each programme\'s international policy; standard entry as a graduate appears possible.',
+            default => 'Routes depend on conditions we need to check with you.',
+        };
 
         return ['routes' => $routes, 'reads' => $reads, 'tier' => $tier, 'summary' => $summary, 'intake_year' => (int) $d['intake_year']];
     }

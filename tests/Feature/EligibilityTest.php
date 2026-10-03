@@ -35,4 +35,13 @@ class EligibilityTest extends TestCase
         $this->assertStringContainsString('/requirements/waec</loc>', $xml);
         $this->assertStringNotContainsString('/fees/cost-of-studying-medicine-in-the-uk</loc>', $xml); // noindex until gaps verified
     }
+
+    public function test_the_route_map_headline_describes_the_applicants_own_qualification(): void
+    {
+        $base = ['sciences' => 'yes', 'english' => 'none', 'ucat' => 'none', 'intake_year' => 2028, 'name' => 'Head Line', 'consent' => 1];
+        $this->post('/apply-online/eligibility', $base + ['qualification' => 'nigerian_degree', 'email' => 'grad@example.test'])->assertRedirect();
+        $this->get('/apply-online/eligibility')->assertSee('Graduate entry is conditional')->assertDontSee('A-levels/IB first, appear possible');
+        $this->post('/apply-online/eligibility', $base + ['qualification' => 'waec_only', 'email' => 'waec@example.test'])->assertRedirect();
+        $this->get('/apply-online/eligibility')->assertSee('not open directly on WAEC or NECO');
+    }
 }

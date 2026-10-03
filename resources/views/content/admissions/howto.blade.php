@@ -42,7 +42,7 @@
                 <p>In your portal we turn this into a personal checklist, review each upload for legibility and name-matching, and tell you what each shortlisted school additionally asks for.</p>
             </section>
 
-            <section><h2>4. Medical schools that take direct applications ({{ $direct->count() }})</h2>
+            <section id="direct"><h2>4. Medical schools that take direct applications ({{ $direct->count() }})</h2>
                 <p class="text-ink-700 mt-2">These schools accept applications through their own portals (some also through UCAS). Their deadlines, tests, intakes and fees differ from the UCAS norm, and a direct application does not use one of your four UCAS medicine choices. Each school's page carries the source.</p>
                 <ul class="mt-4 grid gap-3 sm:grid-cols-2">@foreach($direct->sortBy(fn($c)=>$c->university->name) as $c)<li class="card"><a href="{{ route('schools.show', $c->university) }}" class="font-semibold">{{ $c->university->name }}</a><p class="text-[0.9375rem] text-ink-500">{{ $c->title }} · {{ $c->application_route === 'BOTH' ? 'UCAS or direct' : 'Direct' }}{{ $c->admissions_test ? ' · '.($c->admissions_test === 'NONE' ? 'no test' : $c->admissions_test) : '' }}</p></li>@endforeach</ul>
             </section>

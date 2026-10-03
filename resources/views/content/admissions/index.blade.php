@@ -29,7 +29,26 @@
             <li>Each dated fact on this site carries a last-verified chip; the <a href="{{ route('admissions.ucas2027') }}">2027 timeline</a> is the page to re-check before each deadline.</li>
         </ul>
     </section>
+    <section class="mt-10 max-w-4xl">
+        <h2>Where are you today? The next step for each position</h2>
+        <p class="mt-2 text-ink-700">The cycle is unforgiving but predictable. Find your row; the right-hand column is the one thing to do next.</p>
+        <table class="table-stack mt-4">
+            <thead><tr><th>Your position</th><th>What it means</th><th>Next step</th></tr></thead>
+            <tbody>
+                <tr><td data-label="Position">Still choosing a route (WAEC/NECO, A-levels, degree)</td><td data-label="Means">Nothing in the calendar binds you yet; the route decides which test and which schools</td><td data-label="Next"><a href="{{ route('requirements.index') }}">Requirements hub: which route is yours</a></td></tr>
+                <tr><td data-label="Position">Route chosen, UCAT not yet registered, applying next cycle</td><td data-label="Means">Registration opens in May and booking in June; Nigerian slots go within days</td><td data-label="Next"><a href="{{ route('admissions.ucat') }}">UCAT: dates and booking from Nigeria</a></td></tr>
+                <tr><td data-label="Position">UCAT sat this summer, UCAS not yet submitted</td><td data-label="Means">You have until the mid-October medicine deadline; four medicine choices, a reference and the three-question statement</td><td data-label="Next"><a href="{{ route('admissions.howto') }}">How to apply, step by step</a></td></tr>
+                <tr><td data-label="Position">No UCAT result and the deadline has passed</td><td data-label="Means">UCAT-requiring schools are closed for this cycle; direct-application schools and next year remain</td><td data-label="Next"><a href="{{ route('admissions.howto') }}#direct">Direct-application schools</a> · <a href="{{ route('admissions.ucas2027') }}">Plan the next cycle</a></td></tr>
+                <tr><td data-label="Position">Submitted, waiting</td><td data-label="Means">Interviews December to March, mostly online for applicants abroad; offers by May</td><td data-label="Next"><a href="{{ route('schools.index') }}">Each school's published interview format</a></td></tr>
+                <tr><td data-label="Position">Offer received</td><td data-label="Means">Conditions, deposit, CAS, then the Student visa with maintenance evidence and a TB test</td><td data-label="Next"><a href="{{ route('fees.total') }}">Total cost and the visa sequence</a></td></tr>
+            </tbody>
+        </table>
+    </section>
     <section class="mt-10 prose-site"><h2>Interviews</h2><p>Most schools interview between December and March, increasingly by multiple mini-interview (MMI) and often online for international applicants. We record each school's published format in the <a href="{{ route('schools.index') }}">directory</a>. We do not publish interview "cut-offs" we cannot source.</p></section>
+    <section class="mt-10 max-w-3xl">
+        <h2>Questions about admissions</h2>
+        <div class="mt-4 divide-y divide-ink-100">@foreach($faqs as $f)<details class="py-3" id="q{{ $f['id'] }}"><summary class="cursor-pointer font-semibold">{{ $f['q'] }}</summary><div class="mt-2 text-ink-700 prose-site">{!! $f['a'] !!}</div></details>@endforeach</div>
+    </section>
     <x-cta-band class="mt-10" title="Ready to begin your application?" :href="route('apply.index')" label="Apply Online" />
 </article>
 </x-layouts.public>

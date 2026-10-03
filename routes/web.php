@@ -23,48 +23,49 @@ $pending = function (string $uri, string $name, string $title, array $crumbs = [
 };
 
 // Medicine pillar
-$pending('study-medicine-in-the-uk', 'medicine.index', 'Study Medicine in the UK', [['label' => 'Medicine']]);
-$pending('study-medicine-in-the-uk/from-nigeria', 'medicine.nigeria', 'Study Medicine in the UK from Nigeria', [['label' => 'Medicine', 'url' => '/study-medicine-in-the-uk/'], ['label' => 'From Nigeria']]);
-$pending('study-medicine-in-the-uk/foundation-routes', 'medicine.foundation', 'Foundation and gateway routes to Medicine', [['label' => 'Medicine', 'url' => '/study-medicine-in-the-uk/'], ['label' => 'Foundation routes']]);
+Route::get('study-medicine-in-the-uk', [\App\Http\Controllers\Public\ContentController::class, 'medicine'])->name('medicine.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('study-medicine-in-the-uk/from-nigeria', [\App\Http\Controllers\Public\ContentController::class, 'nigeria'])->name('medicine.nigeria')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'weekly']);
+Route::get('study-medicine-in-the-uk/foundation-routes', [\App\Http\Controllers\Public\ContentController::class, 'foundation'])->name('medicine.foundation')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 
 // Medical schools directory
 Route::get('medical-schools', [\App\Http\Controllers\Public\SchoolController::class, 'index'])->name('schools.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'weekly']);
 Route::get('medical-schools/{university:slug}', [\App\Http\Controllers\Public\SchoolController::class, 'show'])->name('schools.show');
 
 // Requirements hub
-$pending('requirements', 'requirements.index', 'What do I need to study Medicine in the UK?', [['label' => 'Requirements']]);
-$pending('requirements/waec', 'requirements.waec', 'WAEC (WASSCE) and UK Medicine', [['label' => 'Requirements', 'url' => '/requirements/'], ['label' => 'WAEC']]);
-$pending('requirements/neco', 'requirements.neco', 'NECO and UK Medicine', [['label' => 'Requirements', 'url' => '/requirements/'], ['label' => 'NECO']]);
-$pending('requirements/a-levels', 'requirements.alevels', 'A-levels for UK Medicine', [['label' => 'Requirements', 'url' => '/requirements/'], ['label' => 'A-levels']]);
-$pending('requirements/nigerian-degree-graduate-entry', 'requirements.gem', 'Graduate Entry Medicine with a Nigerian degree', [['label' => 'Requirements', 'url' => '/requirements/'], ['label' => 'Nigerian degree']]);
-$pending('requirements/english-language', 'requirements.english', 'English language requirements for Medicine', [['label' => 'Requirements', 'url' => '/requirements/'], ['label' => 'English language']]);
+Route::get('requirements', [\App\Http\Controllers\Public\ContentController::class, 'requirements'])->name('requirements.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('requirements/waec', [\App\Http\Controllers\Public\ContentController::class, 'waec'])->name('requirements.waec')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('requirements/neco', [\App\Http\Controllers\Public\ContentController::class, 'neco'])->name('requirements.neco')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('requirements/a-levels', [\App\Http\Controllers\Public\ContentController::class, 'alevels'])->name('requirements.alevels')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('requirements/nigerian-degree-graduate-entry', [\App\Http\Controllers\Public\ContentController::class, 'gem'])->name('requirements.gem')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('requirements/english-language', [\App\Http\Controllers\Public\ContentController::class, 'english'])->name('requirements.english')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 
 // Fees
-$pending('fees', 'fees.index', 'UK medical school fees for international students', [['label' => 'Fees']]);
-$pending('fees/cost-of-studying-medicine-in-the-uk', 'fees.total', 'Total cost of studying Medicine in the UK', [['label' => 'Fees', 'url' => '/fees/'], ['label' => 'Total cost']]);
+Route::get('fees', [\App\Http\Controllers\Public\ContentController::class, 'fees'])->name('fees.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('fees/cost-of-studying-medicine-in-the-uk', [\App\Http\Controllers\Public\ContentController::class, 'totalCost'])->name('fees.total');
 
 // Admissions
-$pending('admissions', 'admissions.index', 'Admissions: UCAS, UCAT and interviews', [['label' => 'Admissions']]);
-$pending('admissions/ucat', 'admissions.ucat', 'UCAT for Nigerian students', [['label' => 'Admissions', 'url' => '/admissions/'], ['label' => 'UCAT']]);
-$pending('admissions/ucas-deadlines-2027', 'admissions.ucas2027', 'UCAS deadlines and timeline for 2027 entry', [['label' => 'Admissions', 'url' => '/admissions/'], ['label' => 'UCAS 2027']]);
-$pending('admissions/how-to-apply', 'admissions.howto', 'How to apply: UCAS and direct-application medical schools', [['label' => 'Admissions', 'url' => '/admissions/'], ['label' => 'How to apply']]);
+Route::get('admissions', [\App\Http\Controllers\Public\ContentController::class, 'admissions'])->name('admissions.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('admissions/ucat', [\App\Http\Controllers\Public\ContentController::class, 'ucat'])->name('admissions.ucat')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('admissions/ucas-deadlines-2027', [\App\Http\Controllers\Public\ContentController::class, 'ucas2027'])->name('admissions.ucas2027')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'weekly']);
+Route::get('admissions/how-to-apply', [\App\Http\Controllers\Public\ContentController::class, 'howToApply'])->name('admissions.howto')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 
 // FAQ
-$pending('faq', 'faq.index', 'Questions Nigerian applicants ask', [['label' => 'FAQ']]);
+Route::get('faq', [\App\Http\Controllers\Public\ContentController::class, 'faq'])->name('faq.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 
 // Apply Online (commercial gateway)
-$pending('apply-online', 'apply.index', 'Apply Online', [['label' => 'Apply Online']]);
-$pending('apply-online/services', 'apply.services', 'Services and pricing', [['label' => 'Apply Online', 'url' => '/apply-online/'], ['label' => 'Services']]);
-$pending('apply-online/eligibility', 'apply.eligibility', 'Check your eligibility', [['label' => 'Apply Online', 'url' => '/apply-online/'], ['label' => 'Eligibility']]);
+Route::get('apply-online', [\App\Http\Controllers\Public\ContentController::class, 'apply'])->name('apply.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('apply-online/services', [\App\Http\Controllers\Public\ContentController::class, 'services'])->name('apply.services')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('apply-online/eligibility', [\App\Http\Controllers\Public\ContentController::class, 'eligibility'])->name('apply.eligibility')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::post('apply-online/eligibility', [\App\Http\Controllers\Public\ContentController::class, 'eligibilitySubmit'])->middleware('throttle:10,10')->name('apply.eligibility.submit');
 
 // Organisation & legal
-$pending('about', 'about', 'About', [['label' => 'About']]);
-$pending('our-status', 'status', 'Our status', [['label' => 'Our status']]);
-$pending('contact', 'contact', 'Contact', [['label' => 'Contact']]);
-$pending('privacy', 'legal.privacy', 'Privacy notice', [['label' => 'Privacy']]);
-$pending('terms', 'legal.terms', 'Terms of use', [['label' => 'Terms']]);
-$pending('application-terms', 'legal.application-terms', 'Application service terms', [['label' => 'Application terms']]);
-$pending('refund-policy', 'legal.refunds', 'Refund policy', [['label' => 'Refund policy']]);
+Route::get('about', [\App\Http\Controllers\Public\ContentController::class, 'about'])->name('about')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('our-status', [\App\Http\Controllers\Public\ContentController::class, 'status'])->name('status')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('contact', [\App\Http\Controllers\Public\ContentController::class, 'contact'])->name('contact')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('privacy', fn () => app(\App\Http\Controllers\Public\ContentController::class)->legal('privacy'))->name('legal.privacy')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('terms', fn () => app(\App\Http\Controllers\Public\ContentController::class)->legal('terms'))->name('legal.terms')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('application-terms', fn () => app(\App\Http\Controllers\Public\ContentController::class)->legal('application-terms'))->name('legal.application-terms')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('refund-policy', fn () => app(\App\Http\Controllers\Public\ContentController::class)->legal('refunds'))->name('legal.refunds')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
 
 // Auth placeholder until the portal is implemented
 Route::get('login', [\App\Http\Controllers\Auth\AuthController::class, 'showLogin'])->middleware('guest')->name('login');

@@ -32,6 +32,13 @@ Decisions made during the build, in order. Research and decision documents remai
 - Admin: operations dashboard, application workspace (documents, form, submissions, messages, stage control, assignment, payments, timeline), leads, payments, services/prices, verification queue (the only place a fact becomes VERIFIED; fees/deadlines fall due after 6 months, others 12), universities publish toggle, redirects, users/roles, audit log. Every admin write is recorded in `admin_actions`.
 - Tests: 19 feature tests covering SEO behaviour, ownership, upload validation, the approval gate and role boundaries.
 
+## Stage 4: release-1 public pages
+
+- `Topic` added as a third fact subject (UCAS 2027, UCAT 2026, Student visa, Graduate visa, GMC registration, other costs); 36 topic facts seeded from research 08–10 with sources, entering as VERIFY-ON-PAGE or NOT_FOUND. Pages render them through `<x-fact-row>` so every date, fee and rule carries its chip and hides in production until verified.
+- Built (asset register BUILD NOW): Medicine pillar; core Nigerian landing (with FAQPage JSON-LD); foundation routes; requirements hub, WAEC, NECO, A-levels, Nigerian degree / graduate entry, English; fee guide (data-driven, range shown separately from official fees); total cost (noindex until visa and living-cost inputs are verified); admissions hub, UCAT, UCAS 2027 timeline, how to apply; FAQ hub (18 sourced answers from the 40 observed questions; the rest deferred until an evidence-based answer exists); Apply Online, services, eligibility check (rule-based route map that never says "eligible", creates a lead, prefills registration); About, Our status, Contact; privacy, terms, application terms, refund policy marked version 0.9 under legal review.
+- Sitemap now lists 27 published URLs; the only built page kept out is the total-cost page.
+- Tests: 21 feature tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

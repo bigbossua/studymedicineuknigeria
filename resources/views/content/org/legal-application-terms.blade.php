@@ -1,0 +1,15 @@
+<x-layouts.public :seo="$seo">
+<article class="container-site pt-6 pb-10"><div class="max-w-3xl prose-site">
+    @include('content._page-head', ['eyebrow' => 'Legal', 'title' => 'Application service terms', 'lede' => 'What you are buying when you pay for one of our services, what is not included, when work begins, and your and our responsibilities.', 'seo' => $seo])
+    <p class="text-[0.8125rem] text-ink-500 mt-4">Version v1 (0.9 draft), 3 October 2026 — under legal review. The version you accept is recorded with your payment.</p>
+    <h2>1. What is included</h2><p>Exactly the deliverables listed for your chosen service on the <a href="{{ route('apply.services') }}">services page</a> at the time of payment. Nothing else is implied.</p>
+    <h2>2. What is not included</h2><ul><li>University tuition, deposits and application fees</li><li>UCAS fees</li><li>UCAT, GAMSAT or other test fees</li><li>English language tests</li><li>Visa fees, the Immigration Health Surcharge, TB tests, travel and insurance</li><li>Document certification, notarisation or translation</li><li>Any guarantee of an offer, interview, visa or scholarship</li></ul>
+    <h2>3. When work begins</h2><p>As stated for your service: on confirmed payment, or for the submission component, after your approval of the proposed submission.</p>
+    <h2>4. Your responsibilities</h2><ul><li>Provide accurate and complete information and genuine documents.</li><li>Meet university and UCAS deadlines; we will remind you but cannot submit for you unless an agreement expressly permits it.</li><li>Where the official route requires you to submit personally (for example UCAS), you do so, using our prepared package.</li><li>Pay university and third-party fees directly.</li></ul>
+    <h2>5. Our responsibilities</h2><ul><li>Review your profile against published requirements and tell you plainly what we find.</li><li>Review documents and give reasons when we return one.</li><li>Prepare the package and seek your explicit approval before any submission.</li><li>Keep your data secure and act only within the scope you approve.</li></ul>
+    <h2>6. Approval and submission</h2><p>No application is submitted to any university without your recorded approval of the exact package. If the package changes after approval, your approval lapses and we ask again.</p>
+    <h2>7. Admission decisions</h2><p>Admission, offers, conditions, interviews, scholarships and visas are decided solely by universities and official bodies. We do not and cannot influence them.</p>
+    <h2>8. Refunds</h2><p>See the <a href="{{ route('legal.refunds') }}">refund policy</a>, which forms part of these terms.</p>
+    <h2>9. Additional charges</h2><p>None, unless you ask for work outside your service and agree a written quote first.</p>
+</div></article>
+</x-layouts.public>

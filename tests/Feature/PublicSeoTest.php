@@ -24,8 +24,9 @@ class PublicSeoTest extends TestCase
 
     public function test_pending_pages_are_noindex_and_absent_from_the_sitemap(): void
     {
-        $this->get('/requirements')->assertOk()->assertSee('noindex, nofollow', false);
-        $this->get('/sitemap.xml')->assertOk()->assertDontSee('/requirements</loc>', false);
+        // The total-cost page stays noindex until its inputs are verified (page asset register row 10)
+        $this->get('/fees/cost-of-studying-medicine-in-the-uk')->assertOk()->assertSee('noindex, nofollow', false);
+        $this->get('/sitemap.xml')->assertOk()->assertDontSee('/fees/cost-of-studying-medicine-in-the-uk</loc>', false);
     }
 
     public function test_robots_disallows_everything_outside_production(): void

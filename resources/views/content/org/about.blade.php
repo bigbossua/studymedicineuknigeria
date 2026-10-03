@@ -1,0 +1,18 @@
+<x-layouts.public :seo="$seo">
+<article class="container-site pt-6 pb-10">
+    @include('content._page-head', ['eyebrow' => 'About', 'title' => 'About Study Medicine UK Nigeria', 'lede' => 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine and directly related healthcare courses in the United Kingdom.', 'seo' => $seo])
+    <div class="mt-10 grid lg:grid-cols-12 gap-10">
+        <div class="lg:col-span-8 prose-site">
+            <h2>Why this exists</h2>
+            <p>Nigerian students asking "can my WAEC get me into UK medicine?", "what does it cost?" or "where do I sit the UCAT?" find contradictory answers from agents, listicles and forums. UK medical schools publish most of what matters, but across dozens of pages in dozens of formats. We read those pages, record what each school says with its source and the date we checked it, and build a platform around that evidence: a directory, requirement and fee guides, and an application portal where nothing is submitted without your approval.</p>
+            <h2>How we work</h2>
+            <ul><li><strong>Evidence first.</strong> Every requirement, fee and date on this site is a separate record with an official source and a verification status. If we have not confirmed it on the official page, you do not see it.</li><li><strong>No fabrication.</strong> No rankings, testimonials, success rates, partnership claims or student numbers we cannot evidence.</li><li><strong>Your application stays yours.</strong> We prepare and check; where the university requires you to submit personally, you do. Submission by us happens only under a signed agreement, and we hold none today.</li><li><strong>Your data is protected.</strong> Documents are stored privately and encrypted where most sensitive; access is logged; you can export or delete your data.</li></ul>
+            <h2>What we never claim</h2>
+            <p>We do not guarantee offers, interviews, visas or scholarships. We are not an agent of, or affiliated with, any university, UCAS, the British Council or the GMC. We receive no commission from universities. Universities named on this site are referenced for information only; admissions decisions are made solely by them. See <a href="{{ route('status') }}">Our status</a>.</p>
+            <h2>Who we are</h2>
+            <p>Study Medicine UK Nigeria is operated by {{ config('site.legal_name') ?? 'a small team with UK and Nigerian experience of medical-school admissions' }}. Company details, registrations and training certificates are listed, with dates, on <a href="{{ route('status') }}">Our status</a>. Contact us at <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a>.</p>
+        </div>
+        <aside class="lg:col-span-4"><div class="card"><p class="eyebrow mb-3">Our status</p><p class="text-[0.9375rem] text-ink-700">{{ config('site.status_statement') }}</p><a href="{{ route('status') }}" class="btn btn-tertiary mt-3">Read the full statement</a></div></aside>
+    </div>
+</article>
+</x-layouts.public>

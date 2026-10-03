@@ -38,6 +38,18 @@ class SchoolPagesTest extends TestCase
         $this->assertStringContainsString('no school-specific statement located', $html, 'English is not published for this fixture');
     }
 
+    public function test_directory_cards_say_whether_a_waec_statement_is_published_without_leaking_it_in_production(): void
+    {
+        $u = $this->university('accepts');
+        $u->facts()->create(['key' => 'waec_neco_statement', 'value_text' => 'WASSCE holders complete a recognised foundation programme first.', 'verification_status' => 'VERIFY-ON-PAGE', 'source_url' => 'https://example.ac.uk/nigeria', 'source_type' => 'official']);
+        $this->get('/medical-schools')->assertOk()->assertSee('Published by the university');
+        $this->app['env'] = 'production';
+        config(['site.publish_unverified' => false]);
+        $html = $this->get('/medical-schools')->assertOk()->getContent();
+        $this->assertStringContainsString('No Nigeria-specific statement located', $html);
+        $this->assertStringNotContainsString('WASSCE holders complete', $html);
+    }
+
     public function test_course_schema_carries_an_offer_only_when_the_fee_is_verified(): void
     {
         $u = $this->university('accepts');

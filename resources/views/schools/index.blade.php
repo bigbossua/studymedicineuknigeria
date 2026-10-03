@@ -80,6 +80,8 @@
                         @if($places && $places->isPublishable() && $places->displayValue())
                             <div class="col-span-2"><dt class="text-ink-500">International places</dt><dd class="font-medium">{{ $places->displayValue() }}</dd></div>
                         @endif
+                        @php $waecFact = $u->fact('waec_neco_statement'); $waecShown = $waecFact && $waecFact->isPublishable() && ! in_array($waecFact->verification_status, ['NOT_FOUND', 'NOT_PUBLISHED'], true); @endphp
+                        <div class="col-span-2"><dt class="text-ink-500">WAEC / NECO statement</dt><dd class="font-medium">{{ $waecShown ? 'Published by the university' : 'No Nigeria-specific statement located' }}</dd></div>
                     </dl>
                     <div class="mt-4 flex flex-wrap items-center gap-2">
                         @if($fee)<x-verified-badge :status="$fee->verification_status" :date="$fee->verified_at?->format('j M Y')" />@endif

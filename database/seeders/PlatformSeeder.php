@@ -34,7 +34,8 @@ class PlatformSeeder extends Seeder
         }
 
         $rules = [
-            ['name' => 'Always: passport and statement', 'predicate' => ['always' => true], 'require_codes' => ['PASSPORT', 'STATEMENT'], 'reason_text' => 'Identity, and every medical school requires a personal statement.', 'sort' => 1],
+            ['name' => 'Always: passport', 'predicate' => ['always' => true], 'require_codes' => ['PASSPORT'], 'reason_text' => 'Identity: your name on every document, on UCAS and on the visa must match your international passport exactly.', 'sort' => 1],
+            ['name' => 'Always: personal statement', 'predicate' => ['always' => true], 'require_codes' => ['STATEMENT'], 'reason_text' => 'Every medical school requires a personal statement; we review its structure against the three UCAS questions.', 'sort' => 1],
             ['name' => 'WAEC sitting', 'predicate' => ['field' => 'secondary.sittings', 'op' => 'contains', 'key' => 'board', 'value' => 'WAEC'], 'require_codes' => ['WAEC'], 'reason_text' => 'You told us you sat WASSCE.', 'sort' => 2],
             ['name' => 'NECO sitting', 'predicate' => ['field' => 'secondary.sittings', 'op' => 'contains', 'key' => 'board', 'value' => 'NECO'], 'require_codes' => ['NECO'], 'reason_text' => 'You told us you sat NECO.', 'sort' => 3],
             ['name' => 'A-levels', 'predicate' => ['field' => 'post_secondary.items', 'op' => 'contains', 'key' => 'type', 'value' => 'ALEVEL'], 'require_codes' => ['ALEVEL'], 'reason_text' => 'You listed A-levels.', 'sort' => 4],
@@ -45,6 +46,7 @@ class PlatformSeeder extends Seeder
             ['name' => 'GAMSAT taken', 'predicate' => ['field' => 'tests.gamsat_status', 'op' => 'eq', 'value' => 'taken'], 'require_codes' => ['GAMSAT'], 'reason_text' => 'You have a GAMSAT result.', 'sort' => 9],
             ['name' => 'Referees given', 'predicate' => ['field' => 'referees.referees', 'op' => 'count_gte', 'value' => 1], 'require_codes' => ['REFERENCE'], 'reason_text' => 'A reference letter from the referee you named.', 'sort' => 10],
         ];
+        ChecklistRule::where('name', 'Always: passport and statement')->delete(); // replaced by two rules with their own reasons (stage 31)
         foreach ($rules as $r) {
             ChecklistRule::updateOrCreate(['name' => $r['name']], $r + ['active' => true]);
         }

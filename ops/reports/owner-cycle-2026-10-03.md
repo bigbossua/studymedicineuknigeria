@@ -120,6 +120,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Found**: 636 facts wait on page checks that neither this environment (network policy) nor the undeployed admin queue can perform. **Changed**: worksheet export and decisions import commands with stable references, strict rules (no verification without source and date, values only from the page) and deploy-time replay; first worksheet committed. **Tested / passed**: round-trip test; 80 tests.
 
+## Cycle 27 — portal wording from the journey screenshots (stage 31)
+
+- **Found**: the passport document card carried the personal-statement reason (one rule, one reason, two documents). **Changed**: two rules with their own reasons; old rule removed on reseed. The worksheet has 110 priority-1 rows across 55 official pages (UCAS 12, UCAT 12, visa 7, GMC 5, then the fee rows), so the dates and fees students act on can be verified in one sitting.
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:

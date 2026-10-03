@@ -213,6 +213,10 @@ The network policy blocks every official domain from this environment, and the a
 - The reviewer opens each source in their own browser and fills `decision` (verified / not_published / source_changed / archive), `verified_value` only when the page wording differs, `new_source_url`, `reviewer_note` and `verified_on`.
 - `php artisan smukn:facts-import decisions.csv [--dry-run]` applies the decisions: `verified` is refused without a source URL and a date; values are replaced only from `verified_value`; review-due dates follow the admin rules (six months for fees and deadlines, twelve otherwise); notes record the review; an admin-audit row is written; re-running is a no-op. `ops/deploy.sh` replays every committed `decisions-*.csv` after migrations so staging and production carry the same decisions. Round-trip test added.
 
+## Stage 31: document checklist wording (P8)
+
+- Reviewing the fresh-account journey screenshots showed the passport card explaining itself with the personal-statement reason, because one checklist rule required both documents and carried a single reason. The rule is now two rules with their own reasons (passport: the name-matching rule across documents, UCAS and the visa; statement: reviewed against the three UCAS questions); the seeder removes the old combined rule on existing databases.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

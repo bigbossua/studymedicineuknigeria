@@ -39,6 +39,9 @@ final class Funnel
         try {
             // In a console command the container still holds a placeholder request; only a routed request counts.
             $request = app()->bound('request') && request()->route() ? request() : null;
+            if ($request?->headers->has('X-SMUKN-Build')) {
+                return; // OG/image build requests are not visitors
+            }
             FunnelEvent::create([
                 'name' => $name,
                 'occurred_at' => now(),

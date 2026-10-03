@@ -32,6 +32,7 @@ Route::get('/', [PageController::class, 'home'])->name('home')->defaults('sitema
 
 Route::get('robots.txt', [SeoController::class, 'robots'])->name('robots');
 Route::get('sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('images/og/schools/{university}.png', [SchoolController::class, 'og'])->name('schools.og');
 
 // Helper to register a pending page
 $pending = function (string $uri, string $name, string $title, array $crumbs = []) {

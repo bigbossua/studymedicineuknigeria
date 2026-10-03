@@ -140,6 +140,11 @@ Decisions made during the build, in order. Research and decision documents remai
 - Photo slots wired on the home hero, the Nigeria guide, the directory and Apply Online; each renders nothing until its photograph is built, so the pages are unchanged today.
 - Settings diagnosis re-run at 15:03 UTC: still nothing present in any scope. 54 tests pass.
 
+## Stage 22: per-page Open Graph cards (P5 — WhatsApp and social sharing)
+
+- Links shared on WhatsApp, X and LinkedIn now carry a branded 1200×630 card with the page title: `App\Support\OgImage` renders with GD and the self-hosted fonts (converted to TTF in `brand/fonts/ttf`), `php artisan smukn:og` builds one card per sitemap page (29 committed under `public/images/og`, keyed by route name), `Seo::resolvedImage()` picks the card for the current route and falls back to the brand default. University pages get an on-demand card at `/images/og/schools/{slug}.png`, cached as a file and refreshed when the record changes. `og:image:alt` added. Build requests carry `X-SMUKN-Build` so they never count as visitors.
+- Also this cycle: intake and sitting year bounds derive from the current year; the eligibility check's 2027 dates come from verified facts or stay generic. 57 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

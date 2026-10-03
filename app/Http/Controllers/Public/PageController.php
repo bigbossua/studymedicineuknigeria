@@ -17,7 +17,6 @@ class PageController extends Controller
         $seo = Seo::make('Study Medicine in the UK from Nigeria',
             'Check published entry requirements for WAEC, NECO, A-levels and Nigerian degrees, compare verified fees and UK medical schools, and apply online with support.')
             ->canonical(route('home'))
-            ->image('/images/brand/og-default.png')
             ->jsonLd([
                 '@type' => 'WebSite',
                 'name' => config('site.name'),

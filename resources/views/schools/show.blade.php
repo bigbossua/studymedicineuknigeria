@@ -78,7 +78,8 @@
                     @php
                         $waecF = $university->fact('waec_neco_statement'); $engF = $university->fact('english_requirement') ?? $university->fact('english_language_requirement');
                         $foundF = $university->fact('foundation_route'); $gemF = $university->fact('gem_international'); $placesF = $university->fact('international_places');
-                        $published = fn ($f) => $f && ! in_array($f->verification_status, ['NOT_FOUND', 'NOT_PUBLISHED'], true) && trim((string) $f->value_text) !== '' && ! str_starts_with(trim((string) $f->value_text), 'n/a');
+                        // A statement counts as published only when it is also publishable here: in production an unverified fact is hidden above, so the guidance must not refer to it.
+                        $published = fn ($f) => $f && $f->isPublishable() && ! in_array($f->verification_status, ['NOT_FOUND', 'NOT_PUBLISHED'], true) && trim((string) $f->value_text) !== '' && ! str_starts_with(trim((string) $f->value_text), 'n/a');
                     @endphp
                     <ul>
                         @switch($university->international_policy)

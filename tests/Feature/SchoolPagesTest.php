@@ -54,6 +54,24 @@ class SchoolPagesTest extends TestCase
         $this->assertStringContainsString('"priceCurrency":"GBP"', $html);
     }
 
+    public function test_in_production_unverified_facts_are_hidden_and_the_guidance_does_not_refer_to_them(): void
+    {
+        $u = $this->university('accepts');
+        $u->facts()->create(['key' => 'waec_neco_statement', 'value_text' => 'WASSCE holders complete a recognised foundation programme first.', 'verification_status' => 'VERIFY-ON-PAGE', 'source_url' => 'https://example.ac.uk/nigeria', 'source_type' => 'official']);
+        $u->courses()->first()->facts()->create(['key' => 'international_fee_gbp', 'value_number' => 45000, 'academic_year' => '2026/27', 'verification_status' => 'VERIFY-ON-PAGE', 'source_url' => 'https://example.ac.uk/fees', 'source_type' => 'official']);
+
+        $this->app['env'] = 'production';
+        config(['site.publish_unverified' => false]);
+        $html = $this->get('/medical-schools/'.$u->slug)->assertOk()->getContent();
+        $this->assertStringNotContainsString('WASSCE holders complete a recognised foundation programme first.', $html, 'unverified wording must not render in production');
+        $this->assertStringNotContainsString('45,000', $html);
+        $this->assertStringContainsString('This detail is being verified against the official source', $html);
+        $this->assertStringContainsString('no Nigeria-specific statement located', $html, 'the computed guidance must not claim a statement the reader cannot see');
+        $fees = $this->get('/fees')->assertOk()->getContent();
+        $this->assertStringContainsString('Being verified', $fees);
+        $this->assertStringNotContainsString('£45,000', $fees);
+    }
+
     public function test_the_faq_hub_carries_the_newly_sourced_answers_with_their_anchors(): void
     {
         $html = $this->get('/faq')->assertOk()->getContent();

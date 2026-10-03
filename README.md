@@ -35,12 +35,12 @@ deployed until the inspection report has been reviewed (`docs/architecture/21-de
 app/                      Laravel application (controllers, models, services, middleware, support, console commands)
 resources/views|css|js    Blade templates, Tailwind v4 tokens and components, progressive-enhancement JS
 database/migrations|seeders   schema; reference-data importer and seeders (universities, courses, facts, topics, tiers)
-data/                     research datasets imported by `php artisan smukn:import-reference`
+data/                     research datasets (`smukn:import-reference`), Semrush lookups, the SEO decision register (`data/seo`), fact verification worksheets (`data/verification`)
 brand/                    logo/favicon/OG generator (`brand/build.py`) and masters
-docs/                     research, decisions, architecture, logs, ops checklists
+docs/                     research, decisions, architecture, logs, ops checklists, the SEO decision engine (`docs/seo`)
 ops/                      deploy.sh, server-bootstrap.sh, backup.sh, inspect-hostinger.sh, smoke.sh, RESTORE.md, reports/
 .github/workflows/        ci, inspect-hostinger, bootstrap-hostinger, deploy-hostinger, backup-hostinger, uptime-check
-tests/Feature             40 feature tests (SEO, workflow, documents, approval gate, two-step, CSP, funnel, staging gate, verification)
+tests/Feature             81 tests (SEO and decision register, workflow, documents, approval gate, two-step, CSP, funnel, staging gate, verification, worksheet round trip)
 ```
 
 ## Local development
@@ -69,4 +69,4 @@ Private keys live only in GitHub Actions Secrets. Never commit `.env`, keys or s
 
 ## Owner actions outstanding
 
-Listed, with exact names, at the end of `ops/reports/owner-cycle-2026-10-03.md` (GitHub Actions settings for Hostinger access, backup passphrase, staging credentials, email authentication in `docs/ops/EMAIL-DELIVERABILITY.md`, service prices, Stripe and GA4 when wanted).
+Listed, with exact names, at the end of `ops/reports/owner-cycle-2026-10-03.md`. The one that needs only a browser: verify the pending facts with the worksheet in `data/verification/` (README there). Otherwise: (GitHub Actions settings for Hostinger access, backup passphrase, staging credentials, email authentication in `docs/ops/EMAIL-DELIVERABILITY.md`, service prices, Stripe and GA4 when wanted).

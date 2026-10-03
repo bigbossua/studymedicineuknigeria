@@ -79,6 +79,8 @@ Evidence keys: `02` = research/02 search demand · `05` = competitor research ·
 | Rows | State |
 |---|---|
 | 1–9, 11, 15–17, 19–23 | **Built and indexable**; in the sitemap (27 URLs). Row 23 now includes `/how-we-verify` (editorial and verification policy); a separate "document & data policy" is covered by the privacy notice and application terms. |
+| 2–9, 11, 15–17, 19 | **Upgraded 2026-10-03** (stages 26–29): every requirements and admissions page, the pillar, Apply Online, Our status and both hubs answer their intent in full (950–1,540 words) with visible FAQs and FAQPage schema; see `data/seo/decision-register.csv` for the per-row reasons. |
+| 12 | **Template deepened 2026-10-03** (stage 28): computed Nigerian-applicant guidance and how-to-apply block on every university record; pages stay `noindex` until staff publish them after verification. |
 | 10 (total cost), 25 (working in the UK) | **Built, gated**: `noindex` and out of the sitemap until their topic facts are verified (`PublishGate`); they become indexable automatically. |
 | 12 (university records) | **Built for all 53 schools**; each page `noindex` until staff mark the record published in Admin → Universities, so no thin or unverified school page can be indexed. |
 | 14 (Greater Manchester) | Served by the university record page. |

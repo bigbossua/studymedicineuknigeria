@@ -1,0 +1,80 @@
+name: Diagnose Actions settings
+
+# Reports which Hostinger-related secrets and variables are visible to a job at repository level
+# and inside each deployment environment. Prints only PRESENT / MISSING, never a value.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-level:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Report
+        env:
+          V_HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          V_PORT: ${{ vars.HOSTINGER_SSH_PORT }}
+          V_USER: ${{ vars.HOSTINGER_SSH_USER }}
+          V_STAGING_URL: ${{ vars.STAGING_URL }}
+          V_PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
+          V_DB_HOST: ${{ vars.SMUKN_DB_HOST }}
+          V_STAGING_BASIC_USER: ${{ vars.STAGING_BASIC_USER }}
+          S_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          S_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          S_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          S_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          S_BACKUP: ${{ secrets.BACKUP_PASSPHRASE }}
+          S_DB_DATABASE: ${{ secrets.SMUKN_DB_DATABASE }}
+          S_DB_USERNAME: ${{ secrets.SMUKN_DB_USERNAME }}
+          S_DB_PASSWORD: ${{ secrets.SMUKN_DB_PASSWORD }}
+          S_MAIL: ${{ secrets.SMUKN_MAIL_PASSWORD }}
+          S_STAGING_BASIC_PASSWORD: ${{ secrets.STAGING_BASIC_PASSWORD }}
+          S_STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+        run: |
+          echo "scope: repository (no environment)"
+          for n in V_HOST V_PORT V_USER V_STAGING_URL V_PRODUCTION_URL V_DB_HOST V_STAGING_BASIC_USER S_KEY S_HOST S_PORT S_USER S_BACKUP S_DB_DATABASE S_DB_USERNAME S_DB_PASSWORD S_MAIL S_STAGING_BASIC_PASSWORD S_STRIPE_SECRET; do
+            v="${!n}"; if [ -n "$v" ]; then echo "$n: PRESENT (length ${#v})"; else echo "$n: missing"; fi
+          done
+          # shape hints without revealing content
+          [ -n "$S_KEY" ] && { echo "S_KEY first line: $(printf '%s' "$S_KEY" | head -1 | sed -E 's/[A-Za-z0-9+\/=]{8,}/…/g')"; echo "S_KEY lines: $(printf '%s\n' "$S_KEY" | wc -l)"; }
+          [ -n "$V_PORT" ] && echo "V_PORT numeric: $([[ "$V_PORT" =~ ^[0-9]+$ ]] && echo yes || echo no)"
+          true
+  environment-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    environment: production
+    steps:
+      - name: Report
+        env:
+          V_HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          V_PORT: ${{ vars.HOSTINGER_SSH_PORT }}
+          V_USER: ${{ vars.HOSTINGER_SSH_USER }}
+          S_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          S_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          S_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          S_BACKUP: ${{ secrets.BACKUP_PASSPHRASE }}
+          S_DB_PASSWORD: ${{ secrets.SMUKN_DB_PASSWORD }}
+        run: |
+          echo "scope: environment production"
+          for n in V_HOST V_PORT V_USER S_KEY S_HOST S_USER S_BACKUP S_DB_PASSWORD; do v="${!n}"; if [ -n "$v" ]; then echo "$n: PRESENT (length ${#v})"; else echo "$n: missing"; fi; done
+  environment-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    environment: staging
+    steps:
+      - name: Report
+        env:
+          V_HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          V_PORT: ${{ vars.HOSTINGER_SSH_PORT }}
+          V_USER: ${{ vars.HOSTINGER_SSH_USER }}
+          S_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          S_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          S_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          S_BACKUP: ${{ secrets.BACKUP_PASSPHRASE }}
+          S_DB_PASSWORD: ${{ secrets.SMUKN_DB_PASSWORD }}
+        run: |
+          echo "scope: environment staging"
+          for n in V_HOST V_PORT V_USER S_KEY S_HOST S_USER S_BACKUP S_DB_PASSWORD; do v="${!n}"; if [ -n "$v" ]; then echo "$n: PRESENT (length ${#v})"; else echo "$n: missing"; fi; done

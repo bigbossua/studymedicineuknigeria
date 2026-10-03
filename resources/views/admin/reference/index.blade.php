@@ -1,5 +1,5 @@
 <x-layouts.admin :seo="$seo">
-    <h1 class="text-h2">Verification queue</h1>
+    <div class="flex flex-wrap items-center justify-between gap-3"><h1 class="text-h2">Verification queue</h1><a href="{{ route('admin.reference.sources') }}" class="btn btn-secondary">Verify by source page →</a></div>
     <p class="text-ink-700 mt-1 max-w-3xl">Open the official source, confirm the value on the page, then mark it verified. Verified fees and deadlines fall due for review after 6 months, other facts after 12. Nothing unverified is shown to students in production.</p>
     <div class="mt-4 flex flex-wrap gap-2 text-[0.875rem]">@foreach($counts as $s=>$c)<a href="{{ route('admin.reference.index',['status'=>$s]) }}" class="chip {{ $s===$status ? 'chip-info' : 'chip-pending' }}">{{ $s }} · {{ $c }}</a>@endforeach</div>
     <form class="mt-3 flex gap-2"><input type="hidden" name="status" value="{{ $status }}"><select name="key" class="input max-w-xs" aria-label="Filter by fact key"><option value="">All keys</option>@foreach($keys as $k)<option value="{{ $k }}" @selected(request('key')===$k)>{{ $k }}</option>@endforeach</select><button class="btn btn-secondary">Filter</button></form>

@@ -101,6 +101,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - `docs/ops/EMAIL-DELIVERABILITY.md`: SPF, DKIM, DMARC and mailbox checklist for the Hostinger-hosted `info@` address, with verification commands.
 - Not done: Larastan could not be installed (Composer needs GitHub source clones through the proxy and the request is refused); static analysis stays on the backlog for a session with package access.
 
+## Stage 15: staging gate and verify-by-source (P1/P4)
+
+- `StagingGate` middleware: with `APP_ENV=staging` and `STAGING_BASIC_USER`/`STAGING_BASIC_PASSWORD` set, every request except `/up` and `webhooks/*` needs HTTP basic auth (401 + noindex otherwise); inert in production or without credentials. Wired through `ops/server-bootstrap.sh` (staging `.env` only), the bootstrap workflow (variable + secret) and `ops/smoke.sh` (`SMOKE_AUTH=user:pass`).
+- Admin → Verification → *Verify by source*: pending facts grouped by official source URL, ordered by how many facts each page unlocks; one form per source with every fact pre-selected and two bulk decisions (verified on this page / not published on this page). Facts without a source URL are never bulk-verified. The single-fact and bulk paths share one transition method; bulk actions are audited with the fact ids. This is the intended route through the 533-fact backlog.
+- Tests: 40 pass (4 new).
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

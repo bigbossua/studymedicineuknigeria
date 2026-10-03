@@ -4,6 +4,7 @@ use App\Http\Middleware\EnsureStaff;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Http\Middleware\HandleRedirects;
 use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\StagingGate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(HandleRedirects::class);
+        $middleware->prepend(StagingGate::class); // runs first: nothing on staging is served without credentials
         $middleware->append(SecurityHeaders::class);
         $middleware->alias(['staff' => EnsureStaff::class, '2fa' => EnsureTwoFactor::class]);
         $middleware->validateCsrfTokens(except: ['webhooks/stripe']);

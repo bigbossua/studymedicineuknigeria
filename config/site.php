@@ -14,6 +14,10 @@ return [
     'og_image' => '/images/brand/og-default.png',
     'status_statement' => 'StudyMedicineUKNigeria is an independent application-support service. We are not an agent of, or affiliated with, any university, UCAS, the British Council, the GMC or any other body unless expressly stated on our Our status page. We do not receive commission from any university.',
 
+    // Staging-only HTTP basic auth (architecture 21.6). Both must be set for the gate to engage; ignored in production.
+    'staging_basic_user' => env('STAGING_BASIC_USER'),
+    'staging_basic_password' => env('STAGING_BASIC_PASSWORD'),
+
     // GA4 measurement ID (G-XXXXXXX). Blank = no third-party analytics at all. When set, the public site shows a
     // consent banner and loads gtag only after consent; the portal and admin never load it (funnel_events covers them).
     'ga4_id' => env('SITE_GA4_ID'),

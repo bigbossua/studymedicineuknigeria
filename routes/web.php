@@ -185,6 +185,8 @@ Route::middleware(['auth', 'verified', 'staff', '2fa'])->prefix('admin')->name('
     Route::get('services', [MiscAdminController::class, 'tiers'])->name('tiers');
     Route::post('services/prices/{price}', [MiscAdminController::class, 'priceUpdate'])->name('tiers.price');
     Route::get('verification', [ReferenceAdminController::class, 'index'])->name('reference.index');
+    Route::get('verification/by-source', [ReferenceAdminController::class, 'sources'])->name('reference.sources');
+    Route::post('verification/bulk', [ReferenceAdminController::class, 'bulk'])->name('reference.bulk');
     Route::post('verification/{fact}', [ReferenceAdminController::class, 'update'])->name('reference.update');
     Route::get('universities', [ReferenceAdminController::class, 'universities'])->name('reference.universities');
     Route::post('universities/{university}/publish', [ReferenceAdminController::class, 'publishUniversity'])->name('reference.university.publish');

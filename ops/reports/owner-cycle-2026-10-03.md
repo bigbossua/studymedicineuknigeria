@@ -53,6 +53,11 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 - **Found**: `composer audit` cannot reach packagist from this environment; no uptime monitoring; no email authentication guidance. **Changed**: Dependabot now covers Composer and npm (security advisories and grouped minor/patch PRs); `uptime-check.yml` runs the smoke tests every 30 minutes once `PRODUCTION_URL` exists and keeps one incident issue open while failing; `docs/ops/EMAIL-DELIVERABILITY.md` lists the SPF/DKIM/DMARC steps. `npm audit`: 0 vulnerabilities.
 
+## Cycle 10 — staging gate and verification throughput (stage 15)
+
+- **Found**: architecture 21.6 promised HTTP basic auth on staging but nothing implemented it; the verification queue forced one fact at a time against a 533-fact backlog. **Changed**: `StagingGate` + wiring; *Verify by source* bulk view. **Tested / passed**: 40 tests.
+- **Owner follow-up**: add repository variable `STAGING_BASIC_USER` and secret `STAGING_BASIC_PASSWORD` before bootstrapping staging (optional but recommended).
+
 ## Owner actions still required (unchanged, one place)
 
 GitHub → repository → Settings → Secrets and variables → Actions:
@@ -64,6 +69,7 @@ GitHub → repository → Settings → Secrets and variables → Actions:
 | Variable | `HOSTINGER_SSH_PORT` | `65002` (shared) or `22` (VPS) |
 | Variable | `HOSTINGER_SSH_USER` | hPanel SSH username |
 | Secret | `BACKUP_PASSPHRASE` | long random passphrase, kept in the owner's password manager |
+| Variable + Secret | `STAGING_BASIC_USER`, `STAGING_BASIC_PASSWORD` | credentials for the staging site's basic-auth gate (recommended) |
 
 Also, before the first student registers: the DNS/mailbox steps in `docs/ops/EMAIL-DELIVERABILITY.md` (SPF, DKIM, DMARC), and after the first production deployment the repository variable `PRODUCTION_URL` so `uptime-check.yml` starts monitoring.
 

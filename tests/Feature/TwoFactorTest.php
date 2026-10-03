@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Support\Totp;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class TwoFactorTest extends TestCase
@@ -138,5 +139,22 @@ class TwoFactorTest extends TestCase
         ])->save();
 
         return $user;
+    }
+
+    public function test_a_password_alone_cannot_switch_two_step_verification_off(): void
+    {
+        $student = $this->enrolled(role: 'student');
+        // logged in but the second factor has not been passed in this session
+        $this->actingAs($student)->post('/two-factor/disable', ['current_password' => 'password'])->assertForbidden();
+        $this->assertTrue($student->fresh()->hasTwoFactorEnabled());
+    }
+
+    public function test_email_verification_links_verify_the_account(): void
+    {
+        $user = User::factory()->unverified()->create();
+        $url = URL::temporarySignedRoute('verification.verify', now()->addHour(), ['id' => $user->getKey(), 'hash' => sha1($user->getEmailForVerification())]);
+        $this->actingAs($user)->get($url)->assertRedirect('/portal');
+        $this->assertNotNull($user->fresh()->email_verified_at);
+        $this->actingAs($user)->get('/portal')->assertOk();
     }
 }

@@ -29,7 +29,7 @@ class PaymentController extends Controller
     {
         abort_unless($application->user_id === auth()->id(), 403);
         $data = $request->validate(['tier_price_id' => 'required|exists:tier_prices,id', 'accept_terms' => 'required|accepted']);
-        $price = TierPrice::with('tier')->findOrFail($data['tier_price_id']);
+        $price = TierPrice::with('tier')->where('active', true)->findOrFail($data['tier_price_id']);
         abort_unless($price->service_tier_id === $application->service_tier_id && $price->amount_minor !== null, 403);
         if (! $this->stripe->enabled()) {
             return back()->with('error', 'Online card payment is not enabled yet. Please use the bank transfer option below.');
@@ -52,7 +52,7 @@ class PaymentController extends Controller
     {
         abort_unless($application->user_id === auth()->id(), 403);
         $data = $request->validate(['tier_price_id' => 'required|exists:tier_prices,id', 'accept_terms' => 'required|accepted', 'reference' => 'nullable|string|max:120']);
-        $price = TierPrice::findOrFail($data['tier_price_id']);
+        $price = TierPrice::where('active', true)->findOrFail($data['tier_price_id']);
         abort_unless($price->service_tier_id === $application->service_tier_id && $price->amount_minor !== null, 403);
         $application->payments()->create(['tier_price_id' => $price->id, 'status' => 'MANUAL_REVIEW', 'amount_minor' => $price->amount_minor, 'currency' => $price->currency, 'method' => 'MANUAL_TRANSFER', 'terms_version_accepted' => $price->tier->terms_version ?? 'v1', 'note' => $data['reference'] ?? null]);
         $application->record('payment.manual_requested', ['amount' => $price->formatted()], $request->user()->id);

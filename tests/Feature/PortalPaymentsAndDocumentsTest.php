@@ -117,4 +117,56 @@ class PortalPaymentsAndDocumentsTest extends TestCase
         $this->assertSame($this->student->email, $data['user']['email']);
         $this->assertSame($this->application->application_number, $data['applications'][0]['application_number']);
     }
+
+    public function test_export_never_contains_staff_only_fields_and_downloads_use_safe_names(): void
+    {
+        $this->application->forceFill(['staff_notes' => 'INTERNAL: chase references', 'assigned_staff_id' => $this->admin->id])->save();
+        $doc = $this->application->documents()->where('code', 'PASSPORT')->first();
+        $this->actingAs($this->student)->post("/portal/{$this->application->application_number}/documents/{$doc->id}", ['file' => UploadedFile::fake()->image('my passport "scan".png', 800, 600)])->assertRedirect();
+        $version = $doc->fresh()->versions()->first();
+
+        $json = $this->actingAs($this->student)->get('/portal/profile/export')->streamedContent();
+        foreach (['INTERNAL: chase references', 'staff_notes', 'assigned_staff_id', 'stage_override', '"path"', 'key_id', 'scan_status', 'snapshot'] as $needle) {
+            $this->assertStringNotContainsString($needle, $json, "export leaks {$needle}");
+        }
+        $this->assertStringContainsString($this->application->application_number, $json);
+
+        $r = $this->actingAs($this->student)->get("/portal/{$this->application->application_number}/documents/{$doc->id}/v/{$version->id}");
+        $this->assertStringContainsString('passport-v1.png', $r->headers->get('Content-Disposition'));
+        $this->assertStringNotContainsString('scan', $r->headers->get('Content-Disposition'));
+        $r = $this->asAdmin()->get("/admin/applications/{$this->application->application_number}/documents/{$doc->id}/view");
+        $this->assertStringContainsString('passport-v1.png', $r->headers->get('Content-Disposition'));
+    }
+
+    public function test_macro_enabled_word_files_are_refused_even_when_renamed_to_docx(): void
+    {
+        $doc = $this->application->documents()->whereIn('code', ['STATEMENT', 'CV', 'OTHER'])->first() ?? $this->application->documents()->first();
+        $doc->forceFill(['code' => 'STATEMENT'])->save();
+        $path = storage_path('framework/testing/macro.docx');
+        @mkdir(dirname($path), 0777, true);
+        $zip = new \ZipArchive;
+        $zip->open($path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        $zip->addFromString('[Content_Types].xml', '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Override PartName="/word/document.xml" ContentType="application/vnd.ms-word.document.macroEnabled.main+xml"/></Types>');
+        $zip->addFromString('word/document.xml', '<w:document/>');
+        $zip->addFromString('word/vbaProject.bin', str_repeat('A', 64));
+        $zip->addFromString('_rels/.rels', '<Relationships/>');
+        $zip->close();
+        $file = new UploadedFile($path, 'statement.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', null, true);
+        $this->actingAs($this->student)->post("/portal/{$this->application->application_number}/documents/{$doc->id}", ['file' => $file])->assertSessionHasErrors('file');
+        $this->assertSame(0, $doc->fresh()->versions()->count());
+        @unlink($path);
+    }
+
+    public function test_autosave_keeps_only_declared_fields_and_inactive_prices_cannot_be_bought(): void
+    {
+        $n = $this->application->application_number;
+        $this->actingAs($this->student)->postJson("/portal/$n/application/personal", ['legal_first_names' => 'Ada', 'evil' => str_repeat('x', 5000), 'role' => 'admin'])->assertOk();
+        $form = $this->application->fresh()->form['personal'];
+        $this->assertSame('Ada', $form['legal_first_names']);
+        $this->assertArrayNotHasKey('evil', $form);
+        $this->assertArrayNotHasKey('role', $form);
+
+        $this->price->update(['active' => false]);
+        $this->actingAs($this->student)->post("/portal/$n/payments/manual", ['tier_price_id' => $this->price->id, 'accept_terms' => 1])->assertNotFound();
+    }
 }

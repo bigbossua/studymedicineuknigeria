@@ -102,7 +102,7 @@ class StripeWebhookTest extends TestCase
         $this->webhook($p, $h)->assertOk();
         $this->assertSame('EXPIRED', $this->payment->fresh()->status);
 
-        $this->payment->update(['status' => 'INITIATED', 'stripe_payment_intent_id' => 'pi_fail']);
+        $this->payment->refresh()->update(['status' => 'INITIATED', 'stripe_payment_intent_id' => 'pi_fail']);
         [$p, $h] = $this->signed($this->event('evt_fail', 'payment_intent.payment_failed', ['object' => 'payment_intent', 'id' => 'pi_fail', 'last_payment_error' => ['message' => 'Card declined']]));
         $this->webhook($p, $h)->assertOk();
         $this->assertSame('FAILED', $this->payment->fresh()->status);
@@ -114,6 +114,11 @@ class StripeWebhookTest extends TestCase
         $this->assertSame(10000, $this->payment->fresh()->refunded_minor);
 
         [$p, $h] = $this->signed($this->event('evt_ref2', 'charge.refunded', ['object' => 'charge', 'id' => 'ch_1', 'payment_intent' => 'pi_fail', 'amount_refunded' => 25000]));
+        $this->webhook($p, $h)->assertOk();
+        $this->assertSame('REFUNDED_FULL', $this->payment->fresh()->status);
+
+        // a late failure event never downgrades a settled record
+        [$p, $h] = $this->signed($this->event('evt_fail_late', 'payment_intent.payment_failed', ['object' => 'payment_intent', 'id' => 'pi_fail', 'last_payment_error' => ['message' => 'late']]));
         $this->webhook($p, $h)->assertOk();
         $this->assertSame('REFUNDED_FULL', $this->payment->fresh()->status);
 

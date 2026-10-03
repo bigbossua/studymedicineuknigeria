@@ -101,6 +101,9 @@ class StripeService
 
                 return false;
             case 'payment_intent.payment_failed':
+                if ($payment->status !== 'INITIATED') {
+                    return false; // never downgrade a succeeded, expired or refunded record because events arrived out of order
+                }
                 $payment->update(['status' => 'FAILED', 'note' => $obj->last_payment_error->message ?? null]);
                 $a->record('payment.failed', ['payment_id' => $payment->id]);
 

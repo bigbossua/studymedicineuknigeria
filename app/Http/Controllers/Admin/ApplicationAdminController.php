@@ -21,6 +21,7 @@ use App\Services\Applications\StageResolver;
 use App\Services\Documents\DocumentStore;
 use App\Support\Seo;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 
 class ApplicationAdminController extends Controller
 {
@@ -242,6 +243,6 @@ class ApplicationAdminController extends Controller
         // Inline preview for images/PDF inside a sandboxed iframe (CSP sandbox header); download for others
         $inline = in_array($v->mime, ['application/pdf', 'image/jpeg', 'image/png'], true);
 
-        return response($bytes, 200, ['Content-Type' => $v->mime, 'Content-Disposition' => ($inline ? 'inline' : 'attachment').'; filename="'.$v->original_filename.'"', 'X-Content-Type-Options' => 'nosniff', 'Content-Security-Policy' => "sandbox; default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'", 'Cache-Control' => 'private, no-store']);
+        return response($bytes, 200, ['Content-Type' => $v->mime, 'Content-Disposition' => HeaderUtils::makeDisposition($inline ? 'inline' : 'attachment', $v->safeFilename()), 'X-Content-Type-Options' => 'nosniff', 'Content-Security-Policy' => "sandbox; default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'", 'Cache-Control' => 'private, no-store']);
     }
 }

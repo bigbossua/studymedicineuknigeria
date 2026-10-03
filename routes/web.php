@@ -18,6 +18,7 @@ use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\SchoolController;
 use App\Http\Controllers\Public\SeoController;
 use App\Http\Controllers\Webhooks\StripeWebhookController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 /*

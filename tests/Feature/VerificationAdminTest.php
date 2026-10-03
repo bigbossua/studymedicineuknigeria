@@ -58,4 +58,18 @@ class VerificationAdminTest extends TestCase
         $r = $this->admin()->get('/admin')->assertOk()->assertSee('Launch readiness')->assertSee('Reference facts verified')->assertSee('no prices yet', false)->assertSee('STRIPE_SECRET not set');
         $this->assertMatchesRegularExpression('/\d+ of 8 complete/', $r->getContent());
     }
+
+    public function test_redirects_are_admin_only_relative_and_never_over_private_paths(): void
+    {
+        $this->admin()->post('/admin/redirects', ['from_path' => '/old', 'to_path' => '/fees'])->assertForbidden(); // helper creates staff, not admin
+
+        $admin = User::factory()->create();
+        $admin->forceFill(['role' => 'admin', 'two_factor_secret' => Totp::generateSecret(), 'two_factor_confirmed_at' => now()])->save();
+        $as = fn () => $this->actingAs($admin)->withSession([EnsureTwoFactor::SESSION_KEY => $admin->id]);
+        $as()->post('/admin/redirects', ['from_path' => '/old', 'to_path' => 'https://evil.example/login'])->assertSessionHasErrors('to_path');
+        $as()->post('/admin/redirects', ['from_path' => '/old', 'to_path' => '//evil.example'])->assertSessionHasErrors('to_path');
+        $as()->post('/admin/redirects', ['from_path' => '/login', 'to_path' => '/fees'])->assertSessionHasErrors('from_path');
+        $as()->post('/admin/redirects', ['from_path' => '/old-fees', 'to_path' => '/fees'])->assertSessionHas('status');
+        $this->get('/old-fees')->assertRedirect('/fees');
+    }
 }

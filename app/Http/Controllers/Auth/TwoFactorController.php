@@ -116,6 +116,8 @@ class TwoFactorController extends Controller
     {
         $user = $request->user();
         abort_if($user->requiresTwoFactor(), 403, 'Two-step verification is mandatory for staff accounts.');
+        // Only a session that has already passed the second factor may switch it off (a stolen password alone is not enough).
+        abort_unless($request->session()->get(EnsureTwoFactor::SESSION_KEY) === $user->id, 403, 'Confirm your authenticator code first.');
         $request->validate(['current_password' => 'required|current_password']);
         $user->forceFill(['two_factor_secret' => null, 'two_factor_confirmed_at' => null, 'two_factor_recovery_codes' => null])->save();
         $request->session()->forget(EnsureTwoFactor::SESSION_KEY);

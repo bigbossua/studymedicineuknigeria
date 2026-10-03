@@ -35,8 +35,20 @@ class ProfileController extends Controller
 
     public function export(Request $request)
     {
-        $user = $request->user()->load('applications.documents.versions', 'applications.events', 'applications.payments', 'applications.submissions.events', 'applications.messages', 'applications.authorisations');
-        $data = ['exported_at' => now()->toIso8601String(), 'user' => $user->only('name', 'email', 'phone', 'whatsapp', 'country', 'nigeria_state', 'created_at'), 'applications' => $user->applications->toArray()];
+        $user = $request->user()->load('applications.tier', 'applications.documents.versions', 'applications.events', 'applications.payments', 'applications.submissions', 'applications.messages', 'applications.authorisations');
+        // Explicit allow-list: the student's own data only, never staff notes, storage paths or internal assignment fields.
+        $applications = $user->applications->map(fn ($a) => [
+            'application_number' => $a->application_number, 'intake_year' => $a->intake_year, 'service_tier' => $a->tier?->name, 'stage' => $a->stage->value,
+            'completion_pct' => $a->completion_pct, 'form' => $a->form, 'section_status' => $a->section_status, 'created_at' => $a->created_at, 'withdrawn_at' => $a->withdrawn_at,
+            'documents' => $a->documents->map(fn ($d) => ['code' => $d->code, 'title' => $d->title, 'status' => $d->status->value,
+                'versions' => $d->versions->map(fn ($v) => ['version' => $v->version, 'original_filename' => $v->original_filename, 'mime' => $v->mime, 'size_bytes' => $v->size_bytes, 'uploaded_at' => $v->uploaded_at ?? $v->created_at])->values()])->values(),
+            'events' => $a->events->map(fn ($e) => ['type' => $e->type, 'at' => $e->created_at])->values(),
+            'payments' => $a->payments->map(fn ($p) => ['status' => $p->status, 'amount_minor' => $p->amount_minor, 'currency' => $p->currency, 'method' => $p->method, 'created_at' => $p->created_at, 'succeeded_at' => $p->succeeded_at])->values(),
+            'submissions' => $a->submissions->map(fn ($s) => ['university_id' => $s->university_id, 'route_code' => $s->route_code, 'status' => $s->status, 'intake' => $s->intake, 'submitted_at' => $s->submitted_at])->values(),
+            'messages' => $a->messages->map(fn ($m) => ['from_you' => $m->sender_user_id === $a->user_id, 'body' => $m->body, 'at' => $m->created_at])->values(),
+            'approvals' => $a->authorisations->map(fn ($x) => ['typed_name' => $x->typed_name, 'declaration_version' => $x->declaration_version, 'approved_at' => $x->created_at, 'revoked_at' => $x->revoked_at])->values(),
+        ])->values();
+        $data = ['exported_at' => now()->toIso8601String(), 'user' => $user->only('name', 'email', 'phone', 'whatsapp', 'country', 'nigeria_state', 'created_at'), 'applications' => $applications];
 
         return response()->streamDownload(fn () => print (json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)), 'smukn-data-export-'.now()->format('Ymd').'.json', ['Content-Type' => 'application/json']);
     }

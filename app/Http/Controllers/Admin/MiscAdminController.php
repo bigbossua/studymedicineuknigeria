@@ -66,7 +66,8 @@ class MiscAdminController extends Controller
 
     public function redirectStore(Request $request)
     {
-        $data = $request->validate(['from_path' => 'required|string|max:255|starts_with:/', 'to_path' => 'required|string|max:255', 'reason' => 'nullable|string|max:255']);
+        abort_unless($request->user()->isAdmin(), 403);
+        $data = $request->validate(['from_path' => ['required', 'string', 'max:255', 'starts_with:/', 'not_regex:#^/(portal|admin|login|register|password|email|two-factor|webhooks|up)(/|$)#i'], 'to_path' => ['required', 'string', 'max:255', 'regex:#^/[^\s]*$#', 'not_regex:#^//#'], 'reason' => 'nullable|string|max:255'], ['from_path.not_regex' => 'Redirects cannot be placed over portal, admin or sign-in paths.', 'to_path.regex' => 'The destination must be a relative path on this site, starting with /.']);
         DB::table('redirects')->updateOrInsert(['from_path' => '/'.trim($data['from_path'], '/')], ['to_path' => $data['to_path'], 'reason' => $data['reason'] ?? null, 'active' => true, 'status_code' => 301, 'created_at' => now(), 'updated_at' => now()]);
         Cache::forget('redirects.map');
         AdminAction::log('redirect.store', null, $data);

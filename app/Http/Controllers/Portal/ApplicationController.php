@@ -45,7 +45,9 @@ class ApplicationController extends Controller
         if ($this->isLocked($application)) {
             return $request->expectsJson() ? response()->json(['locked' => true], 423) : back()->with('error', 'This section is locked while your approved package is being submitted. Ask us to reopen it if something must change.');
         }
-        $input = $request->except(['_token', '_method', 'intent']);
+        // Only the fields this step declares are stored; unknown keys and oversized payloads are dropped.
+        $allowed = collect(array_keys(FormSteps::rules($step)))->map(fn ($k) => explode('.', $k)[0])->unique()->all();
+        $input = $request->only($allowed);
         $form = $application->form ?? [];
         $form[$step] = $input;
         $validator = Validator::make($input, FormSteps::rules($step));

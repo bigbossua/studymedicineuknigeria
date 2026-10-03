@@ -62,7 +62,7 @@ class DocumentController extends Controller
         \DB::table('document_access_log')->insert(['document_version_id' => $version->id, 'user_id' => $user->id, 'ip' => $request->ip(), 'purpose' => 'download', 'created_at' => now()]);
         $bytes = $this->store->contents($version);
 
-        return response()->streamDownload(fn () => print ($bytes), $version->original_filename, [
+        return response()->streamDownload(fn () => print ($bytes), $version->safeFilename(), [
             'Content-Type' => $version->mime, 'X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'private, no-store', 'Content-Length' => strlen($bytes),
         ]);
     }

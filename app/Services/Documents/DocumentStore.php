@@ -36,6 +36,9 @@ class DocumentStore
         }
 
         $bytes = file_get_contents($file->getRealPath());
+        if ($ext === 'docx') {
+            $this->assertNoMacros($file->getRealPath());
+        }
         if ($mime === 'application/pdf') {
             $this->assertSafePdf($bytes);
         }
@@ -71,6 +74,26 @@ class DocumentStore
         $raw = Storage::disk($v->disk)->get($v->path);
 
         return $v->encrypted ? Crypt::decrypt($raw, false) : $raw;
+    }
+
+    /** A .docm renamed to .docx carries the same MIME type; refuse any Office package with VBA or macro-enabled content types. */
+    private function assertNoMacros(string $path): void
+    {
+        $zip = new \ZipArchive;
+        if ($zip->open($path) !== true) {
+            throw ValidationException::withMessages(['file' => 'This Word file could not be read. Please save it again as .docx or export it as PDF.']);
+        }
+        $types = (string) $zip->getFromName('[Content_Types].xml');
+        $hasVba = false;
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            if (str_contains(strtolower((string) $zip->getNameIndex($i)), 'vbaproject')) {
+                $hasVba = true;
+            }
+        }
+        $zip->close();
+        if ($hasVba || stripos($types, 'macroEnabled') !== false) {
+            throw ValidationException::withMessages(['file' => 'Word files containing macros are not accepted. Please export the document as PDF.']);
+        }
     }
 
     private function assertSafePdf(string $bytes): void

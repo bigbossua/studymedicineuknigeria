@@ -158,10 +158,29 @@ Decisions made during the build, in order. Research and decision documents remai
 - Fresh-account student journey on a 390 px viewport, from the eligibility check through registration, verification, application start, autosave, passport upload (received, under review), payments, messages, submissions and the JSON export: every step passes with zero console or CSP problems. The QA scripts (crawl, axe, CSP sweep, journey) now live in `ops/qa/` with a README so later sessions and the owner can re-run them.
 - WhatsApp links appear in the footer and on Apply Online only when `SITE_WHATSAPP` is set. 59 tests pass. Settings diagnosis at 17:12 UTC: still nothing present; one more self check-in armed for 18:15 UTC.
 
+## Stage 25: security audit and fixes (P0)
+
+A read-only code audit (delegated, then every finding re-verified in the code) found ten issues; all are fixed with regression tests:
+
+| Severity | Finding | Fix |
+|---|---|---|
+| High | A student's two-step verification could be switched off with the password alone, before passing the challenge | `disable` now requires the passed-challenge session marker (403 otherwise) |
+| High | Email-verification links were a fatal error: `EmailVerificationRequest` used in `routes/web.php` without its import, so no new account could ever reach the portal | import added; signed-link test |
+| Medium | The student data export serialised whole models, leaking staff notes, assignment, stage override, storage paths, key ids and approval snapshots | explicit allow-list per relation |
+| Medium | Macro-enabled Word files (`.docm` renamed) passed the MIME filter and were served under the uploader's filename | zip inspection refuses `vbaProject`/`macroEnabled`; downloads use `code-vN.ext` built from the record; admin disposition via `HeaderUtils` |
+| Low | Autosave stored arbitrary request JSON | only the step's declared fields are kept |
+| Low | Deactivated prices were still purchasable | active-only lookup |
+| Low | Any staff member could redirect any path, including sign-in, to an external URL | admin only, relative targets, private and auth paths refused |
+| Low | A late `payment_intent.payment_failed` could downgrade a settled payment | ignored unless the payment is still INITIATED |
+| Info | JSON-LD without `JSON_HEX_TAG` | added |
+| Low (open) | The plain-text PDF active-content check cannot see compressed object streams | documented; ClamAV on the server and the sandboxed preview remain the controls; a real PDF parser is on the backlog |
+
+Controls the audit confirmed sound are listed in `ops/reports/security-audit-2026-10-03.md`. 65 tests pass.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).
 2. Release-1 public pages (register rows 2–23) with verification gating.
 3. Eligibility check (lead capture) and services/pricing page once prices are set.
-4. ClamAV on VPS; QR rendering on the two-step setup page; first real backup run and restore test once server access exists.
+4. ClamAV on VPS; QR rendering on the two-step setup page; first real backup run and restore test once server access exists; PDF parsing with a real library (the plain-text active-content check is bypassable by compressed object streams).
 5. Legal pages (privacy, terms, application terms, refund policy) — drafts need owner/legal review before publication.

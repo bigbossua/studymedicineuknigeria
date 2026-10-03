@@ -202,4 +202,5 @@ Route::middleware(['auth', 'verified', 'staff', '2fa'])->prefix('admin')->name('
     Route::get('audit', [MiscAdminController::class, 'audit'])->name('audit');
     Route::get('funnel', [MiscAdminController::class, 'funnel'])->name('funnel');
     Route::get('seo', [MiscAdminController::class, 'seo'])->name('seo');
+    Route::get('professions', [MiscAdminController::class, 'professions'])->name('professions');
 });

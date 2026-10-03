@@ -12,7 +12,7 @@
     <div class="container-site h-14 flex items-center justify-between gap-4">
         <div class="flex items-center gap-4"><a href="{{ route('admin.dashboard') }}" class="no-underline text-white flex items-center gap-2"><img src="/favicon.svg" alt="" width="28" height="28"><span class="font-serif font-semibold">Admin</span></a><span class="chip bg-white/10 text-white/80">{{ auth()->user()->role }}</span></div>
         <nav class="flex items-center gap-4 text-[0.875rem] overflow-x-auto whitespace-nowrap" aria-label="Admin">
-            @foreach([['admin.dashboard','Dashboard'],['admin.applications.index','Applications'],['admin.leads','Leads'],['admin.payments','Payments'],['admin.reference.index','Verification'],['admin.reference.universities','Universities'],['admin.tiers','Services'],['admin.redirects','Redirects'],['admin.users','Users'],['admin.funnel','Funnel'],['admin.seo','SEO'],['admin.audit','Audit']] as [$r,$l])
+            @foreach([['admin.dashboard','Dashboard'],['admin.applications.index','Applications'],['admin.leads','Leads'],['admin.payments','Payments'],['admin.reference.index','Verification'],['admin.reference.universities','Universities'],['admin.tiers','Services'],['admin.redirects','Redirects'],['admin.users','Users'],['admin.funnel','Funnel'],['admin.seo','SEO'],['admin.professions','Subjects'],['admin.audit','Audit']] as [$r,$l])
                 <a href="{{ route($r) }}" class="no-underline text-white/80 hover:text-white {{ request()->routeIs($r) ? 'text-white font-semibold underline underline-offset-4' : '' }}">{{ $l }}</a>
             @endforeach
             <form method="post" action="{{ route('logout') }}">@csrf<button class="text-white/70 hover:text-white">Sign out</button></form>

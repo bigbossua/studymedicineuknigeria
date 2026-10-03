@@ -49,6 +49,7 @@ Columns:
 | Q | GMC and MDCN | registration after graduation, MDCN recognition, PLAB (out of scope) |
 | R | Working in the UK | during and after the degree |
 | S | Long-tail questions | the FAQ hub and PAA recovery |
+| V | Healthcare course universe | one row per non-medicine subject plus one overview hub, generated from `data/healthcare/subjects.json` (see §7) |
 | T | Trust and navigation | home, about, contact, legal pages (no keyword target; listed because every sitemap URL must have a row) |
 
 ## 3. Statuses and transitions
@@ -112,3 +113,13 @@ Method: fetch every sitemap URL, count `<a href>` links inside `<main>` (header,
 | Highest: `/medical-schools` 15, `/how-we-verify` 15, `/apply-online/eligibility` 13 | | |
 
 Decision: the core landing page is the primary asset of cluster C and must be reachable in one click from the home page body, every hub (Medicine, Requirements, Fees, Admissions, Medical Schools) and the FAQ. Implemented 2026-10-03 (see IMPLEMENTATION-LOG stage 26).
+
+## 7. Subject layer (healthcare course universe, 2026-10-03)
+
+The master taxonomy in `data/healthcare/subjects.json` (seeded into the `professions` table, Admin → Subjects) is the source of truth for every subject other than Medicine. `ops/seo/build-register.py` reads it and emits cluster V, so a subject's taxonomy status and its register status can never disagree.
+
+- A subject uses the same status vocabulary as the register (§3). Only PUBLISHED, INDEXING, MEASURING and UPDATE allow a public page (`Profession::mayHavePublicPage()`); RESEARCH, VALIDATED, BUILD, DRAFT, REVIEW and REJECTED subjects exist only in the database and the admin screen.
+- A subject moves RESEARCH → VALIDATED on evidence of Nigerian demand or a direct owner directive, VALIDATED → BUILD only when its regulator, international-availability and entry facts are recorded as `reference_facts` with sources, and BUILD → DRAFT → PUBLISHED through the normal page process (asset register row, decision-register row with a URL, tests, noindex until verified).
+- The taxonomy's sample-university values carry research labels (FACT / LEAD / NOT FOUND / VERIFY-ON-PAGE) and are never rendered on a public page; the production-mode sweep test and the admin-only route guarantee this.
+- "Never infer" rules: availability, fees, English and A-level requirements are per university, never per profession; a profession's requirements are never derived from Medicine's or from another university's.
+- One overview hub (V01) is the only planned page for the 20 RESEARCH subjects; a subject gets its own page only after it reaches BUILD on its own evidence. Medicine stays the flagship and keeps clusters B–S.

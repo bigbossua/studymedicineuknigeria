@@ -2,14 +2,14 @@
 
 Format per the owner directive: inspected / found / changed / why / tested / passed / failed / remains / next.
 
-## State at 19:10 UTC (read this first)
+## State at 23:00 UTC (read this first)
 
 | Area | State |
 |---|---|
-| Code | HEAD on `claude/new-session-p6gdm6`, 84 tests green (incl. a production-mode sweep that no unverified wording reaches any public page, which found and fixed three leaks today: UCAS-code notes, GMC-status wording, research notes in two course titles and one school name), CI green on every push; 28 indexable pages crawl clean; axe zero violations; fresh-account journey clean |
-| Deployment | Ready (inspect → bootstrap → deploy → smoke → rollback rehearsed) but **blocked**: no Actions secrets or variables exist in any scope (last check 19:17 UTC, run 11); next self check-in 19:16 UTC |
+| Code | HEAD on `claude/new-session-p6gdm6`, 91 tests green (incl. a production-mode sweep that no unverified wording reaches any public page, which found and fixed three leaks today: UCAS-code notes, GMC-status wording, research notes in two course titles and one school name), CI green on every push; 28 indexable pages crawl clean; axe zero violations; fresh-account journey clean |
+| Deployment | Ready (inspect → bootstrap → deploy → smoke → rollback rehearsed) but **blocked**: no Actions secrets or variables exist in any scope (last check 22:12 UTC, run 12); the deploy workflow has never run |
 | Facts | 636 pending (535 VERIFY-ON-PAGE, 101 NOT_FOUND); official domains are blocked from this environment, so verification runs from the owner's browser via `data/verification/worksheet-2026-10-03.csv` (110 priority-1 rows across 55 pages) |
-| SEO | Decision register with 65 query families and reasons (`data/seo/decision-register.csv`, Admin → SEO); 22-point technical audit clean; eleven intent pages upgraded; Semrush figures await the owner's export |
+| SEO | Decision register with 95 query families incl. cluster V (30-subject healthcare taxonomy, `data/healthcare/subjects.json`, Admin → Subjects; only Medicine may have a page) and reasons (`data/seo/decision-register.csv`, Admin → SEO); 22-point technical audit clean; eleven intent pages upgraded; Semrush figures await the owner's export |
 | Conversion | Eligibility → account → application → documents → payments → export tested on a phone viewport; two wording defects found and fixed today (route-map headline, passport checklist reason) |
 | Owner-only | listed in the last section, in order of value: verification worksheet · Actions settings · network allow-list · Semrush export · Unsplash picks · prices, legal review, email DNS |
 
@@ -138,6 +138,10 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 ## Cycle 28 — viewable build without deployment (stage 33)
 
 - **Owner asked** for a URL to inspect the current build. **Found**: nothing has ever been deployed (zero deploy runs; settings MISSING at 19:17 UTC, run 11). **Changed**: published a private static snapshot of all public pages as an artifact; added a devcontainer so Codespaces runs the live application from a browser with the demo accounts; directory cards gained a WAEC-statement indicator. **Tested / passed**: 85 tests; CI green.
+
+## Cycle 29 — healthcare course universe taxonomy (stage 34)
+
+- **Owner directive**: build the full healthcare course universe as a data model first; no automatic pages. **Found**: the platform modelled Medicine only; no record of which other professions exist, who regulates them, which universities admit international undergraduates or what Nigerians search for. **Changed**: 30-subject taxonomy (`data/healthcare/subjects.json`) from three research sweeps written up in research doc 12 §A–§C, `professions` table and Admin → Subjects, cluster V in the decision register (one row per subject plus one overview hub, generated from the taxonomy), decision-engine §7. Only Medicine may have a public page; Dentistry, Nursing and Biomedical Science are VALIDATED, 20 subjects RESEARCH, six REJECTED. **Tested / passed**: 91 tests (six new), CI pending on push. **Failed**: nothing. **Remains**: every §B value is a search-snippet FACT or LEAD and must be read on the official page before it becomes a `reference_fact` (owner network allow-list or worksheet); Osteopathy and Chiropractic not yet swept; settings re-check at 22:12 UTC (run 12) still MISSING in every scope; no `data/verification/decisions-*.csv` on the branch yet.
 
 ## Owner actions still required (unchanged, one place)
 

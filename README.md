@@ -35,12 +35,12 @@ deployed until the inspection report has been reviewed (`docs/architecture/21-de
 app/                      Laravel application (controllers, models, services, middleware, support, console commands)
 resources/views|css|js    Blade templates, Tailwind v4 tokens and components, progressive-enhancement JS
 database/migrations|seeders   schema; reference-data importer and seeders (universities, courses, facts, topics, tiers)
-data/                     research datasets (`smukn:import-reference`), Semrush lookups, the SEO decision register (`data/seo`), fact verification worksheets (`data/verification`)
+data/                     research datasets (`smukn:import-reference`), Semrush lookups, the SEO decision register (`data/seo`), the healthcare course-universe taxonomy (`data/healthcare`), fact verification worksheets (`data/verification`)
 brand/                    logo/favicon/OG generator (`brand/build.py`) and masters
 docs/                     research, decisions, architecture, logs, ops checklists, the SEO decision engine (`docs/seo`)
 ops/                      deploy.sh, server-bootstrap.sh, backup.sh, inspect-hostinger.sh, smoke.sh, RESTORE.md, reports/
 .github/workflows/        ci, inspect-hostinger, bootstrap-hostinger, deploy-hostinger, backup-hostinger, uptime-check
-tests/Feature             81 tests (SEO and decision register, workflow, documents, approval gate, two-step, CSP, funnel, staging gate, verification, worksheet round trip)
+tests/Feature             91 tests (SEO and decision register, healthcare taxonomy, workflow, documents, approval gate, two-step, CSP, funnel, staging gate, verification, worksheet round trip)
 ```
 
 ## Local development

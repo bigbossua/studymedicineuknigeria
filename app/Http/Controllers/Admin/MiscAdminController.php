@@ -7,6 +7,7 @@ use App\Models\AdminAction;
 use App\Models\FunnelEvent;
 use App\Models\Lead;
 use App\Models\Payment;
+use App\Models\Profession;
 use App\Models\ServiceTier;
 use App\Models\TierPrice;
 use App\Models\User;
@@ -153,6 +154,14 @@ class MiscAdminController extends Controller
         $shown = $status ? $rows->where('status', $status) : $rows;
 
         return view('admin.seo', ['seo' => Seo::make('SEO decisions')->noindex(), 'rows' => $shown->sortByDesc('relevance_score')->values(), 'counts' => $counts, 'status' => $status, 'total' => $rows->count()]);
+    }
+
+    /** The healthcare course universe: every subject with its evidence status (data/healthcare/subjects.json). */
+    public function professions()
+    {
+        $items = Profession::withCount('courses')->orderByDesc('flagship')->orderBy('name')->get();
+
+        return view('admin.professions', ['seo' => Seo::make('Subjects')->noindex(), 'items' => $items, 'counts' => $items->countBy('status')->sortKeys()]);
     }
 
     public function audit()

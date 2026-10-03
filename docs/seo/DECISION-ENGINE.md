@@ -26,6 +26,10 @@ Columns:
 | `status`, `status_reason` | Section 3. **A reason is mandatory** (enforced) |
 | `decided_on`, `review_due` | Decision date; the register is re-read on the review date or when Semrush/GSC data arrives |
 
+### Derived columns (added 2026-10-03)
+
+`subject` (medicine, a taxonomy slug for cluster V, or `site`), `indexation_decision` (index / index per record / anchor / noindex filter / noindex until verified / none), `internal_link_role` (entry, primary landing, hub, spoke, FAQ anchor, footer, none yet) and `conversion_role` (conversion, search-to-action, trust) are computed by the builder from the status and URL of each row, so they cannot drift from the decision itself. The search-to-action role is enforced by `test_every_live_informational_page_links_to_the_eligibility_check_or_apply_online`.
+
 ## 2. Clusters
 
 | Cluster | Name | Scope |

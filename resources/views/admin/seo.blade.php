@@ -19,6 +19,8 @@
                     <div><dt class="text-ink-500">Recommended page</dt><dd>{{ $r['recommended_page'] }}</dd></div>
                     <div><dt class="text-ink-500">Supporting pages (must link to it)</dt><dd>{{ $r['supporting_pages'] }}</dd></div>
                     <div><dt class="text-ink-500">Semrush ({{ $r['country_db'] }})</dt><dd>volume: {{ $r['volume'] }} · KD: {{ $r['keyword_difficulty'] }}</dd></div>
+                    <div><dt class="text-ink-500">Subject · indexation</dt><dd>{{ $r['subject'] ?? 'medicine' }} · {{ $r['indexation_decision'] ?? '—' }}</dd></div>
+                    <div><dt class="text-ink-500">Internal-link role · conversion role</dt><dd>{{ $r['internal_link_role'] ?? '—' }} · {{ $r['conversion_role'] ?? '—' }}</dd></div>
                     <div><dt class="text-ink-500">Sources</dt><dd>{{ $r['sources'] }}</dd></div>
                     <div><dt class="text-ink-500">Decided · review due</dt><dd>{{ $r['decided_on'] }} · {{ $r['review_due'] }}</dd></div>
                 </dl>

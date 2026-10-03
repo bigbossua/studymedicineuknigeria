@@ -129,6 +129,35 @@ for _s in _tax:
 for path,name in [("/","Home"),("/about","About"),("/contact","Contact"),("/how-we-verify","How we verify (editorial and verification policy)"),("/privacy","Privacy notice"),("/terms","Terms of use"),("/application-terms","Application terms"),("/refund-policy","Refund policy")]:
     add("T",f"{name} (navigational / trust)",f"studymedicineuknigeria {name.lower()}","navigational","—","—","—",path,path,"—",0 if path!="/" else 5,"register row 23 (row 1 for home)","PUBLISHED","Trust or navigational page; not a keyword target. Home is the journey entry and links to every hub and to the core landing page." if path=="/" else "Trust page required by the asset register (row 23); carries no keyword target and no FAQ schema.")
 
+# Derived columns requested by the owner's register schema (subject, internal-link role, conversion role, indexation
+# decision). Deterministic from the row itself, so they never carry a judgement that is not already in the status/URL.
+LIVE={"PUBLISHED","INDEXING","MEASURING","UPDATE"}
+HUBS={"/study-medicine-in-the-uk","/requirements","/fees","/admissions","/medical-schools","/faq","/apply-online"}
+_subject_by_family={f"{_s['name']} in the UK for Nigerian students (subject cluster)":_s["slug"] for _s in _tax}
+for r in rows:
+    url=r["current_url"]
+    if r["cluster"]=="V": r["subject"]=_subject_by_family.get(r["query_family"],"allied-health (all non-medicine subjects)")
+    elif r["cluster"]=="T": r["subject"]="site"
+    else: r["subject"]="medicine"
+    if url=="—": r["indexation_decision"]="none (no URL)" if r["status"]!="REJECTED" else "none (rejected)"
+    elif "#" in url: r["indexation_decision"]="anchor on an indexed page"
+    elif "?" in url: r["indexation_decision"]="noindex (filter view)"
+    elif "{" in url: r["indexation_decision"]="index (one URL per record)"
+    elif r["status"]=="DRAFT": r["indexation_decision"]="noindex until the gated facts are verified"
+    elif r["status"] in LIVE: r["indexation_decision"]="index"
+    else: r["indexation_decision"]="none (not built)"
+    base=url.split("#")[0].split("?")[0]
+    if url=="—": r["internal_link_role"]="none yet"
+    elif url=="/": r["internal_link_role"]="entry (links to every hub and the core landing page)"
+    elif url=="/study-medicine-in-the-uk/from-nigeria": r["internal_link_role"]="primary landing (linked from home, every hub and the FAQ)"
+    elif r["cluster"]=="T": r["internal_link_role"]="footer / trust"
+    elif "#" in url: r["internal_link_role"]="FAQ anchor (linked from the related spoke)"
+    elif base in HUBS: r["internal_link_role"]="hub (links down to its spokes and across to eligibility)"
+    else: r["internal_link_role"]="spoke (linked from its hub; links to eligibility and Apply Online)"
+    if r["cluster"]=="A": r["conversion_role"]="conversion (service, eligibility or trust step)"
+    elif r["cluster"]=="T": r["conversion_role"]="trust"
+    elif url=="—": r["conversion_role"]="—"
+    else: r["conversion_role"]="search-to-action (in-body link to the eligibility check or Apply Online; tested)"
 with open("data/seo/decision-register.csv","w",newline="") as f:
     w=csv.DictWriter(f,fieldnames=list(rows[0].keys()),lineterminator="\n")
     w.writeheader(); w.writerows(rows)

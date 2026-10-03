@@ -28,7 +28,8 @@ $pending('study-medicine-in-the-uk/from-nigeria', 'medicine.nigeria', 'Study Med
 $pending('study-medicine-in-the-uk/foundation-routes', 'medicine.foundation', 'Foundation and gateway routes to Medicine', [['label' => 'Medicine', 'url' => '/study-medicine-in-the-uk/'], ['label' => 'Foundation routes']]);
 
 // Medical schools directory
-$pending('medical-schools', 'schools.index', 'UK Medical School Directory', [['label' => 'Medical Schools']]);
+Route::get('medical-schools', [\App\Http\Controllers\Public\SchoolController::class, 'index'])->name('schools.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'weekly']);
+Route::get('medical-schools/{university:slug}', [\App\Http\Controllers\Public\SchoolController::class, 'show'])->name('schools.show');
 
 // Requirements hub
 $pending('requirements', 'requirements.index', 'What do I need to study Medicine in the UK?', [['label' => 'Requirements']]);

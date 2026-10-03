@@ -66,3 +66,7 @@ admin_actions(id, admin_user_id, action, target_type, target_id, payload json, c
 - Compare = same join for N selected courses, rendered as columns; no ranking columns exist in the schema by design.
 - Requirements engine (brief 35) = `university_qualification_statements` filtered by `(university, course, qualification_code)`; empty result renders "Requirements not confirmed — contact university" with the official URL.
 - Internal links = `page_links` + automatic entity links (a course page links to its university, its fee record's page, its test's page) — reasons stored, nothing random.
+
+## 17.6 Implementation note (2026-10-03)
+
+The reference layer was implemented as `universities`, `courses` and one polymorphic **`reference_facts`** table instead of separate fee / requirement / deadline / statement tables. Each fact row carries `key`, typed value columns, `applies_to`, `academic_year`, `qualification_code`, `source_url`, `source_type`, `verification_status`, `verified_at`, `verified_by`, `review_due_at`. This mirrors the research datasets (every field = value + source + status), gives the admin a single verification queue, and lets public templates gate on `VERIFIED` uniformly (`ReferenceFact::isPublishable()`). `php artisan reference:import` loads `data/*.json` idempotently and never promotes a status to VERIFIED.

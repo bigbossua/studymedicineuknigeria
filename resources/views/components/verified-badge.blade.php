@@ -8,6 +8,7 @@
         'NOT_PUBLISHED' => ['chip-notpublished', 'Not published by the university'],
         'NOT PUBLISHED' => ['chip-notpublished', 'Not published by the university'],
         'DATA_UNAVAILABLE' => ['chip-notpublished', 'Not available'],
+        'NOT_FOUND' => ['chip-notpublished', 'Not located in research'],
         'ARCHIVED' => ['chip-notpublished', 'Archived'],
     ];
     [$cls, $label] = $map[$status] ?? ['chip-pending', $status];

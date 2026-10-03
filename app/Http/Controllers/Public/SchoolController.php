@@ -41,7 +41,7 @@ class SchoolController extends Controller
         $isFiltered = collect($filters)->filter()->isNotEmpty();
 
         $seo = Seo::make('UK Medical School Directory for International Applicants',
-            'Every UK medical school with its international eligibility, admissions test, application route and published international fee, each with an official source and date.')
+            'Every UK medical school with its international eligibility, admissions test, application route and published international fee, each with its official source.')
             ->canonical(route('schools.index'))
             ->noindex($isFiltered)
             ->breadcrumbs([['label' => 'Medical Schools']])

@@ -6,4 +6,9 @@ chk 200 /; chk 200 /up; chk 200 /robots.txt; chk 200 /sitemap.xml; chk 200 /favi
 chk 301 /Fees/; chk 404 /no-such-page; chk 200 /login
 curl -sI "${AUTH[@]}" "$B/login" | grep -qi "x-robots-tag: noindex" && echo "ok   noindex header on /login" || { echo "FAIL noindex header missing on /login"; fail=1; }
 curl -sI "${AUTH[@]}" "$B/" | grep -qi "strict-transport-security" && echo "ok   HSTS" || echo "warn HSTS header missing"
+# canonical host and scheme (only meaningful against a public https URL)
+case "$B" in https://studymedicineuknigeria.com) 
+  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "http://studymedicineuknigeria.com/fees"); echo "http→https: $code" | grep -q "301 https://studymedicineuknigeria.com/fees" && echo "ok   http redirects to https" || { echo "FAIL http→https redirect ($code)"; fail=1; }
+  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://www.studymedicineuknigeria.com/fees"); echo "$code" | grep -q "301 https://studymedicineuknigeria.com/fees" && echo "ok   www redirects to apex" || echo "warn www→apex redirect not confirmed ($code)";;
+esac
 exit $fail

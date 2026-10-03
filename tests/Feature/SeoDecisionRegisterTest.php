@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\EnsureTwoFactor;
+use App\Models\User;
+use App\Support\Totp;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -96,5 +99,14 @@ class SeoDecisionRegisterTest extends TestCase
         $this->get('/requirements/neco')->assertOk()->assertSee('"@type":"FAQPage"', false)->assertSee('id="q3"', false);
         $this->get('/requirements/nigerian-degree-graduate-entry')->assertOk()->assertSee('"@type":"FAQPage"', false)->assertSee('id="q31"', false);
         $this->assertNull($this->get('/')->headers->get('X-Powered-By'));
+    }
+
+    public function test_staff_can_read_the_register_in_the_admin_with_a_status_filter(): void
+    {
+        $admin = User::factory()->create();
+        $admin->forceFill(['role' => 'staff', 'two_factor_secret' => Totp::generateSecret(), 'two_factor_confirmed_at' => now()])->save();
+        $as = $this->actingAs($admin)->withSession([EnsureTwoFactor::SESSION_KEY => $admin->id]);
+        $as->get('/admin/seo')->assertOk()->assertSee('SEO decisions')->assertSee('REJECTED')->assertSee('decision-register.csv');
+        $as->get('/admin/seo?status=rejected')->assertOk()->assertSee('No defensible methodology')->assertDontSee('Primary asset.');
     }
 }

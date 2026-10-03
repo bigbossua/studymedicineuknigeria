@@ -136,6 +136,25 @@ class MiscAdminController extends Controller
         return view('admin.funnel', ['seo' => Seo::make('Funnel')->noindex(), 'days' => $days, 'rows' => $rows, 'other' => $other, 'byTier' => $byTier, 'sources' => $sources, 'total' => FunnelEvent::count()]);
     }
 
+    /** The SEO decision register (data/seo/decision-register.csv) with a status filter; read-only, edited in the repository. */
+    public function seo(Request $request)
+    {
+        $rows = [];
+        if (($h = @fopen(base_path('data/seo/decision-register.csv'), 'r')) !== false) {
+            $header = fgetcsv($h);
+            while (($r = fgetcsv($h)) !== false) {
+                $rows[] = array_combine($header, $r);
+            }
+            fclose($h);
+        }
+        $rows = collect($rows);
+        $status = strtoupper($request->string('status')->toString());
+        $counts = $rows->countBy('status')->sortKeys();
+        $shown = $status ? $rows->where('status', $status) : $rows;
+
+        return view('admin.seo', ['seo' => Seo::make('SEO decisions')->noindex(), 'rows' => $shown->sortByDesc('relevance_score')->values(), 'counts' => $counts, 'status' => $status, 'total' => $rows->count()]);
+    }
+
     public function audit()
     {
         return view('admin.audit', ['seo' => Seo::make('Audit log')->noindex(), 'actions' => AdminAction::with('admin')->latest('created_at')->paginate(100)]);

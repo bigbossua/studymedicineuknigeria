@@ -118,8 +118,15 @@ class ContentController extends Controller
 
     public function english()
     {
-        return view('content.requirements.english', ['seo' => $this->seo('English requirements for UK Medicine: IELTS and WAEC English', 'English evidence UK medical schools publish for international applicants: typical IELTS bands for Medicine, where WAEC or NECO English counts, and the visa rule.', 'requirements.english', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'English language']]),
-            'nigeriaPage' => $this->statements('english_requirement'), 'courseLevel' => $this->statements('english_language_requirement')]);
+        $all = $this->statements('english_requirement');
+        $faqs = collect($this->faqItems())->whereIn('id', [21, 2])->values();
+        $seo = $this->seo('English requirements for UK Medicine: IELTS and WAEC English', 'English evidence UK medical schools publish for international applicants: typical IELTS bands for Medicine, where WAEC or NECO English counts, and the visa rule.', 'requirements.english', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'English language']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.requirements.english', ['seo' => $seo, 'faqs' => $faqs,
+            'bands' => $all->filter(fn ($f) => preg_match('/IELTS|TOEFL|PTE/i', $f->value_text ?? '')),
+            'waecEnglish' => $all->filter(fn ($f) => preg_match('/WAEC|WASSCE|NECO/i', $f->value_text ?? '')),
+            'courseLevel' => $this->statements('english_language_requirement')]);
     }
 
     // ---------------- Fees ----------------
@@ -175,7 +182,11 @@ class ContentController extends Controller
 
     public function ucas2027()
     {
-        return view('content.admissions.ucas2027', ['seo' => $this->seo('UCAS deadlines for Medicine, 2027 entry (and 2028 planning)', 'Every UCAS date that matters for medicine for 2027 entry, the UCAT window before it, the interview and offer season, and the steps to visa and arrival.', 'admissions.ucas2027', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAS 2027']]),
+        $faqs = collect($this->faqItems())->whereIn('id', [12, 19])->values();
+        $seo = $this->seo('UCAS deadlines for Medicine, 2027 entry (and 2028 planning)', 'Every UCAS date that matters for medicine for 2027 entry, the UCAT window before it, the interview and offer season, and the steps to visa and arrival.', 'admissions.ucas2027', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAS 2027']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
+
+        return view('content.admissions.ucas2027', ['seo' => $seo, 'faqs' => $faqs,
             'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'visa' => Topic::bySlug('student-visa')]);
     }
 

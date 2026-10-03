@@ -1,0 +1,90 @@
+name: Backup Hostinger (encrypted, off-site)
+
+# Daily database dump and weekly full copy (database + shared .env + student documents),
+# encrypted on the server with BACKUP_PASSPHRASE before anything leaves it, then kept as a
+# GitHub Actions artifact. Artifacts count towards the repository's storage quota, so the
+# retention is deliberately short; Hostinger's own backups stay on as the second line.
+on:
+  schedule:
+    - cron: '50 2 * * *'   # daily db   (UTC)
+    - cron: '20 3 * * 0'   # weekly full on Sundays
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Target
+        type: choice
+        options: [production, staging]
+        default: production
+      scope:
+        description: Scope
+        type: choice
+        options: [db, full]
+        default: db
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup-hostinger
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      TARGET: ${{ github.event.inputs.target || 'production' }}
+      # scheduled: Sunday 03:20 run is the full copy, every other schedule is db-only
+      SCOPE: ${{ github.event.inputs.scope || (github.event.schedule == '20 3 * * 0' && 'full' || 'db') }}
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check configuration
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          missing=""
+          [ -z "$HOST" ] && missing="$missing HOSTINGER_SSH_HOST(variable)"
+          [ -z "$USER" ] && missing="$missing HOSTINGER_SSH_USER(variable)"
+          [ -z "$KEY" ]  && missing="$missing HOSTINGER_SSH_KEY(secret)"
+          [ -z "$PASSPHRASE" ] && missing="$missing BACKUP_PASSPHRASE(secret)"
+          if [ -n "$missing" ]; then echo "::error::Missing repository settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1; fi
+          echo "target=$TARGET scope=$SCOPE"
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
+          ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"
+      - name: Create encrypted backup on the server
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          # The passphrase is the first stdin line (read by the remote shell into a variable), the script follows;
+          # it is never on a command line, in a file, or in the log.
+          { printf '%s\n' "$BACKUP_PASSPHRASE"; cat ops/backup.sh; } | \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" \
+            "read -r BACKUP_PASSPHRASE && export BACKUP_PASSPHRASE && TARGET='$TARGET' SCOPE='$SCOPE' bash -s" | tee server.log
+          grep -q '^backup=' server.log || { echo "::error::backup did not report an output file"; exit 1; }
+          echo "FILE=$(grep '^backup=' server.log | cut -d= -f2-)" >> "$GITHUB_ENV"
+      - name: Fetch to runner and verify checksum
+        run: |
+          mkdir -p out
+          scp -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -P "$PORT" "$USER@$HOST:$FILE" "$USER@$HOST:$FILE.sha256" out/
+          (cd out && sha256sum -c "$(basename "$FILE").sha256")
+          size=$(stat -c %s "out/$(basename "$FILE")")
+          echo "size_bytes=$size"
+          if [ "$size" -gt 419430400 ]; then echo "::warning::backup is larger than 400 MB; review artifact storage quota (Settings → Billing) before relying on daily uploads"; fi
+          # encrypted payload must not be readable without the passphrase
+          ! tar -tf "out/$(basename "$FILE")" >/dev/null 2>&1
+      - uses: actions/upload-artifact@v7
+        with:
+          name: smukn-${{ env.TARGET }}-${{ env.SCOPE }}-${{ github.run_id }}
+          path: out/
+          retention-days: ${{ env.SCOPE == 'full' && 28 || 14 }}
+          if-no-files-found: error

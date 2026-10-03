@@ -48,9 +48,9 @@ Database migrations are written to be backward-compatible for one release (add-o
 
 ## 21.5 Backups (ongoing)
 
-- Nightly `mysqldump` + `shared/storage/app/private` archive, encrypted with `age` or GPG, uploaded off-server (object storage or a second provider). Retain 30 daily, 12 monthly.
+- Implemented in `ops/backup.sh` + `.github/workflows/backup-hostinger.yml`: daily `mysqldump` (02:50 UTC) and a weekly full copy (Sundays 03:20 UTC: dump + `shared/.env` + `storage/app/private`). Everything is encrypted **on the server** with AES-256-CBC (PBKDF2, 200k iterations) using the `BACKUP_PASSPHRASE` Actions secret before it is copied to the runner, checksum-verified and kept as a GitHub Actions artifact (db 14 days, full 28 days). £0; artifact storage quota is the limit and the workflow warns above 400 MB.
 - Hostinger's own backups remain enabled as a second line.
-- Quarterly restore test documented in `ops/reports/`.
+- Restore procedure and quarterly restore test: `ops/RESTORE.md`; results go in `ops/reports/restore-test-<date>.md`.
 
 ## 21.6 Environment separation
 

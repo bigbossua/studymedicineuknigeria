@@ -64,10 +64,15 @@ Decisions made during the build, in order. Research and decision documents remai
 - Removed every inline event handler (logout links now submit the hidden form via `form=`; the admin reset confirmation uses `data-confirm` handled in `app.js`). JSON-LD data blocks are unaffected by `script-src`.
 - Verified: PublicSeoTest asserts the header, the nonce on the Vite tags and the absence of inline handlers; a Chromium sweep of 9 public, 8 portal and 11 admin pages (mobile nav toggle, autosave fetch, two-step challenge, data-confirm dialog) produced zero CSP violations.
 
+## Stage 9: encrypted off-site backups (P0, runs once server access exists)
+
+- `ops/backup.sh` (server side, fed over SSH) dumps the database with a private defaults file (no password on the command line), adds `shared/.env` and the private document store for the weekly full scope, writes a manifest, encrypts with AES-256-CBC/PBKDF2 from `BACKUP_PASSPHRASE`, checksums, and prunes its own staging copies. Tested locally against a fake target: decrypts with the right passphrase, refuses the wrong one, passphrase never touches disk.
+- `.github/workflows/backup-hostinger.yml`: daily db / weekly full schedule plus manual dispatch; same configuration guard as the other Hostinger workflows plus `BACKUP_PASSPHRASE`; fetches, verifies the checksum, confirms the payload is not readable unencrypted, uploads as an artifact with short retention. `ops/RESTORE.md` documents restore and the quarterly restore test.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).
 2. Release-1 public pages (register rows 2–23) with verification gating.
 3. Eligibility check (lead capture) and services/pricing page once prices are set.
-4. ClamAV on VPS; off-site encrypted backups; QR rendering on the two-step setup page.
+4. ClamAV on VPS; QR rendering on the two-step setup page; first real backup run and restore test once server access exists.
 5. Legal pages (privacy, terms, application terms, refund policy) — drafts need owner/legal review before publication.

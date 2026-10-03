@@ -32,7 +32,7 @@ A statement of what exists, what is verified, and what is not, taken before any 
 
 ## 3. Known gaps (ordered by the brief's priority scale)
 
-- **P0** ~~Staff TOTP enforcement~~ done (stage 7); ~~CSP report-only~~ enforced with nonce (stage 8); no off-site encrypted backup job yet (depends on server). ClamAV availability depends on hosting tier.
+- **P0** ~~Staff TOTP enforcement~~ done (stage 7); ~~CSP report-only~~ enforced with nonce (stage 8); off-site encrypted backup job built (stage 9), first run depends on server access. ClamAV availability depends on hosting tier.
 - **P1** Server unknown; `.env` and database do not exist on the server; staging subdomain not created; cron not installed. All prepared in `ops/` and the Actions workflows; blocked only on Actions settings.
 - **P2** Service prices unset (by design until the owner decides); Stripe keys and SMTP password not configured; eligibility logic is rule-based and cautious but not yet reviewed by a qualified admissions reviewer.
 - **P4** Research gaps: 20 schools with identity-only records; fee year unconfirmed for several; visa fee, living costs, UCAT fee not found; all facts need on-page verification (admin queue).

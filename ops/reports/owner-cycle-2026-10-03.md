@@ -2,6 +2,17 @@
 
 Format per the owner directive: inspected / found / changed / why / tested / passed / failed / remains / next.
 
+## State at 19:00 UTC (read this first)
+
+| Area | State |
+|---|---|
+| Code | HEAD on `claude/new-session-p6gdm6`, 81 tests green, CI green on every push; 28 indexable pages crawl clean; axe zero violations; fresh-account journey clean |
+| Deployment | Ready (inspect → bootstrap → deploy → smoke → rollback rehearsed) but **blocked**: no Actions secrets or variables exist in any scope (last check 18:19 UTC); next self check-in 19:16 UTC |
+| Facts | 636 pending (535 VERIFY-ON-PAGE, 101 NOT_FOUND); official domains are blocked from this environment, so verification runs from the owner's browser via `data/verification/worksheet-2026-10-03.csv` (110 priority-1 rows across 55 pages) |
+| SEO | Decision register with 65 query families and reasons (`data/seo/decision-register.csv`, Admin → SEO); 22-point technical audit clean; eleven intent pages upgraded; Semrush figures await the owner's export |
+| Conversion | Eligibility → account → application → documents → payments → export tested on a phone viewport; two wording defects found and fixed today (route-map headline, passport checklist reason) |
+| Owner-only | listed in the last section, in order of value: verification worksheet · Actions settings · network allow-list · Semrush export · Unsplash picks · prices, legal review, email DNS |
+
 ## Cycle 1 (baseline)
 
 - **Inspected**: repository state, GitHub Actions runs, SSH reachability from the Claude environment, local test suite.

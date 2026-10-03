@@ -32,6 +32,17 @@ class University extends Model
         return 'slug';
     }
 
+    /** GMC status wording for public pages: shown only while the matching fact is publishable (verified, or outside production). */
+    public function publicGmcStatus(): ?string
+    {
+        if (! $this->gmc_status) {
+            return null;
+        }
+        $fact = $this->fact('gmc_status');
+
+        return ($fact ? $fact->isPublishable() : ! app()->isProduction()) ? $this->gmc_status : null;
+    }
+
     public function primaryCourse(): ?Course
     {
         return $this->courses->firstWhere('entry_type', 'standard') ?? $this->courses->first();

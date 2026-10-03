@@ -138,6 +138,9 @@ class PublicSeoTest extends TestCase
         preg_match_all('#<loc>([^<]+)</loc>#', $this->get('/sitemap.xml')->getContent(), $m);
         $paths = array_map(fn ($u) => parse_url($u, PHP_URL_PATH) ?: '/', $m[1]);
         $paths[] = '/medical-schools/'.University::where('international_policy', 'accepts')->first()->slug;
+        $paths[] = '/medical-schools/'.University::where('international_policy', 'home_only')->first()->slug;
+        $paths[] = '/fees/cost-of-studying-medicine-in-the-uk'; // gated pages are reachable even while noindex
+        $paths[] = '/working-in-the-uk';
         foreach ($paths as $path) {
             $html = html_entity_decode($this->get($path)->assertOk()->getContent());
             foreach ($needles as $needle) {

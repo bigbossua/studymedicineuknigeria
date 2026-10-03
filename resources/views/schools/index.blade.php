@@ -83,7 +83,7 @@
                     </dl>
                     <div class="mt-4 flex flex-wrap items-center gap-2">
                         @if($fee)<x-verified-badge :status="$fee->verification_status" :date="$fee->verified_at?->format('j M Y')" />@endif
-                        @if($u->gmc_status && stripos($u->gmc_status, 'review') !== false)<span class="chip chip-review">GMC: new school under review</span>@endif
+                        @if($u->publicGmcStatus() && stripos($u->publicGmcStatus(), 'review') !== false)<span class="chip chip-review">GMC: new school under review</span>@endif
                     </div>
                     <div class="mt-5 pt-4 border-t border-ink-100 flex items-center justify-between gap-3">
                         <a href="{{ route('schools.show', $u) }}" class="btn btn-tertiary">View what the university publishes</a>

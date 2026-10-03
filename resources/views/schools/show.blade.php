@@ -27,12 +27,12 @@
                     @case('home_only') <span class="chip chip-danger">Home students only — not open to international applicants</span> @break
                     @default <span class="chip chip-notpublished">International eligibility not yet established</span>
                 @endswitch
-                @if($university->gmc_status)<span class="chip {{ stripos($university->gmc_status,'review')!==false ? 'chip-review' : 'chip-pending' }}">GMC: {{ $university->gmc_status }}</span>@endif
+                @if($university->publicGmcStatus())<span class="chip {{ stripos($university->publicGmcStatus(),'review')!==false ? 'chip-review' : 'chip-pending' }}">GMC: {{ $university->publicGmcStatus() }}</span>@endif
             </div>
             <x-reviewed :date="$seo->lastReviewed" :intake="$seo->intakeYear" class="mt-4" />
         </header>
 
-        @if($university->gmc_status && stripos($university->gmc_status, 'review') !== false)
+        @if($university->publicGmcStatus() && stripos($university->publicGmcStatus(), 'review') !== false)
             <x-alert type="warning" class="mt-8 max-w-3xl" title="New medical school">
                 The General Medical Council lists this school among new schools under review; it is not yet an awarding body in its own right. Check the GMC's current position and the university's statement about which institution awards the degree before applying.
             </x-alert>

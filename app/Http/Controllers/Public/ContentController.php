@@ -178,9 +178,11 @@ class ContentController extends Controller
     public function howToApply()
     {
         $direct = Course::with('university')->whereIn('application_route', ['DIRECT', 'BOTH'])->get();
+        $faqs = collect($this->faqItems())->whereIn('id', [12, 30, 40])->values();
+        $seo = $this->seo('How to apply to UK Medicine from Nigeria: UCAS and direct', 'Step by step: applying through UCAS as an individual, the four-choice rule, personal statement, references, documents, and the schools that take direct applications.', 'admissions.howto', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'How to apply']]);
+        $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.admissions.howto', ['seo' => $this->seo('How to apply to UK Medicine from Nigeria: UCAS and direct', 'Step by step: applying through UCAS as an individual, the four-choice rule, personal statement, references, documents, and the schools that take direct applications.', 'admissions.howto', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'How to apply']]),
-            'ucas' => Topic::bySlug('ucas-2027'), 'direct' => $direct]);
+        return view('content.admissions.howto', ['seo' => $seo, 'faqs' => $faqs, 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'direct' => $direct]);
     }
 
     // ---------------- Apply Online ----------------

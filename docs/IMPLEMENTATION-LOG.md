@@ -152,6 +152,12 @@ Decisions made during the build, in order. Research and decision documents remai
 - FAQ hub: seven more answers from the observed-question list in research 02 §C, each sourced from our own verified pages or official bodies (foundation year vs A-levels, "best" schools, Arts to Medicine, UCAT slot scarcity, naira conversion, acceptance rates, out-of-scope PLAB question); the working-after-graduation answer now links to the Working in the UK page. 25 published answers, all in the FAQPage JSON-LD.
 - Re-crawl: 28 indexable pages, all in the sitemap, no broken links, no snippet findings. 57 tests pass. Settings diagnosis at 15:14 UTC: still nothing present.
 
+## Stage 24: launch checklist and journey regression (P2/P5)
+
+- Admin dashboard now carries a live **launch readiness** checklist (facts verified, university pages published, prices, Stripe, mail, staff two-step enrolment, legal review flag `SITE_LEGAL_REVIEWED`, analytics decision) with links to the screen that resolves each item.
+- Fresh-account student journey on a 390 px viewport, from the eligibility check through registration, verification, application start, autosave, passport upload (received, under review), payments, messages, submissions and the JSON export: every step passes with zero console or CSP problems. The QA scripts (crawl, axe, CSP sweep, journey) now live in `ops/qa/` with a README so later sessions and the owner can re-run them.
+- WhatsApp links appear in the footer and on Apply Online only when `SITE_WHATSAPP` is set. 59 tests pass. Settings diagnosis at 17:12 UTC: still nothing present; one more self check-in armed for 18:15 UTC.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

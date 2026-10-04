@@ -285,6 +285,16 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Journeys**: `ops/qa/staff-journey.cjs` (admin review → proposal → student approval → submitted → tracking). Fixed: one throttle counter shared by every form (per-route keys now), accepting a document with no upload, a replaced proposal closing without an event.
 - **Tests**: 148, on SQLite and MariaDB.
 
+## Stage 40: staging blockers that need no credentials (cycle 35)
+
+- **Registration and password reset returned 500** whenever mail could not be sent (any staging site without a mail password). Both emails are now queued subclasses of Laravel's own (`App\Notifications\Auth\*`), retried by the queue; bootstrap writes `MAIL_MAILER=log` without a mail password.
+- **No first admin was possible on a new server** (demo accounts are refused outside local; only an admin could grant roles). `smukn:grant-role` and the *Grant account role* workflow promote a registered account; staff must enrol two-step verification; the last admin cannot be demoted.
+- **Staging noindex** header on every response, checked by smoke.
+- **Post-deploy review from a GitHub runner** (`ops/qa/staging-review.cjs`, *Review staging*, called after each staging deploy): every page on desktop and mobile for status, CSP, axe, H1 and noindex; CI runs it against a local build so it cannot rot.
+- **Backup restore test** in every backup run: decrypt on the runner, restore into a throwaway MariaDB, check key tables (rehearsed locally: passes a real backup, fails a wrong passphrase and a truncated dump).
+- **Inspection** no longer prints `APP_KEY` lines or shell history.
+- **Tests**: 153, on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

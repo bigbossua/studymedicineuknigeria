@@ -43,9 +43,15 @@ to **Test mode**, then:
    `payment_intent.payment_failed`, `charge.refunded`, `charge.dispute.created`; then reveal its signing secret (`whsec_…`).
 3. GitHub → Settings → Environments → `staging` → add secrets `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`.
 4. Actions → *Update server settings* (`staging`) writes them into the server's `.env` (a live key is refused on staging).
-5. Actions → *Stripe catalogue* (`staging`, `create`) creates the three products (`smukn_t1`, `smukn_t2`, `smukn_t3`) and
-   their one-time GBP prices in test mode, or finds them if they exist (never duplicates; no Payment Links). Every deploy
-   repeats this check, and the first checkout would do it too.
+5. Actions → *Stripe test-mode journey* proves the whole paid journey against Stripe itself on a GitHub runner (no
+   server needed): catalogue sync, three students through staff approval, service choice, Stripe's hosted Checkout with
+   test cards and Stripe-signed webhooks, each charge read back from Stripe, then the public price-leakage checks.
+6. Actions → *Stripe catalogue* (`staging`, `create`) creates the three products (`smukn_t1`, `smukn_t2`, `smukn_t3`) and
+   their one-time GBP prices in test mode, or finds them if they exist (never duplicates; any other active price on
+   those products is switched off; a Payment Link selling them fails the run). Every deploy repeats this, and the first
+   checkout would do it too. With `webhook=create` it also creates the webhook endpoint when none exists and writes its
+   signing secret straight into the server's `.env` (Stripe shows it only once; it never appears in a log). Then you
+   need not create the endpoint by hand; if you did, put its signing secret in `STRIPE_WEBHOOK_SECRET` as above.
 Pay with Stripe's test card `4242 4242 4242 4242` (any future date, any CVC); `4000 0000 0000 0002` is declined.
 
 Optional, later: `SMUKN_MAIL_PASSWORD` (mailbox `info@studymedicineuknigeria.com`), `SITE_WHATSAPP`, `SITE_LEGAL_NAME`,

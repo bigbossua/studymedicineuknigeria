@@ -16,6 +16,16 @@ class FakeStripeClient
 
     public object $prices;
 
+    public object $paymentLinks;
+
+    public object $webhookEndpoints;
+
+    /** @var array<string, object> */
+    public array $endpointStore = [];
+
+    /** @var array<string, array{active: bool, prices: array<int, string>}> */
+    public array $linkStore = [];
+
     /** @var array<int, array> */
     public array $created = [];
 
@@ -82,13 +92,45 @@ class FakeStripeClient
                 return $this->root->productStore[$id];
             }
         };
+        $this->webhookEndpoints = new class($root)
+        {
+            public function __construct(private FakeStripeClient $root) {}
+
+            public function all(array $q = []): object
+            {
+                return (object) ['data' => array_values($this->root->endpointStore)];
+            }
+
+            public function create(array $p): object
+            {
+                $id = 'we_test_'.(count($this->root->endpointStore) + 1);
+                $this->root->endpointStore[$id] = (object) ['id' => $id, 'url' => $p['url'], 'enabled_events' => $p['enabled_events'], 'status' => 'enabled'];
+
+                return (object) ['id' => $id, 'secret' => 'whsec_created_once_'.$id];
+            }
+        };
+        $this->paymentLinks = new class($root)
+        {
+            public function __construct(private FakeStripeClient $root) {}
+
+            public function all(array $q): object
+            {
+                return (object) ['data' => array_values(array_map(fn ($id) => (object) ['id' => $id], array_keys(array_filter($this->root->linkStore, fn ($l) => $l['active']))))];
+            }
+
+            public function allLineItems(string $id, array $q = []): object
+            {
+                return (object) ['data' => array_map(fn ($p) => (object) ['price' => (object) ['id' => $p, 'product' => $this->root->priceStore[$p]->product ?? null]], $this->root->linkStore[$id]['prices'])];
+            }
+        };
         $this->prices = new class($root)
         {
             public function __construct(private FakeStripeClient $root) {}
 
             public function all(array $q): object
             {
-                $data = array_values(array_filter($this->root->priceStore, fn ($p) => in_array($p->lookup_key, $q['lookup_keys'] ?? [], true)));
+                $data = array_values(array_filter($this->root->priceStore, fn ($p) => (! isset($q['lookup_keys']) || in_array($p->lookup_key, $q['lookup_keys'], true))
+                    && (! isset($q['product']) || $p->product === $q['product']) && (! isset($q['active']) || $p->active === $q['active'])));
 
                 return (object) ['data' => array_slice($data, 0, $q['limit'] ?? 10)];
             }
@@ -117,6 +159,15 @@ class FakeStripeClient
                 return $this->root->priceStore[$id];
             }
         };
+    }
+
+    /** A price created outside our catalogue, e.g. by hand in the Dashboard. */
+    public function addManualPrice(string $product, int $amount): string
+    {
+        $id = 'price_manual_'.(count($this->priceStore) + 1);
+        $this->priceStore[$id] = (object) ['id' => $id, 'object' => 'price', 'active' => true, 'type' => 'one_time', 'product' => $product, 'currency' => 'gbp', 'unit_amount' => $amount, 'lookup_key' => null];
+
+        return $id;
     }
 
     /** The amount Stripe would charge for a recorded session (what the student actually pays). */

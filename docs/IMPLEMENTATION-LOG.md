@@ -328,6 +328,14 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **QA**: payment journey on phone and desktop (public source has no fee; start page none; services page refused before approval; after approval £125/£695/£1,295, none preselected; T2 → £695 → 69500 GBP via the catalogue price → paid only by the signed webhook; second run reused the same Stripe price); staff journey through the admin approval button; axe 0 violations on the public services, Apply Online, portal start, service choice and confirmation pages (phone and desktop).
 - **Tests**: 182 on SQLite and MariaDB, including `PricingVisibilityTest` (every sitemap URL, feeds, redirects and JSON free of any fee for visitors and unapproved students; approval, selection of each service at its exact price; another student never sees fees; staff see fees, price changes audited; catalogue created once and never duplicated; no Payment Links).
 
+## Stage 45: Stripe configuration made one-step (cycle 39)
+
+- **Credentials**: Diagnose (run on 644ef89, 2026-10-04 06:57 UTC) now reports the staging Stripe secrets and their mode too; `STRIPE_KEY`, `STRIPE_SECRET` and `STRIPE_WEBHOOK_SECRET` are missing in both `staging` and `production`, so nothing has been created in the owner's Stripe account yet.
+- **One authoritative price**: `smukn:stripe-sync` now switches off any other active price on `smukn_t1..t3` (never deletes), `--check` reports them, and the run fails if an active Payment Link sells one of the services (reported, never changed).
+- **Webhook**: `smukn:stripe-webhook [--url] [--create --secret-file]` verifies the endpoint (https only, enabled, all six events) or creates it and writes the signing secret to a private file; the *Stripe catalogue* workflow (`webhook=create`) hands it straight to the server's `.env` over SSH, so it never appears in a log.
+- **Real Stripe journey**: *Stripe test-mode journey* runs the app on a GitHub runner with the staging test key, syncs the catalogue, forwards real Stripe-signed events with `stripe listen`, and drives three new students through admin approval → fees → choice → Stripe's hosted Checkout (test cards; T1 first declined) → signed webhook → paid, reading each session back from Stripe (amount, currency, price id, test mode); then the price-leakage tests and a crawl of the running app. Rehearsed here against the stand-in, which now mimics the hosted form, the decline and `stripe listen`: T1/T2/T3 paid at 12500/69500/129500 GBP with the catalogue price ids.
+- **Tests**: 184 on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

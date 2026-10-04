@@ -18,6 +18,12 @@ on:
         default: check
         type: choice
         options: [check, create]
+      webhook:
+        description: 'Webhook endpoint for this target: check, or create (needs the bootstrapped server: the signing secret goes straight into its .env, never into a log)'
+        required: true
+        default: check
+        type: choice
+        options: [check, create]
 
 permissions:
   contents: read
@@ -53,3 +59,33 @@ jobs:
           set -o pipefail
           php artisan smukn:stripe-sync ${{ github.event.inputs.mode == 'check' && '--check' || '' }} | tee out.txt
           { echo '### Stripe catalogue (${{ github.event.inputs.target }}, ${{ github.event.inputs.mode }})'; echo '```'; cat out.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Webhook endpoint
+        env:
+          APP_ENV: ${{ github.event.inputs.target == 'production' && 'production' || 'staging' }}
+          APP_DEBUG: 'false'
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+          SITE_URL: ${{ github.event.inputs.target == 'production' && 'https://studymedicineuknigeria.com' || vars.STAGING_URL }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          set -o pipefail   # the command's own exit status decides, not tee's
+          [ -n "$SITE_URL" ] || { echo "::error::no site URL for ${{ github.event.inputs.target }} (STAGING_URL variable)"; exit 1; }
+          URL="${SITE_URL%/}/webhooks/stripe"
+          if php artisan smukn:stripe-webhook --url "$URL" | tee webhook.txt; then :; elif [ "${{ github.event.inputs.webhook }}" = create ] && grep -q 'No .*webhook endpoint' webhook.txt; then
+            [ -n "$HOST" ] && [ -n "$USER" ] && [ -n "$KEY" ] || { echo "::error::creating the endpoint needs the server settings: its signing secret is shown once and must go straight into the server's .env"; exit 1; }
+            install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+            if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; STRICT=yes; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; STRICT=accept-new; fi
+            SECRET_FILE=$(mktemp); trap 'rm -f "$SECRET_FILE"' EXIT
+            php artisan smukn:stripe-webhook --url "$URL" --create --secret-file "$SECRET_FILE" | tee -a webhook.txt
+            echo "::add-mask::$(cat "$SECRET_FILE")"
+            # the secret travels on stdin as an export (ops/update-env.sh), never on a command line or in the log
+            { printf 'export TARGET=%q\n' "${{ github.event.inputs.target }}"; printf 'export STRIPE_WEBHOOK_SECRET=%q\n' "$(cat "$SECRET_FILE")"; cat ops/update-env.sh; } | \
+              ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=$STRICT -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s' | tee -a webhook.txt
+            php artisan smukn:stripe-webhook --url "$URL" | tee -a webhook.txt
+          else
+            { echo '### Webhook endpoint'; echo '```'; cat webhook.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"; exit 1
+          fi
+          { echo '### Webhook endpoint'; echo '```'; cat webhook.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

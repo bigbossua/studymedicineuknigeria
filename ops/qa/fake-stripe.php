@@ -35,10 +35,11 @@ if (preg_match('#^/v1/products(?:/([^/]+))?$#', $path, $m)) {
 }
 if (preg_match('#^/v1/prices(?:/([^/]+))?$#', $path, $m)) {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        $keys = $_GET['lookup_keys'] ?? [];
-        $data = array_values(array_filter($cat['prices'], fn ($p) => in_array($p['lookup_key'] ?? null, $keys, true)));
+        $keys = $_GET['lookup_keys'] ?? null;
+        $data = array_values(array_filter($cat['prices'], fn ($p) => ($keys === null || in_array($p['lookup_key'] ?? null, $keys, true))
+            && (! isset($_GET['product']) || $p['product'] === $_GET['product']) && (! isset($_GET['active']) || $p['active'] === ($_GET['active'] === 'true'))));
 
-        return $json(['object' => 'list', 'url' => '/v1/prices', 'has_more' => false, 'data' => array_slice($data, 0, 1)]);
+        return $json(['object' => 'list', 'url' => '/v1/prices', 'has_more' => false, 'data' => array_slice($data, 0, (int) ($_GET['limit'] ?? 10))]);
     }
     if (isset($m[1])) {
         if (! isset($cat['prices'][$m[1]])) {
@@ -61,6 +62,9 @@ if (preg_match('#^/v1/prices(?:/([^/]+))?$#', $path, $m)) {
     file_put_contents($catFile, json_encode($cat));
 
     return $json($cat['prices'][$m[1]]);
+}
+if ($path === '/v1/payment_links') {
+    return $json(['object' => 'list', 'url' => '/v1/payment_links', 'has_more' => false, 'data' => []]); // the stand-in never sells through links
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path === '/v1/checkout/sessions') {
@@ -88,11 +92,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && preg_match('#^/v1/checkout/sessions
 
     return true;
 }
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && preg_match('#^/v1/checkout/sessions/([^/]+)$#', $path, $m) && isset($sessions[$m[1]])) {
+    $s = $sessions[$m[1]];
+    $cp = $s['price'] ? ($cat['prices'][$s['price']] ?? null) : null;
+
+    return $json(['id' => $s['id'], 'object' => 'checkout.session', 'amount_total' => $s['amount_total'], 'currency' => $s['currency'], 'payment_status' => $s['paid'] ?? false ? 'paid' : 'unpaid',
+        'livemode' => false, 'metadata' => $s['metadata'], 'line_items' => ['object' => 'list', 'data' => [['price' => $cp ? ['id' => $cp['id'], 'unit_amount' => $cp['unit_amount']] : null]]]]);
+}
 if (preg_match('#^/pay/([^/]+)$#', $path, $m) && isset($sessions[$m[1]])) {
     $s = $sessions[$m[1]];
     $amount = number_format($s['amount_total'] / 100, 2).' '.strtoupper($s['currency']);
+    $error = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') { // the card form, shaped like Stripe's hosted Checkout (ops/qa/stripe-e2e.cjs)
+        $card = preg_replace('/\D/', '', $body['cardNumber'] ?? '');
+        if ($card === '4242424242424242') {
+            $sessions[$m[1]]['paid'] = true;
+            file_put_contents($store, json_encode($sessions));
+            // like `stripe listen`: deliver a Stripe-signed checkout.session.completed to the app before redirecting
+            $payload = json_encode(['id' => 'evt_fake_'.bin2hex(random_bytes(6)), 'object' => 'event', 'type' => 'checkout.session.completed', 'api_version' => '2024-06-20', 'created' => time(), 'livemode' => false,
+                'data' => ['object' => ['object' => 'checkout.session', 'id' => $s['id'], 'payment_status' => 'paid', 'amount_total' => $s['amount_total'], 'currency' => $s['currency'], 'payment_intent' => 'pi_'.$s['id'], 'metadata' => $s['metadata']]]]);
+            $ts = time();
+            $sig = hash_hmac('sha256', $ts.'.'.$payload, getenv('STRIPE_WEBHOOK_SECRET') ?: 'whsec_local_qa');
+            @file_get_contents(getenv('FAKE_STRIPE_WEBHOOK_URL') ?: 'http://127.0.0.1:8000/webhooks/stripe', false, stream_context_create(['http' => ['method' => 'POST', 'header' => "Content-Type: application/json\r\nStripe-Signature: t={$ts},v1={$sig}\r\n", 'content' => $payload, 'ignore_errors' => true]]));
+            header('Location: '.$s['success_url'], true, 303);
+
+            return true;
+        }
+        $error = '<p role="alert">Your card was declined.</p>';
+    }
     echo '<!doctype html><meta name="viewport" content="width=device-width"><title>Test checkout</title><body style="font-family:sans-serif;padding:24px">'
         .'<p>LOCAL TEST CHECKOUT (stands in for Stripe)</p><h1 data-name>'.htmlspecialchars($s['name']).'</h1><p data-amount>'.$amount.'</p>'
+        .'<p data-testid="product-summary-total-amount">£'.number_format($s['amount_total'] / 100, 2).'</p>'.$error
+        .'<form method="post"><input id="cardNumber" name="cardNumber" aria-label="Card number"><input id="cardExpiry" name="cardExpiry" aria-label="Expiry"><input id="cardCvc" name="cardCvc" aria-label="CVC">'
+        .'<input id="billingName" name="billingName" aria-label="Name"><button data-testid="hosted-payment-submit-button">Pay</button></form>'
         .'<a data-pay href="'.htmlspecialchars($s['success_url']).'">Pay</a> &nbsp; <a data-cancel href="'.htmlspecialchars($s['cancel_url']).'">Cancel</a></body>';
 
     return true;

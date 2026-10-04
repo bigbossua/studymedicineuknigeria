@@ -245,6 +245,25 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 2. **Live keys and webhook for production** → the same in Stripe **live mode**, endpoint `https://studymedicineuknigeria.com/webhooks/stripe`, secrets in Environments → `production` → live mode needs its own catalogue → after your approval of the run I create the live products and prices with *Stripe catalogue* (`production`) and report the ids. Do not create products, prices or Payment Links by hand: hand-made duplicates would not carry the lookup keys, and a Payment Link would bypass the profile review.
 3. Everything in cycle 37 (server access, production secrets, reviewer) still applies.
 
+## Cycle 39 — Stripe configuration (stage 45, 2026-10-04)
+
+| Step | Status |
+|---|---|
+| Credentials | **Not yet present**: Diagnose (06:57 UTC) shows `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET` missing in `staging` and `production` |
+| 1–3 Catalogue sync, three products, one active price each | Ready (*Stripe test-mode journey* or *Stripe catalogue*); not run against your account yet |
+| 4 No Payment Links | Enforced: never created; a run fails if one sells a service |
+| 5 Price ids | Not issued yet (Stripe assigns them on creation; the run prints them) |
+| 6 Webhook | Test-mode journey: real Stripe-signed events via `stripe listen`. Staging/production endpoints: verified or created by *Stripe catalogue* once the server exists |
+| 7–8 Real Stripe journey | Ready; rehearsed against the stand-in (T1 decline then paid, T1/T2/T3 paid at the exact fee, catalogue price ids) |
+| 9 Price leakage | Re-run here: 184 tests green, no fee on any public page |
+| Production | Not deployed |
+
+### OWNER ACTION REQUIRED (WHAT → WHERE → WHY → WHAT YOU WILL DO IMMEDIATELY AFTER)
+
+1. **Stripe test secret key** → GitHub → Settings → Environments → `staging` → New secret `STRIPE_SECRET` = the `sk_test_…` key from Stripe (Test mode) → Developers → API keys (also `STRIPE_KEY` = `pk_test_…`) → every Stripe step needs it and it must never pass through chat → I run *Stripe test-mode journey*: it creates the three test-mode products and prices, prints their ids, pays T1/T2/T3 through Stripe's real Checkout with test cards, confirms each through Stripe-signed webhooks, and re-runs the leakage checks; I report the ids and results.
+2. **Live keys** → Environments → `production` → `STRIPE_KEY` (`pk_live_…`), `STRIPE_SECRET` (`sk_live_…`) → the live catalogue is separate from test mode → after your approval of the run, *Stripe catalogue* (`production`, `create`) creates the live products and prices and reports the ids. Live endpoint and live payments wait for the production server (not deployed).
+3. Webhook signing secrets: none needed from you if the endpoint is created by *Stripe catalogue* (`webhook=create`) once staging exists; it needs the server settings from cycle 37.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

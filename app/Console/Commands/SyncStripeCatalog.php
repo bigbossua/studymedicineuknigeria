@@ -30,11 +30,23 @@ class SyncStripeCatalog extends Command
         $problems = 0;
         foreach (TierPrice::with('tier')->where('active', true)->whereNotNull('amount_minor')->get()->sortBy(fn ($p) => $p->tier->sort) as $price) {
             $r = $catalog->sync($price, ! $this->option('check'));
-            $problems += $r['price_id'] === null ? 1 : 0;
-            $rows[] = [$r['code'], $price->tier->name, number_format($r['amount_minor'] / 100, 2).' '.strtoupper($r['currency']), $r['product_id'].' ('.$r['product'].')', ($r['price_id'] ?? '—').' ('.$r['price'].')', $r['lookup_key']];
+            $others = $this->option('check') ? (int) ($r['other_active'] ?? 0) : 0;
+            $problems += ($r['price_id'] === null ? 1 : 0) + $others;
+            $active = $this->option('check') ? ($others ? 'other active prices: '.$others : 'only active price') : (($r['deactivated'] ?? []) ? 'switched off '.implode(', ', $r['deactivated']) : 'only active price');
+            $rows[] = [$r['code'], $price->tier->name, number_format($r['amount_minor'] / 100, 2).' '.strtoupper($r['currency']), $r['product_id'].' ('.$r['product'].')', ($r['price_id'] ?? '—').' ('.$r['price'].')', $r['lookup_key'], $active];
+            $ids[] = $r['price_id'];
+            $products[] = $r['product_id'];
         }
         $this->info("Stripe catalogue, {$mode} mode".($this->option('check') ? ' (check only, nothing changed)' : ''));
-        $this->table(['Service', 'Name', 'Amount', 'Product', 'Price', 'Lookup key'], $rows);
+        $this->table(['Service', 'Name', 'Amount', 'Product', 'Price', 'Lookup key', 'Active prices'], $rows);
+
+        $links = $catalog->paymentLinksSelling(array_values(array_filter($ids ?? [])), $products ?? []);
+        if ($links) {
+            $this->error('Active Payment Links sell these services without the profile review: '.implode(', ', $links).'. Deactivate them in the Stripe Dashboard (Payment Links).');
+            $problems++;
+        } else {
+            $this->info('Payment Links selling these services: none.');
+        }
 
         return $problems ? self::FAILURE : self::SUCCESS;
     }

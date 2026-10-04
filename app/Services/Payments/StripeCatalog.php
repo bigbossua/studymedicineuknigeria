@@ -67,8 +67,14 @@ class StripeCatalog
         if ($matches) {
             $result['price_id'] = $existing->id;
             $result['price'] = 'found';
+            if (! $create) {
+                $result['other_active'] = count(array_filter($client->prices->all(['product' => $productId, 'active' => true, 'limit' => 100])->data ?? [], fn ($p) => $p->id !== $existing->id));
+
+                return $result;
+            }
         } elseif (! $create) {
             $result['price'] = $existing ? 'differs (amount, currency, type or product)' : 'missing';
+            $result['other_active'] = $result['product'] === 'missing' ? 0 : count($client->prices->all(['product' => $productId, 'active' => true, 'limit' => 100])->data ?? []);
 
             return $result;
         } else {
@@ -83,9 +89,41 @@ class StripeCatalog
             $result['price'] = $existing ? 'created (replaces '.$existing->id.')' : 'created';
         }
 
+        // exactly one active price per service: any other active price on our product is switched off (never deleted)
+        $others = collect($client->prices->all(['product' => $productId, 'active' => true, 'limit' => 100])->data ?? [])->filter(fn ($p) => $p->id !== $result['price_id']);
+        foreach ($others as $other) {
+            $client->prices->update($other->id, ['active' => false]);
+        }
+        $result['deactivated'] = $others->pluck('id')->values()->all();
+
         $price->forceFill(['stripe_product_id' => $productId, 'stripe_price_id' => $result['price_id'], 'stripe_price_amount' => $amount, 'stripe_livemode' => $this->stripe->liveAllowed()])->save();
 
         return $result;
+    }
+
+    /**
+     * Active Payment Links that sell one of our service prices: they would let anyone pay without the profile review.
+     * Reported, never changed here (the owner decides).
+     *
+     * @param  array<int, string>  $priceIds
+     * @return array<int, string> ids of the offending links
+     */
+    public function paymentLinksSelling(array $priceIds, array $productIds): array
+    {
+        $client = $this->stripe->client();
+        $bad = [];
+        foreach ($client->paymentLinks->all(['active' => true, 'limit' => 100])->data ?? [] as $link) {
+            foreach ($client->paymentLinks->allLineItems($link->id, ['limit' => 100])->data ?? [] as $item) {
+                $priceId = is_string($item->price ?? null) ? $item->price : ($item->price->id ?? null);
+                $productId = is_object($item->price ?? null) ? (is_string($item->price->product ?? null) ? $item->price->product : null) : null;
+                if (in_array($priceId, $priceIds, true) || in_array($productId, $productIds, true)) {
+                    $bad[] = $link->id;
+                    break;
+                }
+            }
+        }
+
+        return $bad;
     }
 
     private function ensureProduct(object $client, TierPrice $price, string $id, bool $create): string

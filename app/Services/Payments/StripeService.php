@@ -14,6 +14,10 @@ use Stripe\StripeClient;
 
 class StripeService
 {
+    /** Events the webhook endpoint must send (ops/STAGING-SETTINGS.md); everything else is ignored by applyEvent(). */
+    public const WEBHOOK_EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'checkout.session.expired',
+        'payment_intent.payment_failed', 'charge.refunded', 'charge.dispute.created'];
+
     /**
      * Card payments need a key of the right mode: production takes only a live key (no test charge can pose as a real
      * payment), every other environment only a test key.

@@ -1,0 +1,89 @@
+name: Stripe test-mode journey (real Stripe)
+# Proves the paid journey against Stripe itself, in TEST mode only, before any server exists: on this runner the app
+# runs with the staging environment's test key; the Stripe catalogue is synced (products smukn_t1..t3, one active
+# one-time GBP price each, no Payment Links); `stripe listen` (Stripe's own CLI) delivers real, Stripe-signed webhooks to
+# the app; a browser then takes three new students through staff approval → service choice → Stripe's hosted Checkout
+# (test cards; T1 also tries a declined card) → signed webhook → paid, and each charge is read back from Stripe.
+# Finally the public price-leakage tests run against the same app. Prints ids and amounts only, never a key.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  journey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: staging
+    env:
+      STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+      STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Test key only
+        run: |
+          [ -n "$STRIPE_SECRET" ] || { echo "::error::No STRIPE_SECRET in the staging environment (Settings → Environments → staging → secrets)"; exit 1; }
+          case "$STRIPE_SECRET" in sk_test_*|rk_test_*) echo "test-mode key present";; *) echo "::error::this journey runs in Stripe test mode only: the staging STRIPE_SECRET must be sk_test_ or rk_test_"; exit 1;; esac
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_sqlite', coverage: none }
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - name: Build the app with the demo staff account (local database on this runner)
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci --no-audit --no-fund && npm run build
+          cp .env.example .env && php artisan key:generate
+          touch database/database.sqlite && php artisan migrate --seed --force
+      - name: Stripe catalogue (create what is missing, then verify)
+        run: |
+          set -o pipefail
+          php artisan smukn:stripe-sync | tee catalogue.txt
+          php artisan smukn:stripe-sync --check | tee -a catalogue.txt
+          { echo '### Stripe catalogue (test mode)'; echo '```'; cat catalogue.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Staging webhook endpoint (report only)
+        env:
+          STAGING_URL: ${{ vars.STAGING_URL }}
+        run: |
+          [ -n "$STAGING_URL" ] || { echo "STAGING_URL not set: the staging endpoint is checked once staging exists"; exit 0; }
+          php artisan smukn:stripe-webhook --url "${STAGING_URL%/}/webhooks/stripe" | tee webhook.txt || true
+          { echo '### Staging webhook endpoint'; echo '```'; cat webhook.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Stripe CLI forwards real signed events to the app
+        run: |
+          url=$(curl -s https://api.github.com/repos/stripe/stripe-cli/releases/latest | jq -r '.assets[] | select(.name | test("linux_x86_64\\.tar\\.gz$")) | .browser_download_url' | head -1)
+          curl -sL "$url" | tar -xz -C /usr/local/bin stripe && stripe version
+          WH=$(stripe listen --api-key "$STRIPE_SECRET" --print-secret)
+          echo "::add-mask::$WH"; echo "STRIPE_WEBHOOK_SECRET=$WH" >> "$GITHUB_ENV"
+          nohup stripe listen --api-key "$STRIPE_SECRET" --forward-to http://127.0.0.1:8000/webhooks/stripe \
+            --events checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.expired,payment_intent.payment_failed,charge.refunded,charge.dispute.created > listen.log 2>&1 &
+          for i in $(seq 1 30); do grep -q 'Ready!' listen.log && break; sleep 1; done; grep -q 'Ready!' listen.log || { cat listen.log; exit 1; }
+      - name: Serve the app
+        run: |
+          cd public && APP_DEBUG=false nohup php -S 127.0.0.1:8000 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php > ../server.log 2>&1 &
+          for i in $(seq 1 20); do curl -sf -o /dev/null http://127.0.0.1:8000/up && break; sleep 1; done
+      - name: Approved-student journeys through Stripe Checkout (T1, T2, T3)
+        run: |
+          npm i -g playwright@1 && npx -y playwright@1 install --with-deps chromium
+          node ops/qa/stripe-e2e.cjs out
+          python3 -c "import json; d=json.load(open('out/stripe-e2e.json')); print('\n'.join(f\"- {k}: {'OK' if v.get('ok') else 'FAILED'} · fee shown {v.get('confirmPrice')} · Stripe {v.get('stripe',{}).get('amount_total')} {v.get('stripe',{}).get('currency')} · price {v.get('stripe',{}).get('price')} · {v.get('statusAfterWebhook')}\" for k,v in d['services'].items()))" > journey.md
+          { echo '### Approved-student journeys (real Stripe, test mode)'; cat journey.md; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Public price leakage (tests and the running app)
+        run: |
+          php -d memory_limit=1G vendor/bin/phpunit --filter PricingVisibilityTest
+          leaks=0
+          for p in $(curl -s http://127.0.0.1:8000/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed -E 's#</?loc>##g; s#^https?://[^/]+##') /apply-online/services /apply-online /register; do
+            body=$(curl -s "http://127.0.0.1:8000${p:-/}")
+            if printf '%s' "$body" | grep -qE '£125|£695|£1,295|12500|69500|129500|priceCurrency'; then echo "::error::fee visible on ${p:-/}"; leaks=$((leaks+1)); fi
+          done
+          echo "public pages with a fee: $leaks"; echo "Public pages with a fee: $leaks" >> "$GITHUB_STEP_SUMMARY"; [ "$leaks" = 0 ]
+      - name: Webhook deliveries (event types only)
+        if: always()
+        run: grep -oE '(checkout\.session\.[a-z_]+|payment_intent\.[a-z_]+|charge\.[a-z_.]+).*\[[0-9]{3}\]' listen.log | sort | uniq -c || true
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: stripe-test-journey
+          path: |
+            out/
+            catalogue.txt
+          retention-days: 14

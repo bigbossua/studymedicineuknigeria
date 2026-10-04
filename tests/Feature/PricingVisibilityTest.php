@@ -206,11 +206,55 @@ class PricingVisibilityTest extends TestCase
         $this->assertStringNotContainsString('sk_test_fake', Artisan::output());
     }
 
+    public function test_each_service_keeps_exactly_one_active_price_and_payment_links_are_refused(): void
+    {
+        $this->assertSame(0, Artisan::call('smukn:stripe-sync'));
+        $t2 = ServiceTier::where('code', 'T2')->first()->priceFor('full');
+        $stray = $this->stripe->addManualPrice('smukn_t2', 50000); // e.g. made by hand in the Dashboard
+        $this->assertSame(1, Artisan::call('smukn:stripe-sync', ['--check' => true]), 'a check reports the extra active price');
+        $this->assertStringContainsString('other active prices: 1', Artisan::output());
+        $this->assertTrue($this->stripe->priceStore[$stray]->active, 'a check changes nothing');
+        $this->assertSame(0, Artisan::call('smukn:stripe-sync'));
+        $this->assertFalse($this->stripe->priceStore[$stray]->active);
+        $this->assertTrue($this->stripe->priceStore[$t2->fresh()->stripe_price_id]->active);
+        foreach (['smukn_t1', 'smukn_t2', 'smukn_t3'] as $product) {
+            $this->assertCount(1, array_filter($this->stripe->priceStore, fn ($p) => $p->product === $product && $p->active), $product);
+        }
+
+        // a Payment Link selling a service bypasses the profile review: reported and the run fails, nothing is changed
+        $this->stripe->linkStore['plink_1'] = ['active' => true, 'prices' => [$t2->fresh()->stripe_price_id]];
+        $this->assertSame(1, Artisan::call('smukn:stripe-sync'));
+        $this->assertStringContainsString('plink_1', Artisan::output());
+        $this->assertTrue($this->stripe->linkStore['plink_1']['active']);
+    }
+
+    public function test_the_webhook_endpoint_is_verified_or_created_without_printing_its_secret(): void
+    {
+        config(['app.url' => 'https://staging.studymedicineuknigeria.com']);
+        $this->assertSame(1, Artisan::call('smukn:stripe-webhook'));
+        $this->assertStringContainsString('No test-mode webhook endpoint', Artisan::output());
+        $this->assertSame(1, Artisan::call('smukn:stripe-webhook', ['--create' => true]), 'never created without a place for the secret');
+        $file = tempnam(sys_get_temp_dir(), 'whsec');
+        $this->assertSame(0, Artisan::call('smukn:stripe-webhook', ['--create' => true, '--secret-file' => $file]));
+        $this->assertStringNotContainsString('whsec_created_once', Artisan::output());
+        $this->assertSame('whsec_created_once_we_test_1', file_get_contents($file));
+        $this->assertSame('0600', substr(sprintf('%o', fileperms($file)), -4));
+        unlink($file);
+        $this->assertSame(['https://staging.studymedicineuknigeria.com/webhooks/stripe'], array_values(array_map(fn ($e) => $e->url, $this->stripe->endpointStore)));
+        $this->assertSame(0, Artisan::call('smukn:stripe-webhook'));
+        $this->assertStringContainsString('all required events present', Artisan::output());
+
+        $this->stripe->endpointStore['we_test_1']->enabled_events = ['checkout.session.completed'];
+        $this->assertSame(1, Artisan::call('smukn:stripe-webhook'));
+        $this->assertStringContainsString('MISSING: checkout.session.async_payment_succeeded', Artisan::output());
+        $this->assertSame(1, Artisan::call('smukn:stripe-webhook', ['--url' => 'http://127.0.0.1:8000/webhooks/stripe']), 'Stripe needs a public https URL');
+    }
+
     public function test_no_payment_link_is_ever_created_and_the_secret_key_never_reaches_a_page(): void
     {
-        $this->assertFalse(property_exists($this->stripe, 'paymentLinks'));
         $source = (string) file_get_contents(app_path('Services/Payments/StripeCatalog.php')).file_get_contents(app_path('Services/Payments/StripeService.php'));
-        $this->assertStringNotContainsString('paymentLinks', $source);
+        $this->assertStringNotContainsString('paymentLinks->create', $source, 'Payment Links are only ever audited, never made');
+        $this->assertSame(0, preg_match('/paymentLinks->(create|update)/', (string) file_get_contents(app_path('Console/Commands/SyncStripeCatalog.php'))));
         [$student, $a] = $this->student();
         $this->approveServices($a, 'T2');
         $this->actingAs($student)->get("/portal/{$a->application_number}/payments")->assertOk()->assertDontSee('sk_test_fake')->assertDontSee('whsec_x');

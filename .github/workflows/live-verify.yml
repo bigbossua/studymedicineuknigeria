@@ -102,6 +102,20 @@ jobs:
               "support_phone_published" => $has($a->business_profile->support_phone ?? null),
               "support_email_set" => $has($a->business_profile->support_email ?? null),
             ], JSON_PRETTY_PRINT), PHP_EOL;'
+          # accounts and the journey, as counts only (no names, emails or application numbers: public logs)
+          $PHP artisan tinker --execute '
+            $staff = App\Models\User::whereIn("role", ["admin", "staff"])->get();
+            echo json_encode([
+              "admins" => $staff->where("role", "admin")->count(), "staff" => $staff->where("role", "staff")->count(),
+              "staff_and_admins_email_verified" => $staff->whereNotNull("email_verified_at")->count(),
+              "staff_and_admins_with_two_step" => $staff->filter->hasTwoFactorEnabled()->count(),
+              "students" => App\Models\User::where("role", "student")->count(),
+              "applications_by_stage" => App\Models\Application::selectRaw("stage, count(*) n")->groupBy("stage")->pluck("n", "stage"),
+              "documents_by_status" => DB::table("documents")->selectRaw("status, count(*) n")->groupBy("status")->pluck("n", "status"),
+              "payments_by_status" => App\Models\Payment::selectRaw("status, count(*) n")->groupBy("status")->pluck("n", "status"),
+              "submissions_by_status" => App\Models\Submission::selectRaw("status, count(*) n")->groupBy("status")->pluck("n", "status"),
+              "stripe_events" => App\Models\StripeEvent::selectRaw("type, count(*) n, sum(processed_at is not null) processed")->groupBy("type")->get()->mapWithKeys(fn ($r) => [$r->type => $r->processed."/".$r->n]),
+            ], JSON_PRETTY_PRINT), PHP_EOL;'
           # a signed event through the public URL must be accepted (200) and a forged one refused (400)
           if $PHP artisan tinker --execute 'echo filled(config("services.stripe.webhook_secret")) ? "yes" : "no";' | grep -q yes; then $PHP artisan smukn:stripe-webhook --self-test; fi
           # the live catalogue (ids and amounts only) must match the approved fees whenever a key is installed

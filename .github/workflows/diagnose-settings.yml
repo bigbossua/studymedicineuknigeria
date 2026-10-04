@@ -71,9 +71,14 @@ jobs:
           S_DB_DATABASE: ${{ secrets.SMUKN_DB_DATABASE }}
           S_DB_USERNAME: ${{ secrets.SMUKN_DB_USERNAME }}
           S_DB_PASSWORD: ${{ secrets.SMUKN_DB_PASSWORD }}
+          S_STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+          S_STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+          S_STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
         run: |
           echo "scope: environment staging (what bootstrap and deploy of staging can see)"
-          for n in V_HOST V_USER V_STAGING_URL V_STAGING_BASIC_USER S_KEY S_STAGING_BASIC_PASSWORD S_DB_DATABASE S_DB_USERNAME S_DB_PASSWORD; do v="${!n}"; if [ -n "$v" ]; then echo "$n: PRESENT (length ${#v})"; else echo "$n: missing"; fi; done
+          for n in V_HOST V_USER V_STAGING_URL V_STAGING_BASIC_USER S_KEY S_STAGING_BASIC_PASSWORD S_DB_DATABASE S_DB_USERNAME S_DB_PASSWORD S_STRIPE_KEY S_STRIPE_SECRET S_STRIPE_WEBHOOK_SECRET; do v="${!n}"; if [ -n "$v" ]; then echo "$n: PRESENT (length ${#v})"; else echo "$n: missing"; fi; done
+          # only the mode is reported (staging refuses live keys), never any part of the value
+          for n in S_STRIPE_KEY S_STRIPE_SECRET; do v="${!n}"; [ -n "$v" ] || continue; case "$v" in pk_test_*|sk_test_*|rk_test_*) echo "$n mode: test";; *) echo "$n mode: NOT TEST (staging refuses it)";; esac; done
   environment-production:
     runs-on: ubuntu-latest
     timeout-minutes: 3

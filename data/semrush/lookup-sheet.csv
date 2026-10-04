@@ -26,3 +26,14 @@ id,query_theme,intent_hypothesis,semrush_keyword_used,database,volume,keyword_di
 25,MDCN recognition of UK medical degree (emergent from results),Informational,,ng,,,,,,,,Q01
 26,foundation year medicine UK international / which foundation leads to medicine (emergent),Informational/Commercial,,ng,,,,,,,,O01
 27,scholarships to study medicine in UK for Nigerian students (emergent),Informational/Commercial,,ng,,,,,,,,J02
+28,waec requirements for nursing in uk,Informational,,ng,,,,,,,,V31
+29,study nursing in uk from nigeria,Informational/migration,,ng,,,,,,,,V32
+30,nursing uk fees for international students,Commercial,,ng,,,,,,,,V33
+31,uk universities that accept nigerian students for nursing,Commercial,,ng,,,,,,,,V34
+32,ielts for nursing degree uk,Informational,,ng,,,,,,,,V35
+33,nursing scholarship uk nigerian students,Informational,,ng,,,,,,,,V38
+34,waec requirements for dentistry in uk,Informational,,ng,,,,,,,,V40
+35,study dentistry in uk from nigeria,Informational,,ng,,,,,,,,V41
+36,dentistry uk fees international students,Informational,,ng,,,,,,,,V42
+37,ucat dentistry nigeria,Informational,,ng,,,,,,,,V43
+38,dentistry scholarship uk nigerian students,Informational,,ng,,,,,,,,V45

@@ -121,9 +121,61 @@ Forum threads observed (titles as returned): Nairaland — How To Study Nursing 
 - **Everything from Optometry down → RESEARCH, no standalone page.** INFERENCE: a single allied-health overview page (HCPC/GOC/GDC professions, how registration works, which courses admit international students) would serve these clusters better than thin pages; proposed as register row V (hub), VALIDATED, built once §A and §B facts exist.
 - **Public Health, Clinical Psychology, Arts therapies → REJECTED** (postgraduate entry; outside the undergraduate healthcare-application mission).
 
+## E. Subject long-tail SERP observation: Nursing and Dentistry (36 searches, 2026-10-03)
+
+Method: WebSearch result composition for 18 query shapes per subject (COURSE + NIGERIA + UK + requirements / WAEC / NECO / fees / universities / IELTS / foundation / deadline / interview / visa / scholarship / forum / study-abroad). The tool is US-geolocated and exposes no rank or People-Also-Ask box, so entries are result composition, not Google Nigeria positions; no volumes are estimated. Each family below is a cluster V register row (ids in `subjects.json`); none has a URL.
+
+### Nursing families (register rows V31, V32, V33, V34, V35, V36, V37, V38, V39)
+
+| Family | Intent read by the SERP | Nigeria-specific results | Official UK page answers it? | Decision |
+|---|---|---|---|---|
+| Eligibility from WAEC/NECO → BSc Adult Nursing | informational | low–medium: Bucks Nigeria country page; North Cyprus agent captures "NECO" | partly (Bucks maps WAEC/NECO grades; nothing nursing-specific mentions WASSCE) | VALIDATED: the question the nursing node must answer per university |
+| How to study nursing in the UK from Nigeria | **migration** (NMC, CBT/OSCE, IELTS 7, ONP, HCA visa) | high: nairametrics, studentship, CV sites, gostudyin | no | RESEARCH: SERP reads it as qualified-nurse migration |
+| Fees and cost for Nigerians | commercial / news | high: Nigerian news totals and anecdotes; pathway-college marketing; North Cyprus agent | no fee table | RESEARCH: per-university fees only |
+| Universities that accept Nigerian students | commercial listicle | high: Nigerian listicles, IDP Nigeria, ARU country page | partly (country pages, not nursing-specific) | RESEARCH: per-university availability list from read pages |
+| IELTS for a nursing degree | informational, conflated with NMC IELTS | none | UWS only | RESEARCH |
+| Foundation / pathway year | informational | none | yes (BCU, Sheffield Hallam, UCAS; NCUK → Huddersfield) | RESEARCH: section, not page |
+| Application mechanics (deadline, interview, placement visa hours) | navigational | none | yes (UCAS, Birmingham 13 January 2027 nursing deadline, Swansea international nursing guidance, Surrey visa hours) | RESEARCH: link out |
+| Scholarships | informational | high: Nigerian scholarship blogs | yes (Southampton Global Talent in Adult Nursing; Stirling) | RESEARCH: named awards as facts |
+| Nairaland and generic study-abroad | migration / multi-country agents | high | no | REJECTED |
+
+### Dentistry families (register rows V40, V41, V42, V43, V44, V45, V46)
+
+| Family | Intent read by the SERP | Nigeria-specific results | Official UK page answers it? | Decision |
+|---|---|---|---|---|
+| Eligibility from WAEC/NECO → BDS | informational | very low: one agent page; Nigerian academic papers off-target | no result mentions WAEC, WASSCE or NECO; KCL and Aberdeen generic requirements | VALIDATED: zero Nigeria-specific content for the core intent |
+| How to study dentistry in the UK from Nigeria | commercial-agent plus dentist job-seeking | medium–high: gostudyin, dentist CVs, leadership.ng, Bristol Nigeria leaflet | partly (generic country pages) | RESEARCH: served by the dentistry node |
+| Fees and international places | informational | none | yes for fees (Manchester, UCLan); places only on Manchester's statistics page (§B) | RESEARCH: per-school facts |
+| UCAT for Nigerian dentistry applicants | informational | high, but the Nigeria UCAT guides are for Medicine (leadingtuition, theukcatpeople) | dental school UCAT pages exist; no official UCAT consortium page surfaced | VALIDATED: a dentistry section on the live UCAT page, not a new page |
+| IELTS, IFP, deadline, MMI | informational / navigational | none | yes (Bristol IFP for Dentistry, Aberdeen IELTS 7.0, QUB admissions policy, UCAS 15 October, Manchester and Birmingham interview pages) | RESEARCH: link out |
+| Scholarships | informational | medium: Birmingham Nigeria award excludes BDS | yes (negative answer) | RESEARCH: record as a fact |
+| Nairaland and generic study-abroad | dentist migration / human interest | none; Canada and US advanced-standing dominate | no | REJECTED |
+
+### Official statements seen (search snippets; VERIFY-ON-PAGE before any becomes a reference_fact)
+- Bucks New University Nigeria page: foundation entry accepts a WAEC/NECO grade D profile; year 1 entry a grade C profile (five subjects at C or above); IELTS 6.0 with no element under 5.5, or WAEC/NECO English C6 within ten years; BSc Adult Nursing IELTS 6.0 with no section below 6.0. https://www.bucks.ac.uk/study/international/your-country/nigeria
+- KCL Adult Nursing: IELTS 7.0 overall "in line with the professional body"; 575 hours of healthcare-related experience. https://www.kcl.ac.uk/study/undergraduate/courses/nursing-with-registration-as-an-adult-nurse-bsc/entry-requirements
+- UCAS: 15 October deadline for medicine, dentistry, veterinary and Oxford/Cambridge; 30 June for most other international applications. https://www.ucas.com/advisers/guides-and-resources/adviser-news/news/supporting-international-students-applying-courses-october-deadline
+- Birmingham nursing key dates: nursing deadline 13 January 2027. https://www.birmingham.ac.uk/about/college-of-medicine-and-health/nursing-and-midwifery/applying-to-nursing/how-to-apply-and-key-dates
+- Swansea: "International Nursing: Application Guidance" page for BSc Adult Nursing. https://www.swansea.ac.uk/undergraduate/courses/health-social-care/adult-nursing-swansea-bsc-hons/international-nursing
+- Surrey: placement hours forming part of the degree are unrestricted on a Student visa; other work 20 hours a week in term. https://my.surrey.ac.uk/node/9665
+- Southampton: Global Talent in Adult Nursing Scholarship, £5,000 a year off tuition for up to three years, automatic. https://www.southampton.ac.uk/study/fees-funding/scholarships/global-talent-in-adult-nursing-scholarship
+- NCUK (pathway provider, not a university): IFY in Nursing with guaranteed progression to BSc Adult Nursing at Huddersfield; £17,600; UKVI IELTS 5.0. https://ncuk.malverninternational.com/?p=19517
+- Bristol IFP for Dentistry: one year, for overseas students, completion guarantees a BDS interview; IELTS 7.5 overall on the progression page. https://www.bristol.ac.uk/health-life-sciences/international-foundation-programme/
+- Aberdeen BDS: IELTS 7.0 overall with 7.0 in speaking; English qualification within two years. https://www.abdn.ac.uk/dental/study/bds/entrance-requirements/academic-requirements/
+- Queen's Belfast Dentistry Admissions Policy 2025: 15 October 6 pm deadline; two-stage selection with UCAT for UK and Republic of Ireland applicants. https://www.med.qub.ac.uk/download/Dentistry-Admissions-Policy-2025.pdf
+- Birmingham Nigeria Outstanding Achievement Scholarships: £4,000 for Nigeria-domiciled undergraduates; BDS applicants not eligible. https://birmingham.ac.uk/funding/undergraduate/university-of-birmingham-nigeria-outstanding-achievement-scholarships
+- Bristol Nigeria leaflet 2025–26: SSCE (WASSCE or NECO) minimum five subjects at grade B or above (context unclear; not BDS-specific). https://bristol.ac.uk/media-library/sites/international/documents/10003_BU_International%20Leaflets%202025-26%20NIGERIA%20-%20web.pdf
+- NOT FOUND: any official page stating Nigerian UCAT test centres; any official count of international BDS places other than Manchester (§B); any UK university page mapping WAEC/NECO grades to BDS entry. Aggregator fee figures (Bristol £27,500, QUB £35,800) are LEAD only.
+
+### What §E changes
+- **Nursing's study intent is a minority inside a migration SERP.** The node, when built, must say in its first lines that it covers undergraduate entry from school, not NMC registration, and must never imitate migration content. Decision on the route family waits for Semrush `ng`.
+- **Dentistry's core intent is empty.** No page anywhere maps WAEC/NECO to BDS entry; the dentistry node's first job is that per-school answer, built from Manchester, Cardiff, KCL and Aberdeen pages once read.
+- **Upgrade before multiplying.** The dental UCAT family is a section on the live UCAT page (after the dental schools' UCAT pages are read), not a new URL.
+- **Statuses unchanged** for the subjects; eleven new VALIDATED/RESEARCH/REJECTED family rows in cluster V, none with a URL.
+
 ## D. Open items
 1. ~~Regulator and availability research (§A, §B)~~ done 2026-10-03 at snippet level; each FACT still needs the official page read before it becomes a `reference_fact` (owner network allow-list or worksheet round trip).
-2. Owner Semrush lookups (database `ng`, then `uk`) for every subject's query family; the SERP labels above are INFERENCE until then.
+2. Owner Semrush lookups (database `ng`, then `uk`) for every subject's query family (nursing and dentistry families now in `data/semrush/lookup-sheet.csv`); the SERP labels above are observation, volumes unknown until then.
 3. Facts for any subject page go through `reference_facts` with sources, never from the snippets in this document.
 4. Osteopathy and Chiropractic availability not yet swept (private providers; low Nigerian relevance).
 5. Per-university availability must be modelled before any subject page: the `courses.profession` column exists; a non-medicine `courses` row is created only from a read official page.

@@ -1,7 +1,7 @@
 {
   "_meta": {
     "dataset": "UK healthcare and allied-health course universe for Nigerian applicants (master taxonomy)",
-    "version": "2026-10-03d",
+    "version": "2026-10-03e",
     "method": "Seeded from research 02, 03 and 05 (SERP observation, WebSearch snippets) and regulator names from general professional knowledge marked 'confirm'. Every value is unverified until read on the official page. Statuses use the SEO decision-engine vocabulary (docs/seo/DECISION-ENGINE.md §3) and decide whether a public page may exist; RESEARCH and REJECTED subjects never get an indexable page. §B (availability, A-levels, fees, English) comes from a 60-search snippet sweep labelled FACT (official page snippet) / LEAD (aggregator) / NOT FOUND; nothing is inferred across universities or professions; every value is VERIFY-ON-PAGE until read on the official page and recorded as a reference_fact.",
     "status_values": [
       "RESEARCH",
@@ -112,8 +112,8 @@
       "fees": "FACT Manchester BDS £36,500 year 1 (2025 entry), clinical years from year 2 £58,000; LEAD Cardiff BDS £30,700 (VERIFY-ON-PAGE)",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
-      "nigerian_search_demand": "Some signals: one Nigeria-specific agent page (gostudyin), Nairaland comparison threads, TSR 'study dentistry abroad' threads; university Nigeria country pages surface for WAEC-shaped queries",
-      "long_tail_demand": "NOT RESEARCHED",
+      "nigerian_search_demand": "Some signals: one Nigeria-specific agent page (gostudyin), Nairaland comparison threads, TSR 'study dentistry abroad' threads; university Nigeria country pages surface for WAEC-shaped queries §E: the only Nigeria-specific competitor page is a gostudyin agent page; dentist job-seeker CVs crowd the route queries.",
+      "long_tail_demand": "Research 12 §E (18 SERPs): eleven families; no result in any query mentions WAEC, WASSCE or NECO for BDS; UK admissions-prep sites (uniadmissions, themedicportal, theukcatpeople, leadingtuition) hold the generic and UCAT intents; official pages dominate fees, IFP, deadlines and interviews; no Nairaland dentistry-study thread surfaced.",
       "commercial_intent": "Medium",
       "competition": "gostudyin.com, idp, britannia-study, leadingtuition (UCAT)",
       "sources": [
@@ -125,11 +125,19 @@
         "https://www.bmh.manchester.ac.uk/study/dentistry/apply/statistics/",
         "https://www.manchester.ac.uk/study/undergraduate/courses/2025/00398/bds-dentistry-first-year-entry/fees-and-funding/",
         "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/dental-surgery-bds",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §E"
       ],
       "decision_register_ids": [
         "B04",
-        "V02"
+        "V02",
+        "V40",
+        "V41",
+        "V42",
+        "V43",
+        "V44",
+        "V45",
+        "V46"
       ],
       "status": "VALIDATED",
       "status_reason": "Research 03 verdict (one honest hub page) plus some Nigerian signals in research 12 §C; UCAT expertise transfers. Build after regulator and international-availability facts are recorded. §B: Manchester publishes about 15 international places a year and Cardiff accepts international qualifications, so the hub page can state availability per school.",
@@ -214,8 +222,8 @@
       "fees": "FACT MMU Adult Nursing £21,500; LEAD Coventry £17,100; LEAD Hertfordshire £19,450; LEAD Salford £15,240 (fee years not stated) (VERIFY-ON-PAGE)",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
-      "nigerian_search_demand": "Evident (SERP observation 2026-10-03): the only subject with Nigerian blogs (studentship.com.ng), Nigerian press (legit.ng cost story, nairametrics, guardian.ng), Nairaland threads and a Nigeria-specific agent page all present; visible questions: WAEC/NECO acceptance, IELTS, NMC registration after a UK degree, top-up vs BSc, cost in naira, work after study",
-      "long_tail_demand": "NOT RESEARCHED",
+      "nigerian_search_demand": "Evident (SERP observation 2026-10-03): the only subject with Nigerian blogs (studentship.com.ng), Nigerian press (legit.ng cost story, nairametrics, guardian.ng), Nairaland threads and a Nigeria-specific agent page all present; visible questions: WAEC/NECO acceptance, IELTS, NMC registration after a UK degree, top-up vs BSc, cost in naira, work after study §E: Nigerian news and blogs (nairametrics, studentship, allschool, o3schools) hold the Nigeria-specific slots with migration or listicle content; a Hertfordshire nursing cohort reported as predominantly Nigerian (thecable).",
+      "long_tail_demand": "Research 12 §E (18 SERPs): eleven families; the route and forum families are read by the SERP as qualified-nurse migration (NMC, CBT/OSCE, IELTS 7); the WAEC/NECO → BSc Adult Nursing question has one official country page (Bucks) and is otherwise captured by North Cyprus and India-targeted agents; application mechanics, foundation and visa families are answered by official pages.",
       "commercial_intent": "High (large agency market)",
       "competition": "gostudyin.com/nigeria (template page), studentship.com.ng, nairametrics, gabble.ai, fateheducation; migration content (NMC/ONP) competes",
       "sources": [
@@ -227,11 +235,21 @@
         "docs/research/12 §A",
         "https://www.mmu.ac.uk/study/undergraduate/course/bsc-adult-nursing/september-2026/",
         "https://www.coventry.ac.uk/course-structure/ug/hls-nhs/adult-nursing-bsc-hons/",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §E"
       ],
       "decision_register_ids": [
         "B05",
-        "V04"
+        "V04",
+        "V31",
+        "V32",
+        "V33",
+        "V34",
+        "V35",
+        "V36",
+        "V37",
+        "V38",
+        "V39"
       ],
       "status": "VALIDATED",
       "status_reason": "Evident Nigerian study demand on observed SERPs and forums (research 12 §C), and the owner's 2026-10-03 directive brings nursing into scope. Not yet BUILD: regulator, international-availability and WAEC/NECO statements must be recorded as facts first; migration (NMC/ONP) intent must be kept out of scope on the page. §B: MMU, Coventry and Hertfordshire publish international fees; no explicit eligibility statement found yet, so the page cannot yet say which universities admit international applicants.",

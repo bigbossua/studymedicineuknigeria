@@ -27,7 +27,6 @@
                     <td data-label="Clinical years">{{ $cl ? ($cl->value_bool ? 'Yes' : 'No') : '—' }}</td>
                     <td data-label="Status"><x-verified-badge :status="$f->verification_status" :date="$f->verified_at?->format('j M Y')" /> @if($f->source_url)<a href="{{ $f->source_url }}" rel="noopener nofollow" target="_blank" class="text-[0.8125rem]">source ↗</a>@endif</td>
                 </tr>
-                @if($f->notes && $f->isPublishable())<tr class="text-[0.8125rem] text-ink-500"><td colspan="6" data-label="Note" class="pt-0">{{ Str::limit(trim(preg_replace('/\s*\[(OFFICIAL|LEAD[^\]]*|CONFLICTING[^\]]*|OFFICIAL[^\]]*)\]|VERIFY-ON-PAGE\.?|From schools dataset;[^.]*\./', '', $f->notes)), 220) }}</td></tr>@endif
             @endforeach
             </tbody>
         </table>

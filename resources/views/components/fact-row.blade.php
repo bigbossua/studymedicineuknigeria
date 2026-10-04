@@ -4,10 +4,8 @@
     <dd class="sm:col-span-8">
         @if($fact && $fact->isPublishable() && $fact->displayValue() !== null)
             <p class="font-medium">{{ $fact->displayValue() }}{{ $suffix }}</p>
-            @if($fact->notes)<p class="mt-0.5 text-[0.8125rem] text-ink-500">{{ $fact->notes }}</p>@endif
         @elseif($fact && in_array($fact->verification_status, ['NOT_FOUND','NOT_PUBLISHED']))
             <p class="text-ink-500">Not yet confirmed from the official source.</p>
-            @if($fact->notes)<p class="mt-0.5 text-[0.8125rem] text-ink-500">{{ $fact->notes }}</p>@endif
         @else
             <p class="text-ink-500">Being verified against the official source.</p>
         @endif

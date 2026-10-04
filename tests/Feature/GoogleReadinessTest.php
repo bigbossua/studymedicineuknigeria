@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\ReferenceFact;
+use App\Models\University;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /** The rules behind docs/seo/GOOGLE-READINESS.md, kept true on every push. */
@@ -89,5 +92,23 @@ class GoogleReadinessTest extends TestCase
         config(['site.google_site_verification' => 'abc123-XYZ_token']);
         $this->get('/')->assertSee('<meta name="google-site-verification" content="abc123-XYZ_token">', false);
         $this->get('/fees')->assertDontSee('google-site-verification', false);
+    }
+
+    public function test_research_notes_never_reach_a_public_page(): void
+    {
+        Artisan::call('smukn:reference-sync');
+        config(['site.publish_unverified' => true]); // the widest public view: unverified records shown too
+        $notes = ReferenceFact::whereNotNull('notes')->where('notes', '!=', '')->pluck('notes')
+            ->map(fn ($n) => e(mb_substr(trim($n), 0, 40)))->filter(fn ($n) => mb_strlen($n) >= 20)->unique();
+        $this->assertNotEmpty($notes, 'the reference data carries reviewer notes to check against');
+        preg_match_all('#<loc>([^<]+)</loc>#', $this->get('/sitemap.xml')->getContent(), $m);
+        $paths = collect($m[1])->map(fn ($u) => parse_url($u, PHP_URL_PATH) ?: '/')
+            ->merge(University::pluck('slug')->map(fn ($s) => '/medical-schools/'.$s));
+        foreach ($paths as $path) {
+            $html = $this->get($path)->getContent();
+            foreach ($notes as $note) {
+                $this->assertStringNotContainsString($note, $html, "$path shows a reviewer note");
+            }
+        }
     }
 }

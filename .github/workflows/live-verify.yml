@@ -82,16 +82,40 @@ jobs:
               "tier_prices" => App\Models\TierPrice::count(),
               "stripe_live_key" => str_starts_with((string) config("services.stripe.secret"), "sk_live_") || str_starts_with((string) config("services.stripe.secret"), "rk_live_"),
               "webhook_secret_set" => filled(config("services.stripe.webhook_secret")),
+              "ga4_id_set" => filled(config("site.ga4_id")), "ga4_api_secret_set" => filled(config("site.ga4_api_secret")),
+              "session_secure_cookie" => (bool) config("session.secure"), "session_http_only" => (bool) config("session.http_only"),
+              "session_same_site" => config("session.same_site"), "app_key_set" => filled(config("app.key")),
+              "public_storage_link" => file_exists(public_path("storage")),
             ], JSON_PRETTY_PRINT), PHP_EOL;'
+          # what Stripe shows customers (Checkout, receipts, card statements): yes/no only, never the values (public logs)
+          $PHP artisan tinker --execute '
+            $s = app(App\Services\Payments\StripeService::class);
+            if (! $s->enabled()) { echo "stripe account: no key installed", PHP_EOL; return; }
+            $a = $s->client()->accounts->retrieve();
+            $has = fn ($v) => $v !== null && $v !== "";
+            $brand = fn ($v) => (bool) preg_match("/study\s*med/i", (string) $v);
+            echo json_encode([
+              "stripe_charges_enabled" => (bool) $a->charges_enabled,
+              "customer_facing_name_is_brand" => $brand($a->business_profile->name ?? null) || $brand($a->settings->dashboard->display_name ?? null),
+              "statement_descriptor_is_brand" => $brand($a->settings->payments->statement_descriptor ?? null),
+              "support_address_published" => $has($a->business_profile->support_address->line1 ?? null),
+              "support_phone_published" => $has($a->business_profile->support_phone ?? null),
+              "support_email_set" => $has($a->business_profile->support_email ?? null),
+            ], JSON_PRETTY_PRINT), PHP_EOL;'
+          # a signed event through the public URL must be accepted (200) and a forged one refused (400)
+          if $PHP artisan tinker --execute 'echo filled(config("services.stripe.webhook_secret")) ? "yes" : "no";' | grep -q yes; then $PHP artisan smukn:stripe-webhook --self-test; fi
           # the live catalogue (ids and amounts only) must match the approved fees whenever a key is installed
           if $PHP artisan tinker --execute 'echo app(App\Services\Payments\StripeService::class)->enabled() ? "yes" : "no";' | grep -q yes; then $PHP artisan smukn:stripe-sync --check; fi
           REMOTE
           # unsigned webhook: 400 = signature checked (secret installed), 503 = no secret installed
           echo "webhook endpoint, unsigned POST: $(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' https://studymedicineuknigeria.com/webhooks/stripe)" | tee -a server.txt
           if [ "${{ github.event.inputs.payments || 'closed' }}" = open ]; then
-            for k in '"payments_open": true' '"stripe_enabled": true' '"stripe_live_key": true' '"webhook_secret_set": true' 'unsigned POST: 400'; do grep -q "$k" server.txt || { echo "::error::live payments not fully wired: missing $k"; exit 1; }; done
+            for k in '"payments_open": true' '"stripe_enabled": true' '"stripe_live_key": true' '"webhook_secret_set": true' 'unsigned POST: 400' 'Webhook self-test passed' '"stripe_charges_enabled": true'; do grep -q "$k" server.txt || { echo "::error::live payments not fully wired: missing $k"; exit 1; }; done
           else
             grep -q '"payments_open": false' server.txt || { echo "::error::payment is not closed"; exit 1; }
           fi
           grep -q '"debug": false' server.txt || { echo "::error::debug is not off"; exit 1; }
+          grep -q '"public_storage_link": false' server.txt || { echo "::error::a public storage link exists"; exit 1; }
+          grep -q '"session_http_only": true' server.txt || { echo "::error::session cookie is readable by scripts"; exit 1; }
+          grep -q '"session_secure_cookie": true' server.txt || { echo "::error::session cookie is not marked Secure"; exit 1; }
           { echo '### Server state'; echo '```'; cat server.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

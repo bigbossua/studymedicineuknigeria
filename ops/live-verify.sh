@@ -24,6 +24,9 @@ for u in $pages "$B/apply-online" "$B/apply-online/services" "$B/register" "$B/l
   body=$(curl -s "$u")
   grep -qE '£125|£695|£1,295|12500|69500|129500|priceCurrency' <<<"$body" && { bad "service fee visible on $u"; leaks=1; }
   grep -qiE 'Whoops|Stack trace|SQLSTATE|vendor/laravel' <<<"$body" && bad "debug text on $u"
+  # nothing unfinished, internal or personal: placeholder text, test or development addresses, keys, personal mailboxes
+  hit=$(grep -oiE 'lorem ipsum|\bTODO\b|FIXME|example\.test|localhost|127\.0\.0\.1|staging\.studymedicine|(sk|rk)_(live|test)_|pk_test_|whsec_|@(gmail|yahoo|hotmail|outlook)\.com|test mode' <<<"$body" | sort -u | tr '\n' ' ')
+  [ -n "$hit" ] && bad "unfinished, internal or personal text on $u: $hit"
   case "$u" in "$B/register"|"$B/login"|"$B/apply-online"|"$B/apply-online/services") continue;; esac
   grep -qF "<link rel=\"canonical\" href=\"$u\"" <<<"$body" || { nocanon=$((nocanon+1)); echo "     no self-canonical: $u"; }
   grep -q 'application/ld+json' <<<"$body" || nold=$((nold+1))
@@ -31,6 +34,11 @@ done
 [ "$leaks" = 0 ] && ok "no service fee on $total sitemap pages + apply, services, register, login"
 [ "$nocanon" = 0 ] && ok "every sitemap page carries its own canonical" || bad "$nocanon sitemap pages without their own canonical"
 [ "$nold" = 0 ] && ok "every sitemap page carries JSON-LD" || echo "info $nold sitemap pages without JSON-LD"
+
+home=$(curl -s "$B/")
+grep -q 'name="ga4-id"' <<<"$home" && echo "info GA4 is configured (consent banner first; nothing loads before consent)" || echo "info GA4 is not configured yet (no Measurement ID on the server)"
+grep -q 'name="google-site-verification"' <<<"$home" && echo "info Search Console HTML tag present" || true
+grep -q 'wa.me/447842292527' <<<"$home" && ok "WhatsApp contact (+44 7842 292527) on the home page" || bad "WhatsApp contact missing from the home page"
 
 reg=$(curl -s "$B/register")
 if printf '%s' "$reg" | grep -q 'Registration opens shortly'; then echo "info registration is closed"; else

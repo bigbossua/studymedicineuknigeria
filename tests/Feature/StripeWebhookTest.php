@@ -10,7 +10,9 @@ use App\Models\User;
 use App\Notifications\ApplicationNotification;
 use Database\Seeders\PlatformSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
+use Stripe\Webhook;
 use Tests\TestCase;
 
 class StripeWebhookTest extends TestCase
@@ -146,5 +148,31 @@ class StripeWebhookTest extends TestCase
         $this->assertStringContainsString('Duplicate payment', $second->fresh()->note);
         $this->assertSame(1, $this->application->payments()->where('status', 'SUCCEEDED')->count());
         $this->assertDatabaseHas('application_events', ['application_id' => $this->application->id, 'type' => 'payment.duplicate']);
+    }
+
+    public function test_the_webhook_self_test_signs_exactly_as_stripe_and_needs_a_200_and_a_400(): void
+    {
+        config(['services.stripe.secret' => 'sk_test_x']);
+        $sent = [];
+        Http::fake(function ($request) use (&$sent) {
+            try {
+                Webhook::constructEvent($request->body(), $request->header('Stripe-Signature')[0], self::SECRET);
+                $sent[] = 'valid';
+
+                return Http::response('OK', 200);
+            } catch (\Throwable) {
+                $sent[] = 'invalid';
+
+                return Http::response('Invalid signature', 400);
+            }
+        });
+        $this->artisan('smukn:stripe-webhook', ['--url' => 'https://studymedicineuknigeria.com/webhooks/stripe', '--self-test' => true])->assertSuccessful();
+        $this->assertSame(['valid', 'invalid'], $sent);
+
+        // the signed self-test event is accepted by the real endpoint and changes no payment
+        $payload = json_encode($this->event('evt_smukn_selftest_1', 'smukn.self_test', ['object' => 'self_test', 'id' => 'selftest']));
+        $t = time();
+        $this->webhook($payload, ['Stripe-Signature' => "t={$t},v1=".hash_hmac('sha256', "{$t}.{$payload}", self::SECRET), 'Content-Type' => 'application/json'])->assertOk();
+        $this->assertSame('INITIATED', $this->payment->fresh()->status);
     }
 }

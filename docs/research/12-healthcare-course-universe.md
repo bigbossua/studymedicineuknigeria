@@ -173,6 +173,49 @@ Method: WebSearch result composition for 18 query shapes per subject (COURSE + N
 - **Upgrade before multiplying.** The dental UCAT family is a section on the live UCAT page (after the dental schools' UCAT pages are read), not a new URL.
 - **Statuses unchanged** for the subjects; eleven new VALIDATED/RESEARCH/REJECTED family rows in cluster V, none with a URL.
 
+## F. Allied-health long-tail SERP observation: Pharmacy, Midwifery, Physiotherapy, Radiography, Biomedical Science / MLS (49 searches, 2026-10-04)
+
+Method as §E (WebSearch result composition; US-geolocated; no ranks, no People-Also-Ask boxes; no volumes). Register rows V53–V68.
+
+**Cross-subject finding: wording decides intent.** Professional-title wording ("Nigerian pharmacist", "B.Pharm", "radiographer", "medical laboratory scientist", "midwife NMC") returns migration of qualified professionals; degree wording ("MPharm", "BSc", "with foundation year", "fees international") returns official UK university pages. "WAEC/NECO" alone returns Nigerian domestic admissions; paired with "UK university entry requirements" it returns UK university Nigeria country pages with generic WAEC rules, never subject-specific ones.
+
+| Subject | Study intent from Nigeria | International availability (official snippets, VERIFY-ON-PAGE) | Decision |
+|---|---|---|---|
+| Pharmacy | gostudyin Nigeria pages, one Nairaland post, parent questions answered by agents; no official WAEC → MPharm answer | no NHS-placement restriction seen; UCL integrated foundation route "aimed primarily at international students"; Manchester: international graduates need a visa for the training year | Pharmacy → **VALIDATED** (V03); WAEC/entry family V53 VALIDATED; OSPAP migration V56 REJECTED |
+| Midwifery | none found; WAEC/NECO wording returns Nigerian basic-midwifery schools | Cardiff, Cumbria, Manchester (and Birmingham, §B) closed to international fee status; LJMU, York publish international fees | stays RESEARCH; eligibility answered in the overview hub's availability table (V57) |
+| Physiotherapy | Nigeria-targeted agent plus Nigerian domestic admissions noise | Brunel places international students with private providers; one UCAS listing UK-fee only | stays RESEARCH (V60–V62) |
+| Radiography | migration and Nigerian domestic blogs | diagnostic often closed to international fee status (UCAS, Cardiff); Liverpool therapeutic takes international applicants (30 June 2027 international deadline) | both stay RESEARCH (V63–V65) |
+| Biomedical science / MLS | the MLS term returns only CVs and migration; "biomedical science" returns study content | no restriction seen; IBMS portfolio placement open to international students with IELTS 7.0 (UCAS listing, provider not named) | stays VALIDATED; MLS terminology family V66 VALIDATED |
+
+Official statements seen (search snippets; each needs its page read before it becomes a reference_fact):
+- Cardiff BMid: "unable to accept applications from international fee-status applicants because of its association with the NHS and the restrictions on funding and clinical placements." https://www.cardiff.ac.uk/study/undergraduate/courses/2026/midwifery-bmid
+- Cumbria Midwifery: unable to accept international applications. https://www.cumbria.ac.uk/study/courses/undergraduate/midwifery/
+- UCAS listings (several providers): "an NHS placement is a required part of the course and the NHS only makes placements available to students who are eligible to pay UK fees."
+- Manchester MPharm: international graduates must apply for a visa to do the foundation training year; a training place is competitive and not guaranteed; GPhC registration follows 52 weeks of training and the registration assessment.
+- UCL Pharmacy with Integrated Foundation Training: "aimed primarily at international students", overseas fee £35,400 (2026/27).
+- Brunel Physiotherapy: international students complete 1,000+ placement hours across private healthcare providers and other settings; fee £21,795 (2026/27).
+- Liverpool Therapeutic Radiography and Oncology (2027): vacancies for international applicants; international deadline 30 June 2027; IELTS 7.0 with 7.0 in each skill.
+- IBMS: the Certificate of Competence makes the holder eligible for HCPC registration as a biomedical scientist; non-accredited and overseas degrees go through IBMS degree assessment (last ten years only); certificate by equivalence needs UK experience.
+- Fees seen (per year, VERIFY-ON-PAGE): Sunderland MPharm £20,000 (2026/27); Kent Pharmacy £23,500; LJMU Midwifery £18,250 (2025/26); York BMid £32,350; Sheffield Hallam Physiotherapy £19,500; Keele Radiography £24,900 (2025-26); LSBU Biomedical Sciences £15,900; Westminster Biomedical Science with Foundation £17,600 (2026-27).
+
+## G. Taxonomy gaps (45 searches, 2026-10-04)
+
+| Subject | Finding | Decision |
+|---|---|---|
+| Cardiac, respiratory, sleep and neurophysiology | pathways of the NHS Practitioner Training Programme BSc Healthcare Science (NSHCS-accredited, ~50 weeks of placement); registration voluntary on the AHCS register (PSA-accredited); RCCP merged into AHCS; one HEIW snippet mentions HCPC (conflicting) | folded into **Healthcare Science** (one subject, one intent); stays RESEARCH |
+| Life-sciences healthcare science | NSHCS + IBMS-accredited degrees lead to HCPC biomedical scientist | belongs with Biomedical Science |
+| Radiotherapy and Oncology | HCPC approves programmes under that name; graduates register as therapeutic radiographers | alias of **Therapeutic Radiography**, not a new subject |
+| Dental hygiene vs dental therapy | two GDC titles; one combined three-year BSc is the norm | one subject, records both titles |
+| Osteopathy (GOsC), Chiropractic (GCC) | statutory; four-year degrees; Nescot, ESO and BCOM state they sponsor or welcome international students; six GCC providers, HSU publishes an international fee | stay RESEARCH (no Nigerian demand observed) with availability recorded |
+| Ophthalmic dispensing (GOC) | three-year BSc at Glasgow Caledonian; ARU accelerated route appears UK-only | **new subject**, RESEARCH (V47) |
+| Hearing aid dispenser (HCPC) | two-year FdSc, mostly apprenticeship | **new subject**, RESEARCH (V48) |
+| Nursing associate (NMC, England only) | foundation degree, mostly apprenticeship; BCU excludes international students | **new subject**, REJECTED (V49) |
+| Physician associate (GMC since December 2024) | mainly postgraduate; title and scope changing after the 2025 review | **new subject**, REJECTED (V50) |
+| Clinical scientist (HCPC) | postgraduate STP only | **new subject**, REJECTED (V51) |
+| Sonography | not a protected title; mostly postgraduate | **new subject**, REJECTED (V52) |
+
+The legacy bundled rows B04–B06 contradicted these per-subject decisions (B06 rejected physiotherapy and radiography while V06/V08/V09 held them at RESEARCH); they are now marked superseded and point to cluster V.
+
 ## D. Open items
 1. ~~Regulator and availability research (§A, §B)~~ done 2026-10-03 at snippet level; each FACT still needs the official page read before it becomes a `reference_fact` (owner network allow-list or worksheet round trip).
 2. Owner Semrush lookups (database `ng`, then `uk`) for every subject's query family (nursing and dentistry families now in `data/semrush/lookup-sheet.csv`); the SERP labels above are observation, volumes unknown until then.

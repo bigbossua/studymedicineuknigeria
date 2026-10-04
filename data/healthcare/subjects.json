@@ -1,7 +1,7 @@
 {
   "_meta": {
     "dataset": "UK healthcare and allied-health course universe for Nigerian applicants (master taxonomy)",
-    "version": "2026-10-03e",
+    "version": "2026-10-04a",
     "method": "Seeded from research 02, 03 and 05 (SERP observation, WebSearch snippets) and regulator names from general professional knowledge marked 'confirm'. Every value is unverified until read on the official page. Statuses use the SEO decision-engine vocabulary (docs/seo/DECISION-ENGINE.md §3) and decide whether a public page may exist; RESEARCH and REJECTED subjects never get an indexable page. §B (availability, A-levels, fees, English) comes from a 60-search snippet sweep labelled FACT (official page snippet) / LEAD (aggregator) / NOT FOUND; nothing is inferred across universities or professions; every value is VERIFY-ON-PAGE until read on the official page and recorded as a reference_fact.",
     "status_values": [
       "RESEARCH",
@@ -129,7 +129,6 @@
         "docs/research/12 §E"
       ],
       "decision_register_ids": [
-        "B04",
         "V02",
         "V40",
         "V41",
@@ -160,19 +159,19 @@
       "professional_body": "Royal Pharmaceutical Society (RPS) (named in results; not confirmed from rpharms.org)",
       "undergraduate_entry": "yes",
       "typical_length_years": "4 (+1 foundation training)",
-      "international_availability": "Fee published for international students at Nottingham and Cardiff; explicit eligibility or quota statement NOT FOUND (VERIFY-ON-PAGE)",
+      "international_availability": "Fee published for international students at Nottingham and Cardiff; explicit eligibility or quota statement NOT FOUND (VERIFY-ON-PAGE). §F 2026-10-04: no NHS-placement restriction seen for MPharm (unlike midwifery and radiography); FACT UCL Pharmacy with Integrated Foundation Training 'aimed primarily at international students'; FACT Manchester: international MPharm graduates need a visa for the foundation training year, which is competitive and not guaranteed (VERIFY-ON-PAGE)",
       "nigerian_relevance": "MEDIUM: partial Nigerian SERP (OSPAP for qualified pharmacists dominates)",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "FACT Nottingham MPharm AAA incl Chemistry plus one of Biology/Maths/Further Maths/Physics (page states 2027 entry); Cardiff NOT FOUND (VERIFY-ON-PAGE)",
-      "foundation_routes": "NOT RESEARCHED",
+      "foundation_routes": "FACT Manchester MPharm with a foundation year (5 years, for students without the right entry qualifications); FACT Brighton MPharm with preparatory year (VERIFY-ON-PAGE)",
       "graduate_routes": "NOT RESEARCHED",
       "admissions_test": "No admissions test seen; FACT Cardiff online interview ('we don't make offers without an interview'); Nottingham interview NOT FOUND",
       "application_route": "UCAS (undergraduate)",
-      "fees": "FACT Nottingham MPharm £33,000 provisional (2026 entry); FACT Cardiff MPharm £30,700 (2026 entry) (VERIFY-ON-PAGE)",
+      "fees": "FACT Nottingham MPharm £33,000 provisional (2026 entry); FACT Cardiff MPharm £30,700 (2026 entry) (VERIFY-ON-PAGE). §F: FACT Sunderland MPharm £20,000 (2026/27); FACT Kent £23,500 (year not confirmed); FACT Manchester MPharm with foundation year £31,500 (2025 page); FACT UCL integrated foundation training £35,400 (2026/27) (VERIFY-ON-PAGE)",
       "deadlines": "NOT RESEARCHED",
-      "career_pathway": "NOT RESEARCHED",
-      "nigerian_search_demand": "Some signals, mostly overseas-pharmacist (OSPAP) intent; undergraduate-from-Nigeria intent thin; Nigerian university pharmacy pages outrank UK content",
-      "long_tail_demand": "NOT RESEARCHED",
+      "career_pathway": "MPharm → 52-week foundation training year → GPhC registration assessment → registration (FACT Manchester MPharm selection pages; VERIFY-ON-PAGE); international graduates need a work visa for the training year",
+      "nigerian_search_demand": "Some signals, mostly overseas-pharmacist (OSPAP) intent; undergraduate-from-Nigeria intent thin; Nigerian university pharmacy pages outrank UK content. §F: gostudyin Nigeria pharmacy pages, one Nairaland post, a parent query answered by agents; NEWS: Nigeria among the top OSPAP source countries (pharmaceutical-journal, not FACT)",
+      "long_tail_demand": "Research 12 §F (12 SERPs): professional-title wording (\"Nigerian pharmacist\", \"B.Pharm\") returns OSPAP migration of qualified pharmacists; degree wording (\"MPharm\", \"fees\", \"foundation year\") returns official university pages; no official page answers WAEC/NECO → MPharm; parent questions are answered only by agents (gostudyin /nigeria/)",
       "commercial_intent": "Medium",
       "competition": "gostudyin.com, medicmind, iatrox, immigrationstartguide, myeduvantage",
       "sources": [
@@ -184,14 +183,19 @@
         "docs/research/12 §A",
         "https://www.nottingham.ac.uk/ugstudy/course/pharmacy-mpharm",
         "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/pharmacy-mpharm",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §F",
+        "https://www.manchester.ac.uk/study/undergraduate/courses/2025/07958/mpharm-pharmacy-with-a-foundation-year"
       ],
       "decision_register_ids": [
-        "B05",
-        "V03"
+        "V03",
+        "V53",
+        "V54",
+        "V55",
+        "V56"
       ],
-      "status": "RESEARCH",
-      "status_reason": "Research 03 BUILD LATER; research 12 §C shows OSPAP/registration intent dominating. Needs demand evidence for the undergraduate route before VALIDATED.",
+      "status": "VALIDATED",
+      "status_reason": "Research 12 §F: MPharm is open to international students at the universities sampled (no NHS-placement restriction seen), fees are published, Nigeria-specific agent pages and parent questions show study demand, and no official page answers the WAEC/NECO → MPharm question. BUILD waits for per-university entry and fee facts recorded in reference_facts; the page must separate school-leaver MPharm study from the OSPAP route for qualified pharmacists.",
       "last_researched": "2026-10-03",
       "english_language": "FACT Nottingham IELTS 7.0, no element below 6.0; Cardiff NOT FOUND",
       "nigeria_statement": "NOT FOUND at course level; university-level pages only (Manchester, Cardiff: WASSCE holders need a recognised foundation programme or A-levels/IB for direct entry) — see docs/research/12 §B"
@@ -239,7 +243,6 @@
         "docs/research/12 §E"
       ],
       "decision_register_ids": [
-        "B05",
         "V04",
         "V31",
         "V32",
@@ -271,7 +274,7 @@
       "professional_body": "Royal College of Midwives (RCM)",
       "undergraduate_entry": "yes",
       "typical_length_years": "3",
-      "international_availability": "FACT Birmingham BSc Midwifery 'does not currently consider applicants who would be considered as overseas for fee purposes'; FACT Northumbria 'welcomes applicants with a range of qualifications from outside the UK', no quota stated; BCU/Hertfordshire NOT FOUND (VERIFY-ON-PAGE)",
+      "international_availability": "FACT Birmingham BSc Midwifery 'does not currently consider applicants who would be considered as overseas for fee purposes'; FACT Northumbria 'welcomes applicants with a range of qualifications from outside the UK', no quota stated; BCU/Hertfordshire NOT FOUND (VERIFY-ON-PAGE). §F 2026-10-04: FACT Cardiff BMid 'unable to accept applications from international fee-status applicants' (NHS placements and funding); FACT Cumbria unable to accept international applications; FACT Manchester BMid 'only available to students who qualify for home student status' (page title conflicts, VERIFY-ON-PAGE); FACT LJMU and York publish international fees, so availability differs by university",
       "nigerian_relevance": "UNKNOWN",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "FACT Birmingham ABB with B in a science/health/social-science subject, five GCSEs incl English, Maths, science; Northumbria grade NOT FOUND (science/health subject required) (VERIFY-ON-PAGE)",
@@ -279,11 +282,11 @@
       "graduate_routes": "NOT RESEARCHED",
       "admissions_test": "No admissions test; FACT Northumbria interview, DBS, occupational health, NMC suitability; Birmingham NOT FOUND",
       "application_route": "UCAS (undergraduate)",
-      "fees": "Birmingham n/a (home-only); Northumbria international fee NOT FOUND; LEAD BCU £21,690; LEAD Hertfordshire £19,450 (VERIFY-ON-PAGE)",
+      "fees": "Birmingham n/a (home-only); Northumbria international fee NOT FOUND; LEAD BCU £21,690; LEAD Hertfordshire £19,450 (VERIFY-ON-PAGE). §F: FACT LJMU £18,250 (2025/26); FACT York £32,350 (2026); Keele unresolved (conflicting figures)",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
       "nigerian_search_demand": "Some signals: Nigerian news on midwife migration; zero study-shaped Nigerian content observed",
-      "long_tail_demand": "NOT RESEARCHED",
+      "long_tail_demand": "Research 12 §F (10 SERPs): no Nigeria-specific UK page; WAEC/NECO wording returns Nigerian basic-midwifery schools; parent fee queries return fee lists with no warning that several universities are home-only; qualified-midwife migration (NMC CBT/OSCE, CBT-centre investigation news) dominates the professional wording; no Nairaland thread",
       "commercial_intent": "NOT RESEARCHED",
       "competition": "hotcoursesabroad, studee (aggregators)",
       "sources": [
@@ -293,13 +296,18 @@
         "docs/research/12 §A",
         "https://www.birmingham.ac.uk/undergraduate/courses/med/bsc-midwifery",
         "https://northumbria.ac.uk/course/uufmwy1",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §F",
+        "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/midwifery-bmid"
       ],
       "decision_register_ids": [
-        "V05"
+        "V05",
+        "V57",
+        "V58",
+        "V59"
       ],
       "status": "RESEARCH",
-      "status_reason": "Follows the nursing decision; no study-intent Nigerian content observed yet (research 12 §C). §B: Birmingham is home-only; Northumbria welcomes international applicants. Availability differs by university, so any page must list it per university.",
+      "status_reason": "Follows the nursing decision; no study-intent Nigerian content observed yet (research 12 §C). §B: Birmingham is home-only; Northumbria welcomes international applicants. Availability differs by university, so any page must list it per university. §F: Cardiff, Cumbria and Manchester (plus Birmingham, §B) are closed to international fee status; the honest answer is a per-university availability list, which needs each provider's page read first.",
       "last_researched": "2026-10-03",
       "english_language": "FACT Birmingham IELTS 7.0 (6.5 writing, 7.0 others); FACT Northumbria IELTS 7.0 (6.5 each) or OET",
       "nigeria_statement": "NOT FOUND at course level; university-level pages only (Manchester, Cardiff: WASSCE holders need a recognised foundation programme or A-levels/IB for direct entry) — see docs/research/12 §B"
@@ -318,7 +326,7 @@
       "professional_body": "Chartered Society of Physiotherapy (CSP)",
       "undergraduate_entry": "yes",
       "typical_length_years": "3",
-      "international_availability": "FACT Brunel publishes a 2026/27 international fee; explicit eligibility statement NOT FOUND (VERIFY-ON-PAGE)",
+      "international_availability": "FACT Brunel publishes a 2026/27 international fee; explicit eligibility statement NOT FOUND (VERIFY-ON-PAGE). §F 2026-10-04: FACT Brunel runs international students' 1,000+ placement hours across private healthcare providers and other settings; one UCAS physiotherapy listing states the NHS-placement restriction to UK-fee students (provider not named); availability differs by university",
       "nigerian_relevance": "LOW–MEDIUM: empty Nigerian SERP (research 02 §A q15)",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "FACT Brunel ABB–BBB (2026/27); BTEC DDD–DDM; IB 31–30 (VERIFY-ON-PAGE)",
@@ -326,11 +334,11 @@
       "graduate_routes": "NOT RESEARCHED",
       "admissions_test": "No admissions test; FACT (UCAS) interview and criminal-records declaration",
       "application_route": "UCAS (undergraduate)",
-      "fees": "FACT Brunel £21,795 (2026/27) (VERIFY-ON-PAGE)",
+      "fees": "FACT Brunel £21,795 (2026/27) (VERIFY-ON-PAGE). §F: FACT Sheffield Hallam BSc Physiotherapy £19,500; with foundation year £18,155 (VERIFY-ON-PAGE)",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
       "nigerian_search_demand": "Some signals: strong Nairaland 'physio vs pharmacy/dentistry' comparison interest, a TSR Nigerian student's thread, one Nigeria-specific agent page; otherwise aggregators",
-      "long_tail_demand": "NOT RESEARCHED",
+      "long_tail_demand": "Research 12 §F (9 SERPs): 'from Nigeria' and 'universities that accept Nigerian students' return a Nigeria-targeted agent and Nigerian domestic admissions content (JAMB, BUK); qualified-physiotherapist migration (CVs, HCPC guides, a migration podcast) dominates professional wording; fee, entry and foundation queries return official pages; no Nairaland thread",
       "commercial_intent": "NOT RESEARCHED",
       "competition": "gostudyin.com, idp, immigrationstartguide",
       "sources": [
@@ -341,11 +349,15 @@
         "docs/research/12 §A",
         "https://www.brunel.ac.uk/study/undergraduate/physiotherapy-bsc",
         "https://www.ucas.com/explore/courses/ea0a8cc5-ec67-bf9d-52cf-75218dfe8019/physiotherapy",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §F",
+        "https://www.brunel.ac.uk/physiotherapy/why-study-physiotherapy-at-brunel/information-for-international-students"
       ],
       "decision_register_ids": [
-        "B06",
-        "V06"
+        "V06",
+        "V60",
+        "V61",
+        "V62"
       ],
       "status": "RESEARCH",
       "status_reason": "Research 03 DO NOT BUILD as a page; research 12 §C finds comparison interest but no study-from-WAEC content. Candidate for the allied-health overview, not a standalone page yet.",
@@ -413,7 +425,7 @@
       "professional_body": "Society of Radiographers / College of Radiographers",
       "undergraduate_entry": "yes",
       "typical_length_years": "3",
-      "international_availability": "International eligibility statements NOT FOUND (Bradford, Liverpool, Cardiff); FACT Bradford page states the course is 'no longer accepting applications for September 2026 entry' (VERIFY-ON-PAGE)",
+      "international_availability": "International eligibility statements NOT FOUND (Bradford, Liverpool, Cardiff); FACT Bradford page states the course is 'no longer accepting applications for September 2026 entry' (VERIFY-ON-PAGE). §F 2026-10-04: UCAS listings and Cardiff pages show diagnostic radiography often closed to international fee status because NHS placements go to UK-fee students (provider-specific); FACT Health Sciences University considers international applicants against standard requirements; agents state 'yes' without the caveat",
       "nigerian_relevance": "LOW: empty Nigerian SERP; diaspora professional content only",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "FACT Bradford 128 tariff / ABB incl a science, maths or technology subject; FACT Liverpool BBB incl a science; FACT Cardiff BBB–BCC incl B in Biology/Chemistry/Physics/Psychology (VERIFY-ON-PAGE)",
@@ -421,11 +433,11 @@
       "graduate_routes": "NOT RESEARCHED",
       "admissions_test": "No admissions test; FACT Bradford interviews short-listed candidates, occupational health and DBS",
       "application_route": "UCAS (undergraduate)",
-      "fees": "International fees NOT FOUND for all three sample universities",
+      "fees": "International fees NOT FOUND for all three sample universities. §F: FACT Keele Radiography (Diagnostic Imaging) £24,900 (2025-26); FACT Sheffield Hallam with foundation year £20,000 (VERIFY-ON-PAGE)",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
       "nigerian_search_demand": "Some signals: strong Nigerian practitioner presence (SoR NIRAD), Nairaland 'radiography vs MLS/pharmacy' threads; student-from-Nigeria study content absent",
-      "long_tail_demand": "NOT RESEARCHED",
+      "long_tail_demand": "Research 12 §F (8 SERPs): Nigeria-specific results are qualified-radiographer migration and Nigerian domestic blogs; 'WAEC + entry requirements' returns four UK university Nigeria country pages with generic WAEC rules; eligibility queries show agent 'yes' against UCAS/university 'not available'",
       "commercial_intent": "NOT RESEARCHED",
       "competition": "sor.org, medicalmirror.org, careerwidth, idp",
       "sources": [
@@ -437,11 +449,15 @@
         "https://www.bradford.ac.uk/courses/ug/diagnostic-radiography-bsc/",
         "https://www.liverpool.ac.uk/courses/diagnostic-radiography-bsc-hons",
         "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/diagnostic-radiography-and-imaging-bsc",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §F",
+        "https://www.hsu.ac.uk/"
       ],
       "decision_register_ids": [
-        "B06",
-        "V08"
+        "V08",
+        "V63",
+        "V64",
+        "V65"
       ],
       "status": "RESEARCH",
       "status_reason": "Practitioner-migration intent dominates; study intent unproven. Covered by the allied-health overview when built.",
@@ -453,17 +469,20 @@
       "slug": "therapeutic-radiography",
       "name": "Therapeutic Radiography (Radiotherapy)",
       "flagship": false,
-      "official_terminology": "BSc (Hons) Therapeutic Radiography / BSc (Hons) Radiotherapy and Oncology, 3 years; pre-registration MSc exists (VERIFY-ON-PAGE)",
+      "official_terminology": "BSc (Hons) Therapeutic Radiography / BSc (Hons) Radiotherapy and Oncology, 3 years; pre-registration MSc exists (VERIFY-ON-PAGE). Also titled \"Radiotherapy and Oncology\" (HCPC-approved under that name; graduates register as therapeutic radiographers; FACT HCPC approved-programmes page). \"Radiotherapy physics\" is a different, healthcare-science (medical physics) pathway.",
       "alternative_names": [
         "radiotherapy degree UK",
-        "therapeutic radiographer"
+        "therapeutic radiographer",
+        "radiotherapy and oncology",
+        "radiotherapy degree uk",
+        "therapeutic radiographer uk"
       ],
       "regulator": "Health and Care Professions Council (HCPC) – 'Therapeutic radiographer' protected title",
       "register_route": "HCPC-approved programme → HCPC register (VERIFY-ON-PAGE)",
       "professional_body": "Society of Radiographers / College of Radiographers",
       "undergraduate_entry": "yes",
       "typical_length_years": "3",
-      "international_availability": "FACT Cardiff Radiotherapy and Oncology: 'The NHS only makes placements available to students who are eligible to pay UK fees. Therefore, this course is not available for international students.' Liverpool/Sheffield Hallam NOT FOUND (VERIFY-ON-PAGE)",
+      "international_availability": "FACT Cardiff Radiotherapy and Oncology: 'The NHS only makes placements available to students who are eligible to pay UK fees. Therefore, this course is not available for international students.' Liverpool/Sheffield Hallam NOT FOUND (VERIFY-ON-PAGE). §F 2026-10-04: FACT Liverpool Therapeutic Radiography and Oncology lists vacancies for international applicants, deadline 30 June 2027 for international students, IELTS 7.0 with 7.0 in each skill; Cardiff closed (§B); so availability differs by university",
       "nigerian_relevance": "UNKNOWN",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "FACT Cardiff BBB–BCC incl B in one science; FACT Liverpool BBB (VERIFY-ON-PAGE)",
@@ -484,11 +503,17 @@
         "docs/research/12 §A",
         "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/radiotherapy-and-oncology-bsc",
         "https://www.liverpool.ac.uk/courses/pdf/therapeutic-radiography-and-oncology-bsc-hons/2026",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §F",
+        "docs/research/12 §G",
+        "https://www.liverpool.ac.uk/courses/therapeutic-radiography-and-oncology-bsc-hons/2027",
+        "https://mrs.hcpc-uk.org/education/approved-programmes/education-programmes/bsc-hons-radiotherapy-and-oncology"
       ],
       "decision_register_ids": [
-        "B06",
-        "V09"
+        "V09",
+        "V63",
+        "V64",
+        "V65"
       ],
       "status": "RESEARCH",
       "status_reason": "No separate signal; covered with radiography in the allied-health overview. §B: Cardiff states the course is not available to international students because NHS placements are limited to UK-fee students; check every other provider before any page claims availability.",
@@ -915,18 +940,23 @@
       "slug": "healthcare-science",
       "name": "Healthcare Science (incl. cardiac and clinical physiology)",
       "flagship": false,
-      "official_terminology": "BSc (Hons) Healthcare Science (specialism), e.g. Cardiac Physiology; NHS Practitioner Training Programme (PTP) with at least 50 weeks of placement, 3 years (VERIFY-ON-PAGE)",
+      "official_terminology": "BSc (Hons) Healthcare Science (NHS Practitioner Training Programme, NSHCS-accredited, 3 years, about 50 weeks of placement) with pathways: cardiac / respiratory and sleep physiology, neurophysiology, physical sciences (radiation physics, clinical engineering), life sciences (FACT nshcs.hee.nhs.uk, heiw.nhs.wales)",
       "alternative_names": [
         "clinical physiology degree UK",
         "cardiac physiology UK",
-        "healthcare science degree"
+        "healthcare science degree",
+        "cardiac physiology uk",
+        "clinical physiology uk",
+        "respiratory and sleep physiology",
+        "neurophysiology degree uk",
+        "healthcare science practitioner"
       ],
-      "regulator": "Not statutorily regulated at practitioner level; PSA-accredited AHCS register (Healthcare Science Practitioners since 2014, Clinical Physiologists since 2017). 'Clinical scientist' is HCPC-regulated via the postgraduate STP",
-      "register_route": "PTP degree → register with the AHCS as a Healthcare Science Practitioner (VERIFY-ON-PAGE)",
+      "regulator": "None statutory for practitioners: voluntary AHCS Healthcare Science Practitioner register (PSA-accredited); RCCP merged into AHCS (2021–2023). Life-sciences pathway with IBMS accreditation → HCPC biomedical scientist (statutory). An HEIW snippet mentions HCPC registration for the PTP: conflicting, unverified",
+      "register_route": "Voluntary AHCS registration after an accredited PTP BSc (FACT ahcs.ac.uk); life-sciences pathway → IBMS portfolio → HCPC",
       "professional_body": "Academy for Healthcare Science (AHCS)",
       "undergraduate_entry": "yes",
       "typical_length_years": "3",
-      "international_availability": "FACT Cardiff Met Healthcare Science (Life Sciences): 'not able to consider international applicants for entry due to the nature of the programme'; FACT Wolverhampton Cardiac Physiology 'unable to take applications for entry onto the Healthcare Science course at this time' (VERIFY-ON-PAGE)",
+      "international_availability": "FACT Cardiff Met Healthcare Science (Life Sciences): 'not able to consider international applicants for entry due to the nature of the programme'; FACT Wolverhampton Cardiac Physiology 'unable to take applications for entry onto the Healthcare Science course at this time' (VERIFY-ON-PAGE). §G 2026-10-04: no official statement barring or admitting international students on PTP courses found (NSHCS says admissions are set by each university); Swansea Neurophysiology 'only in Wales'; UWE Medical Physics Technology is apprenticeship-only",
       "nigerian_relevance": "UNKNOWN",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "LEAD Cardiff Met CCC; Wolverhampton NOT FOUND",
@@ -948,13 +978,16 @@
         "docs/research/12 §A",
         "https://www.ucas.com/explore/courses/af41e5e8-9bb9-105d-62aa-e414df6a89fd/healthcare-science-life-sciences",
         "https://wlv.ac.uk/courses/bsc-hons-healthcare-science-cardiac-physiology",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §G",
+        "https://nshcs.hee.nhs.uk/programmes/ptp/about-the-ptp-programme/",
+        "https://ahcs.ac.uk/registration/psa-accredited-register/healthcare-science-practitioner-register/about-the-register/"
       ],
       "decision_register_ids": [
         "V19"
       ],
       "status": "RESEARCH",
-      "status_reason": "Ambiguous term; NHS PTP pathways may be home-focused (confirm). Allied-health overview only. §B: both sampled providers (Cardiff Met, Wolverhampton) do not take international or any applicants; weakest availability evidence in the universe.",
+      "status_reason": "Ambiguous term; NHS PTP pathways may be home-focused (confirm). Allied-health overview only. §B: both sampled providers (Cardiff Met, Wolverhampton) do not take international or any applicants; weakest availability evidence in the universe. §G: the cardiac and clinical physiology routes owner-listed are pathways of this one subject (one page per intent); registration is voluntary, which a page must say plainly.",
       "last_researched": "2026-10-03",
       "english_language": "LEAD Cardiff Met IELTS 7.0 (6.5)",
       "nigeria_statement": "NOT FOUND at course level; university-level pages only (Manchester, Cardiff: WASSCE holders need a recognised foundation programme or A-levels/IB for direct entry) — see docs/research/12 §B"
@@ -967,14 +1000,17 @@
       "alternative_names": [
         "medical laboratory science UK",
         "MLS UK for Nigerians",
-        "biomedical scientist degree UK"
+        "biomedical scientist degree UK",
+        "medical laboratory science uk",
+        "MLS uk nigeria",
+        "medical laboratory scientist uk"
       ],
       "regulator": "Health and Care Professions Council (HCPC) – 'Biomedical scientist' protected title",
-      "register_route": "IBMS-accredited degree plus IBMS Registration Training Portfolio in an approved laboratory → IBMS Certificate of Competence → HCPC register (three HCPC-approved routes) (VERIFY-ON-PAGE)",
+      "register_route": "IBMS-accredited BSc + IBMS Registration Training Portfolio in an IBMS-approved laboratory → IBMS Certificate of Competence → HCPC 'biomedical scientist' (FACT ibms.org). Non-accredited or overseas degrees: IBMS degree assessment, possibly top-up modules, degrees within the last 10 years only (FACT ibms.org). A Nigerian MLS degree is assessed case by case: never state equivalence.",
       "professional_body": "Institute of Biomedical Science (IBMS)",
       "undergraduate_entry": "yes",
       "typical_length_years": "3",
-      "international_availability": "NOT FOUND (KCL, Birmingham, Sheffield publish international fees via aggregators only)",
+      "international_availability": "NOT FOUND (KCL, Birmingham, Sheffield publish international fees via aggregators only). §F 2026-10-04: no international restriction seen; a UCAS 'with placement' listing says the 52-week NHS laboratory placement is open to international students meeting requirements, with IELTS 7.0 for the IBMS portfolio (provider not named, VERIFY-ON-PAGE)",
       "nigerian_relevance": "MEDIUM: Nigerian MLS searches are mostly migration intent (research 02 §A q23); GEM feeder",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "FACT KCL AAA incl A in Biology and Chemistry; LEAD Birmingham AAB with two sciences; LEAD Sheffield AAB (VERIFY-ON-PAGE)",
@@ -982,11 +1018,11 @@
       "graduate_routes": "NOT RESEARCHED",
       "admissions_test": "No admissions test; interview NOT FOUND",
       "application_route": "UCAS (undergraduate)",
-      "fees": "LEAD KCL £33,450 (Sept 2026) or £35,800 (conflicting aggregators); LEAD Birmingham £31,050",
+      "fees": "LEAD KCL £33,450 (Sept 2026) or £35,800 (conflicting aggregators); LEAD Birmingham £31,050. §F: FACT LSBU £15,900; Westminster with foundation £17,600 (2026-27); Sheffield Hallam foundation route £17,155 plus £1,200 placement year; Keele £20,700 (2024/25) (VERIFY-ON-PAGE)",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
       "nigerian_search_demand": "Some signals: long-running Nairaland Medical Laboratory Scientists Forum with UK/HCPC discussion; no UK-study page targets Nigerian school-leavers or graduates",
-      "long_tail_demand": "NOT RESEARCHED",
+      "long_tail_demand": "Research 12 §F (10 SERPs): the Nigerian term 'medical laboratory science' returns only CVs and migration content; 'biomedical science' returns study content; the MLS → biomedical science mapping appears only on Wikipedia, an NHS NI careers PDF and the British Council subject page; parent questions answered by aggregators",
       "commercial_intent": "Low–medium",
       "competition": "None competitive; Nigerian university MLS pages fill the gap",
       "sources": [
@@ -997,11 +1033,17 @@
         "https://www.ibms.org/resources/news/hcpc-approval-of-ibms-routes-to-registration/",
         "docs/research/12 §A",
         "https://www.kcl.ac.uk/study/undergraduate/courses/biomedical-science-bsc/entry-requirements",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §F",
+        "docs/research/12 §G",
+        "https://www.ibms.org/registration/degree-assessment-for-hcpc-registration/"
       ],
       "decision_register_ids": [
         "P02",
-        "V20"
+        "V20",
+        "V66",
+        "V67",
+        "V68"
       ],
       "status": "VALIDATED",
       "status_reason": "Research 03 verdict (section inside the Medicine cluster as a graduate-entry feeder) plus research 12 §C forum signal; the 'medical laboratory science UK' terminology lands on that section.",
@@ -1019,7 +1061,7 @@
         "dental therapist UK"
       ],
       "regulator": "General Dental Council (GDC) – 'Dental hygienist' and 'Dental therapist' (dental care professional titles)",
-      "register_route": "GDC-approved qualification → GDC register (often dual hygienist/therapist) (VERIFY-ON-PAGE)",
+      "register_route": "Two separate GDC titles on the dental care professionals register, dental hygienist and dental therapist; most UK degrees are one combined 3-year BSc qualifying for both (FACT gdc-uk.org, regulated-professions.service.gov.uk, uos.ac.uk, essex.ac.uk)",
       "professional_body": "British Society of Dental Hygiene and Therapy (BSDHT); British Association of Dental Therapists (BADT)",
       "undergraduate_entry": "yes",
       "typical_length_years": "3",
@@ -1046,7 +1088,9 @@
         "https://cardiff.ac.uk/study/undergraduate/courses/2023/dental-therapy-and-hygiene-bsc",
         "https://digital.ucas.com/coursedisplay/courses/0d8b1dad-46bd-3c18-0845-f973beb7eaac",
         "https://dentistry.ed.ac.uk/undergraduate-study/bsc-oral-health/programme",
-        "docs/research/12 §B"
+        "docs/research/12 §B",
+        "docs/research/12 §G",
+        "https://www.gdc-uk.org/professionals/registers/reg-types"
       ],
       "decision_register_ids": [
         "V21"
@@ -1109,12 +1153,12 @@
       "alternative_names": [
         "osteopath degree UK"
       ],
-      "regulator": "General Osteopathic Council (GOsC)",
+      "regulator": "General Osteopathic Council (GOsC), statutory",
       "register_route": "GOsC Recognised Qualification → GOsC register (Osteopaths Act 1993) (VERIFY-ON-PAGE)",
       "professional_body": "Institute of Osteopathy",
       "undergraduate_entry": "yes",
-      "typical_length_years": "4",
-      "international_availability": "NOT RESEARCHED",
+      "typical_length_years": "4 (BSc, BOst, BOstMed or MOst)",
+      "international_availability": "§G 2026-10-04: FACT Nescot (MOst, validated by LSBU) is a sponsor and takes international applicants; FACT European School of Osteopathy holds a Student route sponsor licence; FACT British College of Osteopathic Medicine welcomes international students (VERIFY-ON-PAGE). Providers are mostly private colleges, not NHS-placement courses",
       "nigerian_relevance": "LOW (no Nigerian signal observed)",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "NOT RESEARCHED",
@@ -1122,7 +1166,7 @@
       "graduate_routes": "NOT RESEARCHED",
       "admissions_test": "NOT RESEARCHED",
       "application_route": "UCAS (undergraduate)",
-      "fees": "NOT RESEARCHED",
+      "fees": "§G: LEAD UCO £13,300 (2024-25), BCOM £11,250 (2025); not official",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
       "nigerian_search_demand": "NOT RESEARCHED",
@@ -1132,7 +1176,9 @@
       "sources": [
         "https://www.osteopathy.org.uk/",
         "https://www.bcom.ac.uk/most",
-        "docs/research/12 §A"
+        "docs/research/12 §A",
+        "docs/research/12 §G",
+        "https://www.osteopathy.org.uk/training-and-registering/becoming-an-osteopath/training-courses/"
       ],
       "decision_register_ids": [
         "V23"
@@ -1151,12 +1197,12 @@
       "alternative_names": [
         "chiropractor degree UK"
       ],
-      "regulator": "General Chiropractic Council (GCC)",
+      "regulator": "General Chiropractic Council (GCC), statutory",
       "register_route": "GCC-recognised degree → Register of Chiropractors (health and character checks) (VERIFY-ON-PAGE)",
       "professional_body": "British Chiropractic Association (not confirmed in results)",
       "undergraduate_entry": "yes",
-      "typical_length_years": "4–5",
-      "international_availability": "NOT RESEARCHED",
+      "typical_length_years": "4 (MChiro)",
+      "international_availability": "§G 2026-10-04: FACT six GCC-recognised providers (Health Sciences University, LSBU, McTimoney College, Teesside, University of South Wales, Coventry from September 2026); explicit international statement not yet read; HSU publishes an international fee",
       "nigerian_relevance": "LOW (no Nigerian signal observed)",
       "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
       "a_level_requirements": "NOT RESEARCHED",
@@ -1164,7 +1210,7 @@
       "graduate_routes": "NOT RESEARCHED",
       "admissions_test": "NOT RESEARCHED",
       "application_route": "UCAS (undergraduate)",
-      "fees": "NOT RESEARCHED",
+      "fees": "§G: FACT-candidate HSU MChiro international £17,684 (2026/27), re-check on page",
       "deadlines": "NOT RESEARCHED",
       "career_pathway": "NOT RESEARCHED",
       "nigerian_search_demand": "NOT RESEARCHED",
@@ -1174,7 +1220,9 @@
       "sources": [
         "https://www.gcc-uk.org/",
         "https://www.hsu.ac.uk/course/master-of-chiropractic",
-        "docs/research/12 §A"
+        "docs/research/12 §A",
+        "docs/research/12 §G",
+        "https://www.gcc-uk.org/education/studying-to-become-a-chiropractor/"
       ],
       "decision_register_ids": [
         "V24"
@@ -1218,7 +1266,6 @@
         "docs/research/02 §A q19"
       ],
       "decision_register_ids": [
-        "B05",
         "V25"
       ],
       "status": "REJECTED",
@@ -1433,6 +1480,256 @@
       "last_researched": "2026-10-03",
       "english_language": "NOT RESEARCHED",
       "nigeria_statement": "NOT FOUND at course level; university-level pages only (Manchester, Cardiff: WASSCE holders need a recognised foundation programme or A-levels/IB for direct entry) — see docs/research/12 §B"
+    },
+    {
+      "slug": "dispensing-optician",
+      "name": "Ophthalmic Dispensing (dispensing optician)",
+      "flagship": false,
+      "official_terminology": "BSc Ophthalmic Dispensing (3 years; GOC-approved)",
+      "alternative_names": [
+        "dispensing optician uk",
+        "ophthalmic dispensing degree uk"
+      ],
+      "regulator": "General Optical Council (GOC), statutory",
+      "register_route": "GOC-approved qualification → GOC register as a dispensing optician",
+      "professional_body": "NOT RESEARCHED",
+      "undergraduate_entry": "yes",
+      "typical_length_years": "3",
+      "international_availability": "§G: Glasgow Caledonian BSc (blended); ARU BSc and FdSc, an ARU accelerated route appears 'UK students only' (LEAD); Bradford College and ABDO College took their last intake in 2022/23 (FACT optical.org)",
+      "nigerian_relevance": "LOW: not researched for Nigeria",
+      "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
+      "a_level_requirements": "NOT RESEARCHED",
+      "foundation_routes": "NOT RESEARCHED",
+      "graduate_routes": "NOT RESEARCHED",
+      "admissions_test": "NOT RESEARCHED",
+      "application_route": "NOT RESEARCHED",
+      "fees": "NOT RESEARCHED",
+      "deadlines": "NOT RESEARCHED",
+      "career_pathway": "NOT RESEARCHED",
+      "nigerian_search_demand": "NOT RESEARCHED",
+      "long_tail_demand": "NOT RESEARCHED",
+      "commercial_intent": "NOT RESEARCHED",
+      "competition": "NOT RESEARCHED",
+      "sources": [
+        "docs/research/12 §G",
+        "https://optical.org/en/education-and-cpd/education/what-to-study-and-where/bradford-college"
+      ],
+      "decision_register_ids": [
+        "V47"
+      ],
+      "status": "RESEARCH",
+      "status_reason": "Statutory GOC profession with an undergraduate route; international entry not yet confirmed on an official page and no Nigerian demand observed.",
+      "last_researched": "2026-10-04",
+      "english_language": "NOT RESEARCHED",
+      "nigeria_statement": "NOT FOUND at course level; university-level pages only — see docs/research/12 §B"
+    },
+    {
+      "slug": "hearing-aid-dispenser",
+      "name": "Hearing Aid Audiology (hearing aid dispenser)",
+      "flagship": false,
+      "official_terminology": "FdSc Hearing Aid Audiology (2 years; HCPC-approved)",
+      "alternative_names": [
+        "hearing aid dispenser uk",
+        "hearing aid audiology course uk"
+      ],
+      "regulator": "Health and Care Professions Council (HCPC), statutory (hearing aid dispenser)",
+      "register_route": "HCPC-approved FdSc → HCPC register",
+      "professional_body": "NOT RESEARCHED",
+      "undergraduate_entry": "foundation degree",
+      "typical_length_years": "2",
+      "international_availability": "§G: providers DMU, UCLan, ARU (apprenticeship), UCSD; international availability NOT FOUND; most provision is work-based",
+      "nigerian_relevance": "LOW: not researched for Nigeria",
+      "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
+      "a_level_requirements": "NOT RESEARCHED",
+      "foundation_routes": "NOT RESEARCHED",
+      "graduate_routes": "NOT RESEARCHED",
+      "admissions_test": "NOT RESEARCHED",
+      "application_route": "NOT RESEARCHED",
+      "fees": "NOT RESEARCHED",
+      "deadlines": "NOT RESEARCHED",
+      "career_pathway": "NOT RESEARCHED",
+      "nigerian_search_demand": "NOT RESEARCHED",
+      "long_tail_demand": "NOT RESEARCHED",
+      "commercial_intent": "NOT RESEARCHED",
+      "competition": "NOT RESEARCHED",
+      "sources": [
+        "docs/research/12 §G",
+        "https://www.hcpc-uk.org/education/approved-programmes/education-programmes/fdsc-hearing-aid-audiology2/"
+      ],
+      "decision_register_ids": [
+        "V48"
+      ],
+      "status": "RESEARCH",
+      "status_reason": "Statutory HCPC profession, but the route is a foundation degree with mostly apprenticeship or work-based provision; international availability not found.",
+      "last_researched": "2026-10-04",
+      "english_language": "NOT RESEARCHED",
+      "nigeria_statement": "NOT FOUND at course level; university-level pages only — see docs/research/12 §B"
+    },
+    {
+      "slug": "nursing-associate",
+      "name": "Nursing Associate",
+      "flagship": false,
+      "official_terminology": "FdSc Nursing Associate (about 2 years; NMC-approved; England only)",
+      "alternative_names": [
+        "nursing associate uk"
+      ],
+      "regulator": "Nursing and Midwifery Council (NMC), statutory, England only",
+      "register_route": "NMC-approved programme → NMC nursing associate register (FACT nmc.org.uk)",
+      "professional_body": "NOT RESEARCHED",
+      "undergraduate_entry": "foundation degree",
+      "typical_length_years": "2",
+      "international_availability": "§G: BCU full-time FdSc not available to international students (LEAD); LSBU direct-entry shows an international fee (FACT-candidate); mostly apprenticeship and work-based",
+      "nigerian_relevance": "LOW: not researched for Nigeria",
+      "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
+      "a_level_requirements": "NOT RESEARCHED",
+      "foundation_routes": "NOT RESEARCHED",
+      "graduate_routes": "NOT RESEARCHED",
+      "admissions_test": "NOT RESEARCHED",
+      "application_route": "NOT RESEARCHED",
+      "fees": "NOT RESEARCHED",
+      "deadlines": "NOT RESEARCHED",
+      "career_pathway": "NOT RESEARCHED",
+      "nigerian_search_demand": "NOT RESEARCHED",
+      "long_tail_demand": "NOT RESEARCHED",
+      "commercial_intent": "NOT RESEARCHED",
+      "competition": "NOT RESEARCHED",
+      "sources": [
+        "docs/research/12 §G",
+        "https://www.nmc.org.uk/becoming-a-nursing-associate/"
+      ],
+      "decision_register_ids": [
+        "V49"
+      ],
+      "status": "REJECTED",
+      "status_reason": "England-only foundation-degree role delivered mostly as an apprenticeship; not a route we could recommend to international school-leavers. Nursing (BSc) is the relevant subject.",
+      "last_researched": "2026-10-04",
+      "english_language": "NOT RESEARCHED",
+      "nigeria_statement": "NOT FOUND at course level; university-level pages only — see docs/research/12 §B"
+    },
+    {
+      "slug": "physician-associate",
+      "name": "Physician Associate",
+      "flagship": false,
+      "official_terminology": "MSc Physician Associate Studies (2 years, postgraduate); integrated MPAS at a few universities",
+      "alternative_names": [
+        "physician associate uk",
+        "physician assistant uk"
+      ],
+      "regulator": "General Medical Council (GMC), statutory since 13 December 2024",
+      "register_route": "PA Registration Assessment (PARA) pass within 2 years → GMC registration (FACT gmc-uk.org)",
+      "professional_body": "NOT RESEARCHED",
+      "undergraduate_entry": "mostly postgraduate (integrated MPAS at Reading and UCLan)",
+      "typical_length_years": "2 (MSc) or 4 (MPAS)",
+      "international_availability": "§G: main route postgraduate; the July 2025 Leng review recommended renaming the role and limiting scope, accepted by government (LEAD: BMA, Pulse)",
+      "nigerian_relevance": "LOW: not researched for Nigeria",
+      "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
+      "a_level_requirements": "NOT RESEARCHED",
+      "foundation_routes": "NOT RESEARCHED",
+      "graduate_routes": "NOT RESEARCHED",
+      "admissions_test": "NOT RESEARCHED",
+      "application_route": "NOT RESEARCHED",
+      "fees": "NOT RESEARCHED",
+      "deadlines": "NOT RESEARCHED",
+      "career_pathway": "NOT RESEARCHED",
+      "nigerian_search_demand": "NOT RESEARCHED",
+      "long_tail_demand": "NOT RESEARCHED",
+      "commercial_intent": "NOT RESEARCHED",
+      "competition": "NOT RESEARCHED",
+      "sources": [
+        "docs/research/12 §G",
+        "https://www.gmc-uk.org/registration-and-licensing/join-our-registers/information-about-the-physician-associate-registration-assessment"
+      ],
+      "decision_register_ids": [
+        "V50"
+      ],
+      "status": "REJECTED",
+      "status_reason": "Mainly postgraduate, and the profession's title and scope are being changed after the 2025 review; revisit only after the rename legislation and if an undergraduate product is wanted.",
+      "last_researched": "2026-10-04",
+      "english_language": "NOT RESEARCHED",
+      "nigeria_statement": "NOT FOUND at course level; university-level pages only — see docs/research/12 §B"
+    },
+    {
+      "slug": "clinical-scientist",
+      "name": "Clinical Scientist",
+      "flagship": false,
+      "official_terminology": "NHS Scientist Training Programme (postgraduate)",
+      "alternative_names": [
+        "clinical scientist uk"
+      ],
+      "regulator": "Health and Care Professions Council (HCPC), statutory",
+      "register_route": "STP (needs a 1st or 2:1 first degree) → HCPC clinical scientist (FACT nshcs.hee.nhs.uk)",
+      "professional_body": "NOT RESEARCHED",
+      "undergraduate_entry": "no (postgraduate)",
+      "typical_length_years": "3 (STP)",
+      "international_availability": "§G: postgraduate only",
+      "nigerian_relevance": "LOW: not researched for Nigeria",
+      "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
+      "a_level_requirements": "NOT RESEARCHED",
+      "foundation_routes": "NOT RESEARCHED",
+      "graduate_routes": "NOT RESEARCHED",
+      "admissions_test": "NOT RESEARCHED",
+      "application_route": "NOT RESEARCHED",
+      "fees": "NOT RESEARCHED",
+      "deadlines": "NOT RESEARCHED",
+      "career_pathway": "NOT RESEARCHED",
+      "nigerian_search_demand": "NOT RESEARCHED",
+      "long_tail_demand": "NOT RESEARCHED",
+      "commercial_intent": "NOT RESEARCHED",
+      "competition": "NOT RESEARCHED",
+      "sources": [
+        "docs/research/12 §G",
+        "https://nshcs.hee.nhs.uk/programmes/stp/applicants/entry-requirements/"
+      ],
+      "decision_register_ids": [
+        "V51"
+      ],
+      "status": "REJECTED",
+      "status_reason": "Postgraduate route only; outside the undergraduate mission. Healthcare Science (BSc) is the undergraduate subject.",
+      "last_researched": "2026-10-04",
+      "english_language": "NOT RESEARCHED",
+      "nigeria_statement": "NOT FOUND at course level; university-level pages only — see docs/research/12 §B"
+    },
+    {
+      "slug": "sonography",
+      "name": "Sonography (ultrasound)",
+      "flagship": false,
+      "official_terminology": "BSc Ultrasound (few) or CASE-accredited postgraduate courses",
+      "alternative_names": [
+        "sonography degree uk",
+        "ultrasound course uk"
+      ],
+      "regulator": "None statutory (not a protected title); voluntary Register of Clinical Technologists for BSc Ultrasound graduates",
+      "register_route": "Voluntary registration (FACT sor.org)",
+      "professional_body": "NOT RESEARCHED",
+      "undergraduate_entry": "mostly postgraduate",
+      "typical_length_years": "varies",
+      "international_availability": "§G: mostly postgraduate",
+      "nigerian_relevance": "LOW: not researched for Nigeria",
+      "waec_neco_relevance": "School-leaving results are treated as the GCSE layer at UK universities; the entry qualification is A-levels/IB, a foundation year or a degree (established for Medicine; confirm per subject and per university)",
+      "a_level_requirements": "NOT RESEARCHED",
+      "foundation_routes": "NOT RESEARCHED",
+      "graduate_routes": "NOT RESEARCHED",
+      "admissions_test": "NOT RESEARCHED",
+      "application_route": "NOT RESEARCHED",
+      "fees": "NOT RESEARCHED",
+      "deadlines": "NOT RESEARCHED",
+      "career_pathway": "NOT RESEARCHED",
+      "nigerian_search_demand": "NOT RESEARCHED",
+      "long_tail_demand": "NOT RESEARCHED",
+      "commercial_intent": "NOT RESEARCHED",
+      "competition": "NOT RESEARCHED",
+      "sources": [
+        "docs/research/12 §G",
+        "https://www.sor.org/news/direct-entry-undergraduate-ultrasound-education-muam"
+      ],
+      "decision_register_ids": [
+        "V52"
+      ],
+      "status": "REJECTED",
+      "status_reason": "Not statutorily regulated and mostly postgraduate; outside the undergraduate mission.",
+      "last_researched": "2026-10-04",
+      "english_language": "NOT RESEARCHED",
+      "nigeria_statement": "NOT FOUND at course level; university-level pages only — see docs/research/12 §B"
     }
   ]
 }

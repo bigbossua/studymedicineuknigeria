@@ -1,0 +1,23 @@
+name: Launch checks (public, read-only)
+# DNS (A/AAAA, MX, SPF, DMARC, DKIM at common selectors), HTTPS certificates for the domain, www and staging, and what
+# studymedicineuknigeria.com serves today. Uses no secret and changes nothing; safe to run any time.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1'   # weekly, Mondays
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Public checks
+        run: |
+          sudo apt-get install -y -qq dnsutils >/dev/null 2>&1 || true
+          set +e; ops/launch-checks.sh studymedicineuknigeria.com | tee report.txt; status=${PIPESTATUS[0]}; set -e
+          { echo '### Launch checks'; echo '```'; cat report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit $status

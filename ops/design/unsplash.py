@@ -83,6 +83,8 @@ def search(queries):
     os.makedirs(f'{OUT}/candidates', exist_ok=True)
     found = {}
     for qi, q in enumerate(queries):
+        if not KEY and os.environ.get('GITHUB_ACTIONS'):
+            sys.exit('::error::UNSPLASH_ACCESS_KEY is not set: unsplash.com refuses GitHub runners, so only the API works here')
         photos = (search_api(q) if KEY else search_html(q))[:16]
         thumbs = []
         for p in photos:

@@ -24,3 +24,36 @@ The first-party funnel (Admin → Funnel) already measures every step without co
 6. Link Search Console to GA4 (Admin → Product links) for query data inside GA4.
 
 Leave `SITE_GA4_ID` blank to run without any third-party analytics; the site is complete without it.
+
+## Monitoring baseline (2026-10-04)
+
+What is known, and only that. A sitemap that Search Console has read is **not** evidence that any page is indexed.
+
+| Signal | Value on 2026-10-04 | Source |
+|---|---|---|
+| Property | Domain property `studymedicineuknigeria.com`, verified by DNS TXT | owner; `launch-checks.yml` confirms the TXT record daily |
+| Sitemap | `https://studymedicineuknigeria.com/sitemap.xml`: status **Success**, **28 discovered pages** | owner's Search Console screenshot |
+| Sitemap contents | 28 URLs, each 200, self-canonical, indexable | `sitemap-probe.yml` (daily) |
+| Indexed pages | **not established** (no Pages-report reading yet) | — |
+| Impressions / clicks | **not established** (property days old) | — |
+| University pages | 0 of 55 indexable (noindex until their facts are verified; not in the sitemap) | Admin → Universities |
+| Legacy URLs | 65 redirects (301) and the gone list (404) answer correctly | `LegacyRedirectsTest`, `live-verify.yml` |
+
+The 28 URLs: `/`, `/study-medicine-in-the-uk`, `/study-medicine-in-the-uk/from-nigeria`, `/study-medicine-in-the-uk/foundation-routes`,
+`/medical-schools`, `/requirements`, `/requirements/waec`, `/requirements/neco`, `/requirements/a-levels`,
+`/requirements/nigerian-degree-graduate-entry`, `/requirements/english-language`, `/fees`, `/admissions`, `/admissions/ucat`,
+`/admissions/ucas-deadlines-2027`, `/admissions/how-to-apply`, `/faq`, `/apply-online`, `/apply-online/services`,
+`/apply-online/eligibility`, `/about`, `/our-status`, `/how-we-verify`, `/contact`, `/privacy`, `/terms`, `/application-terms`,
+`/refund-policy`.
+
+### Owner routine (about 10 minutes, Search Console has no free API access configured here)
+
+- **Week 1:** URL inspection → *Request indexing* for the five priority pages: `/`, `/study-medicine-in-the-uk/from-nigeria`,
+  `/requirements/waec`, `/medical-schools`, `/fees`. Do not request the other 23 by hand; the sitemap covers them.
+- **Weekly for 6 weeks, then monthly:** Indexing → Pages: record *Indexed* and *Not indexed* counts and the reasons in
+  `data/gsc/pages-YYYY-MM-DD.csv` (columns `date,indexed,not_indexed,reason,count`). Expected and harmless reasons:
+  *Page with redirect* (legacy URLs, www), *Excluded by noindex* (university pages, portal), *Not found (404)* (the gone list).
+  Act on *Server error (5xx)*, *Duplicate without user-selected canonical*, *Crawled – currently not indexed* for a
+  sitemap URL after 6 weeks (upgrade that page's content before adding any new page; `docs/seo/DECISION-ENGINE.md`).
+- **Monthly:** Performance → Country = Nigeria → export Queries and Pages (step 5 above).
+- **Never** count a page as indexed until the Pages report or URL inspection says *URL is on Google*.

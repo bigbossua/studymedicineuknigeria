@@ -60,7 +60,10 @@ class SchoolController extends Controller
                 'itemListElement' => $universities->values()->map(fn ($u, $i) => ['@type' => 'ListItem', 'position' => $i + 1, 'name' => $u->name, 'url' => route('schools.show', $u)])->all()]);
         }
 
-        return view('schools.index', compact('universities', 'filters', 'seo', 'isFiltered'));
+        // the map and nation counts always show the whole directory, whatever the filters
+        $all = University::query()->medicalSchools()->get(['id', 'slug', 'name', 'city', 'nation', 'international_policy']);
+
+        return view('schools.index', compact('universities', 'filters', 'seo', 'isFiltered', 'all'));
     }
 
     /** Branded Open Graph card for a university page, rendered once and cached as a static file. */

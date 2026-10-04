@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\University;
 use App\Support\Seo;
 use Illuminate\Contracts\View\View;
 
@@ -30,7 +31,12 @@ class PageController extends Controller
                 ],
             ]);
 
-        return view('pages.home', ['seo' => $seo]);
+        // live counts from the directory (same definitions as the Medicine pillar), never typed in
+        $schools = University::medicalSchools()->get(['id', 'slug', 'name', 'city', 'nation', 'international_policy']);
+
+        return view('pages.home', ['seo' => $seo, 'schools' => $schools,
+            'accepting' => $schools->whereIn('international_policy', ['accepts', 'international_only'])->count(),
+            'nations' => $schools->pluck('nation')->filter()->unique()->count()]);
     }
 
     /** Placeholder for pages on the register that are not yet produced. Always noindex. */

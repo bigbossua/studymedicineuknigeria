@@ -1,0 +1,16 @@
+{
+  "_readme": "Approximate city-centre coordinates (latitude, longitude) used only to place medical-school pins on the illustrative UK map (ops/design/build-maps.mjs). Keys match universities.city; a school whose city is missing here is simply not pinned.",
+  "Aberdeen": [57.149, -2.094], "Bangor": [53.228, -4.129], "Belfast": [54.597, -5.930], "Birmingham": [52.486, -1.890],
+  "Bolton (Greater Manchester)": [53.578, -2.429], "Brighton": [50.822, -0.137], "Bristol": [51.454, -2.588], "Buckingham": [51.999, -0.987],
+  "Cambridge": [52.205, 0.122], "Canterbury and Medway": [51.280, 1.079], "Cardiff": [51.481, -3.179], "Carlisle": [54.893, -2.932],
+  "Chelmsford": [51.736, 0.469], "Chester": [53.193, -2.893], "Coventry": [52.406, -1.512], "Derry/Londonderry": [54.997, -7.309],
+  "Dundee": [56.462, -2.971], "Edinburgh": [55.953, -3.188], "Exeter": [50.718, -3.534], "Glasgow": [55.864, -4.252],
+  "Guildford": [51.236, -0.570], "Hatfield": [51.763, -0.226], "Hull and York": [53.745, -0.336], "Keele (Newcastle-under-Lyme)": [53.003, -2.272],
+  "Lancaster": [54.047, -2.801], "Leeds": [53.801, -1.549], "Leicester": [52.637, -1.140], "Lincoln": [53.235, -0.538],
+  "Liverpool": [53.408, -2.992], "London": [51.507, -0.128], "London (Twickenham)": [51.447, -0.334], "London (Uxbridge)": [51.546, -0.478],
+  "Manchester": [53.481, -2.243], "Newcastle upon Tyne": [54.978, -1.618], "Norwich": [52.630, 1.297], "Nottingham": [52.954, -1.158],
+  "Ormskirk": [53.567, -2.885], "Oxford": [51.752, -1.258], "Plymouth": [50.376, -4.143], "Preston": [53.763, -2.703],
+  "Sheffield": [53.381, -1.470], "Southampton": [50.910, -1.404], "St Andrews": [56.340, -2.796], "Sunderland": [54.906, -1.381],
+  "Swansea": [51.622, -3.944], "Wolverhampton": [52.587, -2.129], "Worcester": [52.192, -2.220],
+  "Lagos": [6.524, 3.379], "Abuja": [9.076, 7.399]
+}

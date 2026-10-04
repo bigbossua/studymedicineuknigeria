@@ -12,6 +12,22 @@ class MedicineRoute
 {
     public const WORKING_GATE = 'topics-verified:student-visa,graduate-visa,gmc-registration';
 
+    /** Route name → step key, for the journey stepper in each page head. */
+    private const BY_ROUTE = [
+        'medicine.index' => 'course', 'medicine.nigeria' => 'course', 'medicine.foundation' => 'qualifications',
+        'requirements.index' => 'requirements', 'requirements.alevels' => 'requirements', 'requirements.english' => 'requirements',
+        'requirements.waec' => 'qualifications', 'requirements.neco' => 'qualifications', 'requirements.gem' => 'qualifications',
+        'schools.index' => 'universities', 'schools.show' => 'universities', 'fees.index' => 'fees', 'fees.total' => 'fees',
+        'admissions.index' => 'application', 'admissions.ucat' => 'application', 'admissions.ucas2027' => 'application', 'admissions.howto' => 'application',
+        'working.index' => 'career', 'apply.eligibility' => 'eligibility', 'apply.index' => 'apply', 'apply.services' => 'apply',
+    ];
+
+    /** The step a page belongs to, or null for pages outside the journey (organisation, legal, FAQ). */
+    public static function currentKey(?string $routeName): ?string
+    {
+        return self::BY_ROUTE[$routeName ?? ''] ?? null;
+    }
+
     /** @return list<array{key: string, label: string, route: string}> */
     public static function steps(): array
     {

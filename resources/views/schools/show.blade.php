@@ -16,8 +16,11 @@
         $publishable = fn ($f) => $f->isPublishable();
     @endphp
     <article class="container-site pt-6 pb-10">
-        <header class="max-w-3xl">
-            <p class="eyebrow mb-3">{{ $university->medical_school_name ?? 'Medical school' }}{{ $university->city ? ' · '.$university->city : '' }}{{ $university->nation ? ', '.$university->nation : '' }}</p>
+        <header class="bleed -mt-6 bg-paper-warm border-b border-ink-200 pt-8 pb-10 sm:pt-10 sm:pb-14">
+            <x-journey current="universities" class="mb-8 hidden md:block" />
+            <div class="grid lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-8 max-w-3xl">
+            <p class="eyebrow mb-4 flex items-center gap-2"><x-icon name="map-pin" :size="16" class="text-navy-500" />{{ $university->medical_school_name ?? 'Medical school' }}{{ $university->city ? ' · '.$university->city : '' }}{{ $university->nation ? ', '.$university->nation : '' }}</p>
             <h1 class="text-balance">{{ $university->name }}: Medicine for international applicants</h1>
             <p class="lede mt-5">What this university publishes for international applicants to {{ $course?->title ?? 'Medicine' }}{{ $course?->shortUcasCode() ? ' ('.$course->shortUcasCode().')' : '' }}, with each statement's official source. Where a Nigerian-specific requirement is not published, we say so.</p>
             <div class="mt-4 flex flex-wrap gap-2">
@@ -30,6 +33,11 @@
                 @if($university->publicGmcStatus())<span class="chip {{ stripos($university->publicGmcStatus(),'review')!==false ? 'chip-review' : 'chip-pending' }}">GMC: {{ $university->publicGmcStatus() }}</span>@endif
             </div>
             <x-reviewed :date="$seo->lastReviewed" :intake="$seo->intakeYear" class="mt-4" />
+                </div>
+                <div class="hidden lg:block lg:col-span-4">
+                    <x-uk-map :universities="[$university]" :highlight="$university->slug" :label="$university->city" class="w-full max-w-[16rem] mx-auto h-auto" />
+                </div>
+            </div>
         </header>
 
         @if($university->publicGmcStatus() && stripos($university->publicGmcStatus(), 'review') !== false)
@@ -42,7 +50,7 @@
             <div class="lg:col-span-8 space-y-10">
                 <section aria-labelledby="h-course">
                     <h2 id="h-course">Course facts</h2>
-                    <div class="mt-4 space-y-3">
+                    <div class="mt-5 grid sm:grid-cols-2 gap-3">
                         @forelse($sorted(($course?->facts ?? collect())->reject(fn ($f) => $f->verification_status === 'NOT_FOUND')) as $f)
                             <x-fact :status="$f->verification_status" :source="$f->source_url" :verified-at="$f->verified_at?->format('j M Y')">
                                 <p class="text-[0.8125rem] text-ink-500">{{ $labels[$f->key] ?? Str::headline($f->key) }}@if($f->academic_year) · {{ $f->academic_year }}@endif</p>

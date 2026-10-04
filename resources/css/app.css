@@ -58,11 +58,16 @@
   --color-info-600: #2F5F8F;
   --color-info-100: #E6EEF6;
   --color-nigeria-green: #008751;
+  --color-navy-950: #04192A;
+  --color-gold-400: #F3C969;
+  --color-gold-100: #FBF1D6;
 
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-pill: 999px;
   --shadow-card: 0 1px 2px rgba(15, 30, 46, .06), 0 8px 24px rgba(15, 30, 46, .06);
+  --shadow-lift: 0 2px 4px rgba(15, 30, 46, .06), 0 18px 40px rgba(15, 30, 46, .12);
+  --radius-lg: 14px;
   --container-site: 1200px;
   --spacing-gutter: 1rem;
 
@@ -81,7 +86,7 @@
 @layer base {
   html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
-  body { @apply font-sans text-ink-900 bg-paper antialiased; font-size: 1rem; line-height: 1.6; font-optical-sizing: auto; }
+  body { @apply font-sans text-ink-900 bg-paper antialiased; overflow-x: clip; font-size: 1rem; line-height: 1.6; font-optical-sizing: auto; }
   h1, h2, h3, .font-serif { font-optical-sizing: auto; }
   h1 { @apply font-serif font-semibold text-display text-ink-900; }
   h2 { @apply font-serif font-semibold text-h2 text-ink-900; }
@@ -119,8 +124,8 @@
   .btn-sm { @apply min-h-9 px-4 text-[0.8125rem]; }
 
   /* Cards */
-  .card { @apply bg-paper border border-ink-200 rounded-md p-5 sm:p-6; }
-  .card-raised { @apply bg-paper border border-ink-200 rounded-md p-5 sm:p-6 shadow-[var(--shadow-card)]; }
+  .card { @apply bg-paper border border-ink-200 rounded-lg p-5 sm:p-6; }
+  .card-raised { @apply bg-paper border border-ink-200 rounded-lg p-5 sm:p-6 shadow-[var(--shadow-card)]; }
   .card-link { @apply block no-underline text-inherit hover:border-navy-500 transition-colors; }
 
   /* Chips / badges */
@@ -144,7 +149,7 @@
   .alert-success { @apply border-success-600/30 bg-success-100 text-ink-900; }
 
   /* CTA band */
-  .cta-band { @apply bg-navy-700 text-white rounded-md px-6 py-7 sm:px-8 sm:py-9 flex flex-col sm:flex-row sm:items-center gap-5 justify-between; }
+  .cta-band { @apply relative overflow-hidden bg-navy-900 text-white rounded-lg px-6 py-8 sm:px-10 sm:py-12 flex flex-col md:flex-row md:items-center gap-6 justify-between; background-image: radial-gradient(120% 140% at 100% 0%, rgba(21,88,127,.9) 0%, rgba(7,42,64,0) 60%); }
   .cta-band p { @apply text-white/90; }
 
   /* Navigation */
@@ -170,6 +175,46 @@
   .input { @apply w-full rounded-sm border border-ink-300 bg-paper px-3 min-h-12 text-base text-ink-900 placeholder:text-ink-500/70 focus:border-navy-700 focus:outline-none focus:ring-2 focus:ring-navy-700/20; }
   .input-error { @apply border-danger-600 focus:ring-danger-600/20; }
   .error-text { @apply text-[0.8125rem] text-danger-600 font-medium; }
+
+
+  /* Sections: one rhythm for every page (docs/architecture/19-design-system.md) */
+  .section { @apply py-16 sm:py-24; }
+  .section-tight { @apply py-12 sm:py-16; }
+  .section-warm { @apply bg-paper-warm; }
+  .section-navy { @apply bg-navy-900 text-white; }
+  .section-navy h2, .section-navy h3 { @apply text-white; }
+  .section-navy a:not(.btn) { @apply text-white decoration-white/40 hover:decoration-white; }
+  .section-head { @apply max-w-2xl; }
+  .section-head p:not(.eyebrow) { @apply mt-4 text-lg text-ink-700 leading-relaxed; }
+  .section-navy .section-head p:not(.eyebrow) { @apply text-white/80; }
+  .section-navy .eyebrow { @apply text-gold-400; }
+  .eyebrow-rule::before { content: ''; @apply inline-block w-6 h-[2px] bg-nigeria-green align-middle mr-2; }
+
+  /* Full-bleed band inside a .container-site (page heads) */
+  .bleed { margin-inline: calc(50% - 50vw); padding-inline: calc(50vw - 50%); }
+
+  /* Icon badge */
+  .icon-badge { @apply inline-flex items-center justify-center w-11 h-11 rounded-md bg-navy-50 text-navy-700 ring-1 ring-navy-100; }
+  .icon-badge-lg { @apply w-14 h-14 rounded-lg; }
+  .section-navy .icon-badge { @apply bg-white/10 text-gold-400 ring-white/15; }
+
+  /* Interactive card: lifts on hover, whole card is the link target via a stretched link */
+  .card-hover { @apply relative transition-[box-shadow,border-color,transform] duration-200 hover:border-navy-300 hover:shadow-[var(--shadow-lift)] motion-safe:hover:-translate-y-0.5; }
+  .stretched-link::after { content: ''; @apply absolute inset-0 rounded-md; }
+
+  /* Journey stepper (App\Support\MedicineRoute) */
+  .stepper { @apply flex flex-wrap gap-x-1 gap-y-2 text-[0.8125rem]; }
+  .stepper a, .stepper span.step { @apply inline-flex items-center gap-2 rounded-pill pl-1 pr-3 py-1 no-underline text-ink-700 hover:bg-white hover:text-navy-700; }
+  .stepper .num { @apply inline-flex items-center justify-center w-6 h-6 rounded-full bg-white ring-1 ring-ink-200 font-semibold text-[0.75rem] text-ink-700; }
+  .stepper [data-current] { @apply bg-navy-700 text-white hover:bg-navy-700 hover:text-white; }
+  .stepper [data-current] .num { @apply bg-white text-navy-700 ring-0; }
+  .stepper .done .num { @apply bg-navy-100 ring-navy-100 text-navy-700; }
+
+  /* Stat */
+  .stat-value { @apply font-serif font-semibold text-4xl sm:text-5xl leading-none text-navy-700; }
+  .section-navy .stat-value { @apply text-white; }
+  .stat-label { @apply mt-2 text-[0.9375rem] text-ink-700 leading-snug; }
+  .section-navy .stat-label { @apply text-white/75; }
 
   /* Floating CTA (public only) */
   .photo { @apply overflow-hidden rounded-md; }

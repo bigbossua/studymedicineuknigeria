@@ -417,6 +417,26 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - Foreign hosts are refused at Hostinger's CDN (connection closed, curl code 000).
 - **Server state:** payment closed, Stripe off, debug off, unverified facts hidden, 0 pending migrations; 55 universities, 77 courses, 701 facts, 65 redirects, 0 users.
 
+## Stage 51: visual and product refinement (cycle 45)
+
+- **Audit:** every public page was reviewed on desktop (1440 px) and mobile (390 px). It was clean but text-heavy and flat: a text-only hero, a 53-card wall in the directory, and no shared thread across the hub pages.
+- **Built:**
+  - maps from public-domain data (route globe, UK school map, school locator) and a Lucide icon set;
+  - new design tokens and section rhythm;
+  - sticky header with an independence line, and a dark footer with the journey;
+  - warm page-head band with a journey stepper across all guide pages, plus an "At a glance" panel on the Medicine pillar;
+  - new homepage composition;
+  - directory with map, nation chips, filter panel and whole-card links;
+  - school pages with a locator map and a two-column fact grid;
+  - route panel with a "Next step" card.
+- **Unchanged:** no new pages, no new claims, no prices; canonicals, JSON-LD and the verification system are untouched.
+- **Checks:**
+  - 196 tests on SQLite and MariaDB;
+  - axe found 0 violations on public, portal and admin pages, after fixing footer contrast, link styling and the utility-bar landmark;
+  - SEO crawl: 28 indexable pages, 0 broken links;
+  - CSP sweep: 0 violations;
+  - production rehearsal: all checks passed.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

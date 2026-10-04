@@ -1,6 +1,7 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Medicine · the pillar', 'title' => 'Study Medicine in the UK: how the routes, requirements, costs and calendar fit together', 'lede' => 'UK medical degrees are five or six years long, lead to provisional registration with the General Medical Council after a licensing assessment, and are applied for through a fixed annual calendar. This page explains the structure for an international applicant; the pages it links to carry the sourced detail, school by school.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Medicine · the pillar', 'title' => 'Study Medicine in the UK: how the routes, requirements, costs and calendar fit together', 'lede' => 'UK medical degrees are five or six years long, lead to provisional registration with the General Medical Council after a licensing assessment, and are applied for through a fixed annual calendar. This page explains the structure for an international applicant; the pages it links to carry the sourced detail, school by school.', 'seo' => $seo,
+        'glance' => [['5–6', 'years: the length of a UK medical degree'], [$schools, 'medical schools publish that they admit international undergraduates'], ['UCAT', 'the admissions test almost every school requires'], ['Oct', 'UCAS closes in mid-October the year before entry']]])
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 prose-site">
             <h2>1. What a UK medical degree is</h2>

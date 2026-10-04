@@ -22,6 +22,7 @@ php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sour
 php artisan smukn:reference-sync   # repository reference data into this database (deploy runs it; never touches reviewed facts)
 php artisan smukn:sources-check --dry-run   # official-page change watcher (nightly on the server)
 node ops/qa/seo-crawl.cjs     # see ops/qa/README.md for the browser QA scripts (journey.cjs, staff-journey.cjs)
+npm i --no-save world-atlas@2 d3-geo@3 topojson-client@3 lucide-static && node ops/design/build-maps.mjs && node ops/design/build-icons.mjs   # map illustrations and icon set (public-domain / ISC data; no stock photos)
 python3 ops/seo/page-audit.py # regenerate docs/seo/PAGE-AUDIT.md (every indexable page: query, intent, links, routes to eligibility/apply)
 ```
 Local demo accounts: `student@example.test` / `Testpass12345`, `admin@example.test` / `Adminpass12345` (admin has TOTP enrolled; compute codes with `App\Support\Totp::code($secret)` in tinker).

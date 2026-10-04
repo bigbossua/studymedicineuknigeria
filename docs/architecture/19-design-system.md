@@ -93,3 +93,29 @@ Contrast, focus ring (2px navy offset 2px), keyboard order, aria for status chip
 **Files.** `brand/logo/*.svg` are the masters (text converted to outlines, so no font dependency); `brand/favicon/` holds favicon.svg/.ico, 16–512 PNGs, apple-touch-icon, maskable icon and `site.webmanifest`; `brand/social/og-default.png` (1200×630) and `avatar-1024.png`; `brand/email/email-header@2x.png`. Web copies live under `public/` and `public/images/brand/`.
 
 **Rules.** Minimum clear space = the red point's diameter × 2 around the tile. Never recolour the tile outside navy/white. Never place the symbol on photographs without the tile. Never pair with university logos.
+
+
+## 19.x Visual refinement (2026-10-04, after launch)
+
+- **Imagery policy.** No stock photography, no students, no campuses, nothing that implies a university relationship. The site's images are *informative illustrations built from public-domain data*:
+  - the Nigeria → UK route globe (homepage hero);
+  - the UK map with a pin per medical-school city (homepage, directory);
+  - a locator map on each school page.
+
+  They are built by `ops/design/build-maps.mjs` from Natural Earth outlines and `data/geo/cities.json`. Pins come from the live directory, so the map can never disagree with it. `brand/photos/manifest.json` still governs any future photograph: licence recorded, no clients, no implied partnerships.
+- **Icons.** Lucide (ISC), baked into `<x-icon>` by `ops/design/build-icons.mjs`. They are decorative unless given a label.
+- **Frame and page composition.**
+  - Navy utility line ("independent, not an agent of any university"), sticky header and dark footer that repeats the applicant journey.
+  - Every guide page opens with a warm full-width band: journey stepper, icon eyebrow, H1, lede, reviewed line, and optionally an "At a glance" panel. That panel only repeats figures the page itself states.
+  - Pages close with the route panel and its "Next step" card.
+- **Homepage order.**
+  1. Nigeria → UK hero.
+  2. Six-step journey: Nigeria → UK → Medicine → Evidence → Application support → Apply Online.
+  3. Medicine flagship: three ways in.
+  4. Mapped directory, with live counts.
+  5. Three things to know.
+  6. What we do and do not do.
+  7. Four application steps.
+  8. Call to action.
+- **Directory.** Map, nation chips, a raised filter panel and whole-card links. One primary action per screen, so there are no per-card Apply buttons.
+- **Rules kept.** One primary button per viewport, WCAG 2.2 AA (axe: 0 violations on public, portal and admin), no fee in any public view, every number on a page either computed from the database or already stated in that page's copy.

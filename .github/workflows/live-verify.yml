@@ -39,7 +39,7 @@ jobs:
           cd ~/apps/smukn-production/current
           PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
           echo "release: $(basename "$(readlink -f .)")"
-          echo "document root: $(cat releases/.docroot 2>/dev/null || cat ../../smukn-production/releases/.docroot 2>/dev/null)"
+          echo "document root: $(cat ~/apps/smukn-production/releases/.docroot 2>/dev/null)"; D=$(cat ~/apps/smukn-production/releases/.docroot); [ -f "$D/.smukn-docroot" ] && [ ! -L "$D" ] && echo "document root is a published folder: $(grep -o "releases/[^/]*/vendor" "$D/index.php" | cut -d/ -f2)"
           $PHP artisan migrate:status --no-ansi | grep -c 'Pending' | sed 's/^/pending migrations: /' || true
           $PHP artisan tinker --execute '
             $s = app(App\Services\Payments\StripeService::class);

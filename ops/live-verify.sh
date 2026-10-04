@@ -22,11 +22,11 @@ pages=$(curl -s "$B/sitemap.xml" | grep -o '<loc>[^<]*' | sed 's/<loc>//')
 total=$(echo "$pages" | grep -c .); leaks=0; nocanon=0; nold=0
 for u in $pages "$B/apply-online" "$B/apply-online/services" "$B/register" "$B/login"; do
   body=$(curl -s "$u")
-  printf '%s' "$body" | grep -qE '£125|£695|£1,295|12500|69500|129500|priceCurrency' && { bad "service fee visible on $u"; leaks=1; }
-  printf '%s' "$body" | grep -qiE 'Whoops|Stack trace|SQLSTATE|vendor/laravel' && bad "debug text on $u"
+  grep -qE '£125|£695|£1,295|12500|69500|129500|priceCurrency' <<<"$body" && { bad "service fee visible on $u"; leaks=1; }
+  grep -qiE 'Whoops|Stack trace|SQLSTATE|vendor/laravel' <<<"$body" && bad "debug text on $u"
   case "$u" in "$B/register"|"$B/login"|"$B/apply-online"|"$B/apply-online/services") continue;; esac
-  printf '%s' "$body" | grep -qF "<link rel=\"canonical\" href=\"$u\"" || { nocanon=$((nocanon+1)); echo "     no self-canonical: $u"; }
-  printf '%s' "$body" | grep -q 'application/ld+json' || nold=$((nold+1))
+  grep -qF "<link rel=\"canonical\" href=\"$u\"" <<<"$body" || { nocanon=$((nocanon+1)); echo "     no self-canonical: $u"; }
+  grep -q 'application/ld+json' <<<"$body" || nold=$((nold+1))
 done
 [ "$leaks" = 0 ] && ok "no service fee on $total sitemap pages + apply, services, register, login"
 [ "$nocanon" = 0 ] && ok "every sitemap page carries its own canonical" || bad "$nocanon sitemap pages without their own canonical"
@@ -39,8 +39,9 @@ curl -s "$B/login" | grep -q 'name="password"' && ok "sign-in form renders" || b
 c=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$B/portal"); echo "$c" | grep -q '^302 .*/login' && ok "portal requires sign-in" || bad "portal: $c"
 c=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$B/admin"); echo "$c" | grep -q '^302 .*/login' && ok "admin requires sign-in" || bad "admin: $c"
 
+# 000: the CDN closes the connection for a host it does not serve (the application's own 400 is proven by the rehearsal)
 for h in evil.example studymedicineuknigeria.com.evil.example; do
-  c=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: $h" "$B/"); [ "$c" = 400 ] || [ "$c" = 403 ] || [ "$c" = 421 ] && ok "foreign host $h refused ($c)" || bad "foreign host $h answered $c"
+  c=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: $h" "$B/"); case "$c" in 000|400|403|421) ok "foreign host $h refused ($c)";; *) bad "foreign host $h answered $c";; esac
 done
 hd=$(curl -sI "$B/")
 for x in strict-transport-security content-security-policy x-content-type-options referrer-policy x-frame-options permissions-policy; do

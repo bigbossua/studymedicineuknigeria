@@ -114,14 +114,15 @@
     </div>
     <div class="border-t border-white/10">
         <div class="container-site py-6 flex flex-col md:flex-row gap-3 md:items-center justify-between text-[0.8125rem] text-white/55">
-            <p>&copy; {{ date('Y') }} {{ config('site.legal_name') ?? config('site.name') }} · <a href="mailto:{{ config('site.email') }}" class="text-white/85 underline decoration-white/40 hover:decoration-white">{{ config('site.email') }}</a>@if(config('site.whatsapp')) · <a href="https://wa.me/{{ config('site.whatsapp') }}?text={{ rawurlencode('Hello, I have a question about studying Medicine in the UK.') }}" rel="noopener" target="_blank" class="text-white/85 underline decoration-white/40 hover:decoration-white">WhatsApp</a>@endif</p>
+            <p>&copy; {{ date('Y') }} {{ config('site.legal_name') ?? config('site.name') }} · <a href="mailto:{{ config('site.email') }}" class="text-white/85 underline decoration-white/40 hover:decoration-white">{{ config('site.email') }}</a>@if(config('site.whatsapp')) · <a href="https://wa.me/{{ config('site.whatsapp') }}?text={{ rawurlencode('Hello, I would like help studying Medicine in the UK from Nigeria.') }}" rel="noopener" target="_blank" class="text-white/85 underline decoration-white/40 hover:decoration-white">WhatsApp</a>@endif</p>
             <p class="flex items-center gap-2"><x-icon name="badge-check" :size="15" class="text-gold-400" />Information is checked against official sources and shows a last-verified date. Admission decisions are made solely by universities.</p>
         </div>
     </div>
 </footer>
 
 @unless(($hideFloatingCta ?? false))
-<aside data-floating-cta class="floating-cta" aria-label="Apply shortcut">
+<aside data-floating-cta class="floating-cta flex flex-col items-end gap-3" aria-label="Quick contact and apply">
+    <x-whatsapp-cta />
     <a href="{{ route('apply.index') }}" class="btn btn-primary">Apply Online</a>
 </aside>
 @endunless

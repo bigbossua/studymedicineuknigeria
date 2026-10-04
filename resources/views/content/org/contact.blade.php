@@ -4,7 +4,7 @@
     <div class="mt-10 grid md:grid-cols-2 gap-6 max-w-3xl">
         <div class="card"><p class="eyebrow mb-2">Email</p><a href="mailto:{{ config('site.email') }}" class="text-lg font-semibold">{{ config('site.email') }}</a><p class="mt-2 text-[0.9375rem] text-ink-500">We reply within two working days. Please do not email documents; upload them in your portal where they are protected.</p></div>
         <div class="card"><p class="eyebrow mb-2">Student portal</p><a href="{{ route('login') }}" class="btn btn-secondary">Sign in and message us</a><p class="mt-2 text-[0.9375rem] text-ink-500">Quote your application number (SMUKN-…) in any message.</p></div>
-        @if(config('site.whatsapp'))<div class="card"><p class="eyebrow mb-2">WhatsApp</p><a href="https://wa.me/{{ config('site.whatsapp') }}" rel="noopener" target="_blank" class="btn btn-tertiary">Message on WhatsApp</a><p class="mt-2 text-[0.9375rem] text-ink-500">For quick questions only; your portal remains the record.</p></div>@endif
+        @if(config('site.whatsapp'))<div class="card"><p class="eyebrow mb-2">WhatsApp</p><a href="https://wa.me/{{ config('site.whatsapp') }}?text={{ rawurlencode('Hello, I would like help studying Medicine in the UK from Nigeria.') }}" rel="noopener" target="_blank" class="btn btn-tertiary">Message on WhatsApp</a><p class="mt-2 text-[0.9375rem] text-ink-500">For quick questions only; your portal remains the record.</p></div>@endif
         <div class="card"><p class="eyebrow mb-2">Address</p><p class="text-[0.9375rem]">{{ config('site.address') ?? 'Registered address to be published on Our status.' }}</p></div>
     </div>
     <div class="mt-12 grid md:grid-cols-2 gap-8 max-w-3xl">

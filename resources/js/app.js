@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const hide = (v) => fab.classList.toggle('hidden', v);
         document.addEventListener('focusin', (e) => { if (e.target.closest('form')) hide(true); });
         document.addEventListener('focusout', (e) => { if (e.target.closest('form')) hide(false); });
+        // the analytics consent banner sits at the bottom of the viewport: lift the floating buttons above it while it shows
+        const banner = document.querySelector('[data-consent-banner]');
+        const lift = () => { fab.style.bottom = banner && banner.isConnected ? `${banner.offsetHeight + 16}px` : ''; };
+        lift(); window.addEventListener('resize', lift);
+        banner?.querySelectorAll('[data-consent]').forEach((b) => b.addEventListener('click', () => setTimeout(lift, 0)));
         const sentinels = document.querySelectorAll('footer, .cta-band');
         if ('IntersectionObserver' in window && sentinels.length) {
             let visible = 0;
@@ -72,8 +77,9 @@ document.addEventListener('submit', (e) => {
         const a = e.target.closest('a[href]');
         if (!a) return;
         const href = a.getAttribute('href');
-        if (href.startsWith('mailto:')) send('contact_click', { method: 'email', page: location.pathname });
-        else if (href.includes('wa.me/')) send('contact_click', { method: 'whatsapp', page: location.pathname });
+        const where = a.dataset.whatsapp || (a.closest('footer') ? 'footer' : a.closest('header, [aria-label="About this service"]') ? 'header' : 'content');
+        if (href.startsWith('mailto:')) send('contact_click', { method: 'email', location: where, page: location.pathname });
+        else if (href.includes('wa.me/')) send('contact_click', { method: 'whatsapp', location: where, page: location.pathname });
         else if (a.target === '_blank' && /^https?:/.test(href) && !href.includes(location.host)) {
             try { send('official_source_click', { domain: new URL(href).hostname.replace(/^www\./, ''), page: location.pathname }); } catch (err) { /* ignore */ }
         }

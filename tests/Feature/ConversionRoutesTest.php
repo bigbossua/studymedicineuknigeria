@@ -43,4 +43,21 @@ class ConversionRoutesTest extends TestCase
         }
         $this->assertGreaterThan(20, $checked);
     }
+
+    public function test_floating_whatsapp_contact_is_secondary_to_apply_online_and_carries_no_personal_data(): void
+    {
+        $html = $this->get('/')->assertOk()->getContent();
+        $aside = explode('</aside>', explode('data-floating-cta', $html, 2)[1], 2)[0];
+        $text = rawurlencode('Hello, I would like help studying Medicine in the UK from Nigeria.');
+        $this->assertStringContainsString('href="https://wa.me/447842292527?text='.$text.'"', $aside);
+        $this->assertStringContainsString('WhatsApp us', $aside);
+        $this->assertStringContainsString('role="tooltip"', $aside);
+        $this->assertStringContainsString('Questions about studying Medicine in the UK?', $aside);
+        // Apply Online stays in the same corner, as the primary button
+        $this->assertStringContainsString('class="btn btn-primary">Apply Online</a>', $aside);
+        // the sign-in pages keep their screen free of floating buttons
+        $this->assertStringNotContainsString('data-floating-cta', $this->get('/login')->getContent());
+        config(['site.whatsapp' => '']);
+        $this->assertStringNotContainsString('wa.me/', explode('</aside>', explode('data-floating-cta', $this->get('/')->getContent(), 2)[1], 2)[0]);
+    }
 }

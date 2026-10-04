@@ -92,7 +92,7 @@ The Domain property is better because it covers http, https and www together.
 | `account_created` | Browser, on the next page | none |
 | `course_viewed` (school page) | Browser | `school` (slug) |
 | `apply_viewed` | Browser | none |
-| `contact_click` | Browser | `method` (email, whatsapp), `page` |
+| `contact_click` | Browser | `method` (email, whatsapp), `location` (floating, header, footer, content), `page` |
 | `official_source_click` | Browser | `domain` of the official page, `page` |
 | `directory_filter` | Browser | `filters` (which filters were used, never values typed in search), `searched` (yes/no) |
 | `application_started` | Server (Measurement Protocol) | `tier` if chosen, `intake_year` |

@@ -5,7 +5,7 @@ return [
     'short_name' => 'SMUKN',
     'domain' => 'studymedicineuknigeria.com',
     'email' => 'info@studymedicineuknigeria.com',
-    'whatsapp' => env('SITE_WHATSAPP'), // E.164 without plus, e.g. 2348000000000; null hides WhatsApp links
+    'whatsapp' => env('SITE_WHATSAPP') ?: '447842292527', // E.164 without plus (owner's number +44 7842 292527); an empty .env value keeps this default
     'legal_name' => env('SITE_LEGAL_NAME'), // set when the registered company name is confirmed
     'company_number' => env('SITE_COMPANY_NUMBER'),
     'address' => env('SITE_ADDRESS'),

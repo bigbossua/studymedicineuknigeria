@@ -5,6 +5,13 @@ name: Live verification (read-only)
 # Reads only; values of secrets are never printed.
 on:
   workflow_dispatch:
+    inputs:
+      payments:
+        description: 'Expected payment state: closed, or open (live Stripe wired: live key, webhook secret, catalogue in step)'
+        required: true
+        default: closed
+        type: choice
+        options: [closed, open]
 
 permissions:
   contents: read
@@ -73,8 +80,18 @@ jobs:
               "facts" => App\Models\ReferenceFact::count(), "redirects" => DB::table("redirects")->count(),
               "users" => App\Models\User::count(), "applications" => App\Models\Application::count(),
               "tier_prices" => App\Models\TierPrice::count(),
+              "stripe_live_key" => str_starts_with((string) config("services.stripe.secret"), "sk_live_") || str_starts_with((string) config("services.stripe.secret"), "rk_live_"),
+              "webhook_secret_set" => filled(config("services.stripe.webhook_secret")),
             ], JSON_PRETTY_PRINT), PHP_EOL;'
+          # the live catalogue (ids and amounts only) must match the approved fees whenever a key is installed
+          if $PHP artisan tinker --execute 'echo app(App\Services\Payments\StripeService::class)->enabled() ? "yes" : "no";' | grep -q yes; then $PHP artisan smukn:stripe-sync --check; fi
           REMOTE
-          grep -q '"payments_open": false' server.txt || { echo "::error::payment is not closed"; exit 1; }
+          # unsigned webhook: 400 = signature checked (secret installed), 503 = no secret installed
+          echo "webhook endpoint, unsigned POST: $(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' https://studymedicineuknigeria.com/webhooks/stripe)" | tee -a server.txt
+          if [ "${{ github.event.inputs.payments || 'closed' }}" = open ]; then
+            for k in '"payments_open": true' '"stripe_enabled": true' '"stripe_live_key": true' '"webhook_secret_set": true' 'unsigned POST: 400'; do grep -q "$k" server.txt || { echo "::error::live payments not fully wired: missing $k"; exit 1; }; done
+          else
+            grep -q '"payments_open": false' server.txt || { echo "::error::payment is not closed"; exit 1; }
+          fi
           grep -q '"debug": false' server.txt || { echo "::error::debug is not off"; exit 1; }
           { echo '### Server state'; echo '```'; cat server.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

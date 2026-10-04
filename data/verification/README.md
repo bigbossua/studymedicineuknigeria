@@ -6,7 +6,7 @@ unverified fact is hidden (or shown as pending). The admin verification queue do
 deployed; this worksheet does the same job **now**, from any browser, without deployment or special network access.
 
 1. Export (already done for 2026-10-04, superseding the 2026-10-03 sheet; references are stable, so decisions already made against the old sheet still import; `worksheet-2026-10-04-priority1.csv` holds just the priority-1 rows if you want to start small; regenerate any time): `php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv`
-   Rows are ordered by priority: **1** cycle dates, fees and visa figures; **2** Nigerian-applicant statements; **3** the rest.
+   Rows are ordered by priority: **1** cycle dates, fees and visa figures; **2** Nigerian-applicant statements; **3** the rest; **4** facts about other subjects' courses (dentistry, pharmacy, nursing…), reviewed after every Medicine fact.
 2. Open the CSV in a spreadsheet. For each row, open `source_url` in your browser and compare `current_value` with the page.
    Fill in:
    - `decision`: `verified` (the page says this), `not_published` (the page does not state it), `source_changed`

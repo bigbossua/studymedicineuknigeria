@@ -2,13 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Console\Commands\ExportFactsWorksheet;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Course;
 use App\Models\Profession;
+use App\Models\ReferenceFact;
 use App\Models\University;
 use App\Models\User;
 use App\Support\Totp;
+use Database\Seeders\HealthcareCoursesSeeder;
 use Database\Seeders\ProfessionSeeder;
+use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
@@ -149,5 +153,30 @@ class HealthcareTaxonomyTest extends TestCase
         foreach (['/requirements/waec', '/study-medicine-in-the-uk/from-nigeria', '/requirements/neco'] as $path) {
             $this->assertStringNotContainsString('Qzv', $this->get($path)->assertOk()->getContent(), "{$path} shows a non-medical university's statement");
         }
+    }
+
+    public function test_the_allied_course_dataset_never_reaches_a_medicine_page_and_is_reviewed_after_medicine(): void
+    {
+        $this->seed([ReferenceDataSeeder::class, HealthcareCoursesSeeder::class]);
+        $allied = ReferenceFact::where('subject_type', Course::class)->whereIn('subject_id', Course::where('profession', '!=', 'medicine')->select('id'))->get();
+        $this->assertGreaterThanOrEqual(30, $allied->count());
+        $this->assertSame(['VERIFY-ON-PAGE'], $allied->pluck('verification_status')->unique()->values()->all(), 'research snippets enter unverified');
+        $this->assertSame(53, University::medicalSchools()->count(), 'no provider recorded for another subject joins the directory');
+
+        $needles = $allied->map(fn ($f) => $f->value_text ?? (string) (int) $f->value_number)->filter(fn ($v) => mb_strlen($v) >= 25)->values();
+        foreach (['/medical-schools', '/medical-schools/manchester', '/medical-schools/cardiff', '/fees', '/requirements/english-language', '/requirements/a-levels', '/study-medicine-in-the-uk/foundation-routes', '/admissions/ucat'] as $path) {
+            $html = $this->get($path)->assertOk()->getContent();
+            foreach ($needles as $n) {
+                $this->assertStringNotContainsString(e($n), $html, "{$path} shows an allied-health fact");
+            }
+        }
+        $this->assertStringNotContainsString('36,500', $this->get('/fees')->getContent(), 'the Manchester BDS fee is not a Medicine fee');
+
+        // in the worksheet, Medicine facts come first
+        $this->assertSame(4, ExportFactsWorksheet::priority($allied->first()));
+        // re-seeding keeps a reviewer's verification
+        $allied->first()->update(['verification_status' => 'VERIFIED', 'value_text' => 'Reviewer wording', 'verified_at' => now()]);
+        $this->seed(HealthcareCoursesSeeder::class);
+        $this->assertSame('Reviewer wording', $allied->first()->fresh()->value_text);
     }
 }

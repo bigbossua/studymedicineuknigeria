@@ -1,0 +1,415 @@
+{
+  "_meta": {
+    "dataset": "Non-Medicine healthcare courses at UK universities: international availability, entry and fees",
+    "version": "2026-10-04",
+    "method": "Only items labelled FACT in research 12 §B/§E/§F (a search snippet of the named official page) are recorded, each with its source URL; every fact enters as VERIFY-ON-PAGE and is hidden in production until a reviewer reads the page (worksheet or admin queue). Nothing is inferred across universities or subjects. These rows never appear on Medicine pages (Course::medicine(), University::medicalSchools()) and no subject page exists for them until the subject reaches PUBLISHED.",
+    "providers_not_medical_schools": "Universities without a Medicine course are created with international_policy not_published (that field describes Medicine) and published false."
+  },
+  "courses": [
+    {
+      "university": "manchester",
+      "slug": "bds",
+      "profession": "dentistry",
+      "title": "BDS Dentistry",
+      "official_url": "https://www.bmh.manchester.ac.uk/study/dentistry/apply/statistics/",
+      "facts": [
+        {
+          "key": "international_places",
+          "text": "Approximately 15 international places a year (approximately 85 home places)",
+          "source": "https://www.bmh.manchester.ac.uk/study/dentistry/apply/statistics/"
+        },
+        {
+          "key": "international_fee_gbp",
+          "number": 36500,
+          "year": "2025/26",
+          "source": "https://www.manchester.ac.uk/study/undergraduate/courses/2025/00398/bds-dentistry-first-year-entry/fees-and-funding/",
+          "notes": "Year 1. Snippet: clinical years from Year 2 (2025 entry) £58,000, subject to inflation; record separately once read."
+        },
+        {
+          "key": "a_level_requirement",
+          "text": "AAA including Chemistry and Biology or Human Biology",
+          "source": "https://www.manchester.ac.uk/study/undergraduate/courses/2025/00398/bds-dentistry-first-year-entry/"
+        },
+        {
+          "key": "english_language_requirement",
+          "text": "IELTS 7.0 overall with no component below 6.5, in one sitting",
+          "source": "https://www.manchester.ac.uk/study/undergraduate/courses/2025/00398/bds-dentistry-first-year-entry/"
+        },
+        {
+          "key": "interview_format",
+          "text": "Overseas-domiciled applicants are interviewed online",
+          "source": "https://www.bmh.manchester.ac.uk/study/dentistry/interviews/frequentlyaskedquestions/"
+        }
+      ]
+    },
+    {
+      "university": "cardiff",
+      "slug": "bds",
+      "profession": "dentistry",
+      "title": "Dental Surgery (BDS)",
+      "official_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/dental-surgery-bds",
+      "facts": [
+        {
+          "key": "a_level_requirement",
+          "text": "AAA including Biology and Chemistry; GCSE English at B/6",
+          "source": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/dental-surgery-bds"
+        },
+        {
+          "key": "admissions_test",
+          "text": "UCAT, sat before applying",
+          "source": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/dental-surgery-bds"
+        }
+      ]
+    },
+    {
+      "university": "aberdeen",
+      "slug": "bds",
+      "profession": "dentistry",
+      "title": "Dentistry (BDS)",
+      "official_url": "https://www.abdn.ac.uk/dental/study/bds/entrance-requirements/academic-requirements/",
+      "facts": [
+        {
+          "key": "english_language_requirement",
+          "text": "IELTS 7.0 overall with at least 7.0 in speaking; English qualification within two years of applying",
+          "source": "https://www.abdn.ac.uk/dental/study/bds/entrance-requirements/academic-requirements/"
+        }
+      ]
+    },
+    {
+      "university": "bristol",
+      "slug": "ifp-dentistry",
+      "profession": "dentistry",
+      "title": "International Foundation Programme for Dentistry",
+      "official_url": "https://www.bristol.ac.uk/health-life-sciences/international-foundation-programme/",
+      "facts": [
+        {
+          "key": "foundation_route",
+          "text": "One-year programme for overseas students; successful completion guarantees an interview for Bristol BDS",
+          "source": "https://www.bristol.ac.uk/health-life-sciences/international-foundation-programme/"
+        }
+      ],
+      "entry_type": "foundation"
+    },
+    {
+      "university": "nottingham",
+      "slug": "mpharm",
+      "profession": "pharmacy",
+      "title": "Pharmacy MPharm",
+      "official_url": "https://www.nottingham.ac.uk/ugstudy/course/pharmacy-mpharm",
+      "facts": [
+        {
+          "key": "international_fee_gbp",
+          "number": 33000,
+          "year": "2026/27",
+          "source": "https://www.nottingham.ac.uk/ugstudy/course/pharmacy-mpharm",
+          "notes": "Shown as provisional on the snippet."
+        },
+        {
+          "key": "a_level_requirement",
+          "text": "AAA including Chemistry plus one of Biology, Mathematics, Further Mathematics or Physics (page states 2027 entry)",
+          "source": "https://www.nottingham.ac.uk/ugstudy/course/pharmacy-mpharm"
+        },
+        {
+          "key": "english_language_requirement",
+          "text": "IELTS 7.0 with no element below 6.0",
+          "source": "https://www.nottingham.ac.uk/ugstudy/course/pharmacy-mpharm"
+        }
+      ]
+    },
+    {
+      "university": "cardiff",
+      "slug": "mpharm",
+      "profession": "pharmacy",
+      "title": "Pharmacy (MPharm)",
+      "official_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/pharmacy-mpharm",
+      "facts": [
+        {
+          "key": "international_fee_gbp",
+          "number": 30700,
+          "year": "2026/27",
+          "source": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/pharmacy-mpharm"
+        },
+        {
+          "key": "interview_format",
+          "text": "Online interview; no offers without an interview",
+          "source": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/pharmacy-mpharm"
+        }
+      ]
+    },
+    {
+      "university": "manchester",
+      "slug": "mpharm-foundation",
+      "profession": "pharmacy",
+      "title": "MPharm Pharmacy with a Foundation Year",
+      "official_url": "https://www.manchester.ac.uk/study/undergraduate/courses/2025/07958/mpharm-pharmacy-with-a-foundation-year",
+      "facts": [
+        {
+          "key": "foundation_route",
+          "text": "Five-year route designed for students without the right entry qualifications for the MPharm",
+          "source": "https://www.manchester.ac.uk/study/undergraduate/courses/2025/07958/mpharm-pharmacy-with-a-foundation-year"
+        },
+        {
+          "key": "international_fee_gbp",
+          "number": 31500,
+          "year": "2025/26",
+          "source": "https://www.manchester.ac.uk/study/undergraduate/courses/2025/07958/mpharm-pharmacy-with-a-foundation-year"
+        }
+      ],
+      "entry_type": "foundation"
+    },
+    {
+      "university": "ucl",
+      "slug": "mpharm-integrated-foundation-training",
+      "profession": "pharmacy",
+      "title": "Pharmacy with Integrated Foundation Training MPharm",
+      "official_url": "https://www.ucl.ac.uk/prospective-students/undergraduate/degrees/pharmacy-integrated-foundation-training-mpharm",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Aimed primarily at international students",
+          "source": "https://www.ucl.ac.uk/prospective-students/undergraduate/degrees/pharmacy-integrated-foundation-training-mpharm"
+        },
+        {
+          "key": "international_fee_gbp",
+          "number": 35400,
+          "year": "2026/27",
+          "source": "https://www.ucl.ac.uk/prospective-students/undergraduate/degrees/pharmacy-integrated-foundation-training-mpharm"
+        }
+      ]
+    },
+    {
+      "university": "sunderland",
+      "slug": "mpharm",
+      "profession": "pharmacy",
+      "title": "MPharm Pharmacy",
+      "official_url": "https://www.sunderland.ac.uk/all-fees/",
+      "facts": [
+        {
+          "key": "international_fee_gbp",
+          "number": 20000,
+          "year": "2026/27",
+          "source": "https://www.sunderland.ac.uk/all-fees/"
+        }
+      ]
+    },
+    {
+      "university": "kings-college-london",
+      "slug": "adult-nursing",
+      "profession": "nursing",
+      "title": "Nursing with registration as an Adult Nurse BSc",
+      "official_url": "https://www.kcl.ac.uk/study/undergraduate/courses/nursing-with-registration-as-an-adult-nurse-bsc/entry-requirements",
+      "facts": [
+        {
+          "key": "english_language_requirement",
+          "text": "IELTS 7.0 overall, in line with the professional body",
+          "source": "https://www.kcl.ac.uk/study/undergraduate/courses/nursing-with-registration-as-an-adult-nurse-bsc/entry-requirements"
+        },
+        {
+          "key": "a_level_requirement",
+          "text": "575 hours (about four months full-time) of healthcare-related experience required",
+          "source": "https://www.kcl.ac.uk/study/undergraduate/courses/nursing-with-registration-as-an-adult-nurse-bsc/entry-requirements"
+        }
+      ]
+    },
+    {
+      "university": "manchester-metropolitan",
+      "name": "Manchester Metropolitan University",
+      "nation": "England",
+      "city": "Manchester",
+      "slug": "adult-nursing",
+      "profession": "nursing",
+      "title": "BSc Adult Nursing",
+      "official_url": "https://www.mmu.ac.uk/study/undergraduate/course/bsc-adult-nursing/september-2026/",
+      "facts": [
+        {
+          "key": "international_fee_gbp",
+          "number": 21500,
+          "year": "2026/27",
+          "source": "https://www.mmu.ac.uk/study/undergraduate/course/bsc-adult-nursing/september-2026/",
+          "notes": "Snippet shows the international full-time fee on the September 2026 page; confirm the year on the page."
+        },
+        {
+          "key": "a_level_requirement",
+          "text": "Typically 104 UCAS tariff points",
+          "source": "https://www.mmu.ac.uk/study/undergraduate/course/bsc-adult-nursing/september-2026/"
+        },
+        {
+          "key": "english_language_requirement",
+          "text": "IELTS 6.5 overall with 6.5 in Reading, Listening and Speaking and 6.0 in Writing, taken within two years",
+          "source": "https://www.mmu.ac.uk/study/undergraduate/course/bsc-adult-nursing/september-2026/"
+        }
+      ]
+    },
+    {
+      "university": "southampton",
+      "slug": "adult-nursing",
+      "profession": "nursing",
+      "title": "Adult Nursing (international scholarship)",
+      "official_url": "https://www.southampton.ac.uk/study/fees-funding/scholarships/global-talent-in-adult-nursing-scholarship",
+      "facts": [
+        {
+          "key": "scholarship",
+          "text": "Global Talent in Adult Nursing Scholarship: £5,000 off tuition a year for up to three years for international undergraduate adult nursing students, awarded automatically",
+          "source": "https://www.southampton.ac.uk/study/fees-funding/scholarships/global-talent-in-adult-nursing-scholarship"
+        }
+      ]
+    },
+    {
+      "university": "birmingham",
+      "slug": "midwifery",
+      "profession": "midwifery",
+      "title": "BSc Midwifery",
+      "official_url": "https://www.birmingham.ac.uk/undergraduate/courses/med/bsc-midwifery",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Does not currently consider applicants who would be considered overseas for fee purposes",
+          "source": "https://www.birmingham.ac.uk/undergraduate/courses/med/bsc-midwifery"
+        }
+      ]
+    },
+    {
+      "university": "cardiff",
+      "slug": "bmid",
+      "profession": "midwifery",
+      "title": "Midwifery (BMid)",
+      "official_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/midwifery-bmid",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Unable to accept applications from international fee-status applicants because of the course's association with the NHS and the restrictions on funding and clinical placements",
+          "source": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/midwifery-bmid"
+        }
+      ]
+    },
+    {
+      "university": "northumbria",
+      "name": "Northumbria University",
+      "nation": "England",
+      "city": "Newcastle upon Tyne",
+      "slug": "midwifery-studies",
+      "profession": "midwifery",
+      "title": "Midwifery Studies BSc",
+      "official_url": "https://northumbria.ac.uk/course/uufmwy1",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Welcomes applicants with a range of qualifications from outside the UK",
+          "source": "https://northumbria.ac.uk/course/uufmwy1"
+        },
+        {
+          "key": "english_language_requirement",
+          "text": "IELTS 7.0 with 6.5 in each component, or OET",
+          "source": "https://northumbria.ac.uk/course/uufmwy1"
+        }
+      ]
+    },
+    {
+      "university": "cardiff",
+      "slug": "radiotherapy-oncology",
+      "profession": "therapeutic-radiography",
+      "title": "Radiotherapy and Oncology (BSc)",
+      "official_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/radiotherapy-and-oncology-bsc",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Not available for international students: an NHS placement is required and the NHS only makes placements available to students eligible to pay UK fees",
+          "source": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/radiotherapy-and-oncology-bsc"
+        }
+      ]
+    },
+    {
+      "university": "liverpool",
+      "slug": "therapeutic-radiography",
+      "profession": "therapeutic-radiography",
+      "title": "Therapeutic Radiography and Oncology BSc (Hons)",
+      "official_url": "https://www.liverpool.ac.uk/courses/therapeutic-radiography-and-oncology-bsc-hons/2027",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Vacancies available for international applicants",
+          "source": "https://www.liverpool.ac.uk/courses/therapeutic-radiography-and-oncology-bsc-hons/2027"
+        },
+        {
+          "key": "deadline",
+          "text": "30 June 2027 for international students (13 January 2027 for UK students)",
+          "year": "2027",
+          "source": "https://www.liverpool.ac.uk/courses/therapeutic-radiography-and-oncology-bsc-hons/2027"
+        },
+        {
+          "key": "english_language_requirement",
+          "text": "IELTS 7.0 with a minimum of 7.0 in each skill",
+          "source": "https://www.liverpool.ac.uk/courses/therapeutic-radiography-and-oncology-bsc-hons/2027"
+        }
+      ]
+    },
+    {
+      "university": "cardiff",
+      "slug": "dental-therapy-hygiene",
+      "profession": "dental-hygiene-and-therapy",
+      "title": "Dental Therapy and Hygiene (BSc)",
+      "official_url": "https://cardiff.ac.uk/study/undergraduate/courses/2023/dental-therapy-and-hygiene-bsc",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Does not currently accept international students",
+          "source": "https://cardiff.ac.uk/study/undergraduate/courses/2023/dental-therapy-and-hygiene-bsc",
+          "notes": "Seen on the 2023 course page; read the current-year page."
+        }
+      ]
+    },
+    {
+      "university": "brunel",
+      "slug": "physiotherapy",
+      "profession": "physiotherapy",
+      "title": "Physiotherapy BSc",
+      "official_url": "https://www.brunel.ac.uk/study/undergraduate/physiotherapy-bsc",
+      "facts": [
+        {
+          "key": "international_fee_gbp",
+          "number": 21795,
+          "year": "2026/27",
+          "source": "https://www.brunel.ac.uk/study/undergraduate/physiotherapy-bsc"
+        },
+        {
+          "key": "a_level_requirement",
+          "text": "ABB–BBB at A-level; BTEC DDD–DDM; IB 31–30 (2026/27)",
+          "source": "https://www.brunel.ac.uk/study/undergraduate/physiotherapy-bsc"
+        },
+        {
+          "key": "international_accepted",
+          "text": "International students complete 1,000+ placement hours across private healthcare providers and other settings",
+          "source": "https://www.brunel.ac.uk/physiotherapy/why-study-physiotherapy-at-brunel/information-for-international-students"
+        }
+      ]
+    },
+    {
+      "university": "kings-college-london",
+      "slug": "biomedical-science",
+      "profession": "biomedical-science",
+      "title": "Biomedical Science BSc",
+      "official_url": "https://www.kcl.ac.uk/study/undergraduate/courses/biomedical-science-bsc/entry-requirements",
+      "facts": [
+        {
+          "key": "a_level_requirement",
+          "text": "AAA including A in Biology and Chemistry",
+          "source": "https://www.kcl.ac.uk/study/undergraduate/courses/biomedical-science-bsc/entry-requirements"
+        }
+      ]
+    },
+    {
+      "university": "wolverhampton",
+      "slug": "healthcare-science-cardiac",
+      "profession": "healthcare-science",
+      "title": "BSc (Hons) Healthcare Science (Cardiac Physiology)",
+      "official_url": "https://wlv.ac.uk/courses/bsc-hons-healthcare-science-cardiac-physiology",
+      "facts": [
+        {
+          "key": "international_accepted",
+          "text": "Unable to take applications for entry onto the Healthcare Science course at this time",
+          "source": "https://wlv.ac.uk/courses/bsc-hons-healthcare-science-cardiac-physiology"
+        }
+      ]
+    }
+  ]
+}

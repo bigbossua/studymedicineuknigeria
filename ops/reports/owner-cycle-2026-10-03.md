@@ -195,6 +195,36 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 4. **WHAT:** Stripe test-mode keys for staging (prices are already set: £75 / £395 / £795). **WHERE:** Stripe Dashboard (Test mode) → Developers → API keys and → Webhooks (endpoint `https://staging.studymedicineuknigeria.com/webhooks/stripe`, events listed in `ops/STAGING-SETTINGS.md`); then GitHub → Settings → Environments → `staging` → secrets `STRIPE_KEY` (pk_test_…), `STRIPE_SECRET` (sk_test_…), `STRIPE_WEBHOOK_SECRET` (whsec_…). **WHY:** card checkout stays switched off until a test key exists; live keys are refused on staging. **AFTER YOU DO IT:** I run *Update server settings* (staging), then pay each service with Stripe's test cards on phone and desktop (success, decline, cancel, expiry, refund from the Stripe dashboard, webhook replay) and report what staff and student see.
 5. Photos (optional): `docs/design/IMAGERY-BRIEF.md`.
 
+## Cycle 37 — premium fees and the production launch path (stage 43, 2026-10-04)
+
+**Launch status (the report format you asked for; nothing below is claimed beyond what ran):**
+
+| Item | Status |
+|---|---|
+| LIVE URL | https://studymedicineuknigeria.com — **not deployed**: still serves whatever it served before; nothing has touched the server |
+| COMMIT | `7a1d70d` on `claude/new-session-p6gdm6` (fees, live-only Stripe in production, preflight, safe cutover); CI run 136 |
+| DATABASE | production database not created/connected: no `SMUKN_DB_*` secrets in the `production` environment |
+| EMAIL | ready in code (queued verification/reset/notifications over Hostinger SMTP); production refuses to bootstrap or deploy without `SMUKN_MAIL_PASSWORD` and a real mailer |
+| STRIPE LIVE STATUS | no keys; production now accepts only `sk_live_`/`pk_live_` and live-mode events, staging only test ones |
+| T1 / T2 / T3 | £125 / £695 (Most popular) / £1,295 GBP in the service records; the Stripe charge is built from the same record (browser test: page £695 = 69500 GBP sent to checkout); £1,295 shown with its thousands separator and compared correctly |
+| WEBHOOK | `https://studymedicineuknigeria.com/webhooks/stripe` ready (signature, amount, currency, session, service, replay checks); endpoint to be created in Stripe live mode by you |
+| SECURITY | unchanged guards plus: wrong-mode Stripe keys refused per environment; deploy preflight (debug off, real mail, public URL, unverified facts hidden) before any change |
+| SEO | production smoke and page review fail on noindex, wrong canonical, a robots.txt without the sitemap, missing HSTS, a password prompt, `/index.php/…` not redirecting; local production-mode review 64 page views clean |
+| ACCESSIBILITY | 0 serious/critical axe violations in the 64 reviewed views |
+| STUDENT / STAFF / PAYMENT JOURNEY | passed locally on phone and desktop with the Stripe stand-in; not yet on a server |
+| BACKUP | new pre-launch `site` backup of the existing site (files + WordPress database if any), encrypted and restore-tested; rehearsed locally; not yet run on Hostinger |
+| ROLLBACK | rehearsed: failed smoke puts the old site back automatically; code rollback; `restore_previous_site` |
+| KNOWN ISSUES | every GitHub setting missing (Diagnose run 18, 06:15 UTC: all rows missing in repository, staging and production; `production` has no required reviewer); P0 facts unverified; Semrush export absent; Stripe's real hosted page untested (this environment cannot reach stripe.com) |
+
+**Superseded:** the cycle-36 fees (£75 / £395 / £795) are replaced by your premium fees. Cycle 36 above stays as written because it records what was approved at the time; a deploy replaces exactly those three old amounts once and logs it, and never overrides a price you set in Admin.
+
+### OWNER ACTION REQUIRED (WHAT I MUST DO → WHERE → WHY → WHAT YOU WILL DO IMMEDIATELY AFTER)
+
+1. **Server access and staging** → the table in `ops/STAGING-SETTINGS.md` sections 1–2 (hPanel SSH key, `staging` subdomain with SSL, two new MySQL databases; GitHub repository secrets and variables; staging environment database secrets; **Required reviewers** on `production`) → nothing can reach the server without them, and production deploys refuse to run without a reviewer and a staging pass of the same commit → I run Diagnose, the read-only inspection (what the domain serves today), the pre-launch backup of the existing site with its restore test, then staging deploy and review, and report.
+2. **Production secrets** → GitHub → Settings → Environments → `production` → secrets `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` (the new production database), `SMUKN_MAIL_PASSWORD` (mailbox `info@studymedicineuknigeria.com`), and from Stripe in **live mode** `STRIPE_KEY` (pk_live_…), `STRIPE_SECRET` (sk_live_…), `STRIPE_WEBHOOK_SECRET` (whsec_… of the endpoint `https://studymedicineuknigeria.com/webhooks/stripe` with the six events in section 2) → production bootstrap and deploy refuse to run without real email, and card payment stays off without live keys → after your approval of each run: bootstrap production, deploy with the cutover (old site archived, moved aside, restored automatically on any smoke failure), production smoke and page review, then you register and I grant your admin role (two-step sign-in), then a full backup with restore test, then the owner report with every row filled from the runs.
+3. **Live payment check (your decision)** → after launch, you pay T1 (£125) with your own card and refund it in the Stripe Dashboard → proves the live path end to end; Stripe keeps its processing fee on a refunded payment, so this costs that fee → I confirm the webhook, the amounts and the refund in the admin and audit log. If you prefer not to, the first student payment is the first live one, and I watch it.
+4. **P0 facts and Semrush** → unchanged from cycle 36 items 2 and 3 → unverified facts stay hidden in production → I import them and update the pages and register.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

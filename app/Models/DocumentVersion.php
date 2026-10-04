@@ -10,7 +10,7 @@ class DocumentVersion extends Model
 
     protected $guarded = [];
 
-    protected $casts = ['uploaded_at' => 'datetime', 'encrypted' => 'boolean'];
+    protected $casts = ['uploaded_at' => 'datetime', 'encrypted' => 'boolean', 'purged_at' => 'datetime'];
 
     /** Download name built from the record, never from the uploader's filename. */
     public function safeFilename(): string

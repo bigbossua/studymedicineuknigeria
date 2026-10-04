@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\Stage;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Application;
 use App\Models\User;
@@ -103,5 +104,36 @@ class DocumentSecurityTest extends TestCase
         $root = realpath(config('filesystems.disks.private.root')) ?: config('filesystems.disks.private.root');
         $this->assertStringStartsNotWith(public_path(), (string) $root, 'documents never live under the web root');
         $this->assertFalse(file_exists(public_path('storage')), 'no public storage link');
+    }
+
+    public function test_retention_deletes_closed_applications_documents_after_12_months_and_anonymises_after_24(): void
+    {
+        [$doc] = $this->upload($this->alice, $this->a);
+        [$bobDoc] = $this->upload($this->bob, $this->b);
+        $v = $doc->fresh()->versions()->firstOrFail();
+        $bv = $bobDoc->fresh()->versions()->firstOrFail();
+        \DB::table('messages')->insert(['application_id' => $this->a->id, 'sender_user_id' => $this->alice->id, 'body' => 'my grades are attached', 'created_at' => now(), 'updated_at' => now()]);
+
+        // Alice's application closed 13 months ago; Bob's is still open
+        $this->a->forceFill(['stage' => Stage::CLOSED, 'closed_at' => now()->subMonths(13)])->save();
+        $this->artisan('smukn:retention --dry-run')->expectsOutputToContain('document_files 1')->assertSuccessful();
+        $this->assertTrue(Storage::disk('private')->exists($v->path), 'a dry run changes nothing');
+
+        $this->artisan('smukn:retention')->assertSuccessful();
+        $this->assertFalse(Storage::disk('private')->exists($v->path), 'the closed application\'s file is deleted');
+        $this->assertNotNull($v->fresh()->purged_at);
+        $this->assertTrue(Storage::disk('private')->exists($bv->path), 'an open application is untouched');
+        $this->assertNull($this->a->fresh()->anonymised_at, 'content stays until 24 months');
+        // the deleted file answers 410, not an error page or someone else's file
+        $this->actingAs($this->alice)->get("/portal/{$this->a->application_number}/documents/{$doc->id}/v/{$v->id}")->assertStatus(410);
+
+        // at 25 months the application's content is anonymised; its dates and stage remain
+        $this->a->forceFill(['closed_at' => now()->subMonths(25)])->save();
+        $this->artisan('smukn:retention')->assertSuccessful();
+        $a = $this->a->fresh();
+        $this->assertNotNull($a->anonymised_at);
+        $this->assertNull($a->form);
+        $this->assertSame(Stage::CLOSED, $a->stage);
+        $this->assertSame('[removed under the retention policy]', \DB::table('messages')->where('application_id', $a->id)->value('body'));
     }
 }

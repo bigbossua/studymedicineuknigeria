@@ -1,7 +1,8 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10"><div class="max-w-3xl prose-site">
     @include('content._page-head', ['eyebrow' => 'Legal', 'title' => 'Terms of use', 'lede' => 'The terms on which you may use this website and the student portal.', 'seo' => $seo])
-    <p class="text-[0.8125rem] text-ink-500 mt-4">Version 0.9, 3 October 2026 — under legal review.</p>
+    <p class="text-[0.8125rem] text-ink-500 mt-4">Version 0.9.2, 4 October 2026 — under legal review.</p>
+    <h2>Who we are</h2><p>This website and the student portal are operated by {{ collect([config('site.legal_name') ?? config('site.name'), config('site.company_number') ? 'company number '.config('site.company_number') : null, config('site.address'), config('site.vat_number') ? 'VAT number '.config('site.vat_number') : null])->filter()->implode(', ') }}. Contact: <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a>.</p>
     <h2>Information on this site</h2><p>We take care to record what universities and official bodies publish, with sources and verification dates. Requirements, fees and deadlines change; the official source always prevails over our record, and you must confirm with the university before relying on any figure. Nothing on this site is an admissions decision or a guarantee.</p>
     <h2>Independence</h2><p>We are an independent application-support service. We are not an agent of, or affiliated with, any university, UCAS, the British Council or the GMC unless expressly stated on <a href="{{ route('status') }}">Our status</a>.</p>
     <h2>Your account</h2><p>Keep your password secure and your details accurate. You are responsible for activity under your account. We may suspend accounts used to upload unlawful or malicious content.</p>

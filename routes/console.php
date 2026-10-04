@@ -10,5 +10,6 @@ Schedule::command('smukn:flag-review-due')->dailyAt('02:30');
 Schedule::command('smukn:sources-check')->dailyAt('03:40')->withoutOverlapping(); // un-verify facts whose official page changed
 Schedule::command('smukn:expire-payments')->hourly();
 Schedule::command('queue:prune-failed --hours=720')->weekly();
+Schedule::command('smukn:retention')->weeklyOn(0, '04:10'); // privacy notice: documents 12 months after closure, content anonymised after 24
 // heartbeat: proves the hPanel cron job runs even when the queue is empty (admin dashboard, live verification)
 Schedule::call(fn () => Cache::forever('scheduler.heartbeat', now()->timestamp))->everyMinute()->name('scheduler-heartbeat');

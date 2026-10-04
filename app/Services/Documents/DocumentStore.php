@@ -71,6 +71,7 @@ class DocumentStore
 
     public function contents(DocumentVersion $v): string
     {
+        abort_if($v->purged_at !== null, 410, 'This file was deleted under the retention policy.');
         $raw = Storage::disk($v->disk)->get($v->path);
 
         return $v->encrypted ? Crypt::decrypt($raw, false) : $raw;

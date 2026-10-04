@@ -4,7 +4,9 @@
 # never on a command line. Only non-empty inputs are written; every other line of .env is left as it is.
 # Inputs (environment): TARGET, STRIPE_KEY, STRIPE_SECRET, STRIPE_WEBHOOK_SECRET, MAIL_PASSWORD, SITE_REGISTRATION_OPEN, SITE_BANK_TRANSFER,
 # SITE_GA4_ID (G-…, public), SITE_GA4_API_SECRET (Measurement Protocol secret), SITE_GOOGLE_VERIFICATION (Search Console tag token),
-# SITE_ANALYTICS_DECISION (first_party | ga4: the owner's recorded analytics choice)
+# SITE_ANALYTICS_DECISION (first_party | ga4: the owner's recorded analytics choice), and the public business identity
+# shown on the legal pages once supplied: SITE_LEGAL_NAME, SITE_COMPANY_NUMBER, SITE_ADDRESS, SITE_ICO_NUMBER,
+# SITE_VAT_NUMBER, SITE_HOSTING_REGION, SITE_LEGAL_REVIEWED (date of the legal review)
 set -euo pipefail
 : "${TARGET:?staging|production}"
 APP=~/apps/smukn-$TARGET; ENV_FILE=$APP/shared/.env
@@ -29,7 +31,7 @@ case "${SITE_GA4_ID:-}" in ""|G-[A-Z0-9]*) ;; *) echo "SITE_GA4_ID must be a GA4
 case "${SITE_ANALYTICS_DECISION:-}" in ""|first_party|ga4) ;; *) echo "SITE_ANALYTICS_DECISION must be first_party or ga4" >&2; exit 4;; esac
 case "${SITE_GOOGLE_VERIFICATION:-}" in *[!A-Za-z0-9_-]*) echo "SITE_GOOGLE_VERIFICATION must be the token only (letters, digits, - and _)" >&2; exit 4;; esac
 changed=0
-for v in STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION SITE_ANALYTICS_DECISION; do
+for v in STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION SITE_ANALYTICS_DECISION SITE_LEGAL_NAME SITE_COMPANY_NUMBER SITE_ADDRESS SITE_ICO_NUMBER SITE_VAT_NUMBER SITE_HOSTING_REGION SITE_LEGAL_REVIEWED; do
   [ -n "${!v:-}" ] && { set_key "$v" "${!v}"; changed=1; }
 done
 # switches (not secrets): registration opens only after a successful test email (Send test email workflow)
@@ -43,7 +45,7 @@ chmod 600 "$ENV_FILE"
 # .env even when it is empty, so they must be gone before the cache is built: an empty STRIPE_WEBHOOK_SECRET here once
 # cached "no webhook secret" over the value another run had just written to .env.
 notify=${STRIPE_SECRET:+1}
-unset STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_REGISTRATION_OPEN SITE_BANK_TRANSFER SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION SITE_ANALYTICS_DECISION
+unset STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_REGISTRATION_OPEN SITE_BANK_TRANSFER SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION SITE_ANALYTICS_DECISION SITE_LEGAL_NAME SITE_COMPANY_NUMBER SITE_ADDRESS SITE_ICO_NUMBER SITE_VAT_NUMBER SITE_HOSTING_REGION SITE_LEGAL_REVIEWED
 if [ -d "$APP/current" ]; then
   PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
   [ -n "$PHP" ] || { echo "no PHP 8.3+ command-line binary found"; exit 3; }

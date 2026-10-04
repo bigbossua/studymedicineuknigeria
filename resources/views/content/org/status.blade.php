@@ -9,7 +9,7 @@
             <dl class="text-[0.9375rem] grid sm:grid-cols-12 gap-y-2">
                 <dt class="sm:col-span-4 text-ink-500">Operating entity</dt><dd class="sm:col-span-8">{{ config('site.legal_name') ?? 'To be published on incorporation' }}{{ config('site.company_number') ? ' · '.config('site.company_number') : '' }}</dd>
                 <dt class="sm:col-span-4 text-ink-500">Registered address</dt><dd class="sm:col-span-8">{{ config('site.address') ?? 'To be published' }}</dd>
-                <dt class="sm:col-span-4 text-ink-500">UK ICO data-protection fee</dt><dd class="sm:col-span-8">To be published once registered</dd>
+                <dt class="sm:col-span-4 text-ink-500">UK ICO data-protection fee</dt><dd class="sm:col-span-8">{{ config('site.ico_number') ? 'Registration '.config('site.ico_number') : 'To be published once registered' }}</dd>
                 <dt class="sm:col-span-4 text-ink-500">Nigeria Data Protection Commission</dt><dd class="sm:col-span-8">Registration assessed against the "controller of major importance" threshold; status to be published</dd>
                 <dt class="sm:col-span-4 text-ink-500">Training</dt><dd class="sm:col-span-8">British Council UK agent and counsellor training certificate: to be published on completion (individual certificate, not an agency approval)</dd>
             </dl></section>

@@ -9,6 +9,9 @@ return [
     'legal_name' => env('SITE_LEGAL_NAME'), // set when the registered company name is confirmed
     'company_number' => env('SITE_COMPANY_NUMBER'),
     'address' => env('SITE_ADDRESS'),
+    'ico_number' => env('SITE_ICO_NUMBER'),          // UK ICO registration (data protection fee) reference, once registered
+    'vat_number' => env('SITE_VAT_NUMBER'),          // only if VAT-registered
+    'hosting_region' => env('SITE_HOSTING_REGION'),  // data-centre location shown in hPanel, e.g. "the United Kingdom"
     'tagline' => 'Evidence. Guidance. Application.',
     'default_description' => 'Independent, evidence-led guidance for Nigerian students applying to study Medicine in the United Kingdom: published entry requirements, verified fees, the UK medical school directory, UCAT and UCAS timelines, and an online application service.',
     'og_image' => '/images/brand/og-default.png',

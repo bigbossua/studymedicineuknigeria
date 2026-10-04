@@ -79,14 +79,14 @@ Route::get('apply-online/eligibility', [ContentController::class, 'eligibility']
 Route::post('apply-online/eligibility', [ContentController::class, 'eligibilitySubmit'])->middleware('throttle:10,10,apply.eligibility.submit')->name('apply.eligibility.submit');
 
 // Organisation & legal
-Route::get('about', [ContentController::class, 'about'])->name('about')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('about', [ContentController::class, 'about'])->name('about')->defaults('sitemap', ['lastmod' => '2026-10-04', 'changefreq' => 'yearly']);
 Route::get('our-status', [ContentController::class, 'status'])->name('status')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 Route::get('how-we-verify', [ContentController::class, 'howWeVerify'])->name('verify')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 Route::get('contact', [ContentController::class, 'contact'])->name('contact')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
-Route::get('privacy', fn () => app(ContentController::class)->legal('privacy'))->name('legal.privacy')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
-Route::get('terms', fn () => app(ContentController::class)->legal('terms'))->name('legal.terms')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('privacy', fn () => app(ContentController::class)->legal('privacy'))->name('legal.privacy')->defaults('sitemap', ['lastmod' => '2026-10-04', 'changefreq' => 'yearly']);
+Route::get('terms', fn () => app(ContentController::class)->legal('terms'))->name('legal.terms')->defaults('sitemap', ['lastmod' => '2026-10-04', 'changefreq' => 'yearly']);
 Route::get('application-terms', fn () => app(ContentController::class)->legal('application-terms'))->name('legal.application-terms')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
-Route::get('refund-policy', fn () => app(ContentController::class)->legal('refunds'))->name('legal.refunds')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
+Route::get('refund-policy', fn () => app(ContentController::class)->legal('refunds'))->name('legal.refunds')->defaults('sitemap', ['lastmod' => '2026-10-04', 'changefreq' => 'yearly']);
 
 // Auth placeholder until the portal is implemented
 Route::get('login', [AuthController::class, 'showLogin'])->middleware('guest')->name('login');

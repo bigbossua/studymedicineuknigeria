@@ -1,51 +1,51 @@
 id,query_theme,intent_hypothesis,semrush_keyword_used,database,volume,keyword_difficulty,cpc,intent_semrush,top_3_urls,trend_note,looked_up_on,register_ids
-1,study medicine in UK from Nigeria,Informational,,ng,,,,,,,,C01
-2,medicine in UK for Nigerian students,Informational,,ng,,,,,,,,C01
-3,MBBS UK for Nigerian students,Informational (ambiguous),,ng,,,,,,,,B03
-4,medical universities in UK for Nigerians / UK medical school Nigeria,Informational/Commercial,,ng,,,,,,,,C02
-5,medicine entry requirements UK for Nigerian students,Informational,,ng,,,,,,,,E01
-6,can I study medicine in UK with WAEC / WAEC medicine UK,Informational (Q),,ng,,,,,,,,F01
-7,NECO medicine UK,Informational (Q),,ng,,,,,,,,G01
-8,JAMB medicine UK,Informational (Q),,ng,,,,,,,,G02;S01
-9,A-level medicine UK Nigeria / A-level schools Nigeria UK medicine,Informational→Commercial,,ng,,,,,,,,E02
-10,graduate entry medicine UK Nigerian students / after Nigerian degree,Informational,,ng,,,,,,,,P01
-11,cost of studying medicine in UK for Nigerian students,Informational/Commercial,,ng,,,,,,,,K02
-12,medical school fees UK for international students,Informational/Commercial,,ng,,,,,,,,K01
-13,UCAT Nigeria / UCAT test centre Lagos,Transactional/Navigational,,ng,,,,,,,,H01
-14,UK medical schools that accept international students,Informational/Commercial,,ng,,,,,,,,D01
-15,cheapest medical school in UK for international students,Commercial,,ng,,,,,,,,K01
-16,dentistry UK Nigerian students,Informational,,ng,,,,,,,,B04
-17,pharmacy UK Nigerian students,Informational,,ng,,,,,,,,B05
-18,nursing UK Nigerian students,Informational (split: study vs migrate),,ng,,,,,,,,B05
-19,public health UK Nigerian students,Informational (PG),,ng,,,,,,,,B05
-20,biomedical science UK Nigerian students,Informational,,ng,,,,,,,,P02
-21,physiotherapy UK Nigerian students,Informational,,ng,,,,,,,,B06
-22,radiography UK Nigerian students,Informational,,ng,,,,,,,,B06
-23,medical laboratory science UK for Nigerians,Informational (migration),,ng,,,,,,,,P02
-24,can I work in UK after studying medicine,Informational,,ng,,,,,,,,R01
-25,MDCN recognition of UK medical degree (emergent from results),Informational,,ng,,,,,,,,Q01
-26,foundation year medicine UK international / which foundation leads to medicine (emergent),Informational/Commercial,,ng,,,,,,,,O01
-27,scholarships to study medicine in UK for Nigerian students (emergent),Informational/Commercial,,ng,,,,,,,,J02
-28,waec requirements for nursing in uk,Informational,,ng,,,,,,,,V31
-29,study nursing in uk from nigeria,Informational/migration,,ng,,,,,,,,V32
-30,nursing uk fees for international students,Commercial,,ng,,,,,,,,V33
-31,uk universities that accept nigerian students for nursing,Commercial,,ng,,,,,,,,V34
-32,ielts for nursing degree uk,Informational,,ng,,,,,,,,V35
-33,nursing scholarship uk nigerian students,Informational,,ng,,,,,,,,V38
-34,waec requirements for dentistry in uk,Informational,,ng,,,,,,,,V40
-35,study dentistry in uk from nigeria,Informational,,ng,,,,,,,,V41
-36,dentistry uk fees international students,Informational,,ng,,,,,,,,V42
-37,ucat dentistry nigeria,Informational,,ng,,,,,,,,V43
-38,dentistry scholarship uk nigerian students,Informational,,ng,,,,,,,,V45
-39,jupeb medicine uk,Informational,,ng,,,,,,,,G03
-40,ond hnd medicine uk nigeria,Informational,,ng,,,,,,,,G03
-41,is medicine free in uk for nigerian students,Informational,,ng,,,,,,,,J03
-42,cheapest medical school in uk for international students,Commercial,,ng,,,,,,,,K05
-43,how many years is medicine in uk,Informational,,ng,,,,,,,,S03
-44,new medical schools uk international students,Informational,,ng,,,,,,,,D06
-45,mpharm uk requirements nigerian students,Informational,,ng,,,,,,,,V53
-46,study pharmacy in uk from nigeria,Informational,,ng,,,,,,,,V53
-47,medical laboratory science uk equivalent,Informational,,ng,,,,,,,,V66
-48,study physiotherapy in uk from nigeria,Informational,,ng,,,,,,,,V60
-49,can international students study radiography in uk,Informational,,ng,,,,,,,,V63
-50,can international students study midwifery in uk,Informational,,ng,,,,,,,,V57
+1,study medicine in UK from Nigeria,Informational,study medicine in uk from nigeria,ng,,,,,,,,C01
+2,medicine in UK for Nigerian students,Informational,medicine in uk for nigerian students,ng,,,,,,,,C01
+3,MBBS UK for Nigerian students,Informational (ambiguous),mbbs uk for nigerian students,ng,,,,,,,,B03
+4,medical universities in UK for Nigerians / UK medical school Nigeria,Informational/Commercial,medical universities in uk for nigerians,ng,,,,,,,,C02
+5,medicine entry requirements UK for Nigerian students,Informational,medicine entry requirements uk for nigerian students,ng,,,,,,,,E01
+6,can I study medicine in UK with WAEC / WAEC medicine UK,Informational (Q),can i study medicine in uk with waec,ng,,,,,,,,F01
+7,NECO medicine UK,Informational (Q),neco medicine uk,ng,,,,,,,,G01
+8,JAMB medicine UK,Informational (Q),jamb medicine uk,ng,,,,,,,,G02;S01
+9,A-level medicine UK Nigeria / A-level schools Nigeria UK medicine,Informational→Commercial,a level medicine uk nigeria,ng,,,,,,,,E02
+10,graduate entry medicine UK Nigerian students / after Nigerian degree,Informational,graduate entry medicine uk nigerian students,ng,,,,,,,,P01
+11,cost of studying medicine in UK for Nigerian students,Informational/Commercial,cost of studying medicine in uk for nigerian students,ng,,,,,,,,K02
+12,medical school fees UK for international students,Informational/Commercial,medical school fees uk for international students,ng,,,,,,,,K01
+13,UCAT Nigeria / UCAT test centre Lagos,Transactional/Navigational,ucat nigeria,ng,,,,,,,,H01
+14,UK medical schools that accept international students,Informational/Commercial,uk medical schools that accept international students,ng,,,,,,,,D01
+15,cheapest medical school in UK for international students,Commercial,cheapest medical school in uk for international students,ng,,,,,,,,K01
+16,dentistry UK Nigerian students,Informational,dentistry uk nigerian students,ng,,,,,,,,B04
+17,pharmacy UK Nigerian students,Informational,pharmacy uk nigerian students,ng,,,,,,,,B05
+18,nursing UK Nigerian students,Informational (split: study vs migrate),nursing uk nigerian students,ng,,,,,,,,B05
+19,public health UK Nigerian students,Informational (PG),public health uk nigerian students,ng,,,,,,,,B05
+20,biomedical science UK Nigerian students,Informational,biomedical science uk nigerian students,ng,,,,,,,,P02
+21,physiotherapy UK Nigerian students,Informational,physiotherapy uk nigerian students,ng,,,,,,,,B06
+22,radiography UK Nigerian students,Informational,radiography uk nigerian students,ng,,,,,,,,B06
+23,medical laboratory science UK for Nigerians,Informational (migration),medical laboratory science uk for nigerians,ng,,,,,,,,P02
+24,can I work in UK after studying medicine,Informational,can i work in uk after studying medicine,ng,,,,,,,,R01
+25,MDCN recognition of UK medical degree (emergent from results),Informational,mdcn recognition of uk medical degree,ng,,,,,,,,Q01
+26,foundation year medicine UK international / which foundation leads to medicine (emergent),Informational/Commercial,foundation year medicine uk international,ng,,,,,,,,O01
+27,scholarships to study medicine in UK for Nigerian students (emergent),Informational/Commercial,scholarships to study medicine in uk for nigerian students,ng,,,,,,,,J02
+28,waec requirements for nursing in uk,Informational,waec requirements for nursing in uk,ng,,,,,,,,V31
+29,study nursing in uk from nigeria,Informational/migration,study nursing in uk from nigeria,ng,,,,,,,,V32
+30,nursing uk fees for international students,Commercial,nursing uk fees for international students,ng,,,,,,,,V33
+31,uk universities that accept nigerian students for nursing,Commercial,uk universities that accept nigerian students for nursing,ng,,,,,,,,V34
+32,ielts for nursing degree uk,Informational,ielts for nursing degree uk,ng,,,,,,,,V35
+33,nursing scholarship uk nigerian students,Informational,nursing scholarship uk nigerian students,ng,,,,,,,,V38
+34,waec requirements for dentistry in uk,Informational,waec requirements for dentistry in uk,ng,,,,,,,,V40
+35,study dentistry in uk from nigeria,Informational,study dentistry in uk from nigeria,ng,,,,,,,,V41
+36,dentistry uk fees international students,Informational,dentistry uk fees international students,ng,,,,,,,,V42
+37,ucat dentistry nigeria,Informational,ucat dentistry nigeria,ng,,,,,,,,V43
+38,dentistry scholarship uk nigerian students,Informational,dentistry scholarship uk nigerian students,ng,,,,,,,,V45
+39,jupeb medicine uk,Informational,jupeb medicine uk,ng,,,,,,,,G03
+40,ond hnd medicine uk nigeria,Informational,ond hnd medicine uk nigeria,ng,,,,,,,,G03
+41,is medicine free in uk for nigerian students,Informational,is medicine free in uk for nigerian students,ng,,,,,,,,J03
+42,cheapest medical school in uk for international students,Commercial,cheapest medical school in uk for international students,ng,,,,,,,,K05
+43,how many years is medicine in uk,Informational,how many years is medicine in uk,ng,,,,,,,,S03
+44,new medical schools uk international students,Informational,new medical schools uk international students,ng,,,,,,,,D06
+45,mpharm uk requirements nigerian students,Informational,mpharm uk requirements nigerian students,ng,,,,,,,,V53
+46,study pharmacy in uk from nigeria,Informational,study pharmacy in uk from nigeria,ng,,,,,,,,V53
+47,medical laboratory science uk equivalent,Informational,medical laboratory science uk equivalent,ng,,,,,,,,V66
+48,study physiotherapy in uk from nigeria,Informational,study physiotherapy in uk from nigeria,ng,,,,,,,,V60
+49,can international students study radiography in uk,Informational,can international students study radiography in uk,ng,,,,,,,,V63
+50,can international students study midwifery in uk,Informational,can international students study midwifery in uk,ng,,,,,,,,V57

@@ -3,6 +3,16 @@
 The Semrush MCP connection has no API units, so lookups happen in the owner's open Semrush tab and are
 recorded here. Nothing on the site quotes a Semrush figure unless it appears in this folder with a date.
 
+## Fastest route: one paste, one export (about five minutes)
+
+1. Semrush → **Keyword Overview** → paste the 50 lines of `paste-list.txt` into the bulk box (it accepts up to 100), choose database **Nigeria**, run the analysis.
+2. Click **Export** (CSV) on the results table. Save the file as it downloads into this folder, for example `data/semrush/semrush-ng-2026-10-05.csv`.
+3. Run `php artisan smukn:semrush-import data/semrush/semrush-ng-2026-10-05.csv --date=2026-10-05` (the day you exported; add `--database=uk` for a UK export). The importer matches each Semrush row to the lookup sheet by keyword, writes the record as `lookups-YYYY-MM-DD.csv`, updates the research doc and the decision register, and reports how many of the 50 themes Semrush returned. Themes Semrush has no data for stay blank (a valid result).
+4. Optional, for the five to ten themes that decide a page (rows 1, 13, 14, 34, 35, 45, 46, 39 and 41 first): open each in Keyword Overview and add the top three organic URLs to the recorded file's `top_3_urls` column, then re-run the import on that file.
+5. Commit the export and the generated files.
+
+## Row by row (if you prefer)
+
 1. Open `lookup-sheet.csv` (one row per query theme from research 02 §4). For each row, in Semrush → Keyword Overview,
    database **Nigeria (ng)** first, then **United Kingdom (uk)** if the Nigerian database returns no data:
    - `semrush_keyword_used`: the exact keyword string you typed

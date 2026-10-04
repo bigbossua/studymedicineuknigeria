@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\File;
  */
 class ImportSemrushLookups extends Command
 {
-    protected $signature = 'smukn:semrush-import {file : CSV exported from data/semrush/lookup-sheet.csv} {--doc=docs/research/02-nigerian-search-demand.md} {--register=data/seo/decision-register.csv}';
+    protected $signature = 'smukn:semrush-import {file : CSV exported from data/semrush/lookup-sheet.csv} {--doc=docs/research/02-nigerian-search-demand.md} {--register=data/seo/decision-register.csv} {--sheet=data/semrush/lookup-sheet.csv : lookup sheet used to match a native Semrush export} {--database=ng : database of a native Semrush export} {--date= : lookup date of a native Semrush export (YYYY-MM-DD)}';
 
     protected $description = 'Record Semrush lookups made in the owner\'s browser into the search-demand research document';
 
@@ -25,7 +25,16 @@ class ImportSemrushLookups extends Command
             return self::FAILURE;
         }
         $rows = array_map('str_getcsv', file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
-        $header = array_shift($rows);
+        $header = array_map(fn ($h) => trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $h)), array_shift($rows));
+        if (! in_array('id', $header, true) && preg_grep('/^keyword$/i', $header)) {
+            // A Semrush export as downloaded (Keyword Overview bulk analysis or Keyword Magic Tool): match its rows to the
+            // lookup sheet by keyword and record them in the lookup format, so one paste-and-export replaces row-by-row entry.
+            $converted = $this->fromNativeExport($header, $rows);
+            if ($converted === null) {
+                return self::FAILURE;
+            }
+            [$header, $rows] = $converted;
+        }
         $required = ['id', 'volume', 'keyword_difficulty', 'looked_up_on'];
         foreach ($required as $col) {
             if (! in_array($col, $header, true)) {
@@ -124,5 +133,67 @@ class ImportSemrushLookups extends Command
             fclose($out);
         }
         $this->info("{$touched} decision-register row(s) updated in {$this->option('register')}.");
+    }
+
+    /**
+     * @param  list<string>  $header
+     * @param  list<list<string>>  $rows
+     * @return array{0: list<string>, 1: list<list<string>>}|null
+     */
+    private function fromNativeExport(array $header, array $rows): ?array
+    {
+        $date = (string) $this->option('date');
+        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            $this->error('A native Semrush export carries no date: pass --date=YYYY-MM-DD (the day you exported it).');
+
+            return null;
+        }
+        $col = function (string $prefix) use ($header): ?int {
+            foreach ($header as $i => $h) {
+                if (stripos($h, $prefix) === 0) {
+                    return $i;
+                }
+            }
+
+            return null;
+        };
+        [$kw, $vol, $kd, $cpc, $intent] = [$col('Keyword'), $col('Volume'), $col('Keyword Difficulty') ?? $col('KD'), $col('CPC'), $col('Intent')];
+        $found = [];
+        foreach ($rows as $r) {
+            $found[mb_strtolower(trim($r[$kw] ?? ''))] = $r;
+        }
+        $sheet = array_map('str_getcsv', file(base_path((string) $this->option('sheet')), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+        $sheetHeader = array_shift($sheet);
+        $out = [];
+        $matched = 0;
+        foreach ($sheet as $s) {
+            $row = array_combine($sheetHeader, array_pad($s, count($sheetHeader), ''));
+            $keyword = mb_strtolower(trim($row['semrush_keyword_used'] !== '' ? $row['semrush_keyword_used'] : $row['query_theme']));
+            $hit = $found[$keyword] ?? null;
+            if ($hit) {
+                $matched++;
+                $row['semrush_keyword_used'] = $keyword;
+                $row['database'] = strtolower((string) $this->option('database'));
+                $row['volume'] = $vol !== null ? preg_replace('/[^\d]/', '', (string) ($hit[$vol] ?? '')) : '';
+                $row['keyword_difficulty'] = $kd !== null ? preg_replace('/[^\d]/', '', (string) ($hit[$kd] ?? '')) : '';
+                $row['cpc'] = $cpc !== null ? trim((string) ($hit[$cpc] ?? '')) : '';
+                $row['intent_semrush'] = $intent !== null ? trim((string) ($hit[$intent] ?? '')) : '';
+                $row['top_3_urls'] = $row['top_3_urls'] ?? '';
+                $row['looked_up_on'] = $date;
+            }
+            $out[] = $row;
+        }
+        $this->info("{$matched} of ".count($sheet).' lookup theme(s) found in the Semrush export ('.count($rows).' keyword row(s)).');
+        // Keep the converted record in the repository, next to the export it came from.
+        $record = 'data/semrush/lookups-'.$date.'.csv';
+        $h = fopen(base_path($record), 'w');
+        fputcsv($h, $sheetHeader, ',', '"', '');
+        foreach ($out as $row) {
+            fputcsv($h, array_map(fn ($c) => $row[$c] ?? '', $sheetHeader), ',', '"', '');
+        }
+        fclose($h);
+        $this->line("Recorded as {$record}.");
+
+        return [$sheetHeader, array_map(fn ($row) => array_map(fn ($c) => $row[$c] ?? '', $sheetHeader), $out)];
     }
 }

@@ -264,6 +264,20 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 2. **Live keys** → Environments → `production` → `STRIPE_KEY` (`pk_live_…`), `STRIPE_SECRET` (`sk_live_…`) → the live catalogue is separate from test mode → after your approval of the run, *Stripe catalogue* (`production`, `create`) creates the live products and prices and reports the ids. Live endpoint and live payments wait for the production server (not deployed).
 3. Webhook signing secrets: none needed from you if the endpoint is created by *Stripe catalogue* (`webhook=create`) once staging exists; it needs the server settings from cycle 37.
 
+## Cycle 40 — launch without Stripe; payment honestly closed (stage 46, 2026-10-04)
+
+- **Done**: production no longer waits for Stripe. Until live keys exist, approved students see their service, exact fee and terms, but no payment action is shown or accepted; they are emailed once when payment opens. Bank transfer stays off unless you switch it on. Stripe products, prices, Payment Links and webhooks were not created. Code `f08d6df`, CI green, 186 tests on SQLite and MariaDB.
+- **Checked**: Diagnose run 37188649260 (08:21 UTC): every repository, staging and production setting is missing; `production` has no required reviewer.
+
+### Remaining launch blockers (WHAT → WHERE → WHY → WHAT YOU WILL DO IMMEDIATELY AFTER)
+
+1. **Server access** → hPanel → SSH Access: add the public key `SMUKN-GitHub-Actions`; GitHub → Settings → Secrets and variables → Actions: secrets `HOSTINGER_SSH_KEY`, `BACKUP_PASSPHRASE`; variables `HOSTINGER_SSH_HOST`, `HOSTINGER_SSH_PORT`, `HOSTINGER_SSH_USER` → nothing can inspect, back up or deploy without them → I run Diagnose, the read-only inspection (what the domain serves now) and the encrypted backup of the current site with its restore test, and report.
+2. **Staging** (required before production by the repository rules and the deploy workflow) → hPanel: subdomain `staging` with SSL, one MySQL database; GitHub: variables `STAGING_URL`, `STAGING_BASIC_USER`, secret `STAGING_BASIC_PASSWORD`, and in Environments → `staging` the secrets `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` → production deploys refuse to run without a successful staging deploy of the same commit → I bootstrap and deploy staging, run the smoke test and full page review, and you review it behind its password.
+3. **Production secrets and approval** → hPanel: a new, empty production MySQL database and the mailbox `info@studymedicineuknigeria.com`; GitHub → Environments → `production`: `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD`, `SMUKN_MAIL_PASSWORD`, and Required reviewers = you → production refuses to bootstrap without real email and to deploy without your approval → after your approval: bootstrap production, deploy with the cutover (old site archived and restored automatically on any failure), production smoke and page review, your admin account, a full restore-tested backup, then the launch report.
+4. **Email deliverability** (before the first student registers) → DNS records SPF, DKIM, DMARC per `docs/ops/EMAIL-DELIVERABILITY.md` → verification and reset emails must reach inboxes → I verify them from the live site.
+
+Not blockers: Stripe (post-launch; payment stays closed), P0 facts (unverified facts stay hidden), Semrush export.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

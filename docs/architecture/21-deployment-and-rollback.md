@@ -77,6 +77,11 @@ Only in `shared/.env` on the server and in the deployer's password manager. Neve
 - **Smoke test fails on exposure or debug output.** `/.env`, `/composer.json`, `/artisan`, logs, `.git` and `vendor` must not be served (a document root on the release instead of `public/`); exception text fails it; staging must answer 401 without credentials and disallow crawling; production must be crawlable.
 - **Strict host keys once pinned.** With `HOSTINGER_SSH_KNOWN_HOSTS` set, every workflow uses `StrictHostKeyChecking=yes`; the inspection prints the scanned fingerprints to compare first.
 - **MySQL in CI.** The suite also runs on MySQL 8, and CI proves the smoke test fails on an empty application.
+- **First admin on a new server.** Register on the site, then the *Grant account role* workflow (`smukn:grant-role`) sets the role; staff and admins must enrol an authenticator at their next sign-in. Demoting the last admin is refused.
+- **Mail never breaks sign-up.** Verification and reset emails go through the queue (retried); without a mail password the bootstrap writes `MAIL_MAILER=log`.
+- **Every staging response is noindex** (header), on top of the password gate and `robots.txt`.
+- **After each staging deploy** *Review staging* checks every page on desktop and mobile from a GitHub runner (status, CSP, axe, H1, noindex); report kept as an artifact.
+- **Backups are restore-tested.** Each backup run decrypts the copy on the runner and restores it into a throwaway MariaDB, checking the key tables.
 - Rehearsed end to end on MariaDB: `ops/reports/deployment-rehearsal-2026-10-04.md`.
 - **No unsmoked staging deploy.** A staging dispatch fails at its first step unless `STAGING_URL` is set (with SSH host, user and key), because `ops/deploy.sh` skips the smoke test when it has no URL, and a staging deploy that was never smoke-tested must not count as the success that unlocks production.
 - **Pinned host key (optional, recommended).** Set the repository variable `HOSTINGER_SSH_KNOWN_HOSTS` to the server's line(s) from `ssh-keyscan -p 65002 <host>` (checked against hPanel's SSH fingerprint) and every workflow uses it instead of trusting the key on first connection.

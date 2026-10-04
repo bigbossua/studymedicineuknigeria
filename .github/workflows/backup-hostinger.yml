@@ -34,6 +34,13 @@ jobs:
     timeout-minutes: 40
     # No deployment environment: production's required reviewer would hold every scheduled backup for approval.
     # The SSH key and BACKUP_PASSPHRASE are repository secrets.
+    services:
+      # throwaway database for the restore test (never connected to the server)
+      restore:
+        image: mariadb:11.4
+        env: { MARIADB_ROOT_PASSWORD: restore, MARIADB_DATABASE: restore_test }
+        ports: ['3306:3306']
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=20
     env:
       TARGET: ${{ github.event.inputs.target || 'production' }}
       # scheduled: Sunday 03:20 run is the full copy, every other schedule is db-only
@@ -85,6 +92,25 @@ jobs:
           if [ "$size" -gt 419430400 ]; then echo "::warning::backup is larger than 400 MB; review artifact storage quota (Settings → Billing) before relying on daily uploads"; fi
           # encrypted payload must not be readable without the passphrase
           ! tar -tf "out/$(basename "$FILE")" >/dev/null 2>&1
+      - name: Restore test (decrypt on the runner, load into a throwaway database)
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          # Proves the backup can be decrypted with the passphrase and restored, not only that it was copied intact.
+          # The decrypted copy lives only in this job's temp directory and is deleted at the end of the step.
+          T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass env:BACKUP_PASSPHRASE -in "out/$(basename "$FILE")" | tar -xf - -C "$T"
+          DUMP=$(find "$T" -name 'database.sql.gz' | head -1); [ -n "$DUMP" ] || { echo "::error::no database dump inside the backup"; exit 1; }
+          gzip -t "$DUMP" && gzip -dc "$DUMP" | tail -1 | grep -q 'Dump completed' || { echo "::error::database dump is incomplete"; exit 1; }
+          gzip -dc "$DUMP" | mysql -h 127.0.0.1 -uroot -prestore restore_test
+          tables=$(mysql -N -h 127.0.0.1 -uroot -prestore -e "select count(*) from information_schema.tables where table_schema='restore_test'")
+          for t in migrations users applications reference_facts universities; do
+            mysql -N -h 127.0.0.1 -uroot -prestore restore_test -e "select 1 from $t limit 1" >/dev/null || { echo "::error::table $t missing after restore"; exit 1; }
+          done
+          facts=$(mysql -N -h 127.0.0.1 -uroot -prestore restore_test -e "select count(*) from reference_facts")
+          [ "$SCOPE" = full ] && { [ -s "$(find "$T" -name shared.env | head -1)" ] || { echo "::error::full backup has no shared.env"; exit 1; }; }
+          echo "restore test passed: $tables tables, $facts reference facts"
+          echo "### Restore test passed: $tables tables, $facts reference facts" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         with:
           name: smukn-${{ env.TARGET }}-${{ env.SCOPE }}-${{ github.run_id }}

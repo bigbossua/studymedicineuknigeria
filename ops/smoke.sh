@@ -34,7 +34,8 @@ case "$T" in
     # staging must never be public or indexable
     got=$(curl -s -o /dev/null -w "%{http_code}" "$B/")
     [ "$got" = 401 ] && ok "staging asks for credentials without them" || bad "staging answered $got without credentials (StagingGate inactive: set STAGING_BASIC_USER and STAGING_BASIC_PASSWORD)"
-    echo "$robots" | grep -qx 'Disallow: /' && ok "staging robots.txt disallows all" || bad "staging robots.txt does not disallow crawling";;
+    echo "$robots" | grep -qx 'Disallow: /' && ok "staging robots.txt disallows all" || bad "staging robots.txt does not disallow crawling"
+    curl -sI "${AUTH[@]}" "$B/" | grep -qi "x-robots-tag: noindex" && ok "staging pages carry noindex" || bad "staging home has no X-Robots-Tag noindex";;
   production)
     echo "$robots" | grep -qx 'Disallow: /' && bad "production robots.txt disallows everything" || ok "production robots.txt allows crawling"
     echo "$home" | grep -qi '<meta name="robots" content="noindex' && bad "production home is noindex" || ok "production home indexable";;

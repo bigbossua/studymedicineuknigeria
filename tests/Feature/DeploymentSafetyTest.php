@@ -111,4 +111,15 @@ class DeploymentSafetyTest extends TestCase
         $notes = ReferenceFact::where('key', 'ucas_code')->where('value_text', 'like', '%(also A104%')->first();
         $this->assertNotNull($notes, 'the full UCAS code text survives as a fact');
     }
+
+    public function test_every_staging_response_is_noindex_even_behind_the_password(): void
+    {
+        $this->get('/fees')->assertOk()->assertHeaderMissing('X-Robots-Tag');
+        $this->app['env'] = 'staging';
+        try {
+            $this->get('/fees')->assertOk()->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+        } finally {
+            $this->app['env'] = 'testing';
+        }
+    }
 }

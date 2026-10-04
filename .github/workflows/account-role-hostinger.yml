@@ -1,0 +1,79 @@
+name: Grant account role (Hostinger)
+# Creates the first admin on a new server (and later staff changes from the shell): register on the site first,
+# then run this with the same email. Runs php artisan smukn:grant-role in the target's current release. Production
+# runs in the production environment, so its required reviewer approves it.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target'
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+      email:
+        description: 'Email the account registered with'
+        required: true
+      role:
+        description: 'Role'
+        required: true
+        default: admin
+        type: choice
+        options: [admin, staff, student]
+      verify_email:
+        description: 'Also mark the email verified (only for an address you own, while the site cannot send mail)'
+        required: true
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+permissions:
+  contents: read
+
+jobs:
+  grant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ github.event.inputs.target }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check inputs and configuration
+        env:
+          EMAIL: ${{ github.event.inputs.email }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+        run: |
+          [[ "$EMAIL" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]] || { echo "::error::Not an email address"; exit 1; }
+          m=""; [ -z "$HOST" ] && m="$m HOSTINGER_SSH_HOST"; [ -z "$USER" ] && m="$m HOSTINGER_SSH_USER"; [ -z "$KEY" ] && m="$m HOSTINGER_SSH_KEY"
+          if [ -n "$m" ]; then echo "::error::Missing settings:$m"; exit 1; fi
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
+          # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Grant the role
+        env:
+          TARGET: ${{ github.event.inputs.target }}
+          EMAIL: ${{ github.event.inputs.email }}
+          ROLE: ${{ github.event.inputs.role }}
+          VERIFY: ${{ github.event.inputs.verify_email }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+        run: |
+          { printf 'export %s=%q\n' TARGET "$TARGET" EMAIL "$EMAIL" ROLE "$ROLE" VERIFY "$VERIFY"
+            cat <<'REMOTE'
+          set -euo pipefail
+          cd ~/apps/smukn-$TARGET/current
+          PHP=$(command -v php83 || command -v php8.3 || command -v php)
+          ARGS=("$EMAIL" "$ROLE"); [ "$VERIFY" = true ] && ARGS+=(--verify-email)
+          $PHP artisan smukn:grant-role "${ARGS[@]}"
+          REMOTE
+          } | ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s'

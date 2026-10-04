@@ -110,3 +110,10 @@ jobs:
         run: |
           export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new}"
           ops/deploy.sh "$USER@$HOST" "$PORT" "$TARGET" "$SITE_URL"
+
+  # Every successful staging deploy is followed by the full page review (CSP, accessibility, noindex, H1, status).
+  review:
+    needs: deploy
+    if: ${{ (github.event.inputs.target || 'staging') == 'staging' }}
+    uses: ./.github/workflows/staging-review.yml
+    secrets: inherit

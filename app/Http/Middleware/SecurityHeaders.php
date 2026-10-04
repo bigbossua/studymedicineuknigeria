@@ -50,8 +50,11 @@ class SecurityHeaders
         $response->headers->remove('Content-Security-Policy-Report-Only');
 
         $private = $request->is('portal*', 'admin*', 'login', 'register', 'password*', 'email*', 'documents*', 'webhooks*');
-        if ($private) {
+        // Staging is behind a password and disallowed in robots.txt; a leaked link must still never put it in an index.
+        if ($private || app()->environment('staging')) {
             $response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+        if ($private) {
             $response->headers->set('Cache-Control', 'private, no-store');
         }
 

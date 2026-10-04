@@ -51,7 +51,7 @@ SESSION_SECURE_COOKIE=true
 QUEUE_CONNECTION=database
 CACHE_STORE=database
 FILESYSTEM_DISK=private
-MAIL_MAILER=smtp
+MAIL_MAILER=$([ -n "${MAIL_PASSWORD:-}" ] && echo smtp || echo log)
 MAIL_HOST=smtp.hostinger.com
 MAIL_PORT=465
 MAIL_ENCRYPTION=ssl
@@ -68,6 +68,7 @@ SITE_PUBLISH_UNVERIFIED=false
 $([ "$TARGET" = production ] || printf 'STAGING_BASIC_USER=%s\nSTAGING_BASIC_PASSWORD=%s\n' "$(q "${STAGING_BASIC_USER:-}")" "$(q "${STAGING_BASIC_PASSWORD:-}")")
 ENV
   echo "shared/.env created (mode 600)"
+  [ -n "${MAIL_PASSWORD:-}" ] || echo "NOTE: no mail password given: emails are written to the log until SMUKN_MAIL_PASSWORD is set and MAIL_MAILER=smtp in shared/.env"
 fi
 
 # Database reachability check (no schema changes here; migrations run in deploy.sh)

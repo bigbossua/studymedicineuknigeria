@@ -36,7 +36,8 @@ already exist.
 
 Optional, later: `SMUKN_MAIL_PASSWORD` (mailbox `info@studymedicineuknigeria.com`), `SITE_WHATSAPP`, `SITE_LEGAL_NAME`,
 Stripe test keys (`STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`) in the `staging` environment. Staging works
-without them; e-mail and payments stay disabled until they exist.
+without them: without a mail password, emails (verification links, resets) are written to the server log instead of
+sent, and registration still works; card payments stay disabled until the Stripe keys exist.
 
 ## 3. What happens next (Claude, no further owner input until the staging review)
 
@@ -45,7 +46,12 @@ without them; e-mail and payments stay disabled until they exist.
 3. *Bootstrap Hostinger target* (`staging`, `link_docroot=false`) → `~/apps/smukn-staging/shared/.env` created on the
    server; nothing existing touched. The staging document root is linked only after the inspection shows where it is.
 4. *Deploy to Hostinger* (`staging`) → tests, verified DB backup, migrate, reference sync, switch, smoke test,
-   automatic rollback on any failure.
-5. Owner reviews `https://staging.studymedicineuknigeria.com` (staging password prompt).
-6. Production only after the owner's approval: backup → bootstrap production → deploy production (the required
+   automatic rollback on any failure; then *Review staging* runs on its own (every page on desktop and mobile:
+   status, CSP, accessibility, H1, noindex).
+5. *Backup Hostinger* (`staging`, `full`) → encrypted backup, then a restore test into a throwaway database.
+6. First admin: you register at the staging site like a student; then *Grant account role* (`staging`, your email,
+   `admin`, `verify_email=true` while staging cannot send mail) promotes you. Your first admin sign-in asks you to
+   set up an authenticator app.
+7. Owner reviews `https://staging.studymedicineuknigeria.com` (staging password prompt).
+8. Production only after the owner's approval: backup → bootstrap production → deploy production (the required
    reviewer approves each run).

@@ -10,6 +10,7 @@ use App\Support\PublishGate;
 use Database\Seeders\ReferenceDataSeeder;
 use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class PublicSeoTest extends TestCase
@@ -98,7 +99,10 @@ class PublicSeoTest extends TestCase
         $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
         preg_match_all('#<loc>([^<]+)</loc>#', $xml, $m);
         $this->assertNotEmpty($m[1]);
-        foreach ($m[1] as $url) {
+        // Fact-gated pages are out of the sitemap until verified but enter it unchanged, so they are held to the same limits now.
+        $gated = collect(Route::getRoutes()->getRoutes())->filter(fn ($r) => isset($r->defaults['sitemap']['gate']))->map(fn ($r) => url($r->uri()))->all();
+        $this->assertNotEmpty($gated);
+        foreach (array_unique(array_merge($m[1], $gated)) as $url) {
             $path = parse_url($url, PHP_URL_PATH) ?: '/';
             $html = $this->get($path)->assertOk()->getContent();
             preg_match('#<title>(.*?)</title>#s', $html, $t);

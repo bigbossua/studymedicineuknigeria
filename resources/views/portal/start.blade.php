@@ -19,9 +19,11 @@
             </label>
         @endforeach
         <div class="lg:col-span-3 card flex flex-col sm:flex-row sm:items-end gap-4 justify-between">
+            @php($defaultYear = now()->month >= 9 ? now()->year + 2 : now()->year + 1)
             <div class="field max-w-xs"><label for="intake_year" class="label">Intended entry year</label>
-                <select id="intake_year" name="intake_year" class="input">@foreach(range(now()->year + 1, now()->year + 3) as $y)<option value="{{ $y }}" @selected(old('intake_year', 2028)==$y)>September {{ $y }}</option>@endforeach</select>
-                <p class="hint">For 2027 UCAS medicine entry the deadline is 15 October 2026 and the UCAT window has closed; most students starting now plan for 2028.</p></div>
+                <select id="intake_year" name="intake_year" class="input">@foreach(range(now()->year + 1, now()->year + 3) as $y)<option value="{{ $y }}" @selected(old('intake_year', $defaultYear)==$y)>September {{ $y }}</option>@endforeach</select>
+                @php($deadline = \App\Models\Topic::bySlug('ucas-2027')?->fact('deadline_medicine'))
+                <p class="hint">@if($deadline?->isPublishable())The UCAS deadline for Medicine for {{ $deadline->subject->cycle ?? 'the current cycle' }} entry is {{ $deadline->value_text }} (official source: UCAS), and the UCAT is sat in the summer before it. If either has passed for the entry year you want, choose the year after.@else Medicine applications close in October of the year before entry, and the UCAT is sat in the summer before that. If either has passed for the entry year you want, choose the year after.@endif</p></div>
             <button type="submit" class="btn btn-primary btn-lg">Create my application</button>
         </div>
         @error('service_tier_id')<p class="error-text lg:col-span-3">{{ $message }}</p>@enderror

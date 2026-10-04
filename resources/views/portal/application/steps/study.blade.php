@@ -4,7 +4,7 @@
     <div class="field"><label for="entry_type" class="label">Entry type <span class="text-accent-600">*</span></label>
         <select id="entry_type" name="entry_type" class="input">@foreach(['standard'=>'Standard entry (school-leaver qualifications)','graduate'=>'Graduate entry','foundation'=>'Foundation / gateway year first'] as $v=>$l)<option value="{{ $v }}" @selected(($d['entry_type'] ?? 'standard')===$v)>{{ $l }}</option>@endforeach</select></div>
     <div class="field"><label for="intake_year" class="label">Entry year <span class="text-accent-600">*</span></label>
-        <select id="intake_year" name="intake_year" class="input">@foreach([2027,2028,2029,2030] as $y)<option value="{{ $y }}" @selected((int)($d['intake_year'] ?? 2028)===$y)>September {{ $y }}</option>@endforeach</select></div>
+        <select id="intake_year" name="intake_year" class="input">@foreach(range(now()->year + 1, now()->year + 4) as $y)<option value="{{ $y }}" @selected((int)($d['intake_year'] ?? $application->intake_year)===$y)>September {{ $y }}</option>@endforeach</select></div>
     <div class="field"><label for="ucas_status" class="label">Your UCAS application <span class="text-accent-600">*</span></label>
         <select id="ucas_status" name="ucas_status" class="input">@foreach(['not_started'=>'Not started','started'=>'Started but not submitted','submitted'=>'Submitted','offer'=>'I already hold an offer'] as $v=>$l)<option value="{{ $v }}" @selected(($d['ucas_status'] ?? 'not_started')===$v)>{{ $l }}</option>@endforeach</select></div>
 </div>

@@ -10,5 +10,6 @@
 </div>
 <div class="field"><label for="statement_status" class="label">Personal statement <span class="text-accent-600">*</span></label>
     <select id="statement_status" name="statement_status" class="input max-w-xs">@foreach(['not_started'=>'Not started','draft'=>'Draft','final'=>'Final'] as $v=>$l)<option value="{{ $v }}" @selected(($d['statement_status'] ?? 'not_started')===$v)>{{ $l }}</option>@endforeach</select>
-    <p class="hint">For 2027 entry UCAS asks three questions, 4,000 characters in total. You can draft here or upload a file in Documents. We give structural feedback; we do not write it for you.</p></div>
+    @php($psFormat = \App\Models\Topic::bySlug('ucas-2027')?->fact('personal_statement_format'))
+    <p class="hint">@if($psFormat?->isPublishable())UCAS format: {{ $psFormat->value_text }} (official source: UCAS). @else UCAS sets the personal statement format each cycle; check its current guidance before you finalise. @endif You can draft here or upload a file in Documents. We give structural feedback; we do not write it for you.</p></div>
 <div class="field"><label for="statement_text" class="label">Draft text (optional)</label><textarea id="statement_text" name="statement_text" rows="10" maxlength="4200" class="input min-h-48">{{ $d['statement_text'] ?? '' }}</textarea></div>

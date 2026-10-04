@@ -437,6 +437,21 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - CSP sweep: 0 violations;
   - production rehearsal: all checks passed.
 
+## Stage 52: Google readiness live, WhatsApp contact, searcher's journey (cycle 46)
+
+- **Released** 2026-10-04 15:45 UTC (release `2026-10-04T15-45-58`, commit b8e676a), with the owner's approval on the `production` environment.
+- **Shipped:**
+  - Google-readiness work from stages 49–51 (crawl rules, structured data, titles, Search Console tag support, GA4 browser and server events after consent);
+  - a floating "WhatsApp us" contact above Apply Online (+44 7842 292527, pre-filled message, tooltip, lifted above the consent banner, kept on the apply pages without a second Apply button);
+  - `ops/qa/public-journey.cjs`, which clicks visible links from the home page to registration, now part of *Live verification*;
+  - the launch checklist extended to 30 areas.
+- **Live verification (run 37214472895), all passed:**
+  - 65 old URLs 301; no fee on any public page; canonicals, JSON-LD, headers; foreign hosts refused;
+  - Google audit 75/75 (28 sitemap URLs, 85 internal URLs);
+  - journey on phone and desktop with no problems;
+  - server: production, debug off, payment closed, Stripe off, 0 pending migrations, published-folder document root.
+- **Photography:** unsplash.com answers 401/307 to GitHub runners; the official API answers and needs a free Access Key (`UNSPLASH_ACCESS_KEY`, owner action). `ops/design/unsplash.py` uses the API when the key exists.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

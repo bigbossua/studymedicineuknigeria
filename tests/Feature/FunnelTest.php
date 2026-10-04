@@ -11,6 +11,7 @@ use App\Support\Totp;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -109,5 +110,35 @@ class FunnelTest extends TestCase
         // portal and admin never get the Google hosts even when configured
         $student = User::factory()->create();
         $this->assertStringNotContainsString('googletagmanager', $this->actingAs($student)->get('/portal')->headers->get('Content-Security-Policy'));
+    }
+
+    public function test_journey_events_reach_ga4_from_the_server_only_with_consent_and_without_personal_data(): void
+    {
+        $this->seed(PlatformSeeder::class);
+        Http::fake();
+        config(['site.ga4_id' => 'G-TEST123', 'site.ga4_api_secret' => 'secret-x']);
+        $student = User::factory()->create(['name' => 'Ada Okonkwo']);
+
+        // no consent: the event is recorded first-party only
+        $this->actingAs($student)->withUnencryptedCookies(['_ga' => 'GA1.1.123456.789'])->post('/portal/start', ['intake_year' => 2028])->assertRedirect();
+        Http::assertNothingSent();
+
+        // consent and a GA4 client id: one Measurement Protocol hit, with the anonymous client id and allowed parameters only
+        Application::query()->delete();
+        $this->actingAs($student)->withUnencryptedCookies(['smukn_consent' => 'granted', '_ga' => 'GA1.1.123456.789'])->post('/portal/start', ['intake_year' => 2028])->assertRedirect();
+        Http::assertSent(function ($request) {
+            $body = $request->data();
+            $this->assertStringStartsWith('https://www.google-analytics.com/mp/collect?', $request->url());
+            $this->assertSame('123456.789', $body['client_id']);
+            $this->assertSame('application_started', $body['events'][0]['name']);
+            $json = strtolower(json_encode($body));
+            foreach (['okonkwo', 'smukn-', '@', 'actor'] as $never) {
+                $this->assertStringNotContainsString($never, $json);
+            }
+
+            return true;
+        });
+        // the portal itself never loads a third-party script
+        $this->actingAs($student)->get('/portal')->assertDontSee('googletagmanager');
     }
 }

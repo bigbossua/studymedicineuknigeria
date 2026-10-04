@@ -23,6 +23,17 @@ jobs:
         run: |
           ops/live-verify.sh https://studymedicineuknigeria.com | tee live.txt; test "${PIPESTATUS[0]}" = 0
           { echo '### Live site'; echo '```'; cat live.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Google-readiness audit (robots, sitemap, canonicals, structured data, variants, private URLs, weight)
+        if: always()
+        run: |
+          python3 ops/seo/google-audit.py https://studymedicineuknigeria.com --json google-audit.json | tee google.txt; test "${PIPESTATUS[0]}" = 0
+          { echo '### Google readiness'; echo '```'; grep -v '^PASS  page' google.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: google-audit-${{ github.run_id }}
+          path: google-audit.json
+          retention-days: 90
       - name: Prepare SSH
         if: always()
         env:

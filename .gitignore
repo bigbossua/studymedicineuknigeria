@@ -33,3 +33,4 @@ brand/photos/*.png
 
 # per-university OG cards are rendered on demand
 public/images/og/schools/
+__pycache__/

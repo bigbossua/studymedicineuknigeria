@@ -4,6 +4,8 @@ namespace App\Support;
 
 use App\Models\Application;
 use App\Models\FunnelEvent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -14,8 +16,15 @@ use Throwable;
  */
 final class Funnel
 {
-    /** Events that may also be sent to GA4 (public site, after consent). Portal events stay first-party only. */
+    /** Events that may also be sent to GA4 from the browser (public site, after consent). lead_created = eligibility check completed. */
     private const CLIENT_EVENTS = ['course_viewed', 'apply_viewed', 'lead_created', 'account_created'];
+
+    /**
+     * Application-journey events GA4 may receive from the server (Measurement Protocol), never from a script in the
+     * portal: only when the visitor accepted analytics and GA4 has given the browser its anonymous client id. Only the
+     * parameters in clientParams() travel: no names, emails, application numbers, documents or free text.
+     */
+    private const SERVER_EVENTS = ['application_started', 'step_completed', 'document_uploaded', 'service_chosen', 'student_approved', 'submitted', 'payment_started', 'payment_completed'];
 
     /** application_events type → reporting event name, with the payload keys worth keeping. */
     private const FROM_APPLICATION_EVENT = [
@@ -24,6 +33,8 @@ final class Funnel
         'document.uploaded' => 'document_uploaded',
         'document.accepted' => 'document_accepted',
         'document.rejected' => 'document_rejected',
+        'service.chosen' => 'service_chosen',
+        'service.changed' => 'service_chosen',
         'payment.initiated' => 'payment_started',
         'payment.manual_requested' => 'payment_started',
         'payment.succeeded' => 'payment_completed',
@@ -57,6 +68,9 @@ final class Funnel
             if ($request && in_array($name, self::CLIENT_EVENTS, true) && $request->hasSession()) {
                 $request->session()->push('funnel.client', ['name' => $name, 'params' => self::clientParams($properties)]);
             }
+            if ($request && in_array($name, self::SERVER_EVENTS, true)) {
+                self::toGa4($request, $name, self::clientParams($properties + ['tier' => $application?->tier?->code]));
+            }
         } catch (Throwable $e) {
             Log::warning('funnel.track_failed', ['name' => $name, 'error' => $e->getMessage()]);
         }
@@ -70,6 +84,29 @@ final class Funnel
         }
         $keep = array_intersect_key($payload, array_flip(['step', 'title', 'route_code', 'status', 'amount']));
         self::track($name, $keep + ['actor' => $actorId === $application->user_id ? 'student' : 'staff'], $application);
+    }
+
+    /** Measurement Protocol hit for a consented visitor, sent after the response so the student never waits for it. */
+    private static function toGa4(Request $request, string $name, array $params): void
+    {
+        $id = config('site.ga4_id');
+        $secret = config('site.ga4_api_secret');
+        if (! $id || ! $secret || $request->cookie('smukn_consent') !== 'granted') {
+            return;
+        }
+        // _ga is "GA1.1.<random>.<timestamp>"; the client id is its last two parts, an anonymous browser identifier
+        if (! preg_match('/^GA\d\.\d\.(\d+\.\d+)$/', (string) $request->cookie('_ga'), $m)) {
+            return;
+        }
+        $clientId = $m[1];
+        dispatch(function () use ($id, $secret, $clientId, $name, $params) {
+            try {
+                Http::timeout(3)->post('https://www.google-analytics.com/mp/collect?'.http_build_query(['measurement_id' => $id, 'api_secret' => $secret]),
+                    ['client_id' => $clientId, 'non_personalized_ads' => true, 'events' => [['name' => $name, 'params' => $params + ['engagement_time_msec' => 1]]]]);
+            } catch (Throwable $e) {
+                Log::warning('funnel.ga4_failed', ['name' => $name, 'error' => $e->getMessage()]);
+            }
+        })->afterResponse();
     }
 
     /** Events queued for the GA4 layer on this session, cleared on read. */

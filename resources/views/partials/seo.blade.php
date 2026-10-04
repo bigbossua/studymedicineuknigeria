@@ -2,6 +2,9 @@
 <title>{{ $seo->fullTitle() }}</title>
 <meta name="description" content="{{ $seo->description }}">
 <link rel="canonical" href="{{ $seo->resolvedCanonical() }}">
+@if(config('site.google_site_verification') && request()->is('/'))
+<meta name="google-site-verification" content="{{ config('site.google_site_verification') }}">
+@endif
 @if($seo->noindex)
 <meta name="robots" content="noindex, nofollow">
 @else

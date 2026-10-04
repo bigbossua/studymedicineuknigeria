@@ -4,7 +4,7 @@
 # database, and runs the production smoke test plus the launch checks a staging review would have made:
 # trusted hosts, www → apex, old-site redirects, no debug output, unverified facts gated (production mode), no
 # service fee on any public page, registration closed, payment closed. Needs vendor/ and public/build/ (built).
-# Exit 1 on any failure. Usage: ops/production-rehearsal.sh [port]
+# Exit 1 on any failure. Usage: ops/production-rehearsal.sh [port]   (REHEARSAL_KEEP=1 leaves the server running for further audits)
 set -u
 PORT=${1:-8090}; ROOT=$(pwd); W=$(mktemp -d); fail=0
 ok(){ echo "ok   $*"; }; bad(){ echo "FAIL $*"; fail=1; }
@@ -46,6 +46,6 @@ done
 c=$("$C" -s -o /dev/null -w '%{http_code}' -X POST "$B/register"); [ "$c" = 419 ] || [ "$c" = 503 ] && ok "registration POST refused ($c)" || bad "registration POST answered $c"
 c=$("$C" -s -o /dev/null -w '%{http_code} %{redirect_url}' "$B/portal"); echo "$c" | grep -q '^302 .*/login' && ok "portal requires sign-in" || bad "portal: $c"
 php -r 'require "vendor/autoload.php"; $app = require "bootstrap/app.php"; $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap(); exit(app(App\Services\Payments\StripeService::class)->paymentsOpen() ? 1 : 0);' && ok "payment closed (no Stripe key, bank transfer off)" || bad "payment would be open"
-pkill -f "php -S 127.0.0.1:$PORT" 2>/dev/null; rm -rf "$W"
+if [ "${REHEARSAL_KEEP:-0}" = 1 ]; then echo "server kept running on 127.0.0.1:$PORT (Host: studymedicineuknigeria.com; database $DB)"; else pkill -f "php -S 127.0.0.1:$PORT" 2>/dev/null; rm -rf "$W"; fi
 [ "$fail" = 0 ] && echo "rehearsal: all production checks passed" || echo "rehearsal: FAILED"
 exit $fail

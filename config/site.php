@@ -24,6 +24,13 @@ return [
     // GA4 measurement ID (G-XXXXXXX). Blank = no third-party analytics at all. When set, the public site shows a
     // consent banner and loads gtag only after consent; the portal and admin never load it (funnel_events covers them).
     'ga4_id' => env('SITE_GA4_ID'),
+    // GA4 Measurement Protocol API secret (GA4 → Admin → Data streams → the web stream → Measurement Protocol API
+    // secrets). Lets application-journey events reach GA4 from the server, so no third-party script ever loads in
+    // the portal; sent only for visitors who accepted analytics. Blank = journey events stay first-party only.
+    'ga4_api_secret' => env('SITE_GA4_API_SECRET'),
+    // Google Search Console HTML-tag verification token (the content="…" value Google shows for a URL-prefix
+    // property). Only needed if ownership is not verified with the DNS TXT record of a Domain property.
+    'google_site_verification' => env('SITE_GOOGLE_VERIFICATION'),
 
     // Facts whose verification_status is not VERIFIED are hidden in production unless this is true.
     'publish_unverified' => env('SITE_PUBLISH_UNVERIFIED', false),

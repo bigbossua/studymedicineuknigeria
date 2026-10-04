@@ -49,7 +49,7 @@ class SchoolController extends Controller
         $universities = $q->get();
         $isFiltered = collect($filters)->filter()->isNotEmpty();
 
-        $seo = Seo::make('UK Medical School Directory for International Applicants',
+        $seo = Seo::make('UK medical schools that accept international students',
             'Every UK medical school with its international eligibility, admissions test, application route and published international fee, each with its official source.')
             ->canonical(route('schools.index'))
             ->noindex($isFiltered)

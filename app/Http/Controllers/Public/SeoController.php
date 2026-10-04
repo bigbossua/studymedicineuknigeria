@@ -11,14 +11,18 @@ class SeoController extends Controller
 {
     public function robots(): Response
     {
+        // Private areas are disallowed. /login and /register stay crawlable on purpose: they are linked from every page and
+        // answer noindex (meta and X-Robots-Tag), and Google can only drop a URL whose noindex it is allowed to read.
         $lines = [
             'User-agent: *',
             'Allow: /',
             'Disallow: /portal/',
-            'Disallow: /admin/',
-            'Disallow: /login',
-            'Disallow: /register',
+            'Disallow: /admin',
             'Disallow: /password/',
+            'Disallow: /email/',
+            'Disallow: /two-factor/',
+            'Disallow: /apply-online/start/',
+            'Disallow: /webhooks/',
             'Disallow: /*?*',
             '',
             'Sitemap: '.url('/sitemap.xml'),

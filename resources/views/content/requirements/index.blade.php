@@ -14,7 +14,7 @@
             ['Financial planning', 'Fees, visa, health surcharge, maintenance funds and living costs; universities and UKVI both check this.', route('fees.index'), 'Fee guide'],
             ['Deadlines and timing', 'UCAS medicine deadline in mid-October; UCAT before that; interviews December–March.', route('admissions.ucas2027'), 'Timeline'],
         ] as $i => [$h, $p, $u, $l])
-            <li class="card flex flex-col"><span class="font-mono text-[0.8125rem] text-ink-500">{{ sprintf('%02d', $i + 1) }}</span><h2 class="text-xl font-serif font-semibold mt-1">{{ $h }}</h2><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $p }}</p><a href="{{ $u }}" class="btn btn-tertiary mt-3 self-start">{{ $l }}</a></li>
+            <li class="card flex flex-col"><span class="font-sans font-semibold tabular-nums text-[0.8125rem] text-ink-500">{{ sprintf('%02d', $i + 1) }}</span><h2 class="text-xl font-serif font-semibold mt-1">{{ $h }}</h2><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $p }}</p><a href="{{ $u }}" class="btn btn-tertiary mt-3 self-start">{{ $l }}</a></li>
         @endforeach
     </ol>
     <section class="mt-12 max-w-4xl">

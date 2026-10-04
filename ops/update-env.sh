@@ -2,7 +2,8 @@
 # Set settings that arrive after bootstrap (Stripe keys, mail password) in ~/apps/smukn-<target>/shared/.env, then
 # rebuild the config cache. Run over SSH by the "Update server settings" workflow; values come on stdin as exports,
 # never on a command line. Only non-empty inputs are written; every other line of .env is left as it is.
-# Inputs (environment): TARGET, STRIPE_KEY, STRIPE_SECRET, STRIPE_WEBHOOK_SECRET, MAIL_PASSWORD, SITE_REGISTRATION_OPEN, SITE_BANK_TRANSFER
+# Inputs (environment): TARGET, STRIPE_KEY, STRIPE_SECRET, STRIPE_WEBHOOK_SECRET, MAIL_PASSWORD, SITE_REGISTRATION_OPEN, SITE_BANK_TRANSFER,
+# SITE_GA4_ID (G-…, public), SITE_GA4_API_SECRET (Measurement Protocol secret), SITE_GOOGLE_VERIFICATION (Search Console tag token)
 set -euo pipefail
 : "${TARGET:?staging|production}"
 APP=~/apps/smukn-$TARGET; ENV_FILE=$APP/shared/.env
@@ -23,8 +24,10 @@ set_key(){ # set_key NAME VALUE : replace the NAME= line or append it, value sin
   N="$name" L="$name='$value'" awk 'BEGIN{done=0} index($0, ENVIRON["N"]"=")==1 {print ENVIRON["L"]; done=1; next} {print} END{if(!done) print ENVIRON["L"]}' "$ENV_FILE" > "$tmp"
   mv "$tmp" "$ENV_FILE"; echo "set $name"
 }
+case "${SITE_GA4_ID:-}" in ""|G-[A-Z0-9]*) ;; *) echo "SITE_GA4_ID must be a GA4 measurement ID (G-…)" >&2; exit 4;; esac
+case "${SITE_GOOGLE_VERIFICATION:-}" in *[!A-Za-z0-9_-]*) echo "SITE_GOOGLE_VERIFICATION must be the token only (letters, digits, - and _)" >&2; exit 4;; esac
 changed=0
-for v in STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD; do
+for v in STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION; do
   [ -n "${!v:-}" ] && { set_key "$v" "${!v}"; changed=1; }
 done
 # switches (not secrets): registration opens only after a successful test email (Send test email workflow)

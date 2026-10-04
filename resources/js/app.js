@@ -67,6 +67,22 @@ document.addEventListener('submit', (e) => {
         const where = a.closest('header') ? 'header' : a.closest('footer') ? 'footer' : a.closest('[data-floating-cta]') ? 'floating' : a.closest('.cta-band') ? 'cta_band' : 'content';
         send('apply_click', { location: where, page: location.pathname });
     });
+    // Contact, outbound official sources and directory filtering: event names and coarse labels only, never what was typed
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href]');
+        if (!a) return;
+        const href = a.getAttribute('href');
+        if (href.startsWith('mailto:')) send('contact_click', { method: 'email', page: location.pathname });
+        else if (href.includes('wa.me/')) send('contact_click', { method: 'whatsapp', page: location.pathname });
+        else if (a.target === '_blank' && /^https?:/.test(href) && !href.includes(location.host)) {
+            try { send('official_source_click', { domain: new URL(href).hostname.replace(/^www\./, ''), page: location.pathname }); } catch (err) { /* ignore */ }
+        }
+    });
+    const dir = document.querySelector('form[aria-label="Filter medical schools"]');
+    if (dir) dir.addEventListener('submit', () => {
+        const used = ['nation', 'international', 'test', 'waec'].filter((k) => dir.elements[k]?.value);
+        send('directory_filter', { filters: used.join(',') || 'none', searched: dir.elements.q?.value ? 'yes' : 'no' });
+    });
     const elig = document.querySelector('form[action$="/eligibility"]');
     if (elig) elig.addEventListener('input', () => send('eligibility_started', { page: location.pathname }), { once: true });
     const banner = document.querySelector('[data-consent-banner]');

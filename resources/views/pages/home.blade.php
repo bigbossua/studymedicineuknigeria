@@ -20,7 +20,11 @@
                 </ul>
             </div>
             <div class="hidden md:block lg:col-span-5">
-                <img src="/images/maps/route-nigeria-uk.svg" alt="A globe showing the route from Lagos, Nigeria to London, United Kingdom" width="560" height="560" class="w-full max-w-[30rem] mx-auto h-auto drop-shadow-2xl" fetchpriority="high">
+                {{-- phones never show the globe, so they get a 1-pixel placeholder instead of the 38 KB illustration --}}
+                <picture>
+                    <source media="(max-width: 767px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+                    <img src="/images/maps/route-nigeria-uk.svg" alt="A globe showing the route from Lagos, Nigeria to London, United Kingdom" width="560" height="560" class="w-full max-w-[30rem] mx-auto h-auto drop-shadow-2xl" fetchpriority="high">
+                </picture>
             </div>
         </div>
     </section>
@@ -44,7 +48,7 @@
                     <li class="card card-hover p-4! sm:p-6! lg:rounded-none lg:border-r-0 lg:first:rounded-l-lg lg:last:rounded-r-lg lg:last:border-r flex flex-col @if($i === 5) bg-navy-50 @endif">
                         <div class="flex items-center justify-between">
                             <span class="icon-badge @if($i === 5) bg-accent-600! text-white! ring-0! @endif"><x-icon :name="$icon" :size="22" /></span>
-                            <span class="font-mono text-[0.75rem] text-ink-500">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                            <span class="font-sans font-semibold tabular-nums tracking-wide text-[0.75rem] text-ink-500">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
                         </div>
                         <h3 class="mt-4 text-lg">{{ $title }}</h3>
                         <p class="mt-1.5 text-[0.875rem] text-ink-700 flex-1">{{ $text }}</p>
@@ -187,7 +191,7 @@
                 ] as $i => [$icon, $h, $p])
                     <li class="relative">
                         <span class="relative z-10 inline-flex items-center justify-center w-12 h-12 rounded-full bg-navy-700 text-white ring-8 ring-paper"><x-icon :name="$icon" :size="22" /></span>
-                        <p class="mt-5 font-mono text-[0.75rem] text-ink-500">Step {{ $i + 1 }}</p>
+                        <p class="mt-5 font-sans font-semibold tabular-nums tracking-wide text-[0.75rem] text-ink-500">Step {{ $i + 1 }}</p>
                         <h3 class="mt-1">{{ $h }}</h3>
                         <p class="mt-2 text-ink-700 text-[0.9375rem]">{{ $p }}</p>
                     </li>

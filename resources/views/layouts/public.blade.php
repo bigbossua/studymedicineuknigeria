@@ -81,7 +81,7 @@
                 <p class="eyebrow text-gold-400! mb-2">Your route to UK Medicine</p>
                 <ol class="flex flex-wrap gap-x-5 gap-y-2 text-white/85">
                     @foreach(\App\Support\MedicineRoute::steps() as $i => $step)
-                        <li class="flex items-center gap-2"><span class="font-mono text-[0.75rem] text-white/65">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span><a href="{{ route($step['route']) }}" class="text-white/85 no-underline hover:text-white hover:underline">{{ $step['label'] }}</a></li>
+                        <li class="flex items-center gap-2"><span class="font-sans font-semibold tabular-nums tracking-wide text-[0.75rem] text-white/65">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span><a href="{{ route($step['route']) }}" class="text-white/85 no-underline hover:text-white hover:underline">{{ $step['label'] }}</a></li>
                     @endforeach
                 </ol>
             </div>

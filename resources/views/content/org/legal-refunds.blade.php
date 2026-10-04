@@ -2,6 +2,7 @@
 <article class="container-site pt-6 pb-10"><div class="max-w-3xl prose-site">
     @include('content._page-head', ['eyebrow' => 'Legal', 'title' => 'Refund policy', 'lede' => 'Plain rules for refunds of our service fee. University and third-party fees are outside our control and are not covered here.', 'seo' => $seo])
     <p class="text-[0.8125rem] text-ink-500 mt-4">Version 0.9.1, 4 October 2026 (single service fee per service) — under legal review.</p>
+    <p>This policy forms part of the <a href="{{ route('legal.application-terms') }}">application service terms</a>; use of the website itself is governed by the <a href="{{ route('legal.terms') }}">terms of use</a>.</p>
     <h2>Within 14 days, before work starts</h2><p>Full refund, no questions asked.</p>
     <h2>After work has started</h2><p>A pro-rata refund based on the deliverables already completed, itemised on your invoice.</p>
     <h2>Submission support (Full Medical Application Support)</h2><p>Nothing is submitted until you approve the proposed submission package. If you cancel before approving it, the refund follows the pro-rata rule above by deliverables completed. Once a submission has been made, no refund is due for submission support.</p>

@@ -12,7 +12,7 @@
         <div class="lg:col-span-5 card-raised">
             <p class="eyebrow mb-3">What happens, in order</p>
             <ol class="space-y-3 text-[0.9375rem]">
-                @foreach(['Create your account and application number', 'Tell us about your qualifications and plans, saved automatically', 'Our team reviews your profile', 'Your portal shows the service options and fees; you choose one and pay', 'Upload the documents on your personal checklist; each is reviewed', 'You approve the exact package before any submission; then track the university\'s response'] as $i => $s)<li class="flex gap-3"><span class="font-mono text-ink-500">0{{ $i+1 }}</span><span>{{ $s }}</span></li>@endforeach
+                @foreach(['Create your account and application number', 'Tell us about your qualifications and plans, saved automatically', 'Our team reviews your profile', 'Your portal shows the service options and fees; you choose one and pay', 'Upload the documents on your personal checklist; each is reviewed', 'You approve the exact package before any submission; then track the university\'s response'] as $i => $s)<li class="flex gap-3"><span class="font-sans font-semibold tabular-nums text-ink-500">0{{ $i+1 }}</span><span>{{ $s }}</span></li>@endforeach
             </ol>
         </div>
     </div>

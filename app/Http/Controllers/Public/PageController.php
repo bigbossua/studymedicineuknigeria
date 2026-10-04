@@ -20,16 +20,9 @@ class PageController extends Controller
         $seo = Seo::make('Study Medicine UK Nigeria: independent UK Medicine applications',
             'Check published entry requirements for WAEC, NECO, A-levels and Nigerian degrees, compare verified fees and UK medical schools, and apply online with support.')
             ->canonical(route('home'))
-            ->jsonLd([
-                '@type' => 'WebSite',
-                'name' => config('site.name'),
-                'url' => url('/'),
-                'potentialAction' => [
-                    '@type' => 'SearchAction',
-                    'target' => ['@type' => 'EntryPoint', 'urlTemplate' => route('schools.index').'?q={search_term_string}'],
-                    'query-input' => 'required name=search_term_string',
-                ],
-            ]);
+            // WebSite without a SearchAction: Google retired the sitelinks search box (2024) and query URLs are disallowed in robots.txt
+            ->jsonLd(['@type' => 'WebSite', '@id' => url('/').'#website', 'name' => config('site.name'), 'url' => url('/'), 'inLanguage' => 'en-GB',
+                'publisher' => ['@id' => url('/').'#organization']]);
 
         // live counts from the directory (same definitions as the Medicine pillar), never typed in
         $schools = University::medicalSchools()->get(['id', 'slug', 'name', 'city', 'nation', 'international_policy']);

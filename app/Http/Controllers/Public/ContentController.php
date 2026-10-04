@@ -77,7 +77,7 @@ class ContentController extends Controller
     public function requirements()
     {
         $faqs = collect($this->faqItems())->whereIn('id', [1, 2, 6, 21])->values();
-        $seo = $this->seo('Requirements to study Medicine in the UK from Nigeria', 'What every UK medical school looks at: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants specifically must check.', 'requirements.index', [['label' => 'Requirements']]);
+        $seo = $this->seo('UK medical school entry requirements for Nigerians', 'What every UK medical school looks at: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants specifically must check.', 'requirements.index', [['label' => 'Requirements']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.requirements.index', ['seo' => $seo, 'faqs' => $faqs, 'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count(),
@@ -166,7 +166,7 @@ class ContentController extends Controller
             $rows = $rows->sortBy(fn ($f) => ($f->isPublishable() && $f->value_number) ? $f->value_number : PHP_INT_MAX)->values();
         }
 
-        return view('content.fees.index', ['seo' => $this->seo('International fees at UK medical schools, 2026/27 to 2027/28', 'International tuition fees for Medicine at every UK medical school, with fee year, clinical-year differences and an official source for each figure.', 'fees.index', [['label' => 'Fees']]),
+        return view('content.fees.index', ['seo' => $this->seo('UK medical school fees for international students', 'International tuition fees for Medicine at every UK medical school, with fee year, clinical-year differences and an official source for each figure.', 'fees.index', [['label' => 'Fees']]),
             'rows' => $rows, 'sort' => $sort, 'min' => $pub->min('value_number'), 'max' => $pub->max('value_number'), 'count' => $pub->count(), 'visa' => Topic::bySlug('student-visa')]);
     }
 
@@ -264,7 +264,7 @@ class ContentController extends Controller
 
     public function eligibility()
     {
-        return view('content.apply.eligibility', ['seo' => $this->seo('Check your eligibility for UK Medicine', 'Seven questions, no account needed. See which routes to UK medicine appear open on published requirements for your qualifications, and what to read next.', 'apply.eligibility', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Eligibility']], false), 'result' => session('eligibility_result')]);
+        return view('content.apply.eligibility', ['seo' => $this->seo('UK Medicine eligibility checker for Nigerian students', 'Seven questions, no account needed. See which routes to UK medicine appear open on published requirements for your qualifications, and what to read next.', 'apply.eligibility', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Eligibility']], false), 'result' => session('eligibility_result')]);
     }
 
     public function eligibilitySubmit(Request $request)
@@ -409,7 +409,7 @@ class ContentController extends Controller
     // ---------------- Organisation ----------------
     public function about()
     {
-        return view('content.org.about', ['seo' => $this->seo('About Study Medicine UK Nigeria', 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine in the UK: who we are, how we work and what we never claim.', 'about', [['label' => 'About']], false)]);
+        return view('content.org.about', ['seo' => $this->seo('About Study Medicine UK Nigeria: who we are, how we work', 'An independent, evidence-led application-support service for Nigerian students applying to study Medicine in the UK: who we are, how we work and what we never claim.', 'about', [['label' => 'About']], false)]);
     }
 
     public function howWeVerify()

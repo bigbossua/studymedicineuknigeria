@@ -125,19 +125,31 @@ class Seo
     /** @return array<int, array<string, mixed>> */
     public function allJsonLd(): array
     {
+        // One organisation and one website, referenced by @id from every page (no ratings, reviews or partnerships)
         $out = [[
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
+            '@id' => url('/').'#organization',
             'name' => config('site.name'),
             'url' => url('/'),
-            'logo' => url('/images/brand/smukn-symbol.svg'),
+            'logo' => ['@type' => 'ImageObject', 'url' => url('/icon-512.png'), 'width' => 512, 'height' => 512],
             'email' => config('site.email'),
             'description' => config('site.default_description'),
         ]];
+        if (! $this->noindex) {
+            $page = ['@context' => 'https://schema.org', '@type' => 'WebPage', '@id' => $this->resolvedCanonical().'#webpage',
+                'url' => $this->resolvedCanonical(), 'name' => $this->title, 'description' => $this->description, 'inLanguage' => 'en-GB',
+                'isPartOf' => ['@id' => url('/').'#website'], 'publisher' => ['@id' => url('/').'#organization']];
+            if ($this->lastReviewed) {
+                $page['dateModified'] = $this->lastReviewed; // the date the page's facts were last reviewed, as shown on the page
+            }
+            $out[] = $page;
+        }
         if ($this->breadcrumbs) {
-            $items = [];
+            // the same trail as the visible breadcrumbs, which always start at Home
+            $items = [['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')]];
             foreach (array_values($this->breadcrumbs) as $i => $c) {
-                $item = ['@type' => 'ListItem', 'position' => $i + 1, 'name' => $c['label']];
+                $item = ['@type' => 'ListItem', 'position' => $i + 2, 'name' => $c['label']];
                 if (! empty($c['url'])) {
                     $item['item'] = $c['url'];
                 }

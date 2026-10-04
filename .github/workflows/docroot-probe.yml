@@ -1,0 +1,42 @@
+name: Document root probe (read-only)
+# After the first launch answered 403 on every path, this finds out why: permissions along the path, error-log lines,
+# and whether the web server follows a link into ~/apps (probe a) or into the domain's own folder (probe b).
+# Two unlisted probe links exist inside the live document root for a few seconds; they are always removed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Probe
+        run: |
+          TS=${{ github.run_id }}; S="ssh -i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p $PORT $USER@$HOST"
+          { printf 'export TS=%q MODE=links\n' "$TS"; cat ops/docroot-probe.sh; } | $S 'bash -s'
+          for p in a b; do
+            for u in "https://studymedicineuknigeria.com/smukn-probe-$p-$TS/probe.txt" "https://studymedicineuknigeria.com/smukn-probe-$p-$TS/probe.txt?nocache=$RANDOM"; do
+              echo "probe $p: $(curl -s -o /tmp/body -w '%{http_code}' "$u") $(head -c 40 /tmp/body | tr -d '\n')"
+            done
+          done
+          echo "== headers of a 403 probe (who answers) =="; curl -sI "https://studymedicineuknigeria.com/smukn-probe-a-$TS/probe.txt" | grep -iE '^(HTTP|server|content-security|x-|platform|panel)' || true
+      - name: Remove the probe links
+        if: always()
+        run: |
+          S="ssh -i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p $PORT $USER@$HOST"
+          { printf 'export TS=%q MODE=cleanup\n' "${{ github.run_id }}"; cat ops/docroot-probe.sh; } | $S 'bash -s'

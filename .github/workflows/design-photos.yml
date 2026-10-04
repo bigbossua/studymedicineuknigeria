@@ -28,7 +28,7 @@ jobs:
         env:
           MODE: ${{ inputs.mode }}
           ARG: ${{ inputs.arg }}
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY || vars.UNSPLASH_ACCESS_KEY }}  # the Access Key is a public client id, so a variable is acceptable too
         run: python3 ops/design/unsplash.py "$MODE" "$ARG"
       - name: Commit to this branch
         run: |

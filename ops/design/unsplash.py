@@ -84,7 +84,7 @@ def search(queries):
     found = {}
     for qi, q in enumerate(queries):
         if not KEY and os.environ.get('GITHUB_ACTIONS'):
-            sys.exit('::error::UNSPLASH_ACCESS_KEY is not set: unsplash.com refuses GitHub runners, so only the API works here')
+            sys.exit('::error::UNSPLASH_ACCESS_KEY is not set as a repository secret or variable (Settings > Secrets and variables > Actions; an environment secret is not visible to this job): unsplash.com refuses GitHub runners, so only the API works here')
         photos = (search_api(q) if KEY else search_html(q))[:16]
         thumbs = []
         for p in photos:

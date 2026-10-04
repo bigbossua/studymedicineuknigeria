@@ -88,8 +88,8 @@ set -euo pipefail
 D="${D/#\~/$HOME}"; D="${D%/}"; APPD="$HOME/apps/smukn-$TARGET"
 # "auto": the folder Hostinger serves for the domain, found rather than guessed; anything ambiguous stops here
 if [ "$D" = auto ]; then
-  D=""; for c in "$HOME/domains/studymedicineuknigeria.com/public_html" "$HOME/public_html"; do [ -e "$c" ] && { D="$c"; break; }; done
-  [ -n "$D" ] || { echo "auto: no document root found (looked for ~/domains/studymedicineuknigeria.com/public_html and ~/public_html)"; exit 3; }
+  D=""; for c in "$HOME/domains/studymedicineuknigeria.com/public_html"; do   # only this domain's folder: the account hosts many websites [ -e "$c" ] && { D="$c"; break; }; done
+  [ -n "$D" ] || { echo "auto: no document root found (looked for ~/domains/studymedicineuknigeria.com/public_html; pass the folder from the inspection report instead)"; exit 3; }
   echo "auto: document root is $D"
 fi
 if [ -L "$D" ] && [ "$(readlink "$D")" = "$APPD/current/public" ]; then echo "document root already serves $APPD/current/public"; exit 0; fi

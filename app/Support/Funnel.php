@@ -69,7 +69,7 @@ final class Funnel
                 $request->session()->push('funnel.client', ['name' => $name, 'params' => self::clientParams($properties)]);
             }
             if ($request && in_array($name, self::SERVER_EVENTS, true)) {
-                self::toGa4($request, $name, self::clientParams($properties + ['tier' => $application?->tier?->code]));
+                self::toGa4($request, $name, array_filter(self::clientParams($properties + ['tier' => $application?->tier?->code, 'intake_year' => $application?->intake_year]), fn ($v) => $v !== null));
             }
         } catch (Throwable $e) {
             Log::warning('funnel.track_failed', ['name' => $name, 'error' => $e->getMessage()]);

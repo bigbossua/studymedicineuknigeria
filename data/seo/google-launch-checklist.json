@@ -1,0 +1,118 @@
+{
+ "site": "https://studymedicineuknigeria.com",
+ "generated": "2026-10-04",
+ "statuses": [
+  "PASS",
+  "FAIL",
+  "OWNER ACTION",
+  "NOT YET AVAILABLE"
+ ],
+ "checked_by": [
+  "ops/seo/google-audit.py",
+  ".github/workflows/live-verify.yml",
+  "tests/Feature/GoogleReadinessTest.php",
+  "ops/qa/axe-audit.cjs"
+ ],
+ "items": [
+  {
+   "area": "robots.txt",
+   "status": "PASS",
+   "evidence": "200 text/plain; private areas disallowed; /login and /register crawlable for their noindex; sitemap named; nothing in the sitemap blocked"
+  },
+  {
+   "area": "sitemap",
+   "status": "PASS",
+   "evidence": "28 canonical https URLs, lastmod on each, no query/trailing slash/private URL"
+  },
+  {
+   "area": "canonicals",
+   "status": "PASS",
+   "evidence": "one self-referencing absolute production canonical on every sitemap page"
+  },
+  {
+   "area": "redirects",
+   "status": "PASS",
+   "evidence": "65 old-site URLs 301 in one hop to a 200 page; 7 retired URLs 404; www and trailing slash 301; http→https 301 checked live"
+  },
+  {
+   "area": "indexability",
+   "status": "PASS",
+   "evidence": "28 pages index,follow without X-Robots-Tag; private URLs noindex or redirect to sign-in"
+  },
+  {
+   "area": "titles",
+   "status": "PASS",
+   "evidence": "28 unique, ≤65 characters"
+  },
+  {
+   "area": "descriptions",
+   "status": "PASS",
+   "evidence": "28 unique, 100–165 characters"
+  },
+  {
+   "area": "headings",
+   "status": "PASS",
+   "evidence": "one H1 per page, no skipped levels"
+  },
+  {
+   "area": "structured data",
+   "status": "PASS",
+   "evidence": "Organization, WebSite, WebPage(dateModified), BreadcrumbList, ItemList, Service (no prices), FAQPage only for visible questions; no ratings/reviews/offers/partnership claims"
+  },
+  {
+   "area": "breadcrumbs",
+   "status": "PASS",
+   "evidence": "visible on every page below home; JSON-LD trail matches and starts at Home"
+  },
+  {
+   "area": "internal links",
+   "status": "PASS",
+   "evidence": "all sitemap pages reachable from home; ≥2 in-body inbound links each; Next step on every guide page"
+  },
+  {
+   "area": "mobile",
+   "status": "PASS",
+   "evidence": "reviewed at 390 px; axe at mobile width"
+  },
+  {
+   "area": "accessibility",
+   "status": "PASS",
+   "evidence": "axe-core 0 violations on public, portal and admin, desktop and mobile"
+  },
+  {
+   "area": "performance",
+   "status": "PASS",
+   "evidence": "CSS 19 KB, JS 1.3 KB gzip; HTML 10–19 KB gzip; immutable asset caching; no third-party script before consent"
+  },
+  {
+   "area": "HTTPS",
+   "status": "PASS",
+   "evidence": "valid certificate for apex and www; HSTS one year with subdomains"
+  },
+  {
+   "area": "security",
+   "status": "PASS",
+   "evidence": "CSP with nonces, nosniff, frame DENY, referrer and permissions policies, no X-Powered-By, foreign hosts refused"
+  },
+  {
+   "area": "Search Console readiness",
+   "status": "OWNER ACTION",
+   "evidence": "add a Domain property and its google-site-verification TXT record in Hostinger DNS (docs/seo/GOOGLE-READINESS.md); or a URL-prefix HTML tag via SITE_GOOGLE_VERIFICATION"
+  },
+  {
+   "area": "GA4 readiness",
+   "status": "OWNER ACTION",
+   "evidence": "create the property and web stream; set GitHub variable SITE_GA4_ID and production secret SITE_GA4_API_SECRET"
+  },
+  {
+   "area": "analytics events",
+   "status": "NOT YET AVAILABLE",
+   "evidence": "event code ready and tested (browser after consent; journey events server-side with consent, whitelisted parameters); no data until SITE_GA4_ID is set"
+  },
+  {
+   "area": "trust / quality",
+   "status": "OWNER ACTION",
+   "evidence": "independence, scope, verification and dates published; registered company name, address and ICO registration still 'to be published'; legal pages under legal review"
+  }
+ ]
+}

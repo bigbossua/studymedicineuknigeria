@@ -10,7 +10,13 @@ PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v 
 mask(){ sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email]/g'; }
 
 echo "== cron (the queue worker runs from schedule:run every minute) =="
-crontab -l 2>/dev/null | grep -F 'schedule:run' | sed -E 's#/home/[^/]+#~#g' || echo "NO schedule:run line in crontab"
+if command -v crontab >/dev/null; then
+  echo "crontab command: available; entries in this account's crontab: $(crontab -l 2>/dev/null | grep -cvE '^\s*(#|$)')"
+  crontab -l 2>/dev/null | grep -F 'schedule:run' | sed -E 's#/home/[^/]+#~#g' || echo "NO schedule:run line in crontab"
+else
+  echo "crontab command: NOT available over SSH (cron jobs are managed in hPanel → Advanced → Cron Jobs)"
+fi
+for d in /var/spool/cron /var/spool/cron/crontabs; do [ -r "$d/$(whoami)" ] && echo "spool file readable: $d"; done
 
 echo "== settings, queue, failed jobs, worker lock, admin account =="
 $PHP artisan tinker --execute '

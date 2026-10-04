@@ -68,7 +68,14 @@ class VerificationAdminTest extends TestCase
         $this->seed(PlatformSeeder::class);
         $this->seed(TopicFactsSeeder::class);
         $r = $this->admin()->get('/admin')->assertOk()->assertSee('Launch readiness')->assertSee('Reference facts verified')->assertSee('3 price(s) set', false)->assertSee('STRIPE_SECRET not set');
-        $this->assertMatchesRegularExpression('/\d+ of 8 complete/', $r->getContent());
+        $this->assertMatchesRegularExpression('/\d+ of 9 complete/', $r->getContent());
+        // the scheduler item tells the truth: no heartbeat yet means the cron job has never run
+        $r->assertSee('Scheduler and email queue running')->assertSee('scheduler has never run');
+        \Illuminate\Support\Facades\Cache::forever('scheduler.heartbeat', now()->timestamp);
+        $this->admin()->get('/admin')->assertSee('scheduler last ran 0 min ago');
+        // recording the first-party analytics choice completes that item; a non-ID SITE_GA4_ID is never treated as GA4
+        config(['site.analytics_decision' => 'first_party']);
+        $this->admin()->get('/admin')->assertSee('first-party funnel only (owner decision recorded)');
     }
 
     public function test_redirects_are_admin_only_relative_and_never_over_private_paths(): void

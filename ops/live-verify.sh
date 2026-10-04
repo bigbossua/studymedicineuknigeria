@@ -25,7 +25,7 @@ for u in $pages "$B/apply-online" "$B/apply-online/services" "$B/register" "$B/l
   grep -qE '£125|£695|£1,295|12500|69500|129500|priceCurrency' <<<"$body" && { bad "service fee visible on $u"; leaks=1; }
   grep -qiE 'Whoops|Stack trace|SQLSTATE|vendor/laravel' <<<"$body" && bad "debug text on $u"
   # nothing unfinished, internal or personal: placeholder text, test or development addresses, keys, personal mailboxes
-  hit=$(grep -oiE 'lorem ipsum|\bTODO\b|FIXME|example\.test|localhost|127\.0\.0\.1|staging\.studymedicine|(sk|rk)_(live|test)_|pk_test_|whsec_|@(gmail|yahoo|hotmail|outlook)\.com|test mode' <<<"$body" | sort -u | tr '\n' ' ')
+  hit=$( { grep -oE '\b(TBC|TBD|CONFIRM|NOT PUBLISHED|NOT_PUBLISHED|VERIFY-ON-PAGE|PLACEHOLDER|DUMMY)\b' <<<"$body"; grep -oiE 'lorem ipsum|\bTODO\b|FIXME|example\.test|localhost|127\.0\.0\.1|staging\.studymedicine|(sk|rk)_(live|test)_|pk_test_|whsec_|@(gmail|yahoo|hotmail|outlook)\.com|test mode' <<<"$body"; } | sort -u | tr '\n' ' ')
   [ -n "$hit" ] && bad "unfinished, internal or personal text on $u: $hit"
   case "$u" in "$B/register"|"$B/login"|"$B/apply-online"|"$B/apply-online/services") continue;; esac
   grep -qF "<link rel=\"canonical\" href=\"$u\"" <<<"$body" || { nocanon=$((nocanon+1)); echo "     no self-canonical: $u"; }
@@ -45,6 +45,11 @@ if printf '%s' "$reg" | grep -q 'Registration opens shortly'; then echo "info re
   printf '%s' "$reg" | grep -q 'name="password_confirmation"' && ok "registration form is open" || bad "registration page shows neither the form nor the closed notice"; fi
 curl -s "$B/login" | grep -q 'name="password"' && ok "sign-in form renders" || bad "sign-in form missing"
 c=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$B/portal"); echo "$c" | grep -q '^302 .*/login' && ok "portal requires sign-in" || bad "portal: $c"
+# documents: a signed-out request for a (guessed) document URL is sent to sign-in; storage paths are not served
+c=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$B/portal/SMUKN-2028-000001/documents/1/v/1"); echo "$c" | grep -q '^302 .*/login' && ok "a guessed document URL requires sign-in" || bad "guessed document URL: $c"
+for p in /storage/app/private /storage /private /../storage/app/private /.env /vendor/composer/installed.json; do
+  c=$(curl -s -o /dev/null -w '%{http_code}' "$B$p"); case "$c" in 404|403|301|302) ;; *) bad "$p answered $c";; esac
+done; ok "storage, .env and vendor paths are not served"
 c=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$B/admin"); echo "$c" | grep -q '^302 .*/login' && ok "admin requires sign-in" || bad "admin: $c"
 
 # 000: the CDN closes the connection for a host it does not serve (the application's own 400 is proven by the rehearsal)

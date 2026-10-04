@@ -72,6 +72,13 @@ class ReferenceFact extends Model
     public function displayValue(): ?string
     {
         if ($this->value_text !== null) {
+            // research shorthand ("NOT PUBLISHED — confirm directly with the university") reads as a sentence on the site
+            if (preg_match('/^\s*NOT[ _]PUBLISHED\b\s*[—–:-]*\s*(.*)$/u', $this->value_text, $m)) {
+                $rest = trim($m[1]);
+
+                return 'Not published by the university.'.($rest !== '' ? ' '.ucfirst(rtrim($rest, '.')).'.' : '');
+            }
+
             return $this->value_text;
         }
         if ($this->value_number !== null) {

@@ -23,7 +23,9 @@ return [
 
     // GA4 measurement ID (G-XXXXXXX). Blank = no third-party analytics at all. When set, the public site shows a
     // consent banner and loads gtag only after consent; the portal and admin never load it (funnel_events covers them).
-    'ga4_id' => env('SITE_GA4_ID'),
+    'ga4_id' => preg_match('/^G-[A-Z0-9]{4,}$/', (string) env('SITE_GA4_ID')) ? env('SITE_GA4_ID') : null, // anything else (blank, "off") means no GA4
+    // The owner's recorded analytics choice: "first_party" (funnel_events only, no Google script) or "ga4" (with SITE_GA4_ID).
+    'analytics_decision' => in_array(env('SITE_ANALYTICS_DECISION'), ['first_party', 'ga4'], true) ? env('SITE_ANALYTICS_DECISION') : null,
     // GA4 Measurement Protocol API secret (GA4 → Admin → Data streams → the web stream → Measurement Protocol API
     // secrets). Lets application-journey events reach GA4 from the server, so no third-party script ever loads in
     // the portal; sent only for visitors who accepted analytics. Blank = journey events stay first-party only.

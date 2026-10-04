@@ -4,6 +4,8 @@ name: Live verification (read-only)
 # then the server's own state over SSH: settings that keep payment closed, migrations, and what the database holds.
 # Reads only; values of secrets are never printed.
 on:
+  schedule:
+    - cron: '23 6 * * *'   # daily: payments are live, so the scheduled run checks the open state
   workflow_dispatch:
     inputs:
       payments:
@@ -89,6 +91,7 @@ jobs:
               "queue_pending" => DB::table("jobs")->count(),
               "queue_oldest_pending_minutes" => ($t = DB::table("jobs")->min("created_at")) ? (int) round((time() - $t) / 60) : 0,
               "failed_jobs" => DB::table("failed_jobs")->count(),
+              "scheduler_heartbeat_minutes" => ($b = Cache::get("scheduler.heartbeat")) ? (int) floor((time() - (int) $b) / 60) : null,
             ], JSON_PRETTY_PRINT), PHP_EOL;'
           # what Stripe shows customers (Checkout, receipts, card statements): yes/no only, never the values (public logs)
           $PHP artisan tinker --execute '
@@ -126,7 +129,7 @@ jobs:
           REMOTE
           # unsigned webhook: 400 = signature checked (secret installed), 503 = no secret installed
           echo "webhook endpoint, unsigned POST: $(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' https://studymedicineuknigeria.com/webhooks/stripe)" | tee -a server.txt
-          if [ "${{ github.event.inputs.payments || 'closed' }}" = open ]; then
+          if [ "${{ github.event.inputs.payments || 'open' }}" = open ]; then
             for k in '"payments_open": true' '"stripe_enabled": true' '"stripe_live_key": true' '"webhook_secret_set": true' 'unsigned POST: 400' 'Webhook self-test passed' '"stripe_charges_enabled": true'; do grep -q "$k" server.txt || { echo "::error::live payments not fully wired: missing $k"; exit 1; }; done
           else
             grep -q '"payments_open": false' server.txt || { echo "::error::payment is not closed"; exit 1; }
@@ -136,5 +139,7 @@ jobs:
           grep -q '"session_http_only": true' server.txt || { echo "::error::session cookie is readable by scripts"; exit 1; }
           grep -q '"session_secure_cookie": true' server.txt || { echo "::error::session cookie is not marked Secure"; exit 1; }
           # the queue worker runs from the hPanel cron job (schedule:run every minute): nothing may wait longer than 10 minutes
+          grep -q '"failed_jobs": 0' server.txt || { echo "::error::failed queue jobs exist: open Admin, or run the mail diagnosis"; exit 1; }
+          hb=$(grep -o '"scheduler_heartbeat_minutes": [0-9]*' server.txt | grep -o '[0-9]*$'); if [ -n "$hb" ] && [ "$hb" -gt 5 ]; then echo "::error::the scheduler last ran ${hb} minutes ago: the hPanel cron job has stopped"; exit 1; fi
           w=$(grep -o '"queue_oldest_pending_minutes": [0-9]*' server.txt | grep -o '[0-9]*$'); [ "${w:-0}" -le 10 ] || { echo "::error::queued emails have waited ${w} minutes: the scheduler cron job is not running (hPanel → Advanced → Cron Jobs)"; exit 1; }
           { echo '### Server state'; echo '```'; cat server.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

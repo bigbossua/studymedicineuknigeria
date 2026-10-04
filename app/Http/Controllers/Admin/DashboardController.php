@@ -15,6 +15,7 @@ use App\Models\University;
 use App\Models\User;
 use App\Services\Payments\StripeService;
 use App\Support\Seo;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -34,10 +35,15 @@ class DashboardController extends Controller
         $tiers = ServiceTier::where('active', true)->count();
         $staffWith2fa = User::whereIn('role', ['staff', 'admin'])->whereNotNull('two_factor_confirmed_at')->count();
         $staff = User::whereIn('role', ['staff', 'admin'])->count();
+        $beat = Cache::get('scheduler.heartbeat');
+        $heartbeat = $beat ? (int) floor((time() - (int) $beat) / 60) : null;
+        $queued = \DB::table('jobs')->count();
+        $oldestJob = ($t = \DB::table('jobs')->min('created_at')) ? (int) floor((time() - $t) / 60) : 0;
+        $failedJobs = \DB::table('failed_jobs')->count();
 
         return [
             ['label' => 'Reference facts verified', 'done' => $pending === 0 && $verified > 0, 'detail' => "{$verified} verified · {$pending} awaiting verification", 'url' => route('admin.reference.sources')],
-            ['label' => 'University pages published', 'done' => $published > 0, 'detail' => "{$published} of {$universities} marked indexable", 'url' => route('admin.reference.universities')],
+            ['label' => 'University pages published', 'done' => $published > 0, 'detail' => "{$published} of {$universities} indexable; a page is published only once its facts are verified", 'url' => route('admin.reference.universities')],
             ['label' => 'Service prices set', 'done' => $priced > 0, 'detail' => $priced ? "{$priced} price(s) set" : "no prices yet across {$tiers} active tier(s); students can still apply", 'url' => route('admin.tiers')],
             ['label' => 'Card payments enabled', 'done' => app(StripeService::class)->enabled(), 'detail' => match (true) {
                 ! config('services.stripe.secret') => 'STRIPE_SECRET not set: card payment closed (post-launch step)'.(config('site.bank_transfer') ? '; bank transfer open' : '; bank transfer off, so students cannot pay yet'),
@@ -48,7 +54,14 @@ class DashboardController extends Controller
             ['label' => 'Transactional email configured', 'done' => (bool) config('mail.mailers.smtp.password'), 'detail' => config('mail.mailers.smtp.password') ? 'SMTP password present' : (config('mail.default') === 'smtp' ? 'MAIL_PASSWORD not set' : 'development mailer ('.config('mail.default').'); set MAIL_* on the server'), 'url' => null],
             ['label' => 'All staff enrolled in two-step verification', 'done' => $staff > 0 && $staffWith2fa === $staff, 'detail' => "{$staffWith2fa} of {$staff} staff accounts", 'url' => route('admin.users')],
             ['label' => 'Legal pages reviewed', 'done' => (bool) config('site.legal_reviewed'), 'detail' => config('site.legal_reviewed') ? 'SITE_LEGAL_REVIEWED set' : 'privacy, terms, application terms and refunds are version 0.9 drafts', 'url' => route('legal.terms')],
-            ['label' => 'Analytics decision made', 'done' => config('site.ga4_id') !== null, 'detail' => config('site.ga4_id') ? 'GA4 on with consent' : 'SITE_GA4_ID blank: first-party funnel only (valid choice; set to "off" to record the decision)', 'url' => route('admin.funnel')],
+            ['label' => 'Analytics decision made', 'done' => config('site.ga4_id') !== null || config('site.analytics_decision') === 'first_party',
+                'detail' => match (true) {
+                    config('site.ga4_id') !== null => 'GA4 on, loaded only after consent; never in the portal or admin',
+                    config('site.analytics_decision') === 'first_party' => 'first-party funnel only (owner decision recorded); no Google script',
+                    default => 'no decision recorded: first-party funnel runs; set SITE_ANALYTICS_DECISION=first_party, or add a GA4 Measurement ID',
+                }, 'url' => route('admin.funnel')],
+            ['label' => 'Scheduler and email queue running', 'done' => $heartbeat !== null && $heartbeat <= 3 && $oldestJob <= 10 && $failedJobs === 0,
+                'detail' => ($heartbeat === null ? 'scheduler has never run: add the hPanel cron job' : "scheduler last ran {$heartbeat} min ago")."; {$queued} waiting".($queued ? " (oldest {$oldestJob} min)" : '')."; {$failedJobs} failed", 'url' => null],
         ];
     }
 

@@ -16,7 +16,7 @@ class SchoolController extends Controller
 {
     public function index(Request $request): View
     {
-        $q = University::query()->with(['courses' => fn ($c) => $c->medicine()->with('facts'), 'facts'])->orderBy('name');
+        $q = University::query()->medicalSchools()->with(['courses' => fn ($c) => $c->medicine()->with('facts'), 'facts'])->orderBy('name');
 
         $filters = [
             'nation' => $request->string('nation')->toString(),
@@ -66,6 +66,7 @@ class SchoolController extends Controller
     /** Branded Open Graph card for a university page, rendered once and cached as a static file. */
     public function og(University $university)
     {
+        abort_unless($university->isMedicalSchool(), 404);
         $path = public_path("images/og/schools/{$university->slug}.png");
         if (! is_file($path) || filemtime($path) < $university->updated_at?->getTimestamp()) {
             @mkdir(dirname($path), 0755, true);
@@ -80,6 +81,7 @@ class SchoolController extends Controller
 
     public function show(University $university): View
     {
+        abort_unless($university->isMedicalSchool(), 404); // a provider recorded only for another subject has no page here
         $university->load(['courses' => fn ($c) => $c->medicine()->with('facts'), 'facts']);
         $course = $university->primaryCourse();
         $seo = Seo::make(($university->short_name ?: $university->name).' Medicine: international entry',

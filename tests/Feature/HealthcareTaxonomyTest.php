@@ -133,4 +133,21 @@ class HealthcareTaxonomyTest extends TestCase
         $this->assertStringContainsString('Medicine MBBS', $this->get('/medical-schools/alpha')->getContent());
         $this->assertStringNotContainsString('Alpha University', $this->get('/medical-schools?route=BOTH')->getContent(), 'a nursing course must not make a school match a Medicine filter');
     }
+
+    public function test_a_university_recorded_only_for_another_subject_is_not_a_medical_school(): void
+    {
+        $med = University::create(['slug' => 'medschool', 'name' => 'Medschool University', 'nation' => 'England', 'international_policy' => 'accepts', 'published' => true]);
+        Course::create(['university_id' => $med->id, 'slug' => 'medicine', 'title' => 'Medicine MBBS', 'entry_type' => 'standard']);
+        $nurse = University::create(['slug' => 'nursingonly', 'name' => 'Qzv Nursing University', 'nation' => 'England', 'international_policy' => 'accepts', 'published' => true]);
+        Course::create(['university_id' => $nurse->id, 'profession' => 'nursing', 'slug' => 'adult-nursing', 'title' => 'Adult Nursing', 'entry_type' => 'standard']);
+        $nurse->facts()->create(['key' => 'waec_neco_statement', 'value_text' => 'Qzv statement about WASSCE for nursing applicants only.', 'verification_status' => 'VERIFY-ON-PAGE', 'source_type' => 'official']);
+
+        $this->assertSame(['medschool'], University::medicalSchools()->pluck('slug')->all());
+        $this->assertStringNotContainsString('Qzv', $this->get('/medical-schools')->assertOk()->getContent());
+        $this->get('/medical-schools/nursingonly')->assertNotFound();
+        $this->get('/medical-schools/medschool')->assertOk();
+        foreach (['/requirements/waec', '/study-medicine-in-the-uk/from-nigeria', '/requirements/neco'] as $path) {
+            $this->assertStringNotContainsString('Qzv', $this->get($path)->assertOk()->getContent(), "{$path} shows a non-medical university's statement");
+        }
+    }
 }

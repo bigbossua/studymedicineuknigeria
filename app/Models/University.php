@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -11,6 +12,23 @@ class University extends Model
     protected $guarded = [];
 
     protected $casts = ['msc_member' => 'boolean', 'published' => 'boolean'];
+
+    /**
+     * Universities with a Medicine course. The public directory, the school pages and every school count read
+     * universities through this scope: `international_policy` and the university-level statements describe Medicine,
+     * so a provider recorded only for another subject (nursing, pharmacy…) must never appear as a medical school.
+     */
+    public function scopeMedicalSchools(Builder $query): Builder
+    {
+        // A record with no courses yet (the importer creates one from a statement row) is still a medical school record;
+        // only a university whose courses are all for other subjects is excluded.
+        return $query->where(fn ($q) => $q->whereHas('courses', fn ($c) => $c->medicine())->orWhereDoesntHave('courses'));
+    }
+
+    public function isMedicalSchool(): bool
+    {
+        return $this->courses()->medicine()->exists() || ! $this->courses()->exists();
+    }
 
     public function courses(): HasMany
     {

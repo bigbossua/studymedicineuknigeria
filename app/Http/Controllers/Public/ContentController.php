@@ -34,7 +34,7 @@ class ContentController extends Controller
 
     private function statements(string $key): Collection
     {
-        return ReferenceFact::with('subject')->where('subject_type', University::class)->where('key', $key)
+        return ReferenceFact::with('subject')->where('subject_type', University::class)->whereIn('subject_id', University::medicalSchools()->select('id'))->where('key', $key)
             ->whereNotIn('verification_status', [ReferenceFact::NOT_FOUND, ReferenceFact::ARCHIVED])->get()
             ->sortBy(fn ($f) => $f->subject?->name)->values();
     }
@@ -46,8 +46,8 @@ class ContentController extends Controller
         $seo = $this->seo('Study Medicine in the UK: routes, requirements and costs', 'How UK medical degrees work for international applicants: standard, graduate and foundation routes, what schools require, costs and the calendar to plan around.', 'medicine.index', [['label' => 'Medicine']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.medicine.index', ['seo' => $seo, 'faqs' => $faqs, 'gmc' => Topic::bySlug('gmc-registration'), 'homeOnly' => University::where('international_policy', 'home_only')->count(), 'total' => University::count(),
-            'schools' => University::whereIn('international_policy', ['accepts', 'international_only'])->count(), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
+        return view('content.medicine.index', ['seo' => $seo, 'faqs' => $faqs, 'gmc' => Topic::bySlug('gmc-registration'), 'homeOnly' => University::medicalSchools()->where('international_policy', 'home_only')->count(), 'total' => University::medicalSchools()->count(),
+            'schools' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count(), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026')]);
     }
 
     public function nigeria()
@@ -57,7 +57,7 @@ class ContentController extends Controller
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.medicine.nigeria', ['seo' => $seo, 'waec' => $this->statements('waec_neco_statement'), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'fees' => $this->feeRows(), 'faqs' => $faqs,
-            'accepting' => University::whereIn('international_policy', ['accepts', 'international_only'])->count(), 'homeOnly' => University::where('international_policy', 'home_only')->count()]);
+            'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count(), 'homeOnly' => University::medicalSchools()->where('international_policy', 'home_only')->count()]);
     }
 
     public function foundation()
@@ -80,7 +80,7 @@ class ContentController extends Controller
         $seo = $this->seo('Requirements to study Medicine in the UK from Nigeria', 'What every UK medical school looks at: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants specifically must check.', 'requirements.index', [['label' => 'Requirements']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.requirements.index', ['seo' => $seo, 'faqs' => $faqs, 'accepting' => University::whereIn('international_policy', ['accepts', 'international_only'])->count(),
+        return view('content.requirements.index', ['seo' => $seo, 'faqs' => $faqs, 'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count(),
             'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'english' => $this->statements('english_requirement')->count()]);
     }
 
@@ -103,7 +103,7 @@ class ContentController extends Controller
         return view('content.requirements.neco', ['seo' => $seo, 'faqs' => $faqs,
             'mentionsNeco' => $st->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false), 'all' => $st,
             'english' => $this->statements('english_requirement')->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false),
-            'accepting' => University::whereIn('international_policy', ['accepts', 'international_only'])->count()]);
+            'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count()]);
     }
 
     public function alevels()
@@ -124,7 +124,7 @@ class ContentController extends Controller
         // Published statements about international eligibility for graduate entry ("n/a" rows are schools with no GEM programme).
         $gem = $this->statements('gem_international')->reject(fn ($f) => in_array(trim((string) $f->value_text), ['n/a', ''], true));
         // Schools whose A101/A102/A109 programme was located but whose international eligibility was not: listed as such, never as "yes".
-        $unknown = ReferenceFact::with('subject')->where('subject_type', University::class)->where('key', 'gem_international')
+        $unknown = ReferenceFact::with('subject')->where('subject_type', University::class)->whereIn('subject_id', University::medicalSchools()->select('id'))->where('key', 'gem_international')
             ->where('verification_status', ReferenceFact::NOT_FOUND)->get()
             ->filter(fn ($f) => $f->isPublishable() && preg_match('/A10\d|A1\d\d|GEP|GPEP|ScotGEM/i', (string) $f->value_text))->sortBy(fn ($f) => $f->subject?->name)->values(); // research notes, so hidden in production like every unverified fact
         // Every graduate-entry course in the directory (by UCAS code or entry type), grouped by the university's international policy.

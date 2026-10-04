@@ -9,6 +9,7 @@ use App\Support\Totp;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class VerificationAdminTest extends TestCase
@@ -71,7 +72,7 @@ class VerificationAdminTest extends TestCase
         $this->assertMatchesRegularExpression('/\d+ of 9 complete/', $r->getContent());
         // the scheduler item tells the truth: no heartbeat yet means the cron job has never run
         $r->assertSee('Scheduler and email queue running')->assertSee('scheduler has never run');
-        \Illuminate\Support\Facades\Cache::forever('scheduler.heartbeat', now()->timestamp);
+        Cache::forever('scheduler.heartbeat', now()->timestamp);
         $this->admin()->get('/admin')->assertSee('scheduler last ran 0 min ago');
         // recording the first-party analytics choice completes that item; a non-ID SITE_GA4_ID is never treated as GA4
         config(['site.analytics_decision' => 'first_party']);

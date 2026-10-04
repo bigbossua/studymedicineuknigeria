@@ -55,6 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Check configuration
+        id: cfg
         env:
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
           PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
@@ -64,10 +65,15 @@ jobs:
           [ -z "$USER" ] && missing="$missing HOSTINGER_SSH_USER(variable)"
           [ -z "$KEY" ]  && missing="$missing HOSTINGER_SSH_KEY(secret)"
           [ -z "$PASSPHRASE" ] && missing="$missing BACKUP_PASSPHRASE(secret)"
-          if [ -n "$missing" ]; then echo "::error::Missing repository settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1; fi
+          if [ -n "$missing" ]; then
+            # Before launch the nightly schedule has nothing to back up: skip quietly instead of failing every night.
+            if [ "${{ github.event_name }}" = schedule ]; then echo "::notice::Backup skipped: server settings not configured yet ($missing)"; echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+            echo "::error::Missing repository settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1
+          fi
           if [ "$SCOPE" = site ] && [ -z "$SITE_DOCROOT" ]; then echo "::error::scope=site needs site_docroot (the folder the domain serves today)"; exit 1; fi
           echo "target=$TARGET scope=$SCOPE"
       - name: Prepare SSH
+        if: steps.cfg.outputs.skip != 'true'
         env:
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
           KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
@@ -77,6 +83,8 @@ jobs:
           # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
           if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"; fi
       - name: Create encrypted backup on the server
+        id: make
+        if: steps.cfg.outputs.skip != 'true'
         env:
           BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
@@ -84,10 +92,15 @@ jobs:
           # it is never on a command line, in a file, or in the log.
           { printf '%s\n' "$BACKUP_PASSPHRASE"; printf 'SITE_DOCROOT=%q\n' "$SITE_DOCROOT"; cat ops/backup.sh; } | \
             ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" \
-            "read -r BACKUP_PASSPHRASE && export BACKUP_PASSPHRASE && TARGET='$TARGET' SCOPE='$SCOPE' bash -s" | tee server.log
-          grep -q '^backup=' server.log || { echo "::error::backup did not report an output file"; exit 1; }
+            "read -r BACKUP_PASSPHRASE && export BACKUP_PASSPHRASE && TARGET='$TARGET' SCOPE='$SCOPE' bash -s" 2>&1 | tee server.log || true
+          if ! grep -q '^backup=' server.log; then
+            # scheduled run before the target is bootstrapped: nothing exists yet to back up
+            if [ "${{ github.event_name }}" = schedule ] && grep -q 'is not bootstrapped' server.log; then echo "::notice::Backup skipped: $TARGET is not bootstrapped yet"; echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+            echo "::error::backup did not report an output file"; exit 1
+          fi
           echo "FILE=$(grep '^backup=' server.log | cut -d= -f2-)" >> "$GITHUB_ENV"
       - name: Fetch to runner and verify checksum
+        if: steps.cfg.outputs.skip != 'true' && steps.make.outputs.skip != 'true'
         run: |
           mkdir -p out
           scp -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -P "$PORT" "$USER@$HOST:$FILE" "$USER@$HOST:$FILE.sha256" out/
@@ -98,6 +111,7 @@ jobs:
           # encrypted payload must not be readable without the passphrase
           ! tar -tf "out/$(basename "$FILE")" >/dev/null 2>&1
       - name: Restore test (decrypt on the runner, load into a throwaway database)
+        if: steps.cfg.outputs.skip != 'true' && steps.make.outputs.skip != 'true'
         env:
           BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
@@ -130,6 +144,7 @@ jobs:
           echo "restore test passed: $tables tables, $facts reference facts"
           echo "### Restore test passed: $tables tables, $facts reference facts" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
+        if: steps.cfg.outputs.skip != 'true' && steps.make.outputs.skip != 'true'
         with:
           name: smukn-${{ env.TARGET }}-${{ env.SCOPE }}-${{ github.run_id }}
           path: out/

@@ -86,6 +86,9 @@ jobs:
               "session_secure_cookie" => (bool) config("session.secure"), "session_http_only" => (bool) config("session.http_only"),
               "session_same_site" => config("session.same_site"), "app_key_set" => filled(config("app.key")),
               "public_storage_link" => file_exists(public_path("storage")),
+              "queue_pending" => DB::table("jobs")->count(),
+              "queue_oldest_pending_minutes" => ($t = DB::table("jobs")->min("created_at")) ? (int) round((time() - $t) / 60) : 0,
+              "failed_jobs" => DB::table("failed_jobs")->count(),
             ], JSON_PRETTY_PRINT), PHP_EOL;'
           # what Stripe shows customers (Checkout, receipts, card statements): yes/no only, never the values (public logs)
           $PHP artisan tinker --execute '
@@ -132,4 +135,6 @@ jobs:
           grep -q '"public_storage_link": false' server.txt || { echo "::error::a public storage link exists"; exit 1; }
           grep -q '"session_http_only": true' server.txt || { echo "::error::session cookie is readable by scripts"; exit 1; }
           grep -q '"session_secure_cookie": true' server.txt || { echo "::error::session cookie is not marked Secure"; exit 1; }
+          # the queue worker runs from the hPanel cron job (schedule:run every minute): nothing may wait longer than 10 minutes
+          w=$(grep -o '"queue_oldest_pending_minutes": [0-9]*' server.txt | grep -o '[0-9]*$'); [ "${w:-0}" -le 10 ] || { echo "::error::queued emails have waited ${w} minutes: the scheduler cron job is not running (hPanel → Advanced → Cron Jobs)"; exit 1; }
           { echo '### Server state'; echo '```'; cat server.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

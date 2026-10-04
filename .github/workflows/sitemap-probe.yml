@@ -1,0 +1,24 @@
+name: Sitemap and robots probe (read-only)
+# What an external crawler receives for /sitemap.xml and /robots.txt: every user agent Google uses for sitemaps and
+# pages, plain and compressed, HEAD and GET, both IP families, apex and www. Validates the XML strictly (xmllint), counts
+# the URLs and checks each one answers 200, self-canonical and indexable. Public URLs only; no secret is used.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 5 * * *'   # daily
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - run: sudo apt-get install -y -qq libxml2-utils dnsutils >/dev/null 2>&1 || true
+      - name: Probe
+        run: |
+          set -o pipefail
+          ops/sitemap-probe.sh https://studymedicineuknigeria.com | tee probe.txt
+          { echo '### Sitemap and robots probe'; echo '```'; cat probe.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

@@ -30,7 +30,9 @@ class HandleRedirects
             $qs = $request->getQueryString();
 
             // Absolute URL from scheme and host only: redirect('/x') would prefix the base URL (/index.php) and loop.
-            return redirect()->away($request->getSchemeAndHttpHost().$rest.($qs ? '?'.$qs : ''), 301);
+            $root = app()->environment('local', 'testing') && ! config('app.force_canonical_host') ? $request->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');
+
+            return redirect()->away($root.$rest.($qs ? '?'.$qs : ''), 301);
         }
 
         $raw = $request->getPathInfo();

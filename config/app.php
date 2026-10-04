@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Force generated URLs onto APP_URL even in local/testing (always on elsewhere; see App\Http\Middleware\CanonicalHost).
+    'force_canonical_host' => (bool) env('FORCE_CANONICAL_HOST', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

@@ -1,5 +1,5 @@
 name: Launch checks (public, read-only)
-# DNS (A/AAAA, MX, SPF, DMARC, DKIM at common selectors), HTTPS certificates for the domain, www and staging, and what
+# DNS (A/AAAA, MX, SPF, DMARC, DKIM at common selectors, the Search Console TXT), HTTPS certificates for the domain, www and staging, and what
 # studymedicineuknigeria.com serves today. Uses no secret and changes nothing; safe to run any time.
 on:
   workflow_dispatch:

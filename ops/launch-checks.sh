@@ -17,6 +17,9 @@ done
 mx=$(dig +short MX "$D" | sort -n | tr '\n' ';'); [ -n "$mx" ] && ok "MX: $mx" || no "no MX record for $D (mailbox cannot receive replies)"
 spf=$(dig +short TXT "$D" | tr -d '"' | grep -i '^v=spf1' || true); n=$(printf '%s' "$spf" | grep -c 'v=spf1' || true)
 if [ "$n" = 1 ]; then ok "SPF (one record): $spf"; echo "$spf" | grep -qiE 'hostinger' && ok "SPF authorises Hostinger mail" || info "SPF does not mention Hostinger; compare with hPanel → Emails"; elif [ "$n" -gt 1 ]; then no "$n SPF records (there must be exactly one): $spf"; else no "no SPF record at $D"; fi
+gsv=$(dig +short TXT "$D" | tr -d '"' | grep -c '^google-site-verification=' || true)
+# Search Console Domain property: the token is Google's, so only its presence is reported (never compared with a guess)
+[ "$gsv" -ge 1 ] && ok "Search Console verification TXT present at $D ($gsv record(s))" || info "no google-site-verification TXT at $D yet (Search Console Domain property not verified by DNS)"
 dmarc=$(dig +short TXT "_dmarc.$D" | tr -d '"' | grep -i 'v=DMARC1' || true); [ -n "$dmarc" ] && ok "DMARC: $dmarc" || no "no DMARC record at _dmarc.$D"
 found=""; for sel in hostingermail-a hostingermail-b hostingermail-c hostingermail1 hostingermail2 default dkim mail; do
   v=$(dig +short TXT "$sel._domainkey.$D" | tr -d '"' | head -c 60); [ -n "$v" ] && found="$found $sel"

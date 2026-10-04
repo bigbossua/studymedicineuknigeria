@@ -10,6 +10,7 @@ deny(){ local got; got=$(curl -s "${AUTH[@]}" -o /dev/null -w "%{http_code}" "$B
 
 chk 200 /; chk 200 /up; chk 200 /robots.txt; chk 200 /sitemap.xml; chk 200 /favicon.svg; chk 200 /site.webmanifest
 chk 301 /Fees/; chk 301 /index.php/fees; chk 404 /no-such-page; chk 200 /login
+chk 301 /Study-medicine-in-university-of-oxford-england; chk 301 /privacy-policy   # the previous site's URLs (data/seo/legacy-redirects.csv)
 chk 200 /fees; chk 200 /apply-online/eligibility; chk 200 /medical-schools
 for p in /.env /.env.example /composer.json /artisan /storage/logs/laravel.log /.git/HEAD /vendor/autoload.php /database/database.sqlite; do deny "$p"; done
 
@@ -47,7 +48,7 @@ esac
 # canonical host and scheme (only meaningful against the public https URL)
 case "$B" in https://studymedicineuknigeria.com)
   code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "http://studymedicineuknigeria.com/fees"); echo "$code" | grep -q "301 https://studymedicineuknigeria.com/fees" && ok "http redirects to https" || bad "http→https redirect ($code)"
-  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://www.studymedicineuknigeria.com/fees"); echo "$code" | grep -q "301 https://studymedicineuknigeria.com/fees" && ok "www redirects to apex" || echo "warn www→apex redirect not confirmed ($code)";;
+  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://www.studymedicineuknigeria.com/fees"); echo "$code" | grep -q "301 https://studymedicineuknigeria.com/fees" && ok "www redirects to apex" || bad "www does not answer 301 to the apex ($code)";;
 esac
 [ "$fail" = 0 ] && echo "smoke: all checks passed ($T)" || echo "smoke: FAILED ($T)"
 exit $fail

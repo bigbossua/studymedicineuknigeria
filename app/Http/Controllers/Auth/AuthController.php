@@ -62,11 +62,16 @@ class AuthController extends Controller
 
     public function showRegister(Request $request)
     {
+        if (! config('site.registration_open')) {
+            return view('auth.register-closed', ['seo' => Seo::make('Registration opens shortly')->noindex()]);
+        }
+
         return view('auth.register', ['seo' => Seo::make('Create your account')->noindex(), 'lead' => $request->session()->get('lead')]);
     }
 
     public function register(Request $request): RedirectResponse
     {
+        abort_unless(config('site.registration_open'), 503, 'Registration opens shortly.');
         $data = $request->validate([
             'name' => 'required|string|max:160',
             'email' => 'required|email|max:255|unique:users,email',

@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([ReferenceDataSeeder::class, PlatformSeeder::class, TopicFactsSeeder::class, ProfessionSeeder::class, HealthcareCoursesSeeder::class]);
+        $this->call([ReferenceDataSeeder::class, PlatformSeeder::class, TopicFactsSeeder::class, ProfessionSeeder::class, HealthcareCoursesSeeder::class, LegacyRedirectsSeeder::class]);
         // Local previews (Codespaces, ops/qa scripts) need the documented demo logins; never seeded anywhere else.
         if (app()->environment('local')) {
             $this->call(DemoAccountsSeeder::class);

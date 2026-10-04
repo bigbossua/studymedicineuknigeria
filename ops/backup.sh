@@ -53,15 +53,41 @@ if [ "$SCOPE" = site ]; then
     rm -f "$CNF"
     gzip -dc "$WORK/$NAME/database.sql.gz" | tail -1 | grep -q 'Dump completed' || { echo "WordPress database dump is incomplete" >&2; exit 3; }
   fi
+  # an application site (e.g. Laravel) keeps its settings in a .env in or above the folder it serves: dump the database
+  # it names and archive that application folder too (without vendor/ and node_modules/, which its installer recreates)
+  if [ "$WP" = no ]; then
+    for dir in "$D" "$(dirname "$D")" "$(dirname "$(dirname "$D")")"; do
+      [ -f "$dir/.env" ] && grep -q '^DB_DATABASE=' "$dir/.env" || continue
+      case "$dir" in "$HOME"|"$HOME/domains") continue;; esac
+      WP="env:$dir"
+      command -v mysqldump >/dev/null || { echo "mysqldump not found on this server" >&2; exit 3; }
+      CNF="$WORK/my.cnf"; umask 077
+      php -r '
+        $v = [];
+        foreach (file($argv[1], FILE_IGNORE_NEW_LINES) as $l) {
+          if (preg_match("/^(DB_[A-Z]+)=(.*)$/", trim($l), $m)) { $v[$m[1]] = trim(trim($m[2]), "\x27\""); }
+        }
+        if (($v["DB_CONNECTION"] ?? "mysql") !== "mysql" && ($v["DB_CONNECTION"] ?? "") !== "mariadb") { fwrite(STDERR, "not a MySQL database\n"); exit(2); }
+        $esc = fn ($s) => "\"".addcslashes($s, "\\\"")."\"";
+        file_put_contents($argv[2], "[client]\nhost=".$esc($v["DB_HOST"] ?? "127.0.0.1")."\nport=".(int) ($v["DB_PORT"] ?? 3306)."\nuser=".$esc($v["DB_USERNAME"] ?? "")."\npassword=".$esc($v["DB_PASSWORD"] ?? "")."\n");
+        file_put_contents($argv[3], $v["DB_DATABASE"] ?? "");
+      ' "$dir/.env" "$CNF" "$WORK/dbname" || { WP="env:$dir (not MySQL; files only)"; break; }
+      mysqldump --defaults-extra-file="$CNF" --single-transaction --quick --routines --triggers --no-tablespaces "$(cat "$WORK/dbname")" | gzip -6 > "$WORK/$NAME/database.sql.gz"
+      rm -f "$CNF"
+      gzip -dc "$WORK/$NAME/database.sql.gz" | tail -1 | grep -q 'Dump completed' || { echo "application database dump is incomplete" >&2; exit 3; }
+      [ "$dir" != "$D" ] && tar -C "$(dirname "$dir")" --exclude="$(basename "$dir")/vendor" --exclude="$(basename "$dir")/node_modules" -czf "$WORK/$NAME/app-files.tgz" "$(basename "$dir")"
+      break
+    done
+  fi
   {
     echo "name=$NAME"; echo "created_utc=$TS"; echo "target=$TARGET"; echo "scope=site"; echo "host=$(hostname)"
-    echo "docroot=$D"; echo "files=$FILES"; echo "wordpress=$WP"; echo "cipher=aes-256-cbc pbkdf2 iter=200000 salted"
+    echo "docroot=$D"; echo "files=$FILES"; echo "database=$WP"; echo "cipher=aes-256-cbc pbkdf2 iter=200000 salted"
     (cd "$WORK/$NAME" && ls -l --time-style=+%Y-%m-%dT%H:%M:%SZ)
   } > "$WORK/$NAME/MANIFEST.txt"
   tar -C "$WORK" -cf - "$NAME" | openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass env:BACKUP_PASSPHRASE -out "$OUT/$NAME.tar.enc"
   ( cd "$OUT" && sha256sum "$NAME.tar.enc" > "$NAME.tar.enc.sha256" )
   chmod 600 "$OUT/$NAME.tar.enc" "$OUT/$NAME.tar.enc.sha256"
-  echo "site backup: $FILES entries from $D, wordpress database: $WP"   # pre-launch copies are never pruned here
+  echo "site backup: $FILES entries from $D, database: $WP"   # pre-launch copies are never pruned here
   echo "backup=$OUT/$NAME.tar.enc"; echo "size=$(stat -c %s "$OUT/$NAME.tar.enc")"; cat "$OUT/$NAME.tar.enc.sha256"
   exit 0
 fi

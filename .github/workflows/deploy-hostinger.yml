@@ -56,6 +56,17 @@ jobs:
           n=$(gh api "repos/${{ github.repository }}/environments/production" --jq '[.protection_rules[]? | select(.type == "required_reviewers")] | length' 2>/dev/null || echo 0)
           [ "${n:-0}" -ge 1 ] || { echo "::error::The production environment has no required reviewer. Settings → Environments → production → Required reviewers: add the owner, then dispatch again."; exit 1; }
           echo "production approval rule present"
+      - name: Require a restore-tested backup of the current site before replacing it
+        if: ${{ (github.event.inputs.target || 'staging') == 'production' && github.event.inputs.cutover_docroot != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Backup Hostinger (production, scope site) uploads its artifact only after the encrypted copy decrypted and
+          # restored on the runner; an unexpired one from the last 7 days is required before the document root changes.
+          since=$(date -u -d '7 days ago' +%s)
+          n=$(gh api "repos/${{ github.repository }}/actions/artifacts?per_page=100" --paginate --jq "[.artifacts[] | select(.name | startswith(\"smukn-production-site-\")) | select(.expired == false) | select((.created_at | fromdateiso8601) > $since)] | length" | awk '{s+=$1} END {print s+0}')
+          [ "${n:-0}" -ge 1 ] || { echo "::error::No restore-tested backup of the current site from the last 7 days. Run Backup Hostinger (production, scope site, site_docroot = the folder the domain serves) first."; exit 1; }
+          echo "pre-launch site backup present ($n)"
       - name: Check configuration
         env:
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}
@@ -73,6 +84,8 @@ jobs:
           # without a URL deploy.sh would skip the smoke test, and an unsmoked staging deploy must never unlock production
           if [ "$TARGET" = staging ]; then
             [ -z "$STAGING_URL" ] && missing="$missing STAGING_URL(variable)"
+            # staging runs over HTTPS with a valid certificate (hPanel → Security → SSL), like production
+            case "$STAGING_URL" in ""|https://*) ;; *) missing="$missing STAGING_URL-must-start-with-https://";; esac
             # the smoke test requires staging to refuse anonymous visitors, so the gate's credentials must exist
             [ -z "$SBU" ] && missing="$missing STAGING_BASIC_USER(variable)"; [ -z "$SBP" ] && missing="$missing STAGING_BASIC_PASSWORD(secret)"
           fi

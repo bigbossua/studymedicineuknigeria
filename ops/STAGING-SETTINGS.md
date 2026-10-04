@@ -107,25 +107,41 @@ service record (T1 £125, T2 £695, T3 £1,295). Checkout charges that price, ch
 creates a new Stripe price and switches the old one off. Do not create Payment Links: they would bypass the profile
 review.
 
+**Already checked from outside (Launch checks workflow, 2026-10-04):** the domain's email DNS is in place (Hostinger MX,
+one SPF record `include:_spf.mail.hostinger.com`, DMARC `p=none`, DKIM keys at `hostingermail-a/-b/-c`); the certificate
+covers the domain and `www` until 22 Nov 2026; `staging.studymedicineuknigeria.com` does not exist yet; the current site
+is a PHP 8.2 application behind Hostinger's CDN whose sitemap lists 76 URLs, each of which the new site answers
+(`data/seo/legacy-redirects.csv`: 65 permanent redirects; 4 same paths; 7 with no equivalent answer 404).
+
 **Sequence (Claude runs each step; you approve every production run as its required reviewer):**
-1. *Diagnose Actions settings* → every production row PRESENT, Stripe mode "live".
-2. *Inspect Hostinger (read-only)* → what `studymedicineuknigeria.com` serves today (folder, WordPress or static, database).
-3. *Backup Hostinger* (`production`, scope `site`, `site_docroot` = that folder) → the existing site's files and, if it is
-   WordPress, its database, encrypted, downloaded, decrypted and restored into a throwaway database on the runner.
-4. *Deploy to Hostinger* (`staging`) of the release commit → smoke and full page review on staging.
-5. *Bootstrap Hostinger target* (`production`, `app_url` = `https://studymedicineuknigeria.com`, `link_docroot=false`).
-6. *Deploy to Hostinger* (`production`, `cutover_docroot` = the folder from step 2) → database backup, migrations,
-   reference sync, release switch, then the folder is archived to `~/backups`, moved aside (never deleted) and
-   linked to the release; the production smoke test runs (HTTPS, canonical host, no noindex, HSTS, CSP, no exposed
-   files, no debug output, no staging password); **if it fails, the old site is put back automatically**. The production
-   page review follows (every sitemap page indexable with its own https canonical; CSP; accessibility).
-7. First admin: you register at the live site, confirm your email, then *Grant account role* (`production`, your
+1. *Diagnose Actions settings* → every staging and production row PRESENT.
+2. *Inspect Hostinger (read-only)* → which folder serves `studymedicineuknigeria.com`, what application it is, where its
+   settings and database are.
+3. *Backup Hostinger* (`production`, scope `site`, `site_docroot` = that folder) → the current site's files plus its
+   database (WordPress `wp-config.php`, or an application `.env` in or above the folder), encrypted, downloaded,
+   decrypted and restored into a throwaway database on the runner. The production cutover refuses to run without such
+   a backup from the last 7 days.
+4. *Bootstrap* and *Deploy to Hostinger* (`staging`) of the release commit → HTTPS staging (refused otherwise) behind its
+   password and noindex; smoke test and full page review (status, CSP, accessibility, noindex). Production then
+   accepts only that same commit.
+5. *Bootstrap Hostinger target* (`production`, `app_url` = `https://studymedicineuknigeria.com`, `link_docroot=false`) →
+   needs the new production database and the mailbox password; student registration starts **closed**.
+6. *Deploy to Hostinger* (`production`, `cutover_docroot` = the folder from step 2) → preflight of the server settings
+   before anything changes, database backup, migrations, reference sync (including the old-site redirects), release
+   switch, then the folder is archived to `~/backups`, moved aside (never deleted) and linked to the release; the
+   production smoke test runs (HTTPS, one host with `www` redirected, no noindex, HSTS, CSP, no exposed files, no
+   debug output, no staging password); **if it fails, the old site is put back automatically**. The production page
+   review follows.
+7. You flush the CDN cache once: hPanel → Websites → your site → **CDN** → flush/purge cache (so no visitor is served
+   a cached page of the old site). Then *Launch checks* confirms what the domain serves.
+8. *Send test email* (`production`, `to` = an inbox you can check, `registration=unchanged`) → you confirm the
+   message arrived (not in spam; in Gmail "Show original" shows SPF, DKIM and DMARC PASS). Then *Send test email* again
+   with `registration=open` → registration opens only if the message is accepted and the email DNS checks pass.
+9. First admin: you register at the live site, confirm your email, then *Grant account role* (`production`, your
    email, `admin`, `verify_email=false`); your first admin sign-in sets up the authenticator app.
-8. *Backup Hostinger* (`production`, `full`) → first backup of the live database, `.env` and documents, restore-tested.
-9. Payment check, only with your agreement: you pay the smallest service (T1, £125) with your own card, we confirm
-   the webhook marks it paid and the amounts match, and you refund it in the Stripe Dashboard (the refund then shows
-   in the admin). Stripe keeps its processing fee on a refunded payment. Without this, the first real student
-   payment is the first live one.
+10. *Backup Hostinger* (`production`, `full`) → first backup of the live database, `.env` and documents, restore-tested.
+11. Stripe, after launch (payment stays closed until then): live keys in Environments → `production`, *Update server
+    settings*, *Stripe catalogue* (`production`, `create`); waiting students are emailed once.
 
 To undo: *Roll back Hostinger release* (`production`) returns to the previous release (code only; the database is
 never restored automatically), or with `restore_previous_site=true` serves the old site again exactly as it was.

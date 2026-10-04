@@ -2,7 +2,7 @@
 # Set settings that arrive after bootstrap (Stripe keys, mail password) in ~/apps/smukn-<target>/shared/.env, then
 # rebuild the config cache. Run over SSH by the "Update server settings" workflow; values come on stdin as exports,
 # never on a command line. Only non-empty inputs are written; every other line of .env is left as it is.
-# Inputs (environment): TARGET, STRIPE_KEY, STRIPE_SECRET, STRIPE_WEBHOOK_SECRET, MAIL_PASSWORD
+# Inputs (environment): TARGET, STRIPE_KEY, STRIPE_SECRET, STRIPE_WEBHOOK_SECRET, MAIL_PASSWORD, SITE_REGISTRATION_OPEN, SITE_BANK_TRANSFER
 set -euo pipefail
 : "${TARGET:?staging|production}"
 APP=~/apps/smukn-$TARGET; ENV_FILE=$APP/shared/.env
@@ -26,6 +26,10 @@ set_key(){ # set_key NAME VALUE : replace the NAME= line or append it, value sin
 changed=0
 for v in STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD; do
   [ -n "${!v:-}" ] && { set_key "$v" "${!v}"; changed=1; }
+done
+# switches (not secrets): registration opens only after a successful test email (Send test email workflow)
+for v in SITE_REGISTRATION_OPEN SITE_BANK_TRANSFER; do
+  case "${!v:-}" in true|false) set_key "$v" "${!v}"; changed=1;; "") ;; *) echo "$v must be true or false" >&2; exit 4;; esac
 done
 [ -n "${MAIL_PASSWORD:-}" ] && set_key MAIL_MAILER smtp
 [ "$changed" = 1 ] || { echo "nothing to set (all inputs empty)"; exit 0; }

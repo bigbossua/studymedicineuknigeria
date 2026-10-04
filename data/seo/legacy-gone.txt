@@ -1,0 +1,8 @@
+# Previous-site URLs (sitemap of 2026-10-04) with no equivalent page: they answer 404, never a redirect to an unrelated page.
+/accessibility
+/careers
+/complaints-policy
+/dentistry-admissions
+/nursing-admissions
+/pharmacy-admissions
+/student-life-support

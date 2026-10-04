@@ -50,11 +50,12 @@ class HandleRedirects
                 return [];
             }
 
-            return DB::table('redirects')->where('active', true)->pluck('to_path', 'from_path')->all();
+            // keys compared case-insensitively: the previous site used mixed-case paths (/Study-medicine-in-...)
+            return DB::table('redirects')->where('active', true)->pluck('to_path', 'from_path')->mapWithKeys(fn ($to, $from) => [strtolower($from) => $to])->all();
         });
 
-        if (isset($map[$path])) {
-            return redirect($map[$path], 301);
+        if (isset($map[strtolower($path)])) {
+            return redirect($map[strtolower($path)], 301);
         }
 
         $isFile = str_contains(basename($raw), '.');

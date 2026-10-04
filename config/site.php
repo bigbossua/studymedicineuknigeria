@@ -29,6 +29,9 @@ return [
     'publish_unverified' => env('SITE_PUBLISH_UNVERIFIED', false),
     // Bank transfer as a payment method: off until the owner confirms the account to give students (owner step).
     'bank_transfer' => (bool) env('SITE_BANK_TRANSFER', false),
+    // Student registration: production starts closed and opens only after a real test email has been sent from the
+    // production mailbox (Send test email workflow), so verification and reset links are deliverable from day one.
+    'registration_open' => (bool) env('SITE_REGISTRATION_OPEN', true),
 
     'nav' => [
         ['label' => 'Medicine', 'route' => 'medicine.index'],

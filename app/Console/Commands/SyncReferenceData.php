@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Database\Seeders\HealthcareCoursesSeeder;
+use Database\Seeders\LegacyRedirectsSeeder;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\ProfessionSeeder;
 use Database\Seeders\ReferenceDataSeeder;
@@ -24,7 +25,7 @@ class SyncReferenceData extends Command
 
     protected $description = 'Create or refresh reference data from the repository without touching reviewed facts or owner prices';
 
-    public const SEEDERS = [ReferenceDataSeeder::class, PlatformSeeder::class, TopicFactsSeeder::class, ProfessionSeeder::class, HealthcareCoursesSeeder::class];
+    public const SEEDERS = [ReferenceDataSeeder::class, PlatformSeeder::class, TopicFactsSeeder::class, ProfessionSeeder::class, HealthcareCoursesSeeder::class, LegacyRedirectsSeeder::class];
 
     public function handle(): int
     {

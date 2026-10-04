@@ -343,6 +343,17 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **When it opens**: `smukn:payments-open-notify` emails each approved student who chose a service and has not paid, once (`payments.open_notified`); *Update server settings* runs it after writing Stripe keys.
 - **Tests**: 186 on SQLite and MariaDB; browser check of the closed confirmation page (no payment action, axe 0 violations).
 
+## Stage 47: production launch blockers removed where no credentials are needed (cycle 41)
+
+- **Access**: Diagnose (08:38 UTC): every repository, staging and production setting is still missing; `production` has no required reviewer. Nothing below needed them.
+- **Public launch checks** (`ops/launch-checks.sh`, workflow *Launch checks*, read-only, weekly): run from GitHub at 08:39/08:44 UTC. Email DNS is ready: Hostinger MX, one SPF record (`include:_spf.mail.hostinger.com ~all`), DMARC `p=none`, DKIM keys at `hostingermail-a/-b/-c`. The certificate covers the domain and `www` until 22 Nov 2026; `staging.` does not resolve yet. The current site is a PHP 8.2 application behind Hostinger's CDN; its sitemap lists 76 URLs.
+- **Old URLs**: all 76 are answered: 65 permanent redirects to the equivalent page (`data/seo/legacy-redirects.csv`, seeded by reference-sync, never overriding Admin → Redirects; lookups are case-insensitive so `/Study-medicine-in-…` goes in one hop), 4 same paths, 7 with no equivalent (careers, nursing, dentistry, pharmacy and similar) answer 404 instead of a misleading redirect (`data/seo/legacy-gone.txt`). `LegacyRedirectsTest` checks every one.
+- **One host**: `www` answered pages itself; it now answers 301 to the APP_URL host. Trusted hosts are anchored patterns for exactly that host and its `www` form: the bare host was read by Symfony as an unanchored regex and admitted `staging.<host>` and `<host>.evil.example` in production (verified in a production-mode server: now 400).
+- **Deploy safety**: staging must be `https://`; a production cutover refuses to run without a restore-tested *site* backup of the current site from the last 7 days; the site backup now also dumps an application's database named in a `.env` in or above the served folder (rehearsed with special characters in the password; `vendor/` left out).
+- **Email before registration**: production starts with student registration closed (`SITE_REGISTRATION_OPEN=false`, page "Registration opens shortly", POST refused). *Send test email* sends a real message through the server's SMTP (`smukn:mail-test`, refuses log/array mailers, never prints the password) and opens registration only when the message is accepted and the email DNS checks pass.
+- **Smoke**: production fails when `www` does not redirect; every target checks two old-site URLs.
+- **Tests**: 194 on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

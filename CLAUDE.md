@@ -15,7 +15,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 ```bash
 composer install && npm ci && cp .env.example .env && php artisan key:generate && php artisan migrate --seed
 npm run build && php artisan serve --host=127.0.0.1 --port=8000     # stop with: fuser -k 8000/tcp
-vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 186 tests; run before every commit
+vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 194 tests; run before every commit
 php artisan smukn:og          # regenerate Open Graph cards after changing a public title
 php artisan smukn:images      # build photo derivatives from brand/photos
 php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification round trip (data/verification/README.md)
@@ -31,5 +31,6 @@ Local demo accounts: `student@example.test` / `Testpass12345`, `admin@example.te
 - Fact-driven pages declare a `gate` in their sitemap route default (`PublishGate`) and stay `noindex` until verified.
 - Funnel events through `App\Support\Funnel`; never store PII there.
 - Service fees are never public (owner decision 2026-10-04): no fee in any public view, JSON-LD or JSON; only staff and a student whose application is approved for service selection (`User::canSeeServicePrices`) see them. `tests/Feature/PricingVisibilityTest.php` crawls the sitemap for leaks. Stripe charges a catalogue Price chosen by the server (`App\Services\Payments\StripeCatalog`); never create Payment Links. Until a usable Stripe key exists (and `SITE_BANK_TRANSFER` is off) no payment action is offered or accepted (`StripeService::paymentsOpen`); students are told once when it opens (`smukn:payments-open-notify`).
+- The previous site's URLs (its sitemap of 2026-10-04) are answered by `data/seo/legacy-redirects.csv` (seeded by reference-sync; Admin → Redirects wins) or listed in `data/seo/legacy-gone.txt` (404); `LegacyRedirectsTest` keeps every one working. Student registration is closed on production until *Send test email* opens it.
 - Commit messages: imperative, no model names; CI must stay green on every push to `claude/new-session-p6gdm6`.
 - Pint formats imports; keep `routes/web.php` imports at the top (a missing import there once broke email verification: see stage 25).

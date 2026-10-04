@@ -1,0 +1,66 @@
+from_path,to_path,reason
+/disclaimer,/our-status,previous site: disclaimer; independence statement
+/estimate,/fees/cost-of-studying-medicine-in-the-uk,previous site: cost estimate
+/interview-preparation,/admissions,previous site: interview preparation; admissions hub covers interviews
+/medicine-admissions,/admissions,previous site: medicine admissions
+/meet-the-team,/about,previous site: team page
+/pre-med-foundation-programs,/study-medicine-in-the-uk/foundation-routes,previous site: foundation programmes
+/privacy-policy,/privacy,previous site: privacy policy
+/referral-marketing-disclosure,/our-status,previous site: commission disclosure; status page states no commission
+/service-areas,/medical-schools,previous site: service areas
+/service-areas/study-medicine-in-england,/medical-schools,previous site: country page
+/service-areas/study-medicine-in-northern-ireland,/medical-schools,previous site: country page
+/service-areas/study-medicine-in-scotland,/medical-schools,previous site: country page
+/service-areas/study-medicine-in-wales,/medical-schools,previous site: country page
+/services,/apply-online/services,previous site: services
+/study-medicine-in-anglia-ruskin-university-england,/medical-schools/anglia-ruskin,previous site: school page; same school in the directory
+/study-medicine-in-aston-university-england,/medical-schools/aston,previous site: school page; same school in the directory
+/study-medicine-in-bangor-university-wales,/medical-schools/bangor,previous site: school page; same school in the directory
+/study-medicine-in-brighton-sussex-medical-school-england,/medical-schools/brighton-sussex,previous site: school page; same school in the directory
+/study-medicine-in-cardiff-university-wales,/medical-schools/cardiff,previous site: school page; same school in the directory
+/study-medicine-in-durham-university-england,/medical-schools,"previous site: school page; no own entry in the directory, so the directory"
+/study-medicine-in-imperial-college-london-england,/medical-schools/imperial,previous site: school page; same school in the directory
+/study-medicine-in-keele-university-england,/medical-schools/keele,previous site: school page; same school in the directory
+/study-medicine-in-kings-college-london-england,/medical-schools/kings-college-london,previous site: school page; same school in the directory
+/study-medicine-in-lancaster-university-england,/medical-schools/lancaster,previous site: school page; same school in the directory
+/study-medicine-in-newcastle-university-england,/medical-schools/newcastle,previous site: school page; same school in the directory
+/study-medicine-in-queens-university-belfast-northern-ireland,/medical-schools/queens-belfast,previous site: school page; same school in the directory
+/study-medicine-in-swansea-university-wales,/medical-schools/swansea,previous site: school page; same school in the directory
+/study-medicine-in-university-college-london-england,/medical-schools/ucl,previous site: school page; same school in the directory
+/study-medicine-in-university-of-aberdeen-scotland,/medical-schools/aberdeen,previous site: school page; same school in the directory
+/study-medicine-in-university-of-birmingham-england,/medical-schools/birmingham,previous site: school page; same school in the directory
+/study-medicine-in-university-of-bristol-england,/medical-schools/bristol,previous site: school page; same school in the directory
+/study-medicine-in-university-of-buckingham-england,/medical-schools/buckingham,previous site: school page; same school in the directory
+/study-medicine-in-university-of-cambridge-england,/medical-schools/cambridge,previous site: school page; same school in the directory
+/study-medicine-in-university-of-central-lancashire-england,/medical-schools/lancashire,previous site: school page; same school in the directory
+/study-medicine-in-university-of-chester-england,/medical-schools/chester,previous site: school page; same school in the directory
+/study-medicine-in-university-of-dundee-scotland,/medical-schools/dundee,previous site: school page; same school in the directory
+/study-medicine-in-university-of-east-anglia-england,/medical-schools/east-anglia,previous site: school page; same school in the directory
+/study-medicine-in-university-of-edinburgh-scotland,/medical-schools/edinburgh,previous site: school page; same school in the directory
+/study-medicine-in-university-of-exeter-england,/medical-schools/exeter,previous site: school page; same school in the directory
+/study-medicine-in-university-of-glasgow-scotland,/medical-schools/glasgow,previous site: school page; same school in the directory
+/study-medicine-in-university-of-hull-england,/medical-schools/hull-york,previous site: school page; same school in the directory
+/study-medicine-in-university-of-kent-england,/medical-schools/kent-medway,previous site: school page; same school in the directory
+/study-medicine-in-university-of-leeds-england,/medical-schools/leeds,previous site: school page; same school in the directory
+/study-medicine-in-university-of-leicester-england,/medical-schools/leicester,previous site: school page; same school in the directory
+/study-medicine-in-university-of-lincoln-england,/medical-schools/lincoln,previous site: school page; same school in the directory
+/study-medicine-in-university-of-liverpool-england,/medical-schools/liverpool,previous site: school page; same school in the directory
+/study-medicine-in-university-of-manchester-england,/medical-schools/manchester,previous site: school page; same school in the directory
+/study-medicine-in-university-of-nottingham-england,/medical-schools/nottingham,previous site: school page; same school in the directory
+/study-medicine-in-university-of-oxford-england,/medical-schools/oxford,previous site: school page; same school in the directory
+/study-medicine-in-university-of-plymouth-england,/medical-schools/plymouth,previous site: school page; same school in the directory
+/study-medicine-in-university-of-sheffield-england,/medical-schools/sheffield,previous site: school page; same school in the directory
+/study-medicine-in-university-of-south-wales-wales,/medical-schools,"previous site: school page; no own entry in the directory, so the directory"
+/study-medicine-in-university-of-southampton-england,/medical-schools/southampton,previous site: school page; same school in the directory
+/study-medicine-in-university-of-st-andrews-scotland,/medical-schools/st-andrews,previous site: school page; same school in the directory
+/study-medicine-in-university-of-stirling-scotland,/medical-schools,"previous site: school page; no own entry in the directory, so the directory"
+/study-medicine-in-university-of-strathclyde-scotland,/medical-schools,"previous site: school page; no own entry in the directory, so the directory"
+/study-medicine-in-university-of-sunderland-england,/medical-schools/sunderland,previous site: school page; same school in the directory
+/study-medicine-in-university-of-surrey-england,/medical-schools/surrey,previous site: school page; same school in the directory
+/study-medicine-in-university-of-the-highlands-islands-scotland,/medical-schools,"previous site: school page; no own entry in the directory, so the directory"
+/study-medicine-in-university-of-worcester-england,/medical-schools/worcester,previous site: school page; same school in the directory
+/study-medicine-in-university-of-york-england,/medical-schools/hull-york,previous site: school page; same school in the directory
+/terms-and-conditions,/terms,previous site: terms
+/thank-you,/,previous site: form thank-you page
+/university-application-guidance,/admissions/how-to-apply,previous site: application guidance
+/visa-immigration-support,/study-medicine-in-the-uk/from-nigeria,previous site: visa support; the Nigeria guide covers the Student visa

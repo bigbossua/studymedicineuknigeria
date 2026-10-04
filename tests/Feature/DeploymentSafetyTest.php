@@ -211,7 +211,7 @@ class DeploymentSafetyTest extends TestCase
             file_put_contents($home.'/domains/x/public_html/index.html', 'old site');
         });
         $this->assertSame(0, $code, $out);
-        $this->assertStringContainsString('wordpress database: no', $out);
+        $this->assertStringContainsString('database: no', $out);
         $this->assertMatchesRegularExpression('#backup=.*/backups/offsite/smukn-production-site-\d{8}T\d{6}Z\.tar\.enc#', $out);
     }
 
@@ -225,6 +225,30 @@ class DeploymentSafetyTest extends TestCase
         $review = $this->file('ops/qa/staging-review.cjs');
         $this->assertStringContainsString('sitemap page is noindex on production', $review);
         $this->assertStringContainsString("process.env.CANONICAL_ORIGIN || 'https://studymedicineuknigeria.com'", $review);
+    }
+
+    public function test_production_starts_with_registration_closed_and_only_true_or_false_can_switch_it(): void
+    {
+        $this->assertStringContainsString('SITE_REGISTRATION_OPEN=$([ "$TARGET" = production ] && echo false || echo true)', $this->file('ops/server-bootstrap.sh'));
+        [$code, $out] = $this->runScript('ops/update-env.sh', ['TARGET' => 'production', 'SITE_REGISTRATION_OPEN' => 'yes please']);
+        $this->assertSame(4, $code);
+        $this->assertStringContainsString('must be true or false', $out);
+        [$code, $out] = $this->runScript('ops/update-env.sh', ['TARGET' => 'production', 'SITE_REGISTRATION_OPEN' => 'true']);
+        $this->assertSame(0, $code, $out);
+        $this->assertStringContainsString('set SITE_REGISTRATION_OPEN', $out);
+        $workflow = $this->file('.github/workflows/mail-hostinger.yml');
+        $this->assertStringContainsString('email DNS is not ready', $workflow);
+        $this->assertLessThan(strpos($workflow, 'Open or close student registration'), strpos($workflow, 'smukn:mail-test'), 'the test message goes first; a failure stops the run');
+    }
+
+    public function test_production_cutover_needs_https_staging_and_a_restore_tested_backup_of_the_current_site(): void
+    {
+        $deploy = $this->file('.github/workflows/deploy-hostinger.yml');
+        $this->assertStringContainsString('STAGING_URL-must-start-with-https://', $deploy);
+        $this->assertStringContainsString('smukn-production-site-', $deploy);
+        $this->assertStringContainsString("github.event.inputs.cutover_docroot != ''", $deploy);
+        $this->assertStringContainsString('name: smukn-${{ env.TARGET }}-${{ env.SCOPE }}-${{ github.run_id }}', $this->file('.github/workflows/backup-hostinger.yml'));
+        $this->assertStringContainsString('application database dump is incomplete', $this->file('ops/backup.sh'));
     }
 
     public function test_settings_added_after_bootstrap_travel_on_stdin_and_staging_takes_only_test_stripe_keys(): void

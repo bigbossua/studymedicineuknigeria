@@ -278,6 +278,23 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 
 Not blockers: Stripe (post-launch; payment stays closed), P0 facts (unverified facts stay hidden), Semrush export.
 
+## Cycle 41 — production launch preparation (stage 47, 2026-10-04)
+
+**Verified from outside today (no credentials needed):** your email DNS is ready (Hostinger MX, one SPF record, DMARC, DKIM keys published); the HTTPS certificate covers the domain and `www` until 22 Nov 2026; the current site (PHP 8.2, behind Hostinger's CDN) lists 76 URLs and the new site answers every one (65 redirects, 4 same paths, 7 intentional 404s), so indexed pages keep working after the switch.
+
+**Fixed in this cycle:** `www` now redirects to the main domain; only the exact site host is trusted (the old rule also admitted look-alike hosts); production replaces the current site only after a restore-tested backup of it (files plus its database) from the last 7 days; staging must be HTTPS; production starts with student registration closed and opens it only after a real test email from the production mailbox is accepted and the email DNS checks pass. 194 tests on SQLite and MariaDB. Stripe untouched; payment stays closed.
+
+**Not production-ready yet:** nothing has been deployed. Diagnose (08:38 UTC) shows every repository, staging and production setting missing and no required reviewer on `production`.
+
+### OWNER ACTION REQUIRED (WHAT → WHERE → WHY → WHAT YOU WILL DO IMMEDIATELY AFTER)
+
+1. **Server access** → hPanel → Websites → Manage → Advanced → SSH Access: add the public key `SMUKN-GitHub-Actions` (keep the Claude key); GitHub → Settings → Secrets and variables → Actions → secrets `HOSTINGER_SSH_KEY` (the private `smukn_deploy` key) and `BACKUP_PASSPHRASE`, variables `HOSTINGER_SSH_HOST`, `HOSTINGER_SSH_PORT`, `HOSTINGER_SSH_USER` (from the same hPanel page) → every server step uses them → Diagnose, read-only Inspect (which folder serves the site, what application it is, where its database is), then the encrypted, restore-tested backup of the current site.
+2. **Staging** → hPanel → Domains → Subdomains: create `staging`, then Security → SSL for `staging.studymedicineuknigeria.com`; Databases: one new MySQL database and user; GitHub → variables `STAGING_URL` = `https://staging.studymedicineuknigeria.com`, `STAGING_BASIC_USER`, secret `STAGING_BASIC_PASSWORD`; Environments → `staging` → secrets `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` → production only accepts a commit that passed staging → bootstrap and deploy staging, smoke test and full page review (SEO, security headers, accessibility, noindex, password), then you review it.
+3. **Production** → hPanel → Databases: a new, empty MySQL database and user; Emails: confirm the mailbox `info@studymedicineuknigeria.com` exists and note its password; GitHub → Environments → `production` → secrets `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD`, `SMUKN_MAIL_PASSWORD`, and Required reviewers = you → production refuses to bootstrap without real email and to deploy without your approval → after your approval: bootstrap, deploy with the cutover (old site archived and restored automatically if any check fails), production smoke and page review.
+4. **Right after the switch** → hPanel → Websites → your site → CDN → flush the cache; then check the inbox you give me for the test email (not in spam) → no visitor sees a cached old page; registration opens only once mail is proven → *Send test email* with `registration=open`, then you register and I make you admin (two-step sign-in), then a full restore-tested backup and the launch report.
+
+Recommended, not blocking: add `rua=mailto:info@studymedicineuknigeria.com` to the DMARC record (reports of failed mail); the legal pages still say "under legal review" (your decision). Stripe stays a post-launch step.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

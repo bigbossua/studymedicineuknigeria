@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Notifications\Auth\QueuedResetPassword as ResetPassword;
 use App\Notifications\Auth\QueuedVerifyEmail as VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -57,5 +59,29 @@ class AuthFlowTest extends TestCase
         $this->post('/login', ['email' => 'reset@example.test', 'password' => 'Newpass123456'])->assertRedirect('/portal');
         $this->post('/logout')->assertRedirect('/');
         $this->post('/login', ['email' => 'reset@example.test', 'password' => 'password'])->assertSessionHasErrors('email');
+    }
+
+    public function test_registration_stays_closed_until_the_owner_opens_it_after_a_mail_test(): void
+    {
+        config(['site.registration_open' => false]);
+        $this->get('/register')->assertOk()->assertSee('Registration opens shortly')->assertDontSee('name="password_confirmation"', false);
+        $this->post('/register', ['name' => 'A', 'email' => 'closed@example.test', 'password' => 'Longpass12345', 'password_confirmation' => 'Longpass12345', 'terms' => 1])->assertStatus(503);
+        $this->assertDatabaseMissing('users', ['email' => 'closed@example.test']);
+        $this->get('/login')->assertOk();
+        config(['site.registration_open' => true]);
+        $this->get('/register')->assertOk()->assertSee('name="password_confirmation"', false);
+    }
+
+    public function test_the_mail_test_refuses_mailers_that_deliver_nothing_and_never_prints_the_password(): void
+    {
+        config(['mail.default' => 'log']);
+        $this->assertSame(1, Artisan::call('smukn:mail-test', ['to' => 'owner@example.test']));
+        $this->assertStringContainsString('nothing would be delivered', Artisan::output());
+        Mail::fake();
+        config(['mail.default' => 'smtp', 'mail.mailers.smtp.password' => 'secret-mail-pw']);
+        $this->assertSame(0, Artisan::call('smukn:mail-test', ['to' => 'owner@example.test']));
+        $this->assertStringContainsString('Accepted by the smtp server', Artisan::output());
+        $this->assertStringNotContainsString('secret-mail-pw', Artisan::output());
+        $this->assertSame(1, Artisan::call('smukn:mail-test', ['to' => 'not-an-address']));
     }
 }

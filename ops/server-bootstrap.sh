@@ -80,6 +80,7 @@ SITE_WHATSAPP=$(q "${SITE_WHATSAPP:-}")
 SITE_LEGAL_NAME=$(q "${SITE_LEGAL_NAME:-}")
 SITE_PUBLISH_UNVERIFIED=false
 SITE_BANK_TRANSFER=false
+SITE_REGISTRATION_OPEN=$([ "$TARGET" = production ] && echo false || echo true)
 $([ "$TARGET" = production ] || printf 'STAGING_BASIC_USER=%s\nSTAGING_BASIC_PASSWORD=%s\n' "$(q "${STAGING_BASIC_USER:-}")" "$(q "${STAGING_BASIC_PASSWORD:-}")")
 ENV
   echo "shared/.env created (mode 600)"

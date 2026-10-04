@@ -59,6 +59,6 @@ encrypted copies in `~/backups/offsite` as a staging area only.
 - **Put it back in place** (it was moved aside, not deleted): Actions → *Roll back Hostinger release* → `production`,
   `restore_previous_site=true`. The SMUKN release and its database stay untouched for a relaunch.
 - **From the encrypted pre-launch backup** (scope `site`): decrypt as in step 2; `site-files.tgz` holds the document
-  root exactly as it was (`tar -xzf site-files.tgz -C ~/domains/studymedicineuknigeria.com/` after moving the link
+  root exactly as it was (`tar -xzf site-files.tgz -C ~/domains/studymedicineuknigeria.com/` after moving the published folder
   away) and `database.sql.gz`, if present, the WordPress database (`gunzip -c database.sql.gz | mysql …` into the
   database named in its `wp-config.php`). The deploy also keeps `~/backups/docroot-production-<time>.tgz` on the server.

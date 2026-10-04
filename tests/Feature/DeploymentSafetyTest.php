@@ -283,4 +283,39 @@ class DeploymentSafetyTest extends TestCase
         $this->assertStringContainsString('if [ "$D" = auto ]', $this->file('ops/deploy.sh'));
         $this->assertStringContainsString('if [ "$D" = auto ]', $this->file('ops/backup.sh'));
     }
+
+    public function test_the_document_root_is_a_published_folder_because_hostinger_refuses_symbolic_links(): void
+    {
+        $deploy = $this->file('ops/deploy.sh');
+        $this->assertStringNotContainsString('ln -s "$APPD/current/public" "$D"', $deploy, 'a linked document root answered 403 on every path (launch 2026-10-04)');
+        $this->assertStringContainsString('ops/publish-docroot.sh" "$D" "$APPD"', $deploy);
+        $this->assertStringContainsString('mv "$D" "$D.smukn-failed-', $deploy, 'a failed launch moves the new folder aside, never deletes it');
+        $this->assertStringContainsString('publish-docroot.sh', $this->file('ops/rollback.sh'), 'a code rollback publishes the earlier release again');
+
+        $root = sys_get_temp_dir().'/smukn-publish-'.bin2hex(random_bytes(4));
+        $release = "$root/apps/smukn-production/releases/r1";
+        mkdir("$release/public/build", 0755, true);
+        mkdir("$root/docroot", 0755, true);
+        copy(base_path('public/index.php'), "$release/public/index.php");
+        copy(base_path('public/.htaccess'), "$release/public/.htaccess");
+        file_put_contents("$release/public/build/app.css", 'x');
+        symlink($release, "$root/apps/smukn-production/current");
+        $run = fn (string $docroot) => Process::run(['bash', base_path('ops/publish-docroot.sh'), $docroot, "$root/apps/smukn-production"]);
+
+        $this->assertTrue($run("$root/docroot")->successful());
+        $index = (string) file_get_contents("$root/docroot/index.php");
+        $this->assertStringContainsString("require '".realpath($release)."/vendor/autoload.php'", $index);
+        $this->assertStringNotContainsString('__DIR__', $index);
+        $this->assertFileExists("$root/docroot/.htaccess");
+        $this->assertFileExists("$root/docroot/build/app.css");
+        $this->assertFalse(is_link("$root/docroot"));
+
+        // a folder holding another site is never written to
+        mkdir("$root/other", 0755);
+        file_put_contents("$root/other/index.html", 'old site');
+        $this->assertFalse($run("$root/other")->successful());
+        $this->assertSame('old site', file_get_contents("$root/other/index.html"));
+        $this->assertFileDoesNotExist("$root/other/index.php");
+        Process::run(['rm', '-rf', $root]);
+    }
 }

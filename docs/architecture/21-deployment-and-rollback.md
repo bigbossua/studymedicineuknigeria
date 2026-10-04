@@ -22,7 +22,7 @@ Status: PROCEDURE. Written before server access existed; §21.1 must be complete
   shared/storage/                   ← logs, cache, private documents (encrypted at rest where supported)
   shared/database/database.sqlite   ← only if MySQL is unavailable (not recommended for production)
   current -> releases/2026-10-03T10-00-00
-~/domains/studymedicineuknigeria.com/public_html -> ~/apps/smukn/current/public   (symlink; if Hostinger forbids a symlinked docroot, public_html contains only a stub index.php + .htaccess that requires ../apps/smukn/current/public/index.php)
+~/domains/studymedicineuknigeria.com/public_html   (a real folder: Hostinger answers 403 for a document root reached through a symbolic link, seen at the first launch on 2026-10-04; ops/publish-docroot.sh copies the live release's public/ files into it and writes an index.php that loads that release by its absolute path, after every switch, deploy and rollback)
 ```
 
 Rollback = repoint `current` to the previous release and clear caches. Takes seconds and keeps the old release intact.

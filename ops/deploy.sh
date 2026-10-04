@@ -79,7 +79,9 @@ echo "switched $APP/current -> $REL"
 REMOTE
 
 # Document root cutover (first production launch): only when CUTOVER_DOCROOT names the folder the domain serves.
-# The existing site is archived to ~/backups and moved aside (never deleted); a failed smoke test puts it back.
+# Hostinger refuses to serve a document root through a symbolic link, so the folder stays a real folder: the existing
+# site is archived to ~/backups and moved aside (never deleted), a new empty folder takes its place and the release's
+# public files are published into it (ops/publish-docroot.sh). A failed publish or smoke test puts the old site back.
 CUTOVER=0
 if [ -n "${CUTOVER_DOCROOT:-}" ]; then
   echo "== document root cutover: $CUTOVER_DOCROOT =="
@@ -92,29 +94,46 @@ if [ "$D" = auto ]; then
   [ -n "$D" ] || { echo "auto: no document root found (looked for ~/domains/studymedicineuknigeria.com/public_html; pass the folder from the inspection report instead)"; exit 3; }
   echo "auto: document root is $D"
 fi
-if [ -L "$D" ] && [ "$(readlink "$D")" = "$APPD/current/public" ]; then echo "document root already serves $APPD/current/public"; exit 0; fi
-[ -e "$D" ] || [ -L "$D" ] || { echo "document root $D does not exist: check the path in the inspection report"; exit 3; }
+if [ -f "$D/.smukn-docroot" ]; then
+  printf '%s\n' "$D" > "$APPD/releases/.docroot"; bash "$APPD/current/ops/publish-docroot.sh" "$D" "$APPD"
+  echo "document root already serves the application"; exit 0
+fi
+[ -e "$D" ] || { echo "document root $D does not exist: check the path in the inspection report"; exit 3; }
+[ ! -L "$D" ] || { echo "document root $D is a symbolic link, which this host does not serve: refusing"; exit 3; }
 case "$D" in "$HOME"/*) ;; *) echo "document root $D is outside the home directory: refusing"; exit 3;; esac
 tar czf "$HOME/backups/docroot-$TARGET-$TS.tgz" -C "$(dirname "$D")" "$(basename "$D")" && tar tzf "$HOME/backups/docroot-$TARGET-$TS.tgz" >/dev/null \
   || { echo "could not archive $D: refusing to switch"; exit 3; }
-mv "$D" "$D.pre-smukn-$TS" && ln -s "$APPD/current/public" "$D"
+mv "$D" "$D.pre-smukn-$TS"
+if ! { mkdir -m 755 "$D" && bash "$APPD/current/ops/publish-docroot.sh" "$D" "$APPD"; }; then
+  [ -e "$D" ] && mv "$D" "$D.smukn-failed-$TS"; mv "$D.pre-smukn-$TS" "$D"
+  echo "could not publish the release into $D: the previous site is in place again"; exit 3
+fi
 printf '%s|%s\n' "$D" "$D.pre-smukn-$TS" > "$APPD/releases/.cutover"
-echo "document root $D -> $APPD/current/public; previous site kept at $D.pre-smukn-$TS and ~/backups/docroot-$TARGET-$TS.tgz"
+printf '%s\n' "$D" > "$APPD/releases/.docroot"
+echo "document root $D now serves the release; previous site kept at $D.pre-smukn-$TS and ~/backups/docroot-$TARGET-$TS.tgz"
 echo "cutover=done"
 CUT
   } | $SSH "$HOST" bash -s) || { echo "$out"; echo "CUTOVER FAILED: the document root was not changed and the previous site is still served"; exit 1; }
   echo "$out"; if grep -q '^cutover=done$' <<<"$out"; then CUTOVER=1; fi
 fi
 
+# Every later release: the document root (a real folder since the cutover) gets this release's public files.
+PUBLISHED=1
+if [ "$CUTOVER" = 0 ]; then
+  $SSH "$HOST" 'f=$HOME/apps/smukn-'"$TARGET"'/releases/.docroot; [ ! -f "$f" ] || bash "$HOME/apps/smukn-'"$TARGET"'/current/ops/publish-docroot.sh" "$(cat "$f")" "$HOME/apps/smukn-'"$TARGET"'"' || PUBLISHED=0
+fi
+
 if [ -n "$SITE_URL" ]; then
   echo "== smoke $SITE_URL =="
-  if ! ops/smoke.sh "$SITE_URL" "$TARGET"; then
+  if [ "$PUBLISHED" = 0 ] || ! ops/smoke.sh "$SITE_URL" "$TARGET"; then
+    [ "$PUBLISHED" = 1 ] || echo "PUBLISH FAILED: the document root did not receive this release"
     echo "SMOKE FAILED — rolling back"
     if [ "$CUTOVER" = 1 ]; then
-      # the site that was live before this launch is served again, exactly as it was
-      $SSH "$HOST" 'F=~/apps/smukn-'"$TARGET"'/releases/.cutover; IFS="|" read -r D OLD < "$F"; [ -L "$D" ] && [ -e "$OLD" ] && rm "$D" && mv "$OLD" "$D" && mv "$F" "$F.reverted" && echo "previous site restored at $D"'
+      # the site that was live before this launch is served again, exactly as it was; the new folder is moved aside
+      # (kept for diagnosis, never deleted)
+      $SSH "$HOST" 'R=$HOME/apps/smukn-'"$TARGET"'/releases; F=$R/.cutover; IFS="|" read -r D OLD < "$F"; [ -e "$OLD" ] && [ -f "$D/.smukn-docroot" ] && mv "$D" "$D.smukn-failed-'"$TS"'" && mv "$OLD" "$D" && mv "$F" "$F.reverted" && rm -f "$R/.docroot" && echo "previous site restored at $D"'
     fi
-    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); PHP=\"\"; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v \"\$c\" 2>/dev/null) && \"\$p\" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done; [ -n \"\$PHP\" ] || { echo \"no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)\"; exit 3; }; if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && echo \$PREV >> $APP/releases/.history && cd $APP/current && \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && echo rolled back to \$PREV; else echo 'no previous release to roll back to'; fi"
+    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); PHP=\"\"; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v \"\$c\" 2>/dev/null) && \"\$p\" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done; [ -n \"\$PHP\" ] || { echo \"no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)\"; exit 3; }; if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && echo \$PREV >> $APP/releases/.history && cd $APP/current && \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && echo rolled back to \$PREV; f=$APP/releases/.docroot; [ ! -f \$f ] || bash $APP/current/ops/publish-docroot.sh \$(cat \$f) \$(cd $APP && pwd); else echo 'no previous release to roll back to'; fi"
     exit 1
   fi
 fi

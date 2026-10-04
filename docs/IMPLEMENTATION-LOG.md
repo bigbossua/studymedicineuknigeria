@@ -385,6 +385,27 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **The domain answers with PHP 8.2.33.** The launch stops before any change while the website's PHP version is below 8.3; checked again right before the cutover.
 - **Tests:** 195 on SQLite and MariaDB.
 
+## Stage 49: first production launch attempt and the document-root fix (cycle 43)
+
+- **Launch run 37200863527 (commit 1bc75e1): the steps before the cutover passed.**
+  - **Settings:** detected; the production reviewer is set.
+  - **Tests:** 195 passed.
+  - **Production rehearsal:** passed every check.
+  - **Web PHP version:** 8.3.
+  - **Backup:** 4,582 files from `~/domains/studymedicineuknigeria.com/public_html` (no database found for the old site). Encrypted, checksum-verified and decrypted on the runner.
+- **The owner approved at 12:38 UTC. The deploy then:**
+  - prepared the server;
+  - migrated the new database and loaded the reference data;
+  - switched the release.
+- **The cutover failed.** It replaced `public_html` with a link to the release, and the domain answered 403 on every path. The smoke test failed and the old site was restored automatically within two seconds.
+- **Cause:** `docroot-probe.yml` showed correct permissions all the way along the path, but Hostinger answers 403 for any symbolic link reached from the document root, whether it points into `~/apps` or into the domain folder.
+- **Fix:** the document root stays a real folder.
+  - `ops/publish-docroot.sh` copies the live release's `public/` into it and writes an `index.php` that loads the release by its absolute path. It runs after the cutover, after every later deploy and after every code rollback.
+  - It only ever writes into an empty folder or one it published before.
+  - A failed publish or smoke test moves the new folder aside and moves the old one back. Nothing is deleted.
+- **Rehearsed locally** against a sandbox server home: failed launch with restore, successful launch passing the production smoke test, later deploy, code rollback, and restore of the previous site.
+- **Tests:** 196 on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

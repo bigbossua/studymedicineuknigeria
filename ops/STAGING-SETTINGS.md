@@ -128,7 +128,7 @@ is a PHP 8.2 application behind Hostinger's CDN whose sitemap lists 76 URLs, eac
    needs the new production database and the mailbox password; student registration starts **closed**.
 6. *Deploy to Hostinger* (`production`, `cutover_docroot` = the folder from step 2) → preflight of the server settings
    before anything changes, database backup, migrations, reference sync (including the old-site redirects), release
-   switch, then the folder is archived to `~/backups`, moved aside (never deleted) and linked to the release; the
+   switch, then the folder is archived to `~/backups`, moved aside (never deleted) and replaced by a folder holding the release's public files (Hostinger does not serve a linked document root); the
    production smoke test runs (HTTPS, one host with `www` redirected, no noindex, HSTS, CSP, no exposed files, no
    debug output, no staging password); **if it fails, the old site is put back automatically**. The production page
    review follows.

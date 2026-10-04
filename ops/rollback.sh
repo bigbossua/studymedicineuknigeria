@@ -16,9 +16,10 @@ set -euo pipefail
 F="$HOME/apps/smukn-$TARGET/releases/.cutover"
 [ -f "$F" ] || { echo "no recorded cutover: the document root was never switched by deploy.sh, nothing to restore"; exit 2; }
 IFS="|" read -r D OLD < "$F"
-[ -L "$D" ] || { echo "$D is not a link to a release: refusing to touch it"; exit 2; }
+[ -f "$D/.smukn-docroot" ] || { echo "$D was not published by deploy.sh: refusing to touch it"; exit 2; }
 [ -e "$OLD" ] || { echo "previous site folder $OLD is missing: restore it from the docroot archive in ~/backups (ops/RESTORE.md)"; exit 2; }
-rm "$D" && mv "$OLD" "$D" && mv "$F" "$F.reverted"
+# the published folder is moved aside, never deleted
+mv "$D" "$D.smukn-withdrawn-$(date -u +%Y-%m-%dT%H-%M-%S)" && mv "$OLD" "$D" && mv "$F" "$F.reverted" && rm -f "$(dirname "$F")/.docroot"
 echo "previous site restored at $D (the SMUKN release is still in ~/apps; deploy again with cutover_docroot to relaunch)"
 SITE
   } | $SSH "$HOST" bash -s
@@ -38,6 +39,8 @@ PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v
 [ -n "\$PHP" ] || { echo "no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)"; exit 3; }
 ln -sfn "\$PREV" $APP/current
 cd $APP/current && \$PHP artisan config:cache >/dev/null && \$PHP artisan route:cache >/dev/null && \$PHP artisan view:cache >/dev/null
+# the document root is a real folder (ops/publish-docroot.sh): it gets the earlier release's public files again
+f=$APP/releases/.docroot; [ ! -f "\$f" ] || bash $APP/current/ops/publish-docroot.sh "\$(cat "\$f")" "\$(cd $APP && pwd)"
 echo "previous=\$CUR" > $APP/releases/.last_switch
 echo "\$PREV" >> $APP/releases/.history
 echo "rolled back $TARGET: \$(basename "\$CUR") -> \$(basename "\$PREV")"

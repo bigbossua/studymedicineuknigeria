@@ -295,6 +295,13 @@ Not blockers: Stripe (post-launch; payment stays closed), P0 facts (unverified f
 
 Recommended, not blocking: add `rua=mailto:info@studymedicineuknigeria.com` to the DMARC record (reports of failed mail); the legal pages still say "under legal review" (your decision). Stripe stays a post-launch step.
 
+## Cycle 42 — deployment setup authorised; Hostinger needs your browser (2026-10-04)
+
+- **Blocked at the first step, honestly:** this session runs in a cloud container. It has no tool that can operate your Chrome or hPanel, and Hostinger is not reachable from it. Nothing was changed on Hostinger or GitHub settings; the current site is untouched.
+- **Checked:** Diagnose (09:15 UTC): every repository, staging and production setting is still missing; no required reviewer on `production`.
+- **Prepared:** `ops/OWNER-CLICKLIST.md`, the shortest safe order of the hPanel and GitHub steps (about 20 minutes, nothing touches the live site).
+- **Two ways forward:** (a) you follow the click-list, and every later step runs from here automatically up to the production approval; or (b) you open a Claude session on your own computer (Claude Desktop app, or `claude remote-control` in a terminal) where Claude can use your browser to do the hPanel part with you, then this cloud session continues.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

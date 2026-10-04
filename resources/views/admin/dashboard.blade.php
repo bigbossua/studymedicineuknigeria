@@ -9,9 +9,9 @@
         <div class="flex items-center justify-between gap-3 flex-wrap"><p id="launch-heading" class="eyebrow">Launch readiness</p><p class="text-[0.875rem] text-ink-500">{{ collect($launch)->where('done', true)->count() }} of {{ count($launch) }} complete</p></div>
         <ul class="mt-3 grid md:grid-cols-2 gap-x-8 gap-y-2 text-[0.9375rem]">
             @foreach($launch as $item)
-                <li class="flex items-start gap-3 py-1.5 border-b border-ink-100 last:border-0">
+                <li class="min-w-0 flex items-start gap-3 py-1.5 border-b border-ink-100 last:border-0">
                     <span class="chip {{ $item['done'] ? 'chip-verified' : 'chip-review' }} mt-0.5 shrink-0">{{ $item['done'] ? 'Done' : 'Open' }}</span>
-                    <span class="flex-1"><span class="font-medium">{{ $item['label'] }}</span><span class="block text-[0.8125rem] text-ink-500">{{ $item['detail'] }}</span></span>
+                    <span class="flex-1 min-w-0 break-words"><span class="font-medium">{{ $item['label'] }}</span><span class="block text-[0.8125rem] text-ink-500">{{ $item['detail'] }}</span></span>
                     @if($item['url'])<a href="{{ $item['url'] }}" class="btn btn-tertiary shrink-0">Open</a>@endif
                 </li>
             @endforeach

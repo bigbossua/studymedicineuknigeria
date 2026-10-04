@@ -6,7 +6,7 @@
     </div>
 
     <div class="mt-6 grid xl:grid-cols-3 gap-6">
-        <div class="xl:col-span-2 space-y-6">
+        <div class="xl:col-span-2 space-y-6 min-w-0">
             <section class="card"><p class="eyebrow mb-3">Documents</p>
                 <table class="text-[0.875rem]"><thead><tr><th>Document</th><th>Status</th><th>File</th><th>Decision</th></tr></thead><tbody>
                 @foreach($a->documents as $d)

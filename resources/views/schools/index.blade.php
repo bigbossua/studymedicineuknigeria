@@ -73,8 +73,8 @@
                 @php $c = $u->primaryCourse(); $fee = $c?->internationalFee(); $places = $u->fact('international_places'); @endphp
                 <li class="card card-hover flex flex-col">
                     <p class="text-[0.75rem] font-semibold uppercase tracking-[0.1em] text-ink-500 flex items-center gap-1"><x-icon name="map-pin" :size="13" />{{ $u->city }}{{ $u->nation ? ', '.$u->nation : '' }}</p>
-                    <div class="mt-2 flex items-start justify-between gap-3">
-                        <div>
+                    <div class="mt-2 flex flex-wrap items-start justify-between gap-3">
+                        <div class="min-w-0">
                             <h2 class="text-xl font-serif font-semibold leading-tight"><a href="{{ route('schools.show', $u) }}" class="stretched-link no-underline text-ink-900">{{ $u->name }}</a></h2>
                             <p class="text-[0.875rem] text-ink-500 mt-1">{{ $u->medical_school_name ?? '' }}</p>
                         </div>

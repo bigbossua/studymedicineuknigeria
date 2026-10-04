@@ -60,5 +60,6 @@
         </aside>
     </div>
     <x-related :items="[['label' => 'From Nigeria: the honest guide', 'url' => route('medicine.nigeria')], ['label' => 'WAEC and UK Medicine', 'url' => route('requirements.waec')], ['label' => 'Fee guide', 'url' => route('fees.index')], ['label' => 'UCAT for Nigerian students', 'url' => route('admissions.ucat')], ['label' => 'Working in the UK', 'url' => route('working.index'), 'description' => 'Visa work rules, GMC registration, Foundation training and what is changing.'], ['label' => 'Questions applicants ask', 'url' => route('faq.index')]]" />
+    <x-route-map current="course" />
 </article>
 </x-layouts.public>

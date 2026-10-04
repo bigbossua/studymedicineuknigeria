@@ -47,5 +47,6 @@
             <div class="card"><p class="eyebrow mb-3">What you can read meanwhile</p><ul class="space-y-2 text-[0.9375rem]"><li><a href="{{ route('requirements.waec') }}">WAEC and UK Medicine</a></li><li><a href="{{ route('admissions.ucat') }}">UCAT from Nigeria</a></li><li><a href="{{ route('fees.index') }}">Fee guide</a></li></ul></div>
         </aside>
     </div>
+    <x-route-map current="eligibility" />
 </article>
 </x-layouts.public>

@@ -108,5 +108,6 @@
     </section>
     <section class="container-site pb-4">
         <x-cta-band title="Ready to begin your application?">Create your account, tell us your qualifications, and we will build your document checklist for the schools you are considering.</x-cta-band>
+        <x-route-map current="universities" />
     </section>
 </x-layouts.public>

@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\ReferenceFact;
 use App\Models\Topic;
 use App\Models\University;
+use App\Support\MedicineRoute;
+use App\Support\PublishGate;
 use Database\Seeders\ReferenceDataSeeder;
 use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,6 +19,39 @@ class PublicSeoTest extends TestCase
     public function test_home_renders_with_canonical_robots_and_json_ld(): void
     {
         $this->get('/')->assertOk()->assertSee('<link rel="canonical"', false)->assertSee('application/ld+json', false)->assertSee('Study Medicine in the UK from Nigeria');
+    }
+
+    public function test_every_medicine_page_shows_the_route_map_up_to_the_hub_and_on_to_the_next_step(): void
+    {
+        $pages = ['/study-medicine-in-the-uk' => 'The course', '/study-medicine-in-the-uk/from-nigeria' => 'The course', '/requirements' => 'Entry requirements',
+            '/requirements/waec' => 'Your Nigerian qualifications', '/requirements/neco' => 'Your Nigerian qualifications', '/medical-schools' => 'UK medical schools',
+            '/fees' => 'Fees and costs', '/admissions/how-to-apply' => 'How to apply', '/admissions/ucat' => 'How to apply', '/apply-online/eligibility' => 'Check your eligibility'];
+        foreach ($pages as $path => $step) {
+            $html = $this->get($path)->assertOk()->getContent();
+            $this->assertStringContainsString('Your route to UK Medicine', $html, $path);
+            $this->assertMatchesRegularExpression('/aria-current="step"><span class="sr-only">You are here: <\/span>\d+\. '.preg_quote($step, '/').'/', $html, $path);
+            $this->assertSame(1, substr_count($html, 'aria-current="step"'), $path);
+            if ($path !== '/study-medicine-in-the-uk') {
+                $this->assertMatchesRegularExpression('#href="'.preg_quote(url('/study-medicine-in-the-uk'), '#').'" class="chip#', $html, "{$path} must link up to the Medicine hub");
+            }
+            $this->assertStringContainsString('href="'.url('/apply-online').'"', $html, $path);
+        }
+        // The chain never points at a gated draft: while the working-in-the-UK facts are unverified it is left out.
+        $this->assertFalse(PublishGate::passes(MedicineRoute::WORKING_GATE));
+        $this->assertStringNotContainsString('Registration and work', $this->get('/fees')->getContent());
+    }
+
+    public function test_the_front_controller_is_never_a_public_url(): void
+    {
+        // The web server passes the front controller as the script name, which Laravel turns into a base URL;
+        // the redirect must still point at the clean path, not back at /index.php (a loop the first fix had).
+        $server = ['SCRIPT_NAME' => '/index.php', 'SCRIPT_FILENAME' => public_path('index.php'), 'PHP_SELF' => '/index.php'];
+        foreach (['/index.php' => '/', '/index.php/fees' => '/fees', '/index.php/Fees/?ref=x' => '/fees?ref=x'] as $from => $to) {
+            $location = $this->call('GET', 'http://localhost'.$from, [], [], [], $server)->assertStatus(301)->headers->get('Location');
+            $parts = parse_url($location);
+            $this->assertSame($to, $parts['path'].(isset($parts['query']) ? '?'.$parts['query'] : ''), $from);
+            $this->assertStringNotContainsString('index.php', $location);
+        }
     }
 
     public function test_paths_are_canonicalised_to_lowercase_without_trailing_slash(): void

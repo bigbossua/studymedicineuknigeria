@@ -48,5 +48,6 @@
         <h2>Questions about requirements</h2>
         <div class="mt-4 divide-y divide-ink-100">@foreach($faqs as $f)<details class="py-3" id="q{{ $f['id'] }}"><summary class="cursor-pointer font-semibold">{{ $f['q'] }}</summary><div class="mt-2 text-ink-700 prose-site">{!! $f['a'] !!}</div></details>@endforeach</div>
     </section>
+    <x-route-map current="requirements" />
 </article>
 </x-layouts.public>

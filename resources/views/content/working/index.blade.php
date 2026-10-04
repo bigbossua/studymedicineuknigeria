@@ -85,5 +85,6 @@
 
     <x-related :items="[['label' => 'Total cost of studying Medicine in the UK', 'url' => route('fees.total'), 'description' => 'Tuition, visa, surcharge and living costs with sources.'], ['label' => 'Study Medicine in the UK from Nigeria', 'url' => route('medicine.nigeria'), 'description' => 'The honest guide for 2027 and 2028 entry.'], ['label' => 'Questions applicants ask', 'url' => route('faq.index'), 'description' => 'Sourced answers, including working after graduation.']]" />
     <x-cta-band class="mt-12" title="Check which routes are open to you" :href="route('apply.eligibility')" label="Check your eligibility" />
+    <x-route-map current="career" />
 </article>
 </x-layouts.public>

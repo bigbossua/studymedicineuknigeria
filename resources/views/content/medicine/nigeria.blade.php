@@ -60,5 +60,6 @@
         </aside>
     </div>
     <x-related :items="[['label' => 'WAEC and UK Medicine', 'url' => route('requirements.waec'), 'description' => 'Every statement, by university'], ['label' => 'Fee guide', 'url' => route('fees.index'), 'description' => 'Published international fees with years'], ['label' => 'UCAS 2027 timeline', 'url' => route('admissions.ucas2027'), 'description' => 'Dates for 2027 and 2028 planning'], ['label' => 'Apply Online', 'url' => route('apply.index'), 'description' => 'Structured, resumable application']]" />
+    <x-route-map current="course" />
 </article>
 </x-layouts.public>

@@ -52,5 +52,6 @@
         </div>
         <aside class="lg:col-span-4"><div class="card"><p class="eyebrow mb-3">Related</p><ul class="space-y-2 text-[0.9375rem]"><li><a href="{{ route('medicine.nigeria') }}">Study Medicine in the UK from Nigeria: the guide</a></li><li><a href="{{ route('requirements.waec') }}">WAEC and UK Medicine</a></li><li><a href="{{ route('requirements.english') }}">English requirements (incl. NECO English)</a></li><li><a href="{{ route('medicine.foundation') }}">Foundation routes</a></li><li><a href="{{ route('requirements.alevels') }}">A-levels for UK Medicine</a></li></ul></div></aside>
     </div>
+    <x-route-map current="qualifications" />
 </article>
 </x-layouts.public>

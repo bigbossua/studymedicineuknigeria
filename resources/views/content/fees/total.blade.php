@@ -28,5 +28,6 @@
         </div>
         <aside class="lg:col-span-4"><div class="card"><p class="eyebrow mb-3">Related</p><ul class="space-y-2 text-[0.9375rem]"><li><a href="{{ route('fees.index') }}">Fee guide by school</a></li><li><a href="{{ route('admissions.ucas2027') }}">Timeline to visa</a></li></ul></div></aside>
     </div>
+    <x-route-map current="fees" />
 </article>
 </x-layouts.public>

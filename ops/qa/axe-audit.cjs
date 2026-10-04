@@ -5,7 +5,7 @@ if (!axePath) { console.error('axe-core not found: npm i -g axe-core, or set AXE
 const axeSource = fs.readFileSync(axePath, 'utf8');
 const totp = (secret) => execSync(`php artisan tinker --execute="echo App\\\\Support\\\\Totp::code('${secret}');"`, { cwd: process.cwd() }).toString().trim();
 (async () => {
-  const base = 'http://127.0.0.1:8000'; const secret = process.argv[2]; const results = {};
+  const base = 'http://127.0.0.1:8000'; const secret = process.argv[2]; const APP = process.env.APP_NO || 'SMUKN-' + (new Date().getFullYear() + 2) + '-000001'; /* the demo application (DemoAccountsSeeder) */ const results = {};
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
   const audit = async (page, label) => {
     await page.addScriptTag({ content: axeSource });
@@ -22,13 +22,13 @@ const totp = (secret) => execSync(`php artisan tinker --execute="echo App\\\\Sup
   await page.setViewportSize({ width: 1366, height: 900 });
   // student portal
   await page.goto(base + '/login'); await page.fill('#email', 'student@example.test'); await page.fill('#password', 'Testpass12345'); await page.click('button[type=submit]'); await page.waitForLoadState('networkidle');
-  for (const p of ['/portal', '/portal/profile', '/portal/SMN-2028-000001/application', '/portal/SMN-2028-000001/application/personal', '/portal/SMN-2028-000001/application/secondary', '/portal/SMN-2028-000001/documents', '/portal/SMN-2028-000001/payments', '/portal/SMN-2028-000001/submissions', '/portal/SMN-2028-000001/messages', '/two-factor/setup']) { await page.goto(base + p, { waitUntil: 'networkidle' }); await audit(page, p); }
+  for (const p of ['/portal', '/portal/profile', '/portal/' + APP + '/application', '/portal/' + APP + '/application/personal', '/portal/' + APP + '/application/secondary', '/portal/' + APP + '/documents', '/portal/' + APP + '/payments', '/portal/' + APP + '/submissions', '/portal/' + APP + '/messages', '/two-factor/setup']) { await page.goto(base + p, { waitUntil: 'networkidle' }); await audit(page, p); }
   await ctx.close();
   // admin
   ctx = await browser.newContext({ viewport: { width: 1366, height: 900 }, bypassCSP: true }); page = await ctx.newPage();
   await page.goto(base + '/login'); await page.fill('#email', 'admin@example.test'); await page.fill('#password', 'Adminpass12345'); await page.click('button[type=submit]'); await page.waitForLoadState('networkidle'); await audit(page, '/two-factor/challenge');
   await page.fill('#code', totp(secret)); await page.click('button[type=submit]'); await page.waitForLoadState('networkidle');
-  for (const p of ['/admin', '/admin/applications', '/admin/applications/SMN-2028-000001', '/admin/leads', '/admin/payments', '/admin/services', '/admin/verification', '/admin/universities', '/admin/redirects', '/admin/users', '/admin/funnel', '/admin/audit']) { await page.goto(base + p, { waitUntil: 'networkidle' }); await audit(page, p); }
+  for (const p of ['/admin', '/admin/applications', '/admin/applications/' + APP, '/admin/leads', '/admin/payments', '/admin/services', '/admin/verification', '/admin/universities', '/admin/redirects', '/admin/users', '/admin/funnel', '/admin/audit']) { await page.goto(base + p, { waitUntil: 'networkidle' }); await audit(page, p); }
   await browser.close();
   const summary = {}; for (const [p, vs] of Object.entries(results)) for (const v of vs) { summary[v.id] = summary[v.id] || { impact: v.impact, help: v.help, pages: 0, nodes: 0, sample: v.nodes[0] }; summary[v.id].pages++; summary[v.id].nodes += v.count; }
   console.log(JSON.stringify({ pagesWithViolations: Object.keys(results).length, summary }, null, 1));

@@ -83,5 +83,6 @@
         </div>
         <aside class="lg:col-span-4"><div class="card"><p class="eyebrow mb-3">Related</p><ul class="space-y-2 text-[0.9375rem]"><li><a href="{{ route('medicine.nigeria') }}">Study Medicine in the UK from Nigeria: the guide</a></li><li><a href="{{ route('admissions.ucas2027') }}">Deadlines and timeline</a></li><li><a href="{{ route('admissions.ucat') }}">UCAT for Nigerian students</a></li><li><a href="{{ route('requirements.english') }}">English requirements</a></li><li><a href="{{ route('faq.index') }}">Questions applicants ask</a></li><li><a href="{{ route('status') }}">Our status (not an agent)</a></li></ul></div></aside>
     </div>
+    <x-route-map current="application" />
 </article>
 </x-layouts.public>

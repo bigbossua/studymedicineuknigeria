@@ -22,6 +22,17 @@ class HandleRedirects
             return $next($request);
         }
 
+        // The front controller must never be a public URL: /index.php and /index.php/fees duplicate / and /fees
+        // (Apache and `php artisan serve` both answer them). Checked on the raw request URI because Laravel strips
+        // the script name into the base URL before routing.
+        if (preg_match('#^/index\.php(?=/|\?|$)#i', $request->getRequestUri())) {
+            $rest = '/'.trim(strtolower((string) preg_replace('#^(/index\.php)+#i', '', strtok($request->getRequestUri(), '?'))), '/');
+            $qs = $request->getQueryString();
+
+            // Absolute URL from scheme and host only: redirect('/x') would prefix the base URL (/index.php) and loop.
+            return redirect()->away($request->getSchemeAndHttpHost().$rest.($qs ? '?'.$qs : ''), 301);
+        }
+
         $raw = $request->getPathInfo();
         $path = '/'.trim($raw, '/');
 

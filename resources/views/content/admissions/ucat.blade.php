@@ -82,5 +82,6 @@
             <div class="card"><p class="eyebrow mb-3">About the figures</p><p class="text-[0.9375rem] text-ink-700">Dates come from the UCAT Consortium's own pages. Fees, subtest timings and the Nigerian centre list were not confirmed on the official page during our research and are marked accordingly; we do not show them to students until they are verified.</p></div>
         </aside>
     </div>
+    <x-route-map current="application" />
 </article>
 </x-layouts.public>

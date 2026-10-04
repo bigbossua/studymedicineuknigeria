@@ -29,5 +29,6 @@
         </aside>
     </div>
     <x-related :items="[['label' => 'Foundation routes to Medicine', 'url' => route('medicine.foundation')], ['label' => 'Fee guide', 'url' => route('fees.index')], ['label' => 'UCAT for Nigerian students', 'url' => route('admissions.ucat')], ['label' => 'Apply Online', 'url' => route('apply.index')]]" />
+    <x-route-map current="qualifications" />
 </article>
 </x-layouts.public>

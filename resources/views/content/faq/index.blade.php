@@ -16,5 +16,6 @@
     </div>
     <x-cta-band class="mt-12" title="Ready to check your own situation?" :href="route('apply.eligibility')" label="Check your eligibility" />
     <x-related title="Where the sourced detail lives" :items="[['label' => 'Study Medicine in the UK from Nigeria', 'url' => route('medicine.nigeria'), 'description' => 'The full guide, start to finish'], ['label' => 'WAEC and UK Medicine', 'url' => route('requirements.waec'), 'description' => 'What each school publishes'], ['label' => 'Fee guide', 'url' => route('fees.index'), 'description' => 'International fees by school'], ['label' => 'UCAT for Nigerian students', 'url' => route('admissions.ucat'), 'description' => 'Dates, centres, structure'], ['label' => 'Medical school directory', 'url' => route('schools.index'), 'description' => 'Who accepts international applicants'], ['label' => 'How to apply', 'url' => route('admissions.howto'), 'description' => 'UCAS and direct applications']]" />
+    <x-route-map />
 </article>
 </x-layouts.public>

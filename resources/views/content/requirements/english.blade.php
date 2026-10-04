@@ -50,5 +50,6 @@
         </div>
         <aside class="lg:col-span-4"><div class="card"><p class="eyebrow mb-3">Related</p><ul class="space-y-2 text-[0.9375rem]"><li><a href="{{ route('medicine.nigeria') }}">Study Medicine in the UK from Nigeria: the guide</a></li><li><a href="{{ route('requirements.waec') }}">WAEC and UK Medicine</a></li><li><a href="{{ route('requirements.neco') }}">NECO and UK Medicine</a></li><li><a href="{{ route('requirements.index') }}">Requirements hub</a></li><li><a href="{{ route('schools.index') }}?international=accepts">Directory</a></li></ul></div></aside>
     </div>
+    <x-route-map current="requirements" />
 </article>
 </x-layouts.public>

@@ -144,5 +144,6 @@
             ['label' => 'How to apply: UCAS or direct', 'url' => route('admissions.howto'), 'description' => 'The application route this school uses, step by step'],
             ['label' => 'All medical schools', 'url' => route('schools.index'), 'description' => 'Back to the directory'],
         ]" />
+        <x-route-map current="universities" />
     </article>
 </x-layouts.public>

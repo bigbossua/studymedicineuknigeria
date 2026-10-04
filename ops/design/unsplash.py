@@ -8,7 +8,7 @@ Run by .github/workflows/design-photos.yml on a GitHub runner (this repository's
 Nothing is published by this script: a photograph reaches the site only when it is added to brand/photos/manifest.json
 with its alt text, credit, source URL and licence, and `php artisan smukn:images` builds its derivatives.
 """
-import io, json, os, re, sys, urllib.parse, urllib.request
+import io, json, os, re, subprocess, sys, urllib.parse, urllib.request
 from PIL import Image, ImageDraw
 
 UA = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36', 'Accept': 'text/html,application/json', 'Accept-Language': 'en-GB'}
@@ -17,8 +17,15 @@ OUT = 'brand/photos'
 
 
 def get(url, binary=False, text=False):
-    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40) as r:
-        data = r.read()
+    # curl first: unsplash.com answered 401 to Python's own HTTP client from the runner
+    args = ['curl', '-sSfL', '--compressed', '--max-time', '40'] + [x for k, v in UA.items() for x in ('-H', f'{k}: {v}')] + [url]
+    r = subprocess.run(args, capture_output=True)
+    if r.returncode == 0:
+        data = r.stdout
+    else:
+        print(f'curl {url}: exit {r.returncode} {r.stderr.decode()[:200]}', file=sys.stderr)
+        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40) as resp:
+            data = resp.read()
     return data if binary else data.decode('utf-8', 'replace') if text else json.loads(data)
 
 

@@ -1,4 +1,5 @@
-@php $ga = config('site.ga4_id'); $consent = request()->cookie('smukn_consent'); @endphp
+{{-- never on account-security pages: their URLs can carry a reset token and an email address --}}
+@php $ga = request()->routeIs('password.*', 'verification.*', 'two-factor.*') ? null : config('site.ga4_id'); $consent = request()->cookie('smukn_consent'); @endphp
 @if($ga)
 <meta name="ga4-id" content="{{ $ga }}">
 <meta name="csp-nonce" content="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">

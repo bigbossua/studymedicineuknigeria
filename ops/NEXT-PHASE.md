@@ -19,20 +19,34 @@ The site is live (stage 50) and the visual pass is done (stage 51). Nothing belo
    - staff accounts are granted the same way with role `staff`;
    - a test student account (your second email) lets you walk the student journey end to end. No real student data, and payment stays closed.
 
-## 2. Stripe (live)
+## 2. Stripe: test mode first, then live (only on your explicit approval)
 
-1. **You:** in the Stripe Dashboard (live mode), create a restricted or secret key. Then in GitHub → Environments → production → secrets, add `STRIPE_KEY` (pk_live_…) and `STRIPE_SECRET` (sk_live_…).
-2. Claude runs *Stripe catalogue* in check mode, then in create mode:
-   - It creates three products, `smukn_t1`–`smukn_t3`, each with one GBP one-time price taken from `tier_prices`: T1 £125, T2 £695 (Most Popular), T3 £1,295.
-   - No Payment Links are created.
-   - Claude reports the IDs.
-3. Claude creates the webhook endpoint (`smukn:stripe-webhook --create`, the six events in `StripeService::WEBHOOK_EVENTS`). **You** copy its signing secret into the production secret `STRIPE_WEBHOOK_SECRET`.
-4. Claude runs *Update server settings* (production). The preflight then accepts live keys only, and payment opens (`StripeService::paymentsOpen`).
-5. Claude verifies, in order:
-   - the services page for an approved student shows the three fees and a working Checkout button;
-   - prices are still absent from every public page (live leak check);
+1. **You:** in the Stripe Dashboard switch to **Test mode**, then go to **Developers → API keys** and copy the **Secret key** (`sk_test_…`). Add it in GitHub → Settings → Secrets and variables → Actions → **New repository secret**, name `STRIPE_TEST_SECRET`. A test key cannot move real money.
+2. Claude runs *Stripe test-mode journey*. It runs entirely on a GitHub runner, never on the server, and:
+   - creates the test catalogue: `smukn_t1`–`smukn_t3`, one GBP one-time price each from `tier_prices` (T1 £125, T2 £695, T3 £1,295);
+   - takes three new students through staff approval → service choice → Stripe's hosted Checkout with test cards (T1 also with a declined card) → Stripe-signed webhook → paid;
+   - reads each charge back from Stripe and compares it with the fee shown;
+   - re-runs the public price-leak checks.
+
+   No Payment Links are created.
+3. Only after that passes, and only when **you** say "activate payments":
+   - **You:** add the live `STRIPE_KEY` (pk_live_…) and `STRIPE_SECRET` (sk_live_…) to GitHub → Environments → production → secrets.
+   - Claude runs *Stripe catalogue* (check, then create) for production.
+   - Claude creates the webhook endpoint (`smukn:stripe-webhook --create`, the six events in `StripeService::WEBHOOK_EVENTS`). **You** copy its signing secret into the production secret `STRIPE_WEBHOOK_SECRET`.
+   - Claude runs *Update server settings* (production). Payment then opens (`StripeService::paymentsOpen`).
+4. Claude verifies, in order:
+   - an approved student sees the exact fee and a working Checkout button;
+   - prices are still absent from every public page;
    - one real low-value payment, if you choose: a webhook marks it paid, and it can be refunded from the Dashboard;
    - `smukn:payments-open-notify` tells waiting students once.
+
+Safeguards already in place:
+- the server picks the price; the browser only sends which fee;
+- amount, currency and service are checked against the webhook, and any mismatch is held for review;
+- signed webhooks are processed once each;
+- test and live mode are kept separate;
+- older checkouts are expired at Stripe when a new one opens, and a second payment for an already-paid fee is held for refund, never counted;
+- refunds and disputes are recorded in the application's audit trail.
 
 ## 3. Google Search Console
 

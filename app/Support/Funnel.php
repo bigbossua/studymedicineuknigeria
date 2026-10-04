@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Application;
 use App\Models\FunnelEvent;
+use App\Services\Applications\FormSteps;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -130,9 +131,17 @@ final class Funnel
         }
     }
 
-    /** Only low-cardinality, non-identifying parameters go client-side. */
+    /**
+     * Only low-cardinality, non-identifying parameters go to GA4: step is a fixed form-section key (personal,
+     * education…), never a document title, a name or anything the student typed.
+     */
     private static function clientParams(array $properties): array
     {
-        return array_intersect_key($properties, array_flip(['qualification', 'intake_year', 'tier', 'route', 'school']));
+        $params = array_intersect_key($properties, array_flip(['qualification', 'intake_year', 'tier', 'route', 'school', 'step']));
+        if (isset($params['step']) && ! array_key_exists($params['step'], FormSteps::all())) {
+            unset($params['step']);
+        }
+
+        return $params;
     }
 }

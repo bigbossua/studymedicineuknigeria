@@ -7,6 +7,7 @@ use App\Models\Application;
 use App\Models\FunnelEvent;
 use App\Models\University;
 use App\Models\User;
+use App\Support\Funnel;
 use App\Support\Totp;
 use Database\Seeders\PlatformSeeder;
 use Database\Seeders\ReferenceDataSeeder;
@@ -140,5 +141,22 @@ class FunnelTest extends TestCase
         });
         // the portal itself never loads a third-party script
         $this->actingAs($student)->get('/portal')->assertDontSee('googletagmanager');
+    }
+
+    public function test_ga4_parameters_are_an_allow_list_and_account_security_pages_never_load_analytics(): void
+    {
+        $params = (new \ReflectionMethod(Funnel::class, 'clientParams'))->invoke(null, [
+            'step' => 'personal', 'step_title' => 'Personal details', 'title' => 'Passport scan.pdf', 'email' => 'a@b.test',
+            'tier' => 'T2', 'intake_year' => 2028, 'amount' => 69500, 'actor' => 'student',
+        ]);
+        $this->assertSame(['step' => 'personal', 'tier' => 'T2', 'intake_year' => 2028], $params);
+        // a step value that is not a form-section key (free text) is dropped
+        $this->assertSame([], (new \ReflectionMethod(Funnel::class, 'clientParams'))->invoke(null, ['step' => 'Ada Okonkwo']));
+
+        // the reset link carries a token and the email address in its URL: GA4 is never loaded there
+        config(['site.ga4_id' => 'G-TEST123']);
+        $this->get('/password/reset/abc123token?email=ada%40example.test')->assertOk()->assertDontSee('ga4-id', false);
+        $this->get('/password/forgot')->assertOk()->assertDontSee('ga4-id', false);
+        $this->get('/register')->assertOk()->assertSee('ga4-id', false);
     }
 }

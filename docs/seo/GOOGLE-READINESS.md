@@ -89,31 +89,32 @@ The Domain property is better because it covers http, https and www together.
 6. Tell Claude. Claude then:
    - runs *Update server settings* (production);
    - checks that the consent banner appears, that nothing loads before consent, that events arrive in **DebugView** after consent, and that CSP stays clean.
-7. Once events have arrived, mark these as **Key events**: `lead_created` (eligibility check completed), `account_created`, `application_started`, `student_approved`, `payment_completed`.
+7. Once events have arrived, mark these as **Key events**: `lead_created` (eligibility check completed), `whatsapp_click`, `account_created`, `application_started`, `student_approved`, `payment_completed`.
 
 ## GA4 events
 
 | Event | Sent | Parameters (nothing else ever travels) |
 |---|---|---|
-| `page_view` | Browser, automatic, after consent | page location and title |
+| `page_view` | Browser, automatic, after consent | page path and title. The address is cleaned first: only `utm_*` tags survive from the query string, and reset/verify tokens are masked. Never sent from sign-in-security pages (password, email verification, two-step). |
 | `apply_click` | Browser | `location` (header, footer, floating, cta_band, content), `page` |
 | `eligibility_started` | Browser | `page` |
 | `lead_created` (eligibility check completed) | Browser, on the next page | `qualification`, `intake_year`, `tier` (the suggested level) |
 | `account_created` | Browser, on the next page | none |
 | `course_viewed` (school page) | Browser | `school` (slug) |
 | `apply_viewed` | Browser | none |
-| `contact_click` | Browser | `method` (email, whatsapp), `location` (floating, header, footer, content), `page` |
+| `whatsapp_click` | Browser | `location` (floating, header, footer, content), `page` |
+| `contact_click` | Browser | `method` (email), `location`, `page` |
 | `official_source_click` | Browser | `domain` of the official page, `page` |
 | `directory_filter` | Browser | `filters` (which filters were used, never values typed in search), `searched` (yes/no) |
 | `application_started` | Server (Measurement Protocol) | `tier` if chosen, `intake_year` |
-| `step_completed` | Server | `tier`, `intake_year` |
+| `step_completed` | Server | `step` (form-section key: personal, study, secondary, post_secondary, english, tests, experience, referees, declarations), `tier`, `intake_year` |
 | `document_uploaded` | Server | `tier`, `intake_year`. Never the document, its name or type. |
 | `service_chosen` | Server | `tier` (T1, T2, T3) |
 | `student_approved` (application completed by the student) | Server | `tier`, `intake_year` |
 | `submitted` | Server | `tier`, `intake_year` |
 | `payment_started`, `payment_completed` | Server | `tier`. These start once Stripe is configured. |
 
-Every event is also stored first-party in `funnel_events` (Admin → Funnel).
+Every event is also stored first-party in `funnel_events` (Admin → Funnel). `ops/qa/ga4-events.cjs` replays the browser events against a server started with a test ID and fails on any parameter outside this table; `tests/Feature/FunnelTest.php` covers the server events and the parameter allow-list.
 
 **Privacy rules:**
 - GA4 never receives names, email addresses, application numbers, document names or contents, or free text.

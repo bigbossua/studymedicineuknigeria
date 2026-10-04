@@ -68,8 +68,18 @@ class StripeService
         // resolved first, so a Stripe error leaves no half-made payment behind.
         $stripePrice = app(StripeCatalog::class)->ensure($price);
 
-        // one open session per price component; expire older INITIATED ones
-        $a->payments()->where('tier_price_id', $price->id)->where('status', 'INITIATED')->update(['status' => 'EXPIRED']);
+        // one open session per price component: expire older INITIATED ones here and at Stripe, so a checkout left open
+        // in another tab can no longer be paid (a duplicate that still arrives is held for refund in applyEvent)
+        foreach ($a->payments()->where('tier_price_id', $price->id)->where('status', 'INITIATED')->get() as $open) {
+            if ($open->stripe_checkout_session_id) {
+                try {
+                    $this->client()->checkout->sessions->expire($open->stripe_checkout_session_id);
+                } catch (\Throwable) {
+                    // already expired or completed at Stripe: the webhook decides
+                }
+            }
+            $open->update(['status' => 'EXPIRED']);
+        }
 
         $payment = $a->payments()->create([
             'tier_price_id' => $price->id, 'status' => 'INITIATED', 'amount_minor' => $price->amount_minor, 'currency' => $price->currency,
@@ -134,6 +144,14 @@ class StripeService
                 }
                 if ($payment->status === 'SUCCEEDED') {
                     return false;
+                }
+                if ($a->payments()->where('id', '!=', $payment->id)->where('tier_price_id', $payment->tier_price_id)->where('status', 'SUCCEEDED')->exists()) {
+                    // The same fee was already paid through another checkout: never count it twice; staff refund it.
+                    $payment->update(['status' => 'MANUAL_REVIEW', 'note' => 'Duplicate payment: this fee was already paid by another checkout. Refund it from the Stripe Dashboard.']);
+                    $a->record('payment.duplicate', ['payment_id' => $payment->id]);
+                    User::where('role', 'admin')->get()->each->notify(new StaffNotification('Duplicate payment to refund — '.$a->application_number, ['Stripe confirmed a second payment for a service fee that was already paid. It has not been counted; refund it from the Stripe Dashboard.'], route('admin.applications.show', $a)));
+
+                    return true;
                 }
                 if (! $this->amountMatches($obj, $payment) || $payment->tierPrice?->service_tier_id !== $a->service_tier_id) {
                     // Paid, but not the amount and currency this application owes: never treat it as paid automatically.

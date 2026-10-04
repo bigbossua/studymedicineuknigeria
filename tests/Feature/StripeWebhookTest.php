@@ -126,4 +126,25 @@ class StripeWebhookTest extends TestCase
         $this->webhook($p, $h)->assertOk();
         $this->assertDatabaseHas('stripe_events', ['stripe_event_id' => 'evt_unknown']);
     }
+
+    public function test_a_second_paid_checkout_for_the_same_fee_is_held_for_refund_not_counted(): void
+    {
+        $paid = ['object' => 'checkout.session', 'id' => 'cs_test_123', 'payment_status' => 'paid', 'amount_total' => 69500, 'currency' => 'gbp', 'payment_intent' => 'pi_test_1', 'metadata' => ['payment_id' => (string) $this->payment->id]];
+        [$payload, $headers] = $this->signed($this->event('evt_a', 'checkout.session.completed', $paid));
+        $this->webhook($payload, $headers)->assertOk();
+
+        // a checkout left open in another tab, paid afterwards
+        $second = $this->application->payments()->create([
+            'tier_price_id' => $this->payment->tier_price_id, 'status' => 'EXPIRED', 'amount_minor' => 69500, 'currency' => 'GBP', 'method' => 'STRIPE',
+            'stripe_checkout_session_id' => 'cs_test_456', 'terms_version_accepted' => 'v1',
+        ]);
+        $dup = ['object' => 'checkout.session', 'id' => 'cs_test_456', 'payment_status' => 'paid', 'amount_total' => 69500, 'currency' => 'gbp', 'payment_intent' => 'pi_test_2', 'metadata' => ['payment_id' => (string) $second->id]];
+        [$payload, $headers] = $this->signed($this->event('evt_b', 'checkout.session.completed', $dup));
+        $this->webhook($payload, $headers)->assertOk();
+
+        $this->assertSame('MANUAL_REVIEW', $second->fresh()->status);
+        $this->assertStringContainsString('Duplicate payment', $second->fresh()->note);
+        $this->assertSame(1, $this->application->payments()->where('status', 'SUCCEEDED')->count());
+        $this->assertDatabaseHas('application_events', ['application_id' => $this->application->id, 'type' => 'payment.duplicate']);
+    }
 }

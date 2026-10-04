@@ -10,6 +10,17 @@ PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v 
 echo "PHP 8.3 command line: $PHP"; echo "app path: $(cd "$APP" && pwd -P | sed -E 's#/releases/[^/]+$#/current#')"
 mask(){ sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email]/g'; }
 
+echo "== process sample: does Hostinger's cron start the scheduler? (watching 130 s, two minute boundaries) =="
+echo "server time now: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+seen=""; end=$((SECONDS+130))
+while [ $SECONDS -lt $end ]; do
+  hit=$(ps -u "$(whoami)" -o lstart=,args= 2>/dev/null | grep -E 'artisan (schedule:run|queue:work)' | grep -v grep | sed -E 's#/home/[^/ ]+#~#g' | cut -c1-200)
+  [ -n "$hit" ] && seen="$seen
+$hit"
+  sleep 2
+done
+if [ -n "$seen" ]; then echo "scheduler processes seen:"; printf '%s\n' "$seen" | sort -u | grep -v '^$'; else echo "NO schedule:run or queue:work process seen in 130 s"; fi
+
 echo "== cron (the queue worker runs from schedule:run every minute) =="
 if command -v crontab >/dev/null; then
   echo "crontab command: available; entries in this account's crontab: $(crontab -l 2>/dev/null | grep -cvE '^\s*(#|$)')"
@@ -62,3 +73,20 @@ $PHP artisan tinker --execute '
     if (method_exists($t, "start")) { $t->start(); echo "SMTP connection and sign-in: OK (", get_class($t), ")", PHP_EOL; $t->stop(); }
     else { echo "transport ", get_class($t), " has no connection to test", PHP_EOL; }
   } catch (Throwable $e) { echo "SMTP FAILED: ", get_class($e), ": ", mb_substr($e->getMessage(), 0, 300), PHP_EOL; }' 2>&1 | mask
+
+echo "== queued jobs in detail (no payloads) =="
+$PHP artisan tinker --execute '
+  foreach (DB::table("jobs")->orderBy("id")->get(["id", "queue", "attempts", "reserved_at", "available_at", "created_at", "payload"]) as $j) {
+    echo json_encode(["id" => $j->id, "class" => json_decode($j->payload, true)["displayName"] ?? "?", "attempts" => $j->attempts,
+      "reserved" => $j->reserved_at !== null, "created_utc" => gmdate("H:i:s", $j->created_at), "available_utc" => gmdate("H:i:s", $j->available_at)]), PHP_EOL;
+  }
+  echo "cache store: ", config("cache.default"), "; queue: ", config("queue.default"), PHP_EOL;' 2>&1 | mask
+
+echo "== cron-environment compatibility (a bare environment like cron's; lists the schedule, runs nothing) =="
+env -i HOME="$HOME" PATH=/usr/bin:/bin /bin/sh -c "cd $APP && /opt/alt/php83/usr/bin/php -r 'echo \"php \", PHP_VERSION, PHP_EOL;' && /opt/alt/php83/usr/bin/php artisan schedule:list 2>&1 | head -12" 2>&1 | sed -E 's#/home/[^/ ]+#~#g' | mask
+
+echo "== log files (names and last change only) =="
+ls -l --time-style=+%Y-%m-%dT%H:%M storage/logs 2>/dev/null | awk 'NR>1 {print $6, $7, $5" bytes"}'
+echo "== last 6 log entries today (first 160 characters, addresses masked) =="
+f=storage/logs/laravel.log; [ -f "$f" ] && grep -hE "^\[$(date -u +%Y-%m-%d)" "$f" | tail -6 | cut -c1-160 | mask || echo "no laravel.log"
+

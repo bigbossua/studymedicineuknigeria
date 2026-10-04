@@ -9,9 +9,9 @@ on:
         required: true
         default: search
         type: choice
-        options: [search, fetch]
+        options: [search, fetch, probe]
       arg:
-        description: 'search: "query one|query two"; fetch: "slug=photoId,slug=photoId"'
+        description: 'search: "query one|query two"; fetch: "slug=photoId,slug=photoId"; probe: -'
         required: true
 
 permissions:
@@ -28,6 +28,7 @@ jobs:
         env:
           MODE: ${{ inputs.mode }}
           ARG: ${{ inputs.arg }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: python3 ops/design/unsplash.py "$MODE" "$ARG"
       - name: Commit to this branch
         run: |

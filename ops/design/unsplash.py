@@ -4,6 +4,8 @@ Run by .github/workflows/design-photos.yml on a GitHub runner (this repository's
 
   search "query one|query two"   → brand/photos/candidates/<n>-<query>.jpg contact sheets + candidates.json
   fetch  "slug=photoId,slug=id"   → brand/photos/<slug>.jpg (2400 px originals) + brand/photos/fetched.json (credit, link)
+  probe  -                        → which Unsplash hosts answer from the runner
+With UNSPLASH_ACCESS_KEY set (repository secret) the official API is used; without it, the public pages.
 
 Nothing is published by this script: a photograph reaches the site only when it is added to brand/photos/manifest.json
 with its alt text, credit, source URL and licence, and `php artisan smukn:images` builds its derivatives.
@@ -27,6 +29,32 @@ def get(url, binary=False, text=False):
         with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40) as resp:
             data = resp.read()
     return data if binary else data.decode('utf-8', 'replace') if text else json.loads(data)
+
+
+KEY = os.environ.get('UNSPLASH_ACCESS_KEY', '')
+API = 'https://api.unsplash.com'
+
+
+def api(path):
+    """Official API (free developer app key). unsplash.com itself answers 401 to GitHub runners."""
+    r = subprocess.run(['curl', '-sSf', '--max-time', '40', '-H', f'Authorization: Client-ID {KEY}', '-H', 'Accept-Version: v1', API + path], capture_output=True)
+    if r.returncode:
+        sys.exit(f'Unsplash API {path.split("?")[0]}: curl exit {r.returncode} {r.stderr.decode()[:200]}')
+    return json.loads(r.stdout)
+
+
+def search_api(q):
+    res = api('/search/photos?per_page=20&orientation=landscape&content_filter=high&query=' + urllib.parse.quote(q))['results']
+    return [{'id': p['id'], 'slug': p.get('slug') or p['id'], 'base': p['urls']['raw'].split('?')[0], 'alt': p.get('alt_description') or '', 'by': p['user']['name']}
+            for p in res if free(p)]
+
+
+def probe(_):
+    """Which Unsplash hosts answer from here (status and the first bytes), to tell blocking from a missing key."""
+    for u in ['https://unsplash.com/', 'https://unsplash.com/photos/00heEp9LFP0', API + '/photos/random', 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=40']:
+        r = subprocess.run(['curl', '-s', '-o', '/tmp/probe', '-w', '%{http_code}', '--max-time', '20', u], capture_output=True, text=True)
+        body = open('/tmp/probe', 'rb').read()[:160] if os.path.exists('/tmp/probe') else b''
+        print(u, r.stdout, body)
 
 
 def search_html(q):
@@ -55,7 +83,7 @@ def search(queries):
     os.makedirs(f'{OUT}/candidates', exist_ok=True)
     found = {}
     for qi, q in enumerate(queries):
-        photos = search_html(q)[:16]
+        photos = (search_api(q) if KEY else search_html(q))[:16]
         thumbs = []
         for p in photos:
             try:
@@ -69,7 +97,7 @@ def search(queries):
             x, y = (i % cols) * cw, (i // cols) * ch
             sheet.paste(im, (x + (cw - im.width) // 2, y))
             d.rectangle([x, y + 270, x + cw, y + 300], fill='black'); d.text((x + 6, y + 278), f"{i + 1}. {p['id']}", fill='white')
-            found[p['id']] = {'query': q, 'n': i + 1, 'alt': p['alt'], 'link': 'https://unsplash.com/photos/' + p['slug']}
+            found[p['id']] = {'query': q, 'n': i + 1, 'alt': p['alt'], 'by': p.get('by', ''), 'link': 'https://unsplash.com/photos/' + p['slug']}
         slug = re.sub(r'[^a-z0-9]+', '-', q.lower()).strip('-')
         sheet.save(f'{OUT}/candidates/{qi + 1:02d}-{slug}.jpg', quality=80)
         print(f'{q}: {len(thumbs)} free photos')
@@ -80,6 +108,16 @@ def fetch(picks):
     meta = json.load(open(f'{OUT}/fetched.json')) if os.path.exists(f'{OUT}/fetched.json') else {}
     for pick in picks:
         slug, pid = pick.split('=')
+        if KEY:
+            p = api(f'/photos/{pid}')
+            if not free(p):
+                sys.exit(f'{pid} is an Unsplash+ image: not covered by the free licence')
+            api(p['links']['download_location'].replace(API, ''))  # API guideline: register the download
+            open(f'{OUT}/{slug}.jpg', 'wb').write(get(p['urls']['raw'].split('?')[0] + '?w=2400&q=85&fm=jpg&fit=max', True))
+            meta[slug] = {'id': pid, 'credit': f"{p['user']['name']} on Unsplash", 'source_url': p['links']['html'],
+                          'licence': 'Unsplash License (https://unsplash.com/license)', 'title': p.get('alt_description') or p.get('description') or ''}
+            print('fetched', slug, pid, p['user']['name'])
+            continue
         page = get(f'https://unsplash.com/photos/{pid}', text=True)
         if 'plus.unsplash.com' in (re.search(r'property="og:image" content="([^"]+)"', page) or [None, ''])[1] or 'Unsplash+ License' in page:
             sys.exit(f'{pid} is an Unsplash+ image: not covered by the free licence')
@@ -98,4 +136,4 @@ def fetch(picks):
 
 if __name__ == '__main__':
     mode, arg = sys.argv[1], sys.argv[2]
-    (search if mode == 'search' else fetch)([a.strip() for a in re.split(r'[|,]', arg) if a.strip()])
+    {'search': search, 'fetch': fetch, 'probe': probe}[mode]([a.strip() for a in re.split(r'[|,]', arg) if a.strip()])

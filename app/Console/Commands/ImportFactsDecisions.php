@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Course;
 use App\Models\ReferenceFact;
+use App\Support\FactAudit;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -118,7 +119,7 @@ class ImportFactsDecisions extends Command
                 $fact->reviewed_at = now(); // seeders never touch a reviewed fact again
                 $applied++;
                 if (! $this->option('dry-run')) {
-                    $fact->save();
+                    FactAudit::using('worksheet import '.basename((string) $this->argument('file')).' '.substr($hash, 0, 12), fn () => $fact->save());
                 }
             }
         }

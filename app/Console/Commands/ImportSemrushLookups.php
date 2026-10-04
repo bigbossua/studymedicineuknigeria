@@ -24,7 +24,16 @@ class ImportSemrushLookups extends Command
 
             return self::FAILURE;
         }
-        $rows = array_map('str_getcsv', file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (! $lines || str_starts_with((string) $lines[0], "PK\x03\x04")) {
+            $this->error('This is not a CSV file (an .xlsx export?). In Semrush choose Export → CSV.');
+
+            return self::FAILURE;
+        }
+        // Semrush offers "CSV" and "CSV semicolon"; spreadsheet re-saves may use tabs. Use whichever the header uses most.
+        $first = (string) $lines[0];
+        $delimiter = collect([',' => substr_count($first, ','), ';' => substr_count($first, ';'), "\t" => substr_count($first, "\t")])->sortDesc()->keys()->first();
+        $rows = array_map(fn ($l) => str_getcsv($l, $delimiter), $lines);
         $header = array_map(fn ($h) => trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $h)), array_shift($rows));
         if (! in_array('id', $header, true) && preg_grep('/^keyword$/i', $header)) {
             // A Semrush export as downloaded (Keyword Overview bulk analysis or Keyword Magic Tool): match its rows to the
@@ -158,17 +167,45 @@ class ImportSemrushLookups extends Command
             return null;
         };
         [$kw, $vol, $kd, $cpc, $intent] = [$col('Keyword'), $col('Volume'), $col('Keyword Difficulty') ?? $col('KD'), $col('CPC'), $col('Intent')];
+        if ($vol === null) {
+            $this->error('The export has no Volume column: export Keyword Overview (bulk analysis) or Keyword Magic Tool results.');
+
+            return null;
+        }
+        $norm = fn (string $k): string => preg_replace('/\s+/u', ' ', mb_strtolower(trim($k)));
         $found = [];
+        $conflicts = [];
         foreach ($rows as $r) {
-            $found[mb_strtolower(trim($r[$kw] ?? ''))] = $r;
+            $key = $norm((string) ($r[$kw] ?? ''));
+            if ($key === '') {
+                continue;
+            }
+            if (isset($found[$key])) {
+                // The same keyword twice (two exports pasted together): keep the first, and never pick silently between different figures.
+                if (($found[$key][$vol] ?? null) !== ($r[$vol] ?? null) || ($kd !== null && ($found[$key][$kd] ?? null) !== ($r[$kd] ?? null))) {
+                    $conflicts[$key] = true;
+                }
+
+                continue;
+            }
+            $found[$key] = $r;
+        }
+        foreach (array_keys($conflicts) as $key) {
+            unset($found[$key]);
+            $this->warn("\"{$key}\" appears more than once with different figures: not recorded. Export it once and import again.");
         }
         $sheet = array_map('str_getcsv', file(base_path((string) $this->option('sheet')), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
         $sheetHeader = array_shift($sheet);
         $out = [];
         $matched = 0;
+        $seen = [];
         foreach ($sheet as $s) {
             $row = array_combine($sheetHeader, array_pad($s, count($sheetHeader), ''));
-            $keyword = mb_strtolower(trim($row['semrush_keyword_used'] !== '' ? $row['semrush_keyword_used'] : $row['query_theme']));
+            $keyword = $norm($row['semrush_keyword_used'] !== '' ? $row['semrush_keyword_used'] : $row['query_theme']);
+            if (isset($seen[$keyword])) {
+                $this->warn("Lookup themes {$seen[$keyword]} and {$row['id']} use the same keyword \"{$keyword}\": one query, one page (fix the lookup sheet).");
+            }
+            $seen[$keyword] = $row['id'];
             $hit = $found[$keyword] ?? null;
             if ($hit) {
                 $matched++;

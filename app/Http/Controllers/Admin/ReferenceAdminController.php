@@ -18,7 +18,7 @@ class ReferenceAdminController extends Controller
     public function index(Request $request)
     {
         $status = $request->string('status')->toString() ?: ReferenceFact::VERIFY_ON_PAGE;
-        $q = ReferenceFact::with('subject')->where('verification_status', $status)->orderBy('subject_type')->orderBy('subject_id')->orderBy('key');
+        $q = ReferenceFact::with(['subject', 'history' => fn ($h) => $h->with('user:id,name')->limit(5)])->where('verification_status', $status)->orderBy('subject_type')->orderBy('subject_id')->orderBy('key');
         if ($k = $request->string('key')->toString()) {
             $q->where('key', $k);
         }

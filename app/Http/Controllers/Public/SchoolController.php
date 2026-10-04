@@ -39,7 +39,7 @@ class SchoolController extends Controller
             $q->whereHas('courses', fn ($c) => $c->medicine()->where('admissions_test', $filters['test']));
         }
         if ($filters['waec'] === 'published') {
-            $visible = (config('site.publish_unverified') || ! app()->isProduction()) ? [ReferenceFact::VERIFIED, ReferenceFact::VERIFY_ON_PAGE, ReferenceFact::REVIEW_DUE, ReferenceFact::SOURCE_CHANGED] : [ReferenceFact::VERIFIED];
+            $visible = ReferenceFact::showsUnverified() ? [ReferenceFact::VERIFIED, ReferenceFact::VERIFY_ON_PAGE, ReferenceFact::REVIEW_DUE, ReferenceFact::SOURCE_CHANGED] : [ReferenceFact::VERIFIED];
             $q->whereHas('facts', fn ($f) => $f->where('key', 'waec_neco_statement')->whereIn('verification_status', $visible));
         }
         if ($filters['route']) {

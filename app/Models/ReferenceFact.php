@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\FactAudit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ReferenceFact extends Model
@@ -32,6 +34,17 @@ class ReferenceFact extends Model
         'reviewed_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::updated(fn (ReferenceFact $fact) => FactAudit::record($fact));
+    }
+
+    /** Audit trail, newest first (fact_changes). */
+    public function history(): HasMany
+    {
+        return $this->hasMany(FactChange::class)->latest('id');
+    }
+
     public function subject(): MorphTo
     {
         return $this->morphTo();
@@ -44,7 +57,16 @@ class ReferenceFact extends Model
             return true;
         }
 
-        return (bool) config('site.publish_unverified') || ! app()->isProduction();
+        return self::showsUnverified();
+    }
+
+    /**
+     * Whether facts that are not VERIFIED may be shown: in local development and tests, or where SITE_PUBLISH_UNVERIFIED
+     * is set on purpose. Staging behaves like production, so the owner reviews exactly what would go live.
+     */
+    public static function showsUnverified(): bool
+    {
+        return (bool) config('site.publish_unverified') || app()->environment('local', 'testing');
     }
 
     public function displayValue(): ?string

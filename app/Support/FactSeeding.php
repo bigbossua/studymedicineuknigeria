@@ -29,7 +29,7 @@ final class FactSeeding
         if ($existing->reviewed_at !== null || $existing->verification_status === ReferenceFact::VERIFIED) {
             return 'kept';
         }
-        $existing->update($attrs + ['verification_status' => $status]);
+        FactAudit::using('reference sync', fn () => $existing->update($attrs + ['verification_status' => $status]));
 
         return 'updated';
     }

@@ -58,7 +58,7 @@ class University extends Model
         }
         $fact = $this->fact('gmc_status');
 
-        return ($fact ? $fact->isPublishable() : ! app()->isProduction()) ? $this->gmc_status : null;
+        return ($fact ? $fact->isPublishable() : ReferenceFact::showsUnverified()) ? $this->gmc_status : null;
     }
 
     public function primaryCourse(): ?Course

@@ -1,5 +1,5 @@
 @props(['status' => 'VERIFY-ON-PAGE', 'source' => null, 'sourceTitle' => null, 'verifiedAt' => null])
-@php $show = $status === 'VERIFIED' || config('site.publish_unverified') || ! app()->isProduction(); @endphp
+@php $show = $status === 'VERIFIED' || \App\Models\ReferenceFact::showsUnverified(); @endphp
 @if($show)
 <div {{ $attributes->merge(['class' => 'card']) }}>
     <div>{{ $slot }}</div>

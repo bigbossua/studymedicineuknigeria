@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\ReferenceFact;
 use App\Models\User;
 use App\Notifications\StaffNotification;
+use App\Support\FactAudit;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -29,6 +30,11 @@ class CheckSources extends Command
     protected $description = 'Detect changes on the official pages behind verified facts and un-verify facts whose value is no longer published';
 
     public function handle(): int
+    {
+        return FactAudit::using('source watcher', fn () => $this->check());
+    }
+
+    private function check(): int
     {
         $urls = ReferenceFact::where('verification_status', ReferenceFact::VERIFIED)->whereNotNull('source_url')->where('source_url', 'like', 'https://%')
             ->distinct()->orderBy('source_url')->limit((int) $this->option('limit'))->pluck('source_url');

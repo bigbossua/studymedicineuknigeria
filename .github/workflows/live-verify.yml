@@ -1,0 +1,59 @@
+name: Live verification (read-only)
+# After a launch or release: ops/live-verify.sh against the public site (every old URL, no fee or debug text on any
+# public page, canonicals, JSON-LD, registration and sign-in, portal and admin protection, foreign hosts, headers),
+# then the server's own state over SSH: settings that keep payment closed, migrations, and what the database holds.
+# Reads only; values of secrets are never printed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Public site
+        run: |
+          ops/live-verify.sh https://studymedicineuknigeria.com | tee live.txt; test "${PIPESTATUS[0]}" = 0
+          { echo '### Live site'; echo '```'; cat live.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Prepare SSH
+        if: always()
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Server state (payment closed, migrations, database)
+        if: always()
+        run: |
+          cat <<'REMOTE' | ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s' | tee server.txt
+          set -euo pipefail
+          cd ~/apps/smukn-production/current
+          PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
+          echo "release: $(basename "$(readlink -f .)")"
+          echo "document root: $(cat releases/.docroot 2>/dev/null || cat ../../smukn-production/releases/.docroot 2>/dev/null)"
+          $PHP artisan migrate:status --no-ansi | grep -c 'Pending' | sed 's/^/pending migrations: /' || true
+          $PHP artisan tinker --execute '
+            $s = app(App\Services\Payments\StripeService::class);
+            echo json_encode([
+              "env" => app()->environment(), "debug" => config("app.debug"), "url" => config("app.url"),
+              "registration_open" => config("site.registration_open"), "bank_transfer" => config("site.bank_transfer"),
+              "publish_unverified" => config("site.publish_unverified"), "stripe_enabled" => $s->enabled(), "payments_open" => $s->paymentsOpen(),
+              "mailer" => config("mail.default"),
+              "universities" => App\Models\University::count(), "courses" => App\Models\Course::count(),
+              "facts" => App\Models\ReferenceFact::count(), "redirects" => DB::table("redirects")->count(),
+              "users" => App\Models\User::count(), "applications" => App\Models\Application::count(),
+              "tier_prices" => App\Models\TierPrice::count(),
+            ], JSON_PRETTY_PRINT), PHP_EOL;'
+          REMOTE
+          grep -q '"payments_open": false' server.txt || { echo "::error::payment is not closed"; exit 1; }
+          grep -q '"debug": false' server.txt || { echo "::error::debug is not off"; exit 1; }
+          { echo '### Server state'; echo '```'; cat server.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

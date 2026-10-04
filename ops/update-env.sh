@@ -7,11 +7,14 @@ set -euo pipefail
 : "${TARGET:?staging|production}"
 APP=~/apps/smukn-$TARGET; ENV_FILE=$APP/shared/.env
 [ -f "$ENV_FILE" ] || { echo "no $ENV_FILE: bootstrap $TARGET first"; exit 2; }
-if [ "$TARGET" != production ]; then
-  for v in STRIPE_KEY STRIPE_SECRET; do
-    case "${!v:-}" in pk_live_*|sk_live_*|rk_live_*) echo "$v is a live Stripe key; $TARGET takes test keys only (pk_test_/sk_test_)" >&2; exit 4;; esac
-  done
-fi
+# Stripe keys must match the target's mode: staging takes test keys only, production live keys only (a test key
+# there would let a test charge pose as a real payment).
+for v in STRIPE_KEY STRIPE_SECRET; do
+  [ -n "${!v:-}" ] || continue
+  case "${!v}" in pk_live_*|sk_live_*|rk_live_*) live=1;; *) live=0;; esac
+  if [ "$TARGET" = production ] && [ "$live" = 0 ]; then echo "$v is not a live Stripe key; production takes live keys only (pk_live_/sk_live_)" >&2; exit 4; fi
+  if [ "$TARGET" != production ] && [ "$live" = 1 ]; then echo "$v is a live Stripe key; $TARGET takes test keys only (pk_test_/sk_test_)" >&2; exit 4; fi
+done
 set_key(){ # set_key NAME VALUE : replace the NAME= line or append it, value single-quoted (read literally by phpdotenv)
   local name=$1 value=$2 tmp
   case "$value" in *"'"*|*$'\n'*|*$'\r'*) echo "$name contains a single quote or a line break, which .env cannot hold safely" >&2; exit 4;; esac

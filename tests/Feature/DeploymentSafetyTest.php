@@ -134,6 +134,99 @@ class DeploymentSafetyTest extends TestCase
         }
     }
 
+    /** Runs a server script in a throwaway home with the given environment; returns [exit code, output]. */
+    private function runScript(string $script, array $env, ?callable $prepare = null): array
+    {
+        $home = sys_get_temp_dir().'/smukn-home-'.bin2hex(random_bytes(4));
+        mkdir($home.'/apps/smukn-'.($env['TARGET'] ?? 'staging').'/shared', 0777, true);
+        file_put_contents($home.'/apps/smukn-'.($env['TARGET'] ?? 'staging').'/shared/.env', "APP_ENV=x\n");
+        if ($prepare) {
+            $prepare($home);
+        }
+        $r = Process::env(['HOME' => $home, 'PATH' => getenv('PATH')] + $env)->input((string) file_get_contents(base_path($script)))->run(['bash', '-s']);
+        Process::run(['rm', '-rf', $home]);
+
+        return [$r->exitCode(), $r->output().$r->errorOutput()];
+    }
+
+    public function test_production_takes_only_live_stripe_keys_and_staging_only_test_keys(): void
+    {
+        [$code, $out] = $this->runScript('ops/update-env.sh', ['TARGET' => 'production', 'STRIPE_SECRET' => 'sk_test_abc']);
+        $this->assertSame(4, $code);
+        $this->assertStringContainsString('production takes live keys only', $out);
+
+        [$code, $out] = $this->runScript('ops/update-env.sh', ['TARGET' => 'staging', 'STRIPE_SECRET' => 'sk_live_abc']);
+        $this->assertSame(4, $code);
+        $this->assertStringContainsString('takes test keys only', $out);
+
+        [$code, $out] = $this->runScript('ops/update-env.sh', ['TARGET' => 'production', 'STRIPE_KEY' => 'pk_live_a', 'STRIPE_SECRET' => 'sk_live_b', 'STRIPE_WEBHOOK_SECRET' => 'whsec_c']);
+        $this->assertSame(0, $code, $out);
+        $this->assertStringContainsString('set STRIPE_SECRET', $out);
+        $this->assertStringNotContainsString('sk_live_b', $out, 'a secret value is never printed');
+    }
+
+    public function test_production_bootstrap_needs_the_public_url_and_real_email_and_never_switches_the_document_root(): void
+    {
+        $base = ['TARGET' => 'production', 'APP_URL' => 'https://studymedicineuknigeria.com', 'DB_DATABASE' => 'd', 'DB_USERNAME' => 'u', 'DB_PASSWORD' => 'p', 'MAIL_PASSWORD' => 'm'];
+        foreach ([
+            'needs SMUKN_MAIL_PASSWORD' => ['MAIL_PASSWORD' => ''],
+            'APP_URL must be https://studymedicineuknigeria.com' => ['APP_URL' => 'http://studymedicineuknigeria.com'],
+            'switched by Deploy to Hostinger' => ['LINK_DOCROOT' => '1', 'DOCROOT' => '~/public_html'],
+            'production takes live keys only' => ['STRIPE_SECRET' => 'sk_test_x'],
+        ] as $message => $change) {
+            [$code, $out] = $this->runScript('ops/server-bootstrap.sh', $change + $base);
+            $this->assertSame(4, $code, $message);
+            $this->assertStringContainsString($message, $out);
+        }
+    }
+
+    public function test_deploy_preflights_production_settings_and_cuts_over_with_an_automatic_way_back(): void
+    {
+        $deploy = $this->file('ops/deploy.sh');
+        foreach (['APP_ENV must be $TARGET', 'APP_DEBUG must be false', 'MAIL_MAILER must send real email', 'STRIPE_SECRET is not a live key', 'SITE_PUBLISH_UNVERIFIED must not be true', 'APP_URL must be https://studymedicineuknigeria.com'] as $check) {
+            $this->assertStringContainsString($check, $deploy);
+        }
+        // the preflight runs before the backup, migrations and the switch
+        $this->assertLessThan(strpos($deploy, 'artisan migrate --force'), strpos($deploy, 'preflight failed'));
+        // the existing site is archived and moved aside, never deleted, and restored when the smoke test fails
+        $this->assertStringContainsString('could not archive $D: refusing to switch', $deploy);
+        $this->assertStringContainsString('mv "$D" "$D.pre-smukn-$TS"', $deploy);
+        $this->assertStringContainsString('previous site restored at $D', $deploy);
+        $this->assertDoesNotMatchRegularExpression('/rm -rf "?\$D/', $deploy);
+        $this->assertStringContainsString('RESTORE_PREVIOUS_SITE', $this->file('ops/rollback.sh'));
+        $this->assertStringContainsString('CUTOVER_DOCROOT: ${{ github.event.inputs.cutover_docroot }}', $this->file('.github/workflows/deploy-hostinger.yml'));
+        $this->assertStringContainsString("target: \${{ github.event.inputs.target || 'staging' }}", $this->file('.github/workflows/deploy-hostinger.yml'), 'production deploys are reviewed too');
+    }
+
+    public function test_the_existing_site_is_backed_up_with_its_wordpress_database_before_launch(): void
+    {
+        $this->assertStringContainsString('SCOPE=site', $this->file('ops/backup.sh'));
+        $this->assertStringContainsString('parsed as text (never executed)', $this->file('ops/backup.sh'));
+        $this->assertStringContainsString('Pre-launch site backup restored', $this->file('.github/workflows/backup-hostinger.yml'));
+
+        // a static site without wp-config.php: files only, encrypted, no database step
+        $out = '';
+        [$code, $out] = $this->runScript('ops/backup.sh', ['TARGET' => 'production', 'SCOPE' => 'site', 'SITE_DOCROOT' => '~/domains/x/public_html', 'BACKUP_PASSPHRASE' => 'test-pass'], function ($home) {
+            mkdir($home.'/domains/x/public_html', 0777, true);
+            file_put_contents($home.'/domains/x/public_html/index.html', 'old site');
+        });
+        $this->assertSame(0, $code, $out);
+        $this->assertStringContainsString('wordpress database: no', $out);
+        $this->assertMatchesRegularExpression('#backup=.*/backups/offsite/smukn-production-site-\d{8}T\d{6}Z\.tar\.enc#', $out);
+    }
+
+    public function test_production_smoke_and_review_fail_on_accidental_noindex_or_a_staging_password(): void
+    {
+        $smoke = $this->file('ops/smoke.sh');
+        $this->assertStringContainsString('HSTS header missing on production', $smoke);
+        $this->assertStringContainsString('chk 301 /index.php/fees', $smoke);
+        $this->assertStringContainsString('staging gate left on?', $smoke);
+        $this->assertStringContainsString('production /fees sends X-Robots-Tag noindex', $smoke);
+        $review = $this->file('ops/qa/staging-review.cjs');
+        $this->assertStringContainsString('sitemap page is noindex on production', $review);
+        $this->assertStringContainsString("process.env.CANONICAL_ORIGIN || 'https://studymedicineuknigeria.com'", $review);
+    }
+
     public function test_settings_added_after_bootstrap_travel_on_stdin_and_staging_takes_only_test_stripe_keys(): void
     {
         $script = $this->file('ops/update-env.sh');

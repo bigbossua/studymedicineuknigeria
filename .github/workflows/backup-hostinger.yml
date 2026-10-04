@@ -18,8 +18,11 @@ on:
       scope:
         description: Scope
         type: choice
-        options: [db, full]
+        options: [db, full, site]
         default: db
+      site_docroot:
+        description: 'scope=site only: the folder the domain serves today (from the inspection report), e.g. ~/domains/studymedicineuknigeria.com/public_html'
+        required: false
 
 permissions:
   contents: read
@@ -48,6 +51,7 @@ jobs:
       HOST: ${{ vars.HOSTINGER_SSH_HOST }}
       PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
       USER: ${{ vars.HOSTINGER_SSH_USER }}
+      SITE_DOCROOT: ${{ github.event.inputs.site_docroot }}
     steps:
       - uses: actions/checkout@v7
       - name: Check configuration
@@ -61,6 +65,7 @@ jobs:
           [ -z "$KEY" ]  && missing="$missing HOSTINGER_SSH_KEY(secret)"
           [ -z "$PASSPHRASE" ] && missing="$missing BACKUP_PASSPHRASE(secret)"
           if [ -n "$missing" ]; then echo "::error::Missing repository settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1; fi
+          if [ "$SCOPE" = site ] && [ -z "$SITE_DOCROOT" ]; then echo "::error::scope=site needs site_docroot (the folder the domain serves today)"; exit 1; fi
           echo "target=$TARGET scope=$SCOPE"
       - name: Prepare SSH
         env:
@@ -77,7 +82,7 @@ jobs:
         run: |
           # The passphrase is the first stdin line (read by the remote shell into a variable), the script follows;
           # it is never on a command line, in a file, or in the log.
-          { printf '%s\n' "$BACKUP_PASSPHRASE"; cat ops/backup.sh; } | \
+          { printf '%s\n' "$BACKUP_PASSPHRASE"; printf 'SITE_DOCROOT=%q\n' "$SITE_DOCROOT"; cat ops/backup.sh; } | \
             ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" \
             "read -r BACKUP_PASSPHRASE && export BACKUP_PASSPHRASE && TARGET='$TARGET' SCOPE='$SCOPE' bash -s" | tee server.log
           grep -q '^backup=' server.log || { echo "::error::backup did not report an output file"; exit 1; }
@@ -100,7 +105,20 @@ jobs:
           # The decrypted copy lives only in this job's temp directory and is deleted at the end of the step.
           T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
           openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass env:BACKUP_PASSPHRASE -in "out/$(basename "$FILE")" | tar -xf - -C "$T"
-          DUMP=$(find "$T" -name 'database.sql.gz' | head -1); [ -n "$DUMP" ] || { echo "::error::no database dump inside the backup"; exit 1; }
+          DUMP=$(find "$T" -name 'database.sql.gz' | head -1)
+          if [ "$SCOPE" = site ]; then
+            # the existing site before launch: every file must list from the archive; a WordPress database must load
+            FILES=$(tar -tzf "$(find "$T" -name site-files.tgz | head -1)" | wc -l); [ "$FILES" -gt 0 ] || { echo "::error::site archive is empty"; exit 1; }
+            tables=0
+            if [ -n "$DUMP" ]; then
+              gzip -dc "$DUMP" | tail -1 | grep -q 'Dump completed' || { echo "::error::site database dump is incomplete"; exit 1; }
+              gzip -dc "$DUMP" | mysql -h 127.0.0.1 -uroot -prestore restore_test
+              tables=$(mysql -N -h 127.0.0.1 -uroot -prestore -e "select count(*) from information_schema.tables where table_schema='restore_test'")
+            fi
+            echo "### Pre-launch site backup restored: $FILES files, $tables database tables" >> "$GITHUB_STEP_SUMMARY"
+            echo "restore test passed: $FILES files, $tables tables"; exit 0
+          fi
+          [ -n "$DUMP" ] || { echo "::error::no database dump inside the backup"; exit 1; }
           gzip -t "$DUMP" && gzip -dc "$DUMP" | tail -1 | grep -q 'Dump completed' || { echo "::error::database dump is incomplete"; exit 1; }
           gzip -dc "$DUMP" | mysql -h 127.0.0.1 -uroot -prestore restore_test
           tables=$(mysql -N -h 127.0.0.1 -uroot -prestore -e "select count(*) from information_schema.tables where table_schema='restore_test'")
@@ -115,5 +133,5 @@ jobs:
         with:
           name: smukn-${{ env.TARGET }}-${{ env.SCOPE }}-${{ github.run_id }}
           path: out/
-          retention-days: ${{ env.SCOPE == 'full' && 28 || 14 }}
+          retention-days: ${{ env.SCOPE == 'site' && 90 || (env.SCOPE == 'full' && 28 || 14) }}
           if-no-files-found: error

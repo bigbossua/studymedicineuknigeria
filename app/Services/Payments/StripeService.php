@@ -14,12 +14,19 @@ use Stripe\StripeClient;
 
 class StripeService
 {
-    /** Card payments need a key, and outside production only a test-mode key is ever used. */
+    /**
+     * Card payments need a key of the right mode: production takes only a live key (no test charge can pose as a real
+     * payment), every other environment only a test key.
+     */
     public function enabled(): bool
     {
         $secret = (string) config('services.stripe.secret');
+        if ($secret === '') {
+            return false;
+        }
+        $live = str_starts_with($secret, 'sk_live_') || str_starts_with($secret, 'rk_live_');
 
-        return $secret !== '' && ($this->liveAllowed() || ! str_starts_with($secret, 'sk_live_'));
+        return $this->liveAllowed() ? $live : ! $live;
     }
 
     public function liveAllowed(): bool
@@ -96,8 +103,8 @@ class StripeService
             return false;
         }
 
-        if (($event->livemode ?? false) && ! $this->liveAllowed()) {
-            return false; // a live-mode event never changes anything outside production
+        if ((bool) ($event->livemode ?? false) !== $this->liveAllowed()) {
+            return false; // a live-mode event changes nothing outside production, and a test-mode event nothing in it
         }
         if ($obj instanceof Session && $payment->stripe_checkout_session_id && $obj->id !== $payment->stripe_checkout_session_id) {
             return false; // the session must be the one created for this payment

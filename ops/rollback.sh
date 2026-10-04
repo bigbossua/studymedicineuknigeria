@@ -8,6 +8,23 @@ HOST=${1:?user@host}; PORT=${2:?ssh port}; TARGET=${3:?staging|production}; SITE
 case "$TARGET" in staging|production) ;; *) echo "target must be staging or production"; exit 1;; esac
 SSH="ssh -p $PORT ${SSH_OPTS:-}"; APP="~/apps/smukn-$TARGET"
 
+# RESTORE_PREVIOUS_SITE=1: serve again the site that was live before the first launch (deploy.sh's cutover moved it
+# aside, never deleted it). The SMUKN releases and database stay in place for a later relaunch.
+if [ "${RESTORE_PREVIOUS_SITE:-0}" = 1 ]; then
+  { printf 'TARGET=%q\n' "$TARGET"; cat <<'SITE'
+set -euo pipefail
+F="$HOME/apps/smukn-$TARGET/releases/.cutover"
+[ -f "$F" ] || { echo "no recorded cutover: the document root was never switched by deploy.sh, nothing to restore"; exit 2; }
+IFS="|" read -r D OLD < "$F"
+[ -L "$D" ] || { echo "$D is not a link to a release: refusing to touch it"; exit 2; }
+[ -e "$OLD" ] || { echo "previous site folder $OLD is missing: restore it from the docroot archive in ~/backups (ops/RESTORE.md)"; exit 2; }
+rm "$D" && mv "$OLD" "$D" && mv "$F" "$F.reverted"
+echo "previous site restored at $D (the SMUKN release is still in ~/apps; deploy again with cutover_docroot to relaunch)"
+SITE
+  } | $SSH "$HOST" bash -s
+  exit 0
+fi
+
 $SSH "$HOST" bash -s <<REMOTE
 set -euo pipefail
 CUR=\$(readlink $APP/current 2>/dev/null || true); [ -n "\$CUR" ] || { echo "no current release on $TARGET"; exit 2; }

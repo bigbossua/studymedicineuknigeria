@@ -14,6 +14,7 @@ use App\Support\Totp;
 use Database\Seeders\PlatformSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use Stripe\Event;
 use Stripe\StripeClient;
 use Tests\TestCase;
 
@@ -260,6 +261,29 @@ class ServicePaymentsTest extends TestCase
         $ts = time();
         $this->call('POST', '/webhooks/stripe', [], [], [], $this->transformHeadersToServerVars(['Stripe-Signature' => "t={$ts},v1=".hash_hmac('sha256', $ts.'.'.$payload, self::SECRET), 'Content-Type' => 'application/json']), $payload)->assertOk();
         $this->assertSame('INITIATED', $p->fresh()->status);
+    }
+
+    public function test_production_takes_only_a_live_key_and_only_live_events(): void
+    {
+        $a = $this->applicationFor('T1');
+        $this->checkout($a);
+        $p = $a->payments()->first();
+        $stripe = app(StripeService::class);
+        $event = fn (bool $live) => Event::constructFrom(['id' => 'evt_mode', 'object' => 'event', 'type' => 'checkout.session.completed', 'livemode' => $live, 'data' => ['object' => $this->completed($p)]]);
+
+        $this->app['env'] = 'production';
+        try {
+            foreach (['sk_test_fake' => false, 'rk_test_fake' => false, 'sk_live_fake' => true, 'rk_live_fake' => true, '' => false] as $key => $enabled) {
+                config(['services.stripe.secret' => $key]);
+                $this->assertSame($enabled, $stripe->enabled(), $key ?: '(empty)');
+            }
+            $this->assertFalse($stripe->applyEvent($event(false)), 'a test-mode event never marks a production payment paid');
+            $this->assertSame('INITIATED', $p->fresh()->status);
+        } finally {
+            $this->app['env'] = 'testing';
+        }
+        config(['services.stripe.secret' => 'rk_live_fake']);
+        $this->assertFalse($stripe->enabled());
     }
 
     public function test_choosing_a_service_on_the_pricing_page_carries_through_sign_up_and_can_change_before_payment(): void

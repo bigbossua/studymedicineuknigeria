@@ -17,6 +17,19 @@ q(){ printf "'%s'" "${1:-}"; }
 if [ "$TARGET" = staging ] && { [ -z "${STAGING_BASIC_USER:-}" ] || [ -z "${STAGING_BASIC_PASSWORD:-}" ]; }; then
   echo "staging needs STAGING_BASIC_USER (variable) and STAGING_BASIC_PASSWORD (secret) so the site is not public" >&2; exit 4
 fi
+# production: the public address, real email and live-mode Stripe only; its document root is switched by the deploy
+# (after the release exists, with the old site restored automatically if the smoke test fails), never here
+if [ "$TARGET" = production ]; then
+  [ "$APP_URL" = https://studymedicineuknigeria.com ] || { echo "production APP_URL must be https://studymedicineuknigeria.com (got $APP_URL)" >&2; exit 4; }
+  [ -n "${MAIL_PASSWORD:-}" ] || { echo "production needs SMUKN_MAIL_PASSWORD (environment secret): verification and reset emails must be sent, not logged" >&2; exit 4; }
+  if [ "${LINK_DOCROOT:-0}" = 1 ]; then echo "production's document root is switched by Deploy to Hostinger (input cutover_docroot), after the release is in place; run bootstrap with link_docroot=false" >&2; exit 4; fi
+fi
+for v in STRIPE_KEY STRIPE_SECRET; do
+  [ -n "${!v:-}" ] || continue
+  case "${!v}" in pk_live_*|sk_live_*|rk_live_*) live=1;; *) live=0;; esac
+  if [ "$TARGET" = production ] && [ "$live" = 0 ]; then echo "$v is not a live Stripe key; production takes live keys only" >&2; exit 4; fi
+  if [ "$TARGET" != production ] && [ "$live" = 1 ]; then echo "$v is a live Stripe key; $TARGET takes test keys only" >&2; exit 4; fi
+done
 DOCROOT="${DOCROOT:-}"; DOCROOT="${DOCROOT/#\~/$HOME}"   # a quoted ~ from the workflow input is not expanded by the shell
 APP=~/apps/smukn-$TARGET; SHARED=$APP/shared
 PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done

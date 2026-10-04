@@ -10,6 +10,12 @@ on:
         default: staging
         type: choice
         options: [staging, production]
+      restore_previous_site:
+        description: 'Serve again the site that was live before the first launch (undoes the deploy cutover; the SMUKN release and database stay for a relaunch)'
+        required: true
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
 
 permissions:
   contents: read
@@ -50,6 +56,7 @@ jobs:
           USER: ${{ vars.HOSTINGER_SSH_USER }}
           SITE_URL: ${{ github.event.inputs.target == 'production' && 'https://studymedicineuknigeria.com' || vars.STAGING_URL }}
           SMOKE_AUTH: ${{ github.event.inputs.target != 'production' && vars.STAGING_BASIC_USER != '' && format('{0}:{1}', vars.STAGING_BASIC_USER, secrets.STAGING_BASIC_PASSWORD) || '' }}
+          RESTORE_PREVIOUS_SITE: ${{ github.event.inputs.restore_previous_site == 'true' && '1' || '0' }}
         run: |
           export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new}"
           ops/rollback.sh "$USER@$HOST" "$PORT" "$TARGET" "$SITE_URL"

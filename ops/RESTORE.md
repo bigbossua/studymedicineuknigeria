@@ -53,3 +53,12 @@ Daily `db` artifacts are kept 14 days, weekly `full` artifacts 28 days. Artifact
 repository's Actions storage quota; the workflow warns when a file exceeds 400 MB. Hostinger's own
 backups remain enabled as the second line. The server keeps 7 days of `db` and the 2 latest `full`
 encrypted copies in `~/backups/offsite` as a staging area only.
+
+## 5. The site that was live before the launch
+
+- **Put it back in place** (it was moved aside, not deleted): Actions → *Roll back Hostinger release* → `production`,
+  `restore_previous_site=true`. The SMUKN release and its database stay untouched for a relaunch.
+- **From the encrypted pre-launch backup** (scope `site`): decrypt as in step 2; `site-files.tgz` holds the document
+  root exactly as it was (`tar -xzf site-files.tgz -C ~/domains/studymedicineuknigeria.com/` after moving the link
+  away) and `database.sql.gz`, if present, the WordPress database (`gunzip -c database.sql.gz | mysql …` into the
+  database named in its `wp-config.php`). The deploy also keeps `~/backups/docroot-production-<time>.tgz` on the server.

@@ -11,6 +11,10 @@ on:
         default: staging
         type: choice
         options: [staging, production]
+      cutover_docroot:
+        description: 'First production launch only: the folder studymedicineuknigeria.com serves today (from the inspection report). It is archived and moved aside, then linked to the release; a failed smoke test puts it back. Leave empty afterwards.'
+        required: false
+        default: ''
   push:
     branches: [staging]
 
@@ -107,13 +111,16 @@ jobs:
           SITE_URL: ${{ (github.event.inputs.target || 'staging') == 'production' && 'https://studymedicineuknigeria.com' || vars.STAGING_URL }}
           # staging sits behind HTTP basic auth (StagingGate); the smoke test must present the credentials
           SMOKE_AUTH: ${{ (github.event.inputs.target || 'staging') != 'production' && vars.STAGING_BASIC_USER != '' && format('{0}:{1}', vars.STAGING_BASIC_USER, secrets.STAGING_BASIC_PASSWORD) || '' }}
+          CUTOVER_DOCROOT: ${{ github.event.inputs.cutover_docroot }}
         run: |
           export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new}"
           ops/deploy.sh "$USER@$HOST" "$PORT" "$TARGET" "$SITE_URL"
 
-  # Every successful staging deploy is followed by the full page review (CSP, accessibility, noindex, H1, status).
+  # Every successful deploy is followed by the full page review (CSP, accessibility, H1, status; noindex everywhere on
+  # staging, indexable sitemap pages with their own canonical on production).
   review:
     needs: deploy
-    if: ${{ (github.event.inputs.target || 'staging') == 'staging' }}
     uses: ./.github/workflows/staging-review.yml
+    with:
+      target: ${{ github.event.inputs.target || 'staging' }}
     secrets: inherit

@@ -4,6 +4,8 @@
 #
 #   SCOPE=db    -> database dump only (small; daily)
 #   SCOPE=full  -> database dump + shared/.env + storage/app/private (student documents; weekly)
+#   SCOPE=site  -> the site a domain serves today, before the first launch replaces it: every file under
+#                  SITE_DOCROOT, plus its WordPress database when a wp-config.php is found (read, never printed)
 #
 # Output: ~/backups/offsite/smukn-<target>-<scope>-<timestamp>.tar.enc (+ .sha256)
 # Encryption: AES-256-CBC, PBKDF2 200k iterations, passphrase from $BACKUP_PASSPHRASE (never written to disk).
@@ -20,9 +22,50 @@ WORK="$(mktemp -d "${TMPDIR:-/tmp}/smukn-backup.XXXXXX")"
 trap 'rm -rf "$WORK"' EXIT
 
 [ -n "${BACKUP_PASSPHRASE:-}" ] || { echo "BACKUP_PASSPHRASE is not set" >&2; exit 2; }
-[ -f "$APP/shared/.env" ] || { echo "no $APP/shared/.env – target '$TARGET' is not bootstrapped" >&2; exit 2; }
-case "$SCOPE" in db|full) ;; *) echo "SCOPE must be db or full" >&2; exit 2;; esac
+case "$SCOPE" in db|full|site) ;; *) echo "SCOPE must be db, full or site" >&2; exit 2;; esac
 mkdir -p "$OUT" "$WORK/$NAME"
+
+if [ "$SCOPE" = site ]; then
+  D="${SITE_DOCROOT:-}"; D="${D/#\~/$HOME}"; D="${D%/}"
+  [ -n "$D" ] || { echo "SITE_DOCROOT is required for SCOPE=site (the folder the domain serves, from the inspection report)" >&2; exit 2; }
+  [ -e "$D" ] || { echo "$D does not exist" >&2; exit 2; }
+  if [ -L "$D" ] && [ "$(readlink "$D")" = "$APP/current/public" ]; then echo "$D already serves the SMUKN release: use SCOPE=full" >&2; exit 2; fi
+  tar -C "$(dirname "$D")" -czf "$WORK/$NAME/site-files.tgz" "$(basename "$D")"
+  FILES=$(tar -tzf "$WORK/$NAME/site-files.tgz" | wc -l)
+  WP=no
+  if [ -f "$D/wp-config.php" ]; then
+    WP=yes
+    command -v mysqldump >/dev/null || { echo "mysqldump not found on this server" >&2; exit 3; }
+    CNF="$WORK/my.cnf"; umask 077
+    # wp-config.php is parsed as text (never executed); the credentials go straight into a private defaults file
+    php -r '
+      $c = file_get_contents($argv[1]); $v = [];
+      foreach (["NAME", "USER", "PASSWORD", "HOST"] as $k) {
+        if (preg_match("/define\\(\\s*[\x27\"]DB_".$k."[\x27\"]\\s*,\\s*([\x27\"])(.*?)\\1\\s*\\)/s", $c, $m)) { $v[$k] = stripslashes($m[2]); }
+      }
+      if (! isset($v["NAME"], $v["USER"])) { fwrite(STDERR, "wp-config.php: DB_NAME/DB_USER not found\n"); exit(1); }
+      [$host, $port] = array_pad(explode(":", $v["HOST"] ?? "localhost", 2), 2, "3306");
+      $esc = fn ($s) => "\"".addcslashes($s, "\\\"")."\"";
+      file_put_contents($argv[2], "[client]\nhost=".$esc($host)."\nport=".(int) $port."\nuser=".$esc($v["USER"])."\npassword=".$esc($v["PASSWORD"] ?? "")."\n");
+      file_put_contents($argv[3], $v["NAME"]);
+    ' "$D/wp-config.php" "$CNF" "$WORK/dbname"
+    mysqldump --defaults-extra-file="$CNF" --single-transaction --quick --routines --triggers --no-tablespaces "$(cat "$WORK/dbname")" | gzip -6 > "$WORK/$NAME/database.sql.gz"
+    rm -f "$CNF"
+    gzip -dc "$WORK/$NAME/database.sql.gz" | tail -1 | grep -q 'Dump completed' || { echo "WordPress database dump is incomplete" >&2; exit 3; }
+  fi
+  {
+    echo "name=$NAME"; echo "created_utc=$TS"; echo "target=$TARGET"; echo "scope=site"; echo "host=$(hostname)"
+    echo "docroot=$D"; echo "files=$FILES"; echo "wordpress=$WP"; echo "cipher=aes-256-cbc pbkdf2 iter=200000 salted"
+    (cd "$WORK/$NAME" && ls -l --time-style=+%Y-%m-%dT%H:%M:%SZ)
+  } > "$WORK/$NAME/MANIFEST.txt"
+  tar -C "$WORK" -cf - "$NAME" | openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass env:BACKUP_PASSPHRASE -out "$OUT/$NAME.tar.enc"
+  ( cd "$OUT" && sha256sum "$NAME.tar.enc" > "$NAME.tar.enc.sha256" )
+  chmod 600 "$OUT/$NAME.tar.enc" "$OUT/$NAME.tar.enc.sha256"
+  echo "site backup: $FILES entries from $D, wordpress database: $WP"   # pre-launch copies are never pruned here
+  echo "backup=$OUT/$NAME.tar.enc"; echo "size=$(stat -c %s "$OUT/$NAME.tar.enc")"; cat "$OUT/$NAME.tar.enc.sha256"
+  exit 0
+fi
+[ -f "$APP/shared/.env" ] || { echo "no $APP/shared/.env – target '$TARGET' is not bootstrapped" >&2; exit 2; }
 
 envval() { (grep -E "^$1=" "$APP/shared/.env" || true) | head -1 | cut -d= -f2- | sed -E -e "s/^'(.*)'\$/\\1/" -e 's/^"(.*)"$/\1/'; }
 DB_CONNECTION="$(envval DB_CONNECTION)"; DB_HOST="$(envval DB_HOST)"; DB_PORT="$(envval DB_PORT)"

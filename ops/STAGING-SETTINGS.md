@@ -68,3 +68,46 @@ sent, and registration still works; card payments stay disabled until the Stripe
 7. Owner reviews `https://staging.studymedicineuknigeria.com` (staging password prompt).
 8. Production only after the owner's approval: backup → bootstrap production → deploy production (the required
    reviewer approves each run).
+
+## 4. Production launch (after the staging review)
+
+Production is refused by the scripts unless all of this is true, so nothing half-configured can go live: `APP_ENV=production`,
+`APP_DEBUG=false`, `APP_URL=https://studymedicineuknigeria.com`, real email (`MAIL_MAILER=smtp` with a password), live
+Stripe keys only (test keys are refused in production, live keys on staging), unverified facts hidden, and a
+successful staging deploy of the same commit.
+
+**Owner inputs, all in GitHub → Settings → Environments → `production` → secrets** (typed there, never in chat):
+
+| Name | Value from |
+|---|---|
+| `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` | the production database in hPanel → Databases (a new, empty one; never the old site's database) |
+| `SMUKN_MAIL_PASSWORD` | the password of the mailbox `info@studymedicineuknigeria.com` (hPanel → Emails) |
+| `STRIPE_KEY`, `STRIPE_SECRET` | Stripe Dashboard in **live mode** → Developers → API keys: `pk_live_…` and `sk_live_…` (a restricted `rk_live_…` key with Checkout Sessions write access also works) |
+| `STRIPE_WEBHOOK_SECRET` | Stripe (live mode) → Developers → Webhooks → Add endpoint `https://studymedicineuknigeria.com/webhooks/stripe`, the six events listed in section 2 → reveal the signing secret `whsec_…` |
+| Required reviewers | protection rule on `production` (yourself) |
+
+Stripe prices need no setup: Checkout is created from the service records (T1 £125, T2 £695, T3 £1,295, GBP), so the
+website price and the charge are always the same number.
+
+**Sequence (Claude runs each step; you approve every production run as its required reviewer):**
+1. *Diagnose Actions settings* → every production row PRESENT, Stripe mode "live".
+2. *Inspect Hostinger (read-only)* → what `studymedicineuknigeria.com` serves today (folder, WordPress or static, database).
+3. *Backup Hostinger* (`production`, scope `site`, `site_docroot` = that folder) → the existing site's files and, if it is
+   WordPress, its database, encrypted, downloaded, decrypted and restored into a throwaway database on the runner.
+4. *Deploy to Hostinger* (`staging`) of the release commit → smoke and full page review on staging.
+5. *Bootstrap Hostinger target* (`production`, `app_url` = `https://studymedicineuknigeria.com`, `link_docroot=false`).
+6. *Deploy to Hostinger* (`production`, `cutover_docroot` = the folder from step 2) → database backup, migrations,
+   reference sync, release switch, then the folder is archived to `~/backups`, moved aside (never deleted) and
+   linked to the release; the production smoke test runs (HTTPS, canonical host, no noindex, HSTS, CSP, no exposed
+   files, no debug output, no staging password); **if it fails, the old site is put back automatically**. The production
+   page review follows (every sitemap page indexable with its own https canonical; CSP; accessibility).
+7. First admin: you register at the live site, confirm your email, then *Grant account role* (`production`, your
+   email, `admin`, `verify_email=false`); your first admin sign-in sets up the authenticator app.
+8. *Backup Hostinger* (`production`, `full`) → first backup of the live database, `.env` and documents, restore-tested.
+9. Payment check, only with your agreement: you pay the smallest service (T1, £125) with your own card, we confirm
+   the webhook marks it paid and the amounts match, and you refund it in the Stripe Dashboard (the refund then shows
+   in the admin). Stripe keeps its processing fee on a refunded payment. Without this, the first real student
+   payment is the first live one.
+
+To undo: *Roll back Hostinger release* (`production`) returns to the previous release (code only; the database is
+never restored automatically), or with `restore_previous_site=true` serves the old site again exactly as it was.

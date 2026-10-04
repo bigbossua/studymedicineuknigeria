@@ -259,6 +259,14 @@ class DeploymentSafetyTest extends TestCase
         $workflow = $this->file('.github/workflows/update-env-hostinger.yml');
         $this->assertStringContainsString("printf 'export %s=%q\\n'", $workflow);
         $this->assertStringContainsString("'bash -s'", $workflow);
+        // every input is unset before the config cache is built: an empty exported variable would beat the .env value
+        $unset = strpos($script, 'unset STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD');
+        $this->assertNotFalse($unset);
+        $this->assertLessThan(strpos($script, 'artisan config:cache'), $unset);
+        preg_match("/for v in ([A-Z_ ]+); do printf 'export/", $workflow, $m);
+        foreach (array_diff(explode(' ', trim($m[1] ?? '')), ['TARGET']) as $v) {
+            $this->assertMatchesRegularExpression('/^unset .*\\b'.$v.'\\b/m', $script, "$v is exported by the workflow but not unset before config:cache");
+        }
     }
 
     public function test_the_no_staging_launch_rehearses_backs_up_and_waits_for_approval_before_touching_the_site(): void

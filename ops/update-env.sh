@@ -37,10 +37,15 @@ done
 [ -n "${MAIL_PASSWORD:-}" ] && set_key MAIL_MAILER smtp
 [ "$changed" = 1 ] || { echo "nothing to set (all inputs empty)"; exit 0; }
 chmod 600 "$ENV_FILE"
+# The inputs arrive as exported variables, the unused ones empty. Laravel lets an existing environment variable win over
+# .env even when it is empty, so they must be gone before the cache is built: an empty STRIPE_WEBHOOK_SECRET here once
+# cached "no webhook secret" over the value another run had just written to .env.
+notify=${STRIPE_SECRET:+1}
+unset STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_REGISTRATION_OPEN SITE_BANK_TRANSFER SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION
 if [ -d "$APP/current" ]; then
   PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
   [ -n "$PHP" ] || { echo "no PHP 8.3+ command-line binary found"; exit 3; }
   (cd "$APP/current" && $PHP artisan config:cache >/dev/null && echo "config cache rebuilt")
   # students who chose a service while payment was closed are told once that they can now pay
-  if [ -n "${STRIPE_SECRET:-}" ]; then (cd "$APP/current" && $PHP artisan smukn:payments-open-notify) || echo "warn: could not notify waiting students"; fi
+  if [ -n "${notify:-}" ]; then (cd "$APP/current" && $PHP artisan smukn:payments-open-notify) || echo "warn: could not notify waiting students"; fi
 fi

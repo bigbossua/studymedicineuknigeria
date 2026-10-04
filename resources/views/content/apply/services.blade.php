@@ -21,5 +21,6 @@
         <h2>Payment</h2>
         <p>Card payments are taken securely by Stripe in pounds sterling; we never see your card details. If your card is declined for international payments, bank transfer is available. Receipts are issued automatically.</p>
     </section>
+    <x-cta-band class="mt-12" title="Not sure which service fits?" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">Start with the eligibility check: seven questions, no account needed. It shows which published routes your qualifications appear to open before you choose a service.</x-cta-band>
 </article>
 </x-layouts.public>

@@ -54,8 +54,9 @@
                     <li class="flex justify-between gap-3"><span>Not yet located</span><span class="font-semibold">{{ number_format($counts['NOT_FOUND'] ?? 0) }}</span></li>
                 </ul>
                 <p class="hint mt-3">Live counts from our reference database. Unverified facts are not shown to readers.</p></div>
-            <div class="card"><p class="eyebrow mb-2">Related</p><ul class="text-[0.9375rem] space-y-2"><li><a href="{{ route('status') }}">Our status: independence and agreements</a></li><li><a href="{{ route('schools.index') }}">Medical school directory</a></li><li><a href="{{ route('legal.privacy') }}">Privacy notice</a></li></ul></div>
+            <div class="card"><p class="eyebrow mb-2">Related</p><ul class="text-[0.9375rem] space-y-2"><li><a href="{{ route('about') }}">About us: who checks the sources</a></li><li><a href="{{ route('status') }}">Our status: independence and agreements</a></li><li><a href="{{ route('schools.index') }}">Medical school directory</a></li><li><a href="{{ route('legal.privacy') }}">Privacy notice</a></li></ul></div>
         </aside>
     </div>
+    <x-cta-band class="mt-12" title="Use the verified requirements on your own case" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">The eligibility check applies the published rules to your qualifications: seven questions, no account needed.</x-cta-band>
 </article>
 </x-layouts.public>

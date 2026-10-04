@@ -18,5 +18,6 @@
         </div>
         <aside class="lg:col-span-4"><div class="card"><p class="eyebrow mb-3">Our status</p><p class="text-[0.9375rem] text-ink-700">{{ config('site.status_statement') }}</p><a href="{{ route('status') }}" class="btn btn-tertiary mt-3">Read the full statement</a></div></aside>
     </div>
+    <x-cta-band class="mt-12" title="See where you stand" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">The eligibility check compares your qualifications with what UK medical schools publish: seven questions, no account needed.</x-cta-band>
 </article>
 </x-layouts.public>

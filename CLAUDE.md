@@ -15,13 +15,14 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 ```bash
 composer install && npm ci && cp .env.example .env && php artisan key:generate && php artisan migrate --seed
 npm run build && php artisan serve --host=127.0.0.1 --port=8000     # stop with: fuser -k 8000/tcp
-vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 145 tests; run before every commit
+vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 148 tests; run before every commit
 php artisan smukn:og          # regenerate Open Graph cards after changing a public title
 php artisan smukn:images      # build photo derivatives from brand/photos
 php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification round trip (data/verification/README.md)
 php artisan smukn:reference-sync   # repository reference data into this database (deploy runs it; never touches reviewed facts)
 php artisan smukn:sources-check --dry-run   # official-page change watcher (nightly on the server)
-node ops/qa/seo-crawl.cjs     # see ops/qa/README.md for the browser QA scripts
+node ops/qa/seo-crawl.cjs     # see ops/qa/README.md for the browser QA scripts (journey.cjs, staff-journey.cjs)
+python3 ops/seo/page-audit.py # regenerate docs/seo/PAGE-AUDIT.md (every indexable page: query, intent, links, routes to eligibility/apply)
 ```
 Local demo accounts: `student@example.test` / `Testpass12345`, `admin@example.test` / `Adminpass12345` (admin has TOTP enrolled; compute codes with `App\Support\Totp::code($secret)` in tinker).
 

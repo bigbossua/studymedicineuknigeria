@@ -41,5 +41,6 @@
         <p class="text-[0.8125rem] text-ink-500">This page was last updated on 3 October 2026.</p>
     </div>
     <x-related :items="[['label' => 'About us', 'url' => route('about'), 'description' => 'Who we are and how we work.'], ['label' => 'Application service terms', 'url' => route('legal.application-terms'), 'description' => 'What the paid service does and does not include.'], ['label' => 'Contact', 'url' => route('contact'), 'description' => 'How to reach us and what to include.'], ['label' => 'How we verify', 'url' => route('verify'), 'description' => 'Source hierarchy, labels and review cadence.'], ['label' => 'Study Medicine in the UK from Nigeria', 'url' => route('medicine.nigeria'), 'description' => 'The guide, start to finish.']]" />
+    <x-cta-band class="mt-12" title="Check your route on published requirements" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">Independent means we start from what each medical school publishes. The eligibility check applies those rules to your qualifications: seven questions, no account needed.</x-cta-band>
 </article>
 </x-layouts.public>

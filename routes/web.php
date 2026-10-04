@@ -75,7 +75,7 @@ Route::get('faq', [ContentController::class, 'faq'])->name('faq.index')->default
 Route::get('apply-online', [ContentController::class, 'apply'])->name('apply.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 Route::get('apply-online/services', [ContentController::class, 'services'])->name('apply.services')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 Route::get('apply-online/eligibility', [ContentController::class, 'eligibility'])->name('apply.eligibility')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
-Route::post('apply-online/eligibility', [ContentController::class, 'eligibilitySubmit'])->middleware('throttle:10,10')->name('apply.eligibility.submit');
+Route::post('apply-online/eligibility', [ContentController::class, 'eligibilitySubmit'])->middleware('throttle:10,10,apply.eligibility.submit')->name('apply.eligibility.submit');
 
 // Organisation & legal
 Route::get('about', [ContentController::class, 'about'])->name('about')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'yearly']);
@@ -98,12 +98,12 @@ Route::get('login', [AuthController::class, 'showLogin'])->middleware('guest')->
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:10,1');
-    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:20,1');
+    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:10,1,register');
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:20,1,login');
     Route::get('password/forgot', [AuthController::class, 'showForgot'])->name('password.request');
-    Route::post('password/email', [AuthController::class, 'sendReset'])->middleware('throttle:5,1')->name('password.email');
+    Route::post('password/email', [AuthController::class, 'sendReset'])->middleware('throttle:5,1,password.email')->name('password.email');
     Route::get('password/reset/{token}', [AuthController::class, 'showReset'])->name('password.reset');
-    Route::post('password/reset', [AuthController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
+    Route::post('password/reset', [AuthController::class, 'reset'])->middleware('throttle:5,1,password.update')->name('password.update');
 });
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::middleware(['auth', 'auth.session'])->group(function () {
@@ -113,14 +113,14 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
         return redirect()->route('portal.dashboard')->with('status', 'Your email address is verified.');
     })->middleware('signed')->name('verification.verify');
-    Route::post('email/verification-notification', [AuthController::class, 'resendVerification'])->middleware('throttle:6,1')->name('verification.send');
+    Route::post('email/verification-notification', [AuthController::class, 'resendVerification'])->middleware('throttle:6,1,verification.send')->name('verification.send');
 
     Route::prefix('two-factor')->name('two-factor.')->group(function () {
         Route::get('setup', [TwoFactorController::class, 'setup'])->name('setup');
-        Route::post('setup', [TwoFactorController::class, 'confirm'])->middleware('throttle:10,1')->name('confirm');
+        Route::post('setup', [TwoFactorController::class, 'confirm'])->middleware('throttle:10,1,confirm')->name('confirm');
         Route::get('recovery-codes', [TwoFactorController::class, 'recoveryCodes'])->name('recovery-codes');
         Route::get('challenge', [TwoFactorController::class, 'challenge'])->name('challenge');
-        Route::post('challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:10,1')->name('verify');
+        Route::post('challenge', [TwoFactorController::class, 'verify'])->middleware('throttle:10,1,verify')->name('verify');
         Route::post('disable', [TwoFactorController::class, 'disable'])->name('disable');
     });
 });
@@ -132,12 +132,12 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 */
 Route::middleware(['auth', 'auth.session', 'verified', '2fa'])->prefix('portal')->name('portal.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('start', [DashboardController::class, 'start'])->middleware('throttle:10,10')->name('start');
+    Route::post('start', [DashboardController::class, 'start'])->middleware('throttle:10,10,start')->name('start');
     Route::get('profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('profile/password', [ProfileController::class, 'password'])->middleware('throttle:5,1')->name('profile.password');
+    Route::put('profile/password', [ProfileController::class, 'password'])->middleware('throttle:5,1,profile.password')->name('profile.password');
     Route::get('profile/export', [ProfileController::class, 'export'])->name('profile.export');
-    Route::post('profile/delete', [ProfileController::class, 'requestDeletion'])->middleware('throttle:3,10')->name('profile.delete');
+    Route::post('profile/delete', [ProfileController::class, 'requestDeletion'])->middleware('throttle:3,10,profile.delete')->name('profile.delete');
 
     Route::prefix('{application}')->group(function () {
         Route::get('application', [ApplicationController::class, 'index'])->name('application.index');
@@ -146,19 +146,19 @@ Route::middleware(['auth', 'auth.session', 'verified', '2fa'])->prefix('portal')
         Route::post('withdraw', [ApplicationController::class, 'withdraw'])->name('application.withdraw');
         Route::get('documents', [DocumentController::class, 'index'])->name('documents.index');
         Route::get('documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
-        Route::post('documents/{document}', [DocumentController::class, 'upload'])->middleware('throttle:20,10')->name('documents.upload');
+        Route::post('documents/{document}', [DocumentController::class, 'upload'])->middleware('throttle:20,10,documents.upload')->name('documents.upload');
         Route::get('documents/{document}/v/{version}', [DocumentController::class, 'download'])->name('documents.download');
         Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
-        Route::post('payments/checkout', [PaymentController::class, 'checkout'])->middleware('throttle:10,10')->name('payments.checkout');
+        Route::post('payments/checkout', [PaymentController::class, 'checkout'])->middleware('throttle:10,10,payments.checkout')->name('payments.checkout');
         Route::get('payments/return', [PaymentController::class, 'return'])->name('payments.return');
-        Route::post('payments/manual', [PaymentController::class, 'manualTransfer'])->middleware('throttle:10,10')->name('payments.manual');
+        Route::post('payments/manual', [PaymentController::class, 'manualTransfer'])->middleware('throttle:10,10,payments.manual')->name('payments.manual');
         Route::get('approve', [ApprovalController::class, 'show'])->name('approve.show');
         Route::post('approve', [ApprovalController::class, 'approve'])->name('approve.store');
         Route::post('approve/changes', [ApprovalController::class, 'requestChanges'])->name('approve.changes');
         Route::get('submissions', [SubmissionController::class, 'index'])->name('submissions.index');
         Route::post('submissions/{submission}/recorded', [SubmissionController::class, 'recordSubmitted'])->name('submissions.recorded');
         Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
-        Route::post('messages', [MessageController::class, 'store'])->middleware('throttle:30,10')->name('messages.store');
+        Route::post('messages', [MessageController::class, 'store'])->middleware('throttle:30,10,messages.store')->name('messages.store');
     });
 });
 

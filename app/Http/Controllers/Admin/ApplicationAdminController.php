@@ -125,6 +125,10 @@ class ApplicationAdminController extends Controller
     {
         abort_unless($document->application_id === $application->id, 404);
         $data = $request->validate(['decision' => 'required|in:accept,reject,replace,waive', 'reason' => 'required_unless:decision,accept|nullable|string|max:500']);
+        if ($data['decision'] === 'accept' && ! $document->currentVersion) {
+            // An accepted document goes into the package the student approves; it must be a file someone reviewed.
+            return back()->with('error', 'Nothing has been uploaded for "'.$document->title.'", so it cannot be accepted. Waive it if it is not needed.');
+        }
         $to = match ($data['decision']) {
             'accept' => DocumentStatus::ACCEPTED, 'reject' => DocumentStatus::REJECTED, 'replace' => DocumentStatus::REPLACEMENT_REQUIRED, 'waive' => DocumentStatus::NOT_REQUIRED
         };
@@ -158,7 +162,9 @@ class ApplicationAdminController extends Controller
             $auth->update(['revoked_at' => now(), 'revoked_reason' => 'Submission target changed by staff']);
             $application->record('authorisation.invalidated', ['authorisation_id' => $auth->id], $request->user()->id);
         }
-        $application->submissions()->where('status', 'PROPOSED')->update(['status' => 'CLOSED']);
+        foreach ($application->submissions()->where('status', 'PROPOSED')->get() as $superseded) {
+            $superseded->transition('CLOSED', $request->user()->id, 'Replaced by a new proposal');
+        }
         $sub = $application->submissions()->create(['university_id' => $data['university_id'] ?? null, 'course_id' => $data['course_id'] ?? null, 'intake' => $data['intake'], 'route_code' => $data['route_code'], 'notes' => $data['notes'] ?? null, 'status' => 'PROPOSED']);
         $sub->events()->create(['from_status' => null, 'to_status' => 'PROPOSED', 'actor_user_id' => $request->user()->id, 'note' => 'Proposed by staff']);
         foreach (array_values(array_filter(array_map('trim', explode("\n", $data['choices'] ?? '')))) as $i => $label) {

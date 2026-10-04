@@ -29,5 +29,6 @@
             <p>If you represent a medical school and a statement on this site about your institution is out of date, email us with the current source URL and we will re-verify it and show a new last-verified date. See <a href="{{ route('status') }}">Our status</a> for how we work and what we are not.</p>
         </section>
     </div>
+    <x-cta-band class="mt-12" title="Before you write: check your route" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">Most first questions are answered by the eligibility check (seven questions, no account needed). Include its result when you contact us and we can answer faster.</x-cta-band>
 </article>
 </x-layouts.public>

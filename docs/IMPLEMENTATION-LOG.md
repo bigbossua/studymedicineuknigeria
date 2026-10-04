@@ -275,6 +275,16 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Healthcare**: `docs/research/14-subject-scorecard.md` (generated) shows per subject the evidence the promotion rule needs and what is missing; no subject promoted (Dentistry, Nursing, Pharmacy have good but unverified evidence).
 - **Tests**: 132.
 
+## Stage 39: the path to real staging (cycle 34)
+
+- **MySQL rehearsal** (`ops/reports/deployment-rehearsal-2026-10-04.md`): bootstrap, verified backup, deploy, smoke, automatic and manual rollback, off-site backup and restore on MariaDB with hostile secrets. Fixed: reference data overflowing MySQL columns (bare UCAS codes on course rows, unclear years kept verbatim in notes, profession research columns widened, `value_number` cast to float), secrets on the remote command line and unparsable `.env` values (stdin, single-quoted literals, phpdotenv reader `ops/env-shell.php`, `MYSQL_PWD`), `mysqldump` without `--no-tablespaces`, releases carrying the dev SQLite database, `public/hot` and dev packages, rollback to never-live releases (`releases/.history`, `ops/rollback.sh`, rollback workflow), backups held by the production approval rule.
+- **Gates**: production refuses without a required reviewer and without a staging success for the commit; staging refuses without `STAGING_URL` and the basic-auth gate; smoke fails on exposed files, debug output, an open staging site and wrong robots rules; strict host keys once pinned; CI runs the suite on MySQL 8 and proves the smoke gate both ways; diagnose reports the reviewer rule. Owner checklist: `ops/STAGING-SETTINGS.md`.
+- **Verification engine**: `fact_changes` audit trail written by the model for every channel, shown per fact in the admin queue; staging publishes like production (`ReferenceFact::showsUnverified()`).
+- **Semrush**: semicolon CSV, xlsx refusal, spacing-insensitive matching, conflicting duplicates never recorded, duplicate themes reported; the duplicate lookup theme replaced by A01; a test holds the 50-keyword list to distinct keywords mapped to live register rows.
+- **Pages**: generated indexable-page audit (`ops/seo/page-audit.py` → `docs/seo/PAGE-AUDIT.md`); five pages gained an in-body route to eligibility and Apply Online; a test holds every non-legal indexable page to it.
+- **Journeys**: `ops/qa/staff-journey.cjs` (admin review → proposal → student approval → submitted → tracking). Fixed: one throttle counter shared by every form (per-route keys now), accepting a document with no upload, a replaced proposal closing without an event.
+- **Tests**: 148, on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

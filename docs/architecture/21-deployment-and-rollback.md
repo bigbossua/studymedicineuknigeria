@@ -32,7 +32,7 @@ Rollback = repoint `current` to the previous release and clear caches. Takes sec
 1. **Backup existing site**: `tar czf ~/backups/public_html-<date>.tgz ~/domains/*/public_html` and `mysqldump` of any existing database to `~/backups/`. Download a copy off-server. Record checksums in `ops/reports/`.
 2. **Build artefact** (CI or local): `composer install --no-dev --optimize-autoloader`, `npm ci && npm run build`. Upload with `rsync -az --delete --exclude .env --exclude storage` into a new `releases/<timestamp>/`.
 3. **Shared links**: symlink `releases/<ts>/storage` → `shared/storage`; copy `.env.production.example` → `shared/.env` and fill secrets (APP_KEY, DB, MAIL, STRIPE, SITE_*); symlink `.env`.
-4. **Database**: create MySQL database and user in hPanel; `php artisan migrate --force`; `php artisan db:seed --class=ReferenceDataSeeder` (imports `data/*.json` as VERIFY-ON-PAGE records).
+4. **Database**: create MySQL database and user in hPanel; `php artisan migrate --force`; `php artisan smukn:reference-sync` (medical schools, service tiers and checklist rules, topic facts, the healthcare taxonomy and allied course facts, all as VERIFY-ON-PAGE; `ops/deploy.sh` runs both on every deploy, and the sync never touches a reviewed fact or an owner-set price).
 5. **Caches**: `php artisan config:cache route:cache view:cache event:cache`; `php artisan storage:link` is **not** used (no public document URLs).
 6. **Cron** (hPanel → Cron Jobs): `* * * * * cd ~/apps/smukn/current && php artisan schedule:run >> /dev/null 2>&1`. The scheduler runs `queue:work --stop-when-empty` every minute on shared hosting.
 7. **Switch**: `ln -sfn releases/<ts> current`. Verify `https://studymedicineuknigeria.com/up` returns 200.

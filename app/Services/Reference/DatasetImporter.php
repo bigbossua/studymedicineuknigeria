@@ -5,6 +5,7 @@ namespace App\Services\Reference;
 use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\University;
+use App\Support\FactSeeding;
 use Illuminate\Support\Str;
 
 /**
@@ -121,21 +122,13 @@ class DatasetImporter
         }
 
         $match = ['key' => $key, 'academic_year' => $extra['academic_year'] ?? null, 'qualification_code' => $extra['qualification_code'] ?? null];
-        $existing = $subject->facts()->where($match)->first();
-        $payload = $attrs + $match + [
+        $payload = $attrs + [
             'applies_to' => $extra['applies_to'] ?? 'international',
             'source_url' => $source,
             'source_type' => $sourceType,
             'notes' => $extra['notes'] ?? null,
         ];
-        if ($existing) {
-            if ($existing->verification_status !== ReferenceFact::VERIFIED) {
-                $payload['verification_status'] = $status;
-            }
-            $existing->update($payload);
-        } else {
-            $subject->facts()->create($payload + ['verification_status' => $status]);
-        }
+        FactSeeding::upsert($subject, $match, $payload, $status);
     }
 
     private function importSchools(string $file): void

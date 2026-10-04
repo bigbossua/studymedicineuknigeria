@@ -28,6 +28,7 @@ class ReferenceFact extends Model
         'value_json' => 'array',
         'verified_at' => 'date',
         'review_due_at' => 'date',
+        'reviewed_at' => 'datetime',
     ];
 
     public function subject(): MorphTo

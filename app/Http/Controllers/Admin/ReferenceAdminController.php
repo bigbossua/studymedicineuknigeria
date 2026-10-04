@@ -38,7 +38,13 @@ class ReferenceAdminController extends Controller
         if (($data['decision'] === 'verify') && ! $fact->source_url) {
             return back()->with('error', 'A fact cannot be verified without an official source URL.');
         }
+        // Editing the value, source or year of a verified fact makes it unverified again: the new wording has not been read
+        // on the page. Only an explicit "verify" keeps it published.
+        if ($data['decision'] === 'save' && $fact->verification_status === ReferenceFact::VERIFIED && $fact->isDirty(['value_text', 'value_number', 'academic_year', 'source_url'])) {
+            $fact->verification_status = ReferenceFact::VERIFY_ON_PAGE;
+        }
         $this->applyDecision($fact, $data['decision'], $request->user()->id);
+        $fact->reviewed_at = now();
         $fact->save();
         AdminAction::log('fact.'.$data['decision'], $fact, $data);
 
@@ -97,6 +103,7 @@ class ReferenceAdminController extends Controller
         $skipped = 0;
         ReferenceFact::whereIn('id', $data['fact_ids'])->get()->each(function (ReferenceFact $fact) use ($data, $request, &$done, &$skipped) {
             if ($this->applyDecision($fact, $data['decision'], $request->user()->id)) {
+                $fact->reviewed_at = now();
                 $fact->save();
                 $done++;
             } else {

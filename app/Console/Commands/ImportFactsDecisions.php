@@ -115,6 +115,7 @@ class ImportFactsDecisions extends Command
                 $fact->notes = trim(($fact->notes ? $fact->notes.' ' : '')."[Review {$date}: {$note}]");
             }
             if ($fact->isDirty()) {
+                $fact->reviewed_at = now(); // seeders never touch a reviewed fact again
                 $applied++;
                 if (! $this->option('dry-run')) {
                     $fact->save();

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\University;
+use App\Support\FactSeeding;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use RuntimeException;
@@ -39,13 +40,7 @@ class HealthcareCoursesSeeder extends Seeder
             foreach ($c['facts'] as $f) {
                 $attrs = ['value_text' => $f['text'] ?? null, 'value_number' => $f['number'] ?? null, 'source_url' => $f['source'], 'source_type' => 'official',
                     'applies_to' => 'international', 'notes' => trim('Research 2026-10-04 (search snippet of the official page). '.($f['notes'] ?? ''))];
-                $existing = $course->facts()->where('key', $f['key'])->where('academic_year', $f['year'] ?? null)->first();
-                if ($existing?->verification_status === ReferenceFact::VERIFIED) {
-                    continue;
-                }
-                $existing
-                    ? $existing->update($attrs)
-                    : $course->facts()->create($attrs + ['key' => $f['key'], 'academic_year' => $f['year'] ?? null, 'verification_status' => ReferenceFact::VERIFY_ON_PAGE]);
+                FactSeeding::upsert($course, ['key' => $f['key'], 'academic_year' => $f['year'] ?? null], $attrs, ReferenceFact::VERIFY_ON_PAGE);
             }
         }
     }

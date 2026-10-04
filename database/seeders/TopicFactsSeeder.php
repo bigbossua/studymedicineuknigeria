@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\ReferenceFact;
 use App\Models\Topic;
+use App\Support\FactSeeding;
 use Illuminate\Database\Seeder;
 
 /**
@@ -86,18 +87,8 @@ class TopicFactsSeeder extends Seeder
         foreach ($topics as [$slug, $title, $cycle, $facts]) {
             $t = Topic::updateOrCreate(['slug' => $slug], ['title' => $title, 'cycle' => $cycle]);
             foreach ($facts as [$key, $type, $value, $src, $status, $notes]) {
-                $existing = $t->facts()->where('key', $key)->first();
                 $attrs = ['value_text' => $type === 'text' ? $value : null, 'value_number' => $type === 'number' ? $value : null, 'source_url' => $src, 'source_type' => 'official', 'applies_to' => 'international', 'academic_year' => $cycle, 'notes' => $notes];
-                if ($existing) {
-                    // A verified fact belongs to the reviewer (admin queue or smukn:facts-import): re-seeding must never
-                    // replace its value or source, or a corrected value would be overwritten while still showing VERIFIED.
-                    if ($existing->verification_status === ReferenceFact::VERIFIED) {
-                        continue;
-                    }
-                    $existing->update($attrs + ['verification_status' => $status]);
-                } else {
-                    $t->facts()->create($attrs + ['key' => $key, 'verification_status' => $status]);
-                }
+                FactSeeding::upsert($t, ['key' => $key], $attrs, $status);
             }
         }
     }

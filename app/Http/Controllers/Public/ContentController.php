@@ -180,7 +180,7 @@ class ContentController extends Controller
     public function working()
     {
         $gate = 'topics-verified:student-visa,graduate-visa,gmc-registration';
-        $seo = $this->seo('Working in the UK during and after a medical degree', 'Student visa work rules, the MLA and GMC provisional registration, the Foundation Programme and visa sponsorship, the Graduate visa change from 2027, and what is still proposed.', 'working.index', [['label' => 'Working in the UK']])
+        $seo = $this->seo('Working in the UK during and after a medical degree', 'Student visa work rules, the MLA and GMC provisional registration, the Foundation Programme and visa sponsorship, the Graduate visa change and UK-graduate priority.', 'working.index', [['label' => 'Working in the UK']])
             ->noindex(! PublishGate::passes($gate));
 
         return view('content.working.index', ['seo' => $seo, 'visa' => Topic::bySlug('student-visa'), 'grad' => Topic::bySlug('graduate-visa'), 'gmc' => Topic::bySlug('gmc-registration'), 'gated' => ! PublishGate::passes($gate)]);

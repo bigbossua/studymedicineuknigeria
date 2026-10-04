@@ -9,7 +9,7 @@
     <section class="mt-10 grid gap-4 md:grid-cols-3 max-w-5xl" aria-label="Summary">
         <div class="card"><p class="eyebrow mb-2 text-success-600">What is certain</p><p class="text-[0.9375rem] text-ink-700">A UK medical degree leads to the same GMC registration route for every graduate, whatever their nationality. Student visa work rules are published by GOV.UK.</p></div>
         <div class="card"><p class="eyebrow mb-2">What is competitive</p><p class="text-[0.9375rem] text-ink-700">Foundation Programme places and later specialty training are allocated by national competition. Nothing here is guaranteed to anyone.</p></div>
-        <div class="card"><p class="eyebrow mb-2 text-warning-700">What is changing</p><p class="text-[0.9375rem] text-ink-700">The Graduate visa shortens from 2027, maintenance figures rise, and a Bill proposes prioritising UK medical graduates. A 2027 entrant graduates into rules written between now and 2033.</p></div>
+        <div class="card"><p class="eyebrow mb-2 text-warning-700">What is changing</p><p class="text-[0.9375rem] text-ink-700">Graduate visa length, visa maintenance figures and the priority given to UK medical graduates in training allocation have all changed recently; each is shown below with its source and verification status. A 2027 entrant graduates into rules written between now and 2033.</p></div>
     </section>
 
     <div class="mt-12 grid lg:grid-cols-12 gap-10">

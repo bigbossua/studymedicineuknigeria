@@ -19,7 +19,7 @@
             </label>
         @endforeach
         <div class="lg:col-span-3 card flex flex-col sm:flex-row sm:items-end gap-4 justify-between">
-            @php($defaultYear = now()->month >= 9 ? now()->year + 2 : now()->year + 1)
+            @php($defaultYear = \App\Support\Intake::defaultYear())
             <div class="field max-w-xs"><label for="intake_year" class="label">Intended entry year</label>
                 <select id="intake_year" name="intake_year" class="input">@foreach(range(now()->year + 1, now()->year + 3) as $y)<option value="{{ $y }}" @selected(old('intake_year', $defaultYear)==$y)>September {{ $y }}</option>@endforeach</select>
                 @php($deadline = \App\Models\Topic::bySlug('ucas-2027')?->fact('deadline_medicine'))

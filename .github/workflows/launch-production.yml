@@ -1,0 +1,273 @@
+name: Launch production (no staging)
+# Owner decision 2026-10-04: launch straight to https://studymedicineuknigeria.com, no staging site. Each job starts only
+# when the one before it passed:
+#   1. rehearse  — full test suite, then this exact commit served in production mode on the runner under the real host
+#                  name (ops/production-rehearsal.sh: smoke, trusted hosts, www → apex, every old-site redirect, no debug
+#                  output, no fee on any public page, registration and payment closed) + public DNS/HTTPS checks
+#   2. backup    — read-only inspection of the account, then an encrypted backup of the site the domain serves today
+#                  and its database, decrypted and restored into a throwaway database on the runner
+#   3. launch    — production environment: waits for the owner's approval (required reviewer); bootstrap (idempotent),
+#                  deploy with preflight, document-root cutover and the production smoke test; any failure puts the old
+#                  site back; then a real test email from the mailbox and, if accepted, student registration opens
+#   4. review    — every page on desktop and mobile in production mode (status, CSP, accessibility, canonical, indexable)
+#   5. checks    — public DNS / HTTPS / www / what the domain serves, after the switch
+# Stripe stays untouched: payment remains closed until live keys are set after launch. Values are never printed.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type LAUNCH to replace the current site at studymedicineuknigeria.com (it is backed up and kept)'
+        required: true
+      docroot:
+        description: 'Folder the domain serves (auto = found on the server)'
+        required: true
+        default: auto
+      open_registration:
+        description: 'Open student registration after a successful test email'
+        required: true
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency: deploy-production
+
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Confirmation and settings
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ "$CONFIRM" = LAUNCH ] || { echo "::error::Type LAUNCH in the confirm field to run the production launch."; exit 1; }
+          m=""; [ -z "$HOST" ] && m="$m HOSTINGER_SSH_HOST(variable)"; [ -z "$USER" ] && m="$m HOSTINGER_SSH_USER(variable)"
+          [ -z "$KEY" ] && m="$m HOSTINGER_SSH_KEY(secret)"; [ -z "$PASSPHRASE" ] && m="$m BACKUP_PASSPHRASE(secret)"
+          n=$(gh api "repos/${{ github.repository }}/environments/production" --jq '[.protection_rules[]? | select(.type == "required_reviewers")] | length' 2>/dev/null || echo 0)
+          [ "${n:-0}" -ge 1 ] || m="$m production-required-reviewer(Settings→Environments→production)"
+          if [ -n "$m" ]; then echo "::error::Missing:$m"; exit 1; fi
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_sqlite, pdo_mysql', coverage: none }
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - name: Tests
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          cp .env.example .env && php artisan key:generate
+          npm ci --no-audit --no-fund && npm run build
+          php -d memory_limit=1G vendor/bin/phpunit
+      - name: Production rehearsal of this commit
+        run: |
+          rm -f .env
+          ops/production-rehearsal.sh 8090 | tee rehearsal.txt; test "${PIPESTATUS[0]}" = 0
+          { echo '### Production rehearsal'; echo '```'; grep -vE '^ok   [0-9]{3} ' rehearsal.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: The domain runs PHP 8.3 or newer
+        run: |
+          # Laravel 13 needs PHP 8.3; Hostinger sets the web PHP version per website (hPanel), so check it before any change
+          v=$(curl -sI --max-time 20 "https://studymedicineuknigeria.com/?php-probe=${{ github.run_id }}" | tr -d '\r' | sed -n 's|^[Xx]-[Pp]owered-[Bb]y: *PHP/\([0-9]*\.[0-9]*\).*|\1|p' | head -1)
+          if [ -z "$v" ]; then echo "::warning::the domain does not report its PHP version; the production smoke test will catch a PHP below 8.3 and put the old site back"
+          elif [ "$(printf '%s\n8.3\n' "$v" | sort -V | head -1)" != 8.3 ]; then
+            echo "::error::studymedicineuknigeria.com runs PHP $v; the new site needs PHP 8.3. hPanel → Websites → studymedicineuknigeria.com → Advanced → PHP Configuration → PHP 8.3 → Save, then run this again."; exit 1
+          else echo "web PHP $v"; fi
+      - name: Public DNS and HTTPS (before)
+        run: |
+          sudo apt-get install -y -qq dnsutils >/dev/null 2>&1 || true
+          ops/launch-checks.sh studymedicineuknigeria.com > before.txt 2>&1 || true
+          { echo '### Domain before the switch'; echo '```'; grep -vE '^url ' before.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+  backup:
+    needs: rehearse
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    services:
+      restore:
+        image: mariadb:11.4
+        env: { MARIADB_ROOT_PASSWORD: restore, MARIADB_DATABASE: restore_test }
+        ports: ['3306:3306']
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    outputs:
+      docroot: ${{ steps.make.outputs.docroot }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+          echo "Server host key (public; pin it as HOSTINGER_SSH_KNOWN_HOSTS after comparing the fingerprint):"; ssh-keygen -lf ~/.ssh/known_hosts || true
+      - name: Read-only inspection
+        run: |
+          ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s' < ops/inspect-hostinger.sh > inspection.txt 2>&1 || true
+          sed -n '/==== 1\./,/==== 5\./p' inspection.txt | head -80
+      - name: Encrypted backup of the current site and its database
+        id: make
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          DOCROOT: ${{ inputs.docroot }}
+        run: |
+          { printf '%s\n' "$BACKUP_PASSPHRASE"; printf 'SITE_DOCROOT=%q\n' "$DOCROOT"; cat ops/backup.sh; } | \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" \
+            "read -r BACKUP_PASSPHRASE && export BACKUP_PASSPHRASE && TARGET=production SCOPE=site bash -s" 2>&1 | tee server.log
+          grep -q '^backup=' server.log || { echo "::error::the backup did not complete; nothing has been changed on the server"; exit 1; }
+          echo "FILE=$(grep '^backup=' server.log | cut -d= -f2-)" >> "$GITHUB_ENV"
+          d=$(grep '^auto: document root is ' server.log | sed 's/^auto: document root is //'); [ -n "$d" ] || d="$DOCROOT"
+          echo "docroot=$d" >> "$GITHUB_OUTPUT"
+      - name: Download and restore-test
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          mkdir -p out
+          scp -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -P "$PORT" "$USER@$HOST:$FILE" "$USER@$HOST:$FILE.sha256" out/
+          (cd out && sha256sum -c "$(basename "$FILE").sha256")
+          T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass env:BACKUP_PASSPHRASE -in "out/$(basename "$FILE")" | tar -xf - -C "$T"
+          files=$(tar -tzf "$(find "$T" -name site-files.tgz | head -1)" | wc -l); [ "$files" -gt 0 ] || { echo "::error::site archive is empty"; exit 1; }
+          tables=0; DUMP=$(find "$T" -name database.sql.gz | head -1)
+          if [ -n "$DUMP" ]; then
+            gzip -dc "$DUMP" | tail -1 | grep -q 'Dump completed' || { echo "::error::database dump is incomplete"; exit 1; }
+            gzip -dc "$DUMP" | mysql -h 127.0.0.1 -uroot -prestore restore_test
+            tables=$(mysql -N -h 127.0.0.1 -uroot -prestore -e "select count(*) from information_schema.tables where table_schema='restore_test'")
+          fi
+          grep -h '^database=' "$T"/*/MANIFEST.txt || true
+          echo "### Current site backed up and restore-tested: $files files, $tables database tables" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: smukn-production-site-${{ github.run_id }}
+          path: out/
+          retention-days: 90
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: inspection-${{ github.run_id }}
+          path: inspection.txt
+          retention-days: 30
+
+  launch:
+    needs: backup
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production   # the owner's approval (required reviewer) is given here
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Production settings
+        env:
+          DBN: ${{ secrets.SMUKN_DB_DATABASE }}
+          DBU: ${{ secrets.SMUKN_DB_USERNAME }}
+          DBP: ${{ secrets.SMUKN_DB_PASSWORD }}
+          MAILP: ${{ secrets.SMUKN_MAIL_PASSWORD }}
+        run: |
+          m=""; [ -z "$DBN" ] && m="$m SMUKN_DB_DATABASE"; [ -z "$DBU" ] && m="$m SMUKN_DB_USERNAME"; [ -z "$DBP" ] && m="$m SMUKN_DB_PASSWORD"; [ -z "$MAILP" ] && m="$m SMUKN_MAIL_PASSWORD"
+          if [ -n "$m" ]; then echo "::error::Missing in Environments → production → secrets:$m"; exit 1; fi
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_mysql', coverage: none }
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - name: Build the release
+        run: |
+          composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+          npm ci --no-audit --no-fund && npm run build
+          rm -f .env database/*.sqlite public/hot
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Bootstrap production (idempotent; registration and payment start closed)
+        env:
+          TARGET: production
+          APP_URL: https://studymedicineuknigeria.com
+          LINK_DOCROOT: '0'
+          DOCROOT: ''
+          DB_DATABASE: ${{ secrets.SMUKN_DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.SMUKN_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.SMUKN_DB_PASSWORD }}
+          DB_HOST: ${{ vars.SMUKN_DB_HOST || '127.0.0.1' }}
+          MAIL_PASSWORD: ${{ secrets.SMUKN_MAIL_PASSWORD }}
+          SITE_WHATSAPP: ${{ vars.SITE_WHATSAPP }}
+          SITE_LEGAL_NAME: ${{ vars.SITE_LEGAL_NAME }}
+        run: |
+          # values travel on stdin as bash-quoted exports, never on the remote command line; Stripe is deliberately absent
+          { for v in TARGET APP_URL LINK_DOCROOT DOCROOT DB_DATABASE DB_USERNAME DB_PASSWORD DB_HOST MAIL_PASSWORD SITE_WHATSAPP SITE_LEGAL_NAME; do printf 'export %s=%q\n' "$v" "${!v}"; done
+            cat ops/server-bootstrap.sh; } | \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s'
+      - name: The domain runs PHP 8.3 or newer
+        run: |
+          # Laravel 13 needs PHP 8.3; Hostinger sets the web PHP version per website (hPanel), so check it before any change
+          v=$(curl -sI --max-time 20 "https://studymedicineuknigeria.com/?php-probe=${{ github.run_id }}" | tr -d '\r' | sed -n 's|^[Xx]-[Pp]owered-[Bb]y: *PHP/\([0-9]*\.[0-9]*\).*|\1|p' | head -1)
+          if [ -z "$v" ]; then echo "::warning::the domain does not report its PHP version; the production smoke test will catch a PHP below 8.3 and put the old site back"
+          elif [ "$(printf '%s\n8.3\n' "$v" | sort -V | head -1)" != 8.3 ]; then
+            echo "::error::studymedicineuknigeria.com runs PHP $v; the new site needs PHP 8.3. hPanel → Websites → studymedicineuknigeria.com → Advanced → PHP Configuration → PHP 8.3 → Save, then run this again."; exit 1
+          else echo "web PHP $v"; fi
+      - name: Deploy with preflight, cutover and automatic restore
+        env:
+          CUTOVER_DOCROOT: ${{ needs.backup.outputs.docroot }}
+        run: |
+          [ -n "$CUTOVER_DOCROOT" ] || { echo "::error::no document root from the backup job"; exit 1; }
+          export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new}"
+          ops/deploy.sh "$USER@$HOST" "$PORT" production https://studymedicineuknigeria.com
+      - name: Test email from the production mailbox, then registration
+        env:
+          OPEN: ${{ inputs.open_registration }}
+        run: |
+          sudo apt-get install -y -qq dnsutils >/dev/null 2>&1 || true
+          dns=no; ops/launch-checks.sh studymedicineuknigeria.com >/dev/null 2>&1 && dns=yes
+          { printf 'export TO=%q\n' "info@studymedicineuknigeria.com"; cat <<'REMOTE'
+          set -euo pipefail
+          cd ~/apps/smukn-production/current
+          PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
+          $PHP artisan smukn:mail-test "$TO"
+          REMOTE
+          } | ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s' && sent=yes || sent=no
+          echo "test email accepted: $sent; email DNS ready: $dns"
+          if [ "$OPEN" = true ] && [ "$sent" = yes ] && [ "$dns" = yes ]; then
+            { printf 'export TARGET=production SITE_REGISTRATION_OPEN=true\n'; cat ops/update-env.sh; } | \
+              ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s'
+            echo "### Student registration: open (test email accepted, email DNS ready)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Student registration: still closed (test email accepted: $sent, email DNS ready: $dns). Open it later with Send test email." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  review:
+    needs: launch
+    uses: ./.github/workflows/staging-review.yml
+    with:
+      target: production
+    secrets: inherit
+
+  checks:
+    needs: launch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Public DNS, HTTPS and what the domain serves (after)
+        run: |
+          sudo apt-get install -y -qq dnsutils >/dev/null 2>&1 || true
+          ops/launch-checks.sh studymedicineuknigeria.com > after.txt 2>&1 || true
+          grep -q 'title: .*Study Medicine UK Nigeria' after.txt && echo ok
+          { echo '### Domain after the switch'; echo '```'; grep -vE '^url ' after.txt; echo '```'; echo 'Flush the CDN cache once: hPanel → Websites → CDN → flush cache.'; } >> "$GITHUB_STEP_SUMMARY"

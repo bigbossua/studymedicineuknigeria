@@ -86,6 +86,12 @@ if [ -n "${CUTOVER_DOCROOT:-}" ]; then
   out=$({ printf 'D=%q; TARGET=%q; TS=%q\n' "$CUTOVER_DOCROOT" "$TARGET" "$TS"; cat <<'CUT'
 set -euo pipefail
 D="${D/#\~/$HOME}"; D="${D%/}"; APPD="$HOME/apps/smukn-$TARGET"
+# "auto": the folder Hostinger serves for the domain, found rather than guessed; anything ambiguous stops here
+if [ "$D" = auto ]; then
+  D=""; for c in "$HOME/domains/studymedicineuknigeria.com/public_html" "$HOME/public_html"; do [ -e "$c" ] && { D="$c"; break; }; done
+  [ -n "$D" ] || { echo "auto: no document root found (looked for ~/domains/studymedicineuknigeria.com/public_html and ~/public_html)"; exit 3; }
+  echo "auto: document root is $D"
+fi
 if [ -L "$D" ] && [ "$(readlink "$D")" = "$APPD/current/public" ]; then echo "document root already serves $APPD/current/public"; exit 0; fi
 [ -e "$D" ] || [ -L "$D" ] || { echo "document root $D does not exist: check the path in the inspection report"; exit 3; }
 case "$D" in "$HOME"/*) ;; *) echo "document root $D is outside the home directory: refusing"; exit 3;; esac

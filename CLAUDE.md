@@ -6,7 +6,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 - Never fabricate fees, dates, requirements, rankings, partnerships, testimonials, student numbers or Semrush figures. Facts live in `reference_facts` with a verification status; unverified values are hidden in production. New dated facts go through `database/seeders/TopicFactsSeeder.php` or the admin verification queue, never into Blade prose.
 - Never submit a student application without the recorded student approval; never weaken `EnsureTwoFactor`, `EnsureStaff`, `StagingGate`, the CSP nonce, or the document pipeline (`App\Services\Documents\DocumentStore`).
 - Never commit `.env`, keys, or anything from `storage/app/private`. Secrets live only in GitHub Actions Secrets.
-- No deployment to production except by explicit `deploy-hostinger.yml` dispatch after staging passed; read-only inspection first.
+- No deployment to production except by explicit dispatch with the owner's approval on the `production` environment: the first launch through `launch-production.yml` (rehearsal → restore-tested backup → approval → cutover with automatic restore), later releases through `deploy-hostinger.yml`. There is no staging site (owner decision 2026-10-04); `ops/production-rehearsal.sh` serves the commit in production mode on the runner instead, and must pass first. Read-only inspection first.
 - Every public page must have a row in `docs/decision/page-asset-register.md`; do not add pages without evidence.
 - Healthcare subjects other than Medicine live in `data/healthcare/subjects.json` → `professions` (Admin → Subjects); only a PUBLISHED/INDEXING/MEASURING/UPDATE subject may have a public page, and its facts still go through `reference_facts`. Regenerate the register, knowledge graph and subject scorecard with `python3 ops/seo/build-register.py && python3 ops/seo/build-knowledge-graph.py && python3 ops/seo/build-subject-scorecard.py` after editing the taxonomy; never edit the CSV or `docs/seo/KNOWLEDGE-GRAPH.md` by hand.
 - Every indexable URL must have a live row in `data/seo/decision-register.csv` (one page per intent; statuses and reasons in `docs/seo/DECISION-ENGINE.md`); a test enforces it. Upgrade a thin page before adding a sibling.
@@ -15,7 +15,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 ```bash
 composer install && npm ci && cp .env.example .env && php artisan key:generate && php artisan migrate --seed
 npm run build && php artisan serve --host=127.0.0.1 --port=8000     # stop with: fuser -k 8000/tcp
-vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 194 tests; run before every commit
+vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 195 tests; run before every commit
 php artisan smukn:og          # regenerate Open Graph cards after changing a public title
 php artisan smukn:images      # build photo derivatives from brand/photos
 php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification round trip (data/verification/README.md)

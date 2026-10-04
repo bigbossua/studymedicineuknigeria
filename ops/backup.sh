@@ -27,6 +27,13 @@ mkdir -p "$OUT" "$WORK/$NAME"
 
 if [ "$SCOPE" = site ]; then
   D="${SITE_DOCROOT:-}"; D="${D/#\~/$HOME}"; D="${D%/}"
+  # "auto": the folder Hostinger serves for the domain, found rather than guessed; anything ambiguous stops here
+  if [ "$D" = auto ]; then
+    D=""; for c in "$HOME/domains/studymedicineuknigeria.com/public_html" "$HOME/public_html"; do [ -e "$c" ] && { D="$c"; break; }; done
+    [ -n "$D" ] || { echo "auto: no document root found (looked for ~/domains/studymedicineuknigeria.com/public_html and ~/public_html)"; exit 2; }
+    echo "auto: document root is $D"
+  fi
+
   [ -n "$D" ] || { echo "SITE_DOCROOT is required for SCOPE=site (the folder the domain serves, from the inspection report)" >&2; exit 2; }
   [ -e "$D" ] || { echo "$D does not exist" >&2; exit 2; }
   if [ -L "$D" ] && [ "$(readlink "$D")" = "$APP/current/public" ]; then echo "$D already serves the SMUKN release: use SCOPE=full" >&2; exit 2; fi

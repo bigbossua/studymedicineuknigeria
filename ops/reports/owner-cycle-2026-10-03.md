@@ -302,6 +302,26 @@ Recommended, not blocking: add `rua=mailto:info@studymedicineuknigeria.com` to t
 - **Prepared:** `ops/OWNER-CLICKLIST.md`, the shortest safe order of the hPanel and GitHub steps (about 20 minutes, nothing touches the live site).
 - **Two ways forward:** (a) you follow the click-list, and every later step runs from here automatically up to the production approval; or (b) you open a Claude session on your own computer (Claude Desktop app, or `claude remote-control` in a terminal) where Claude can use your browser to do the hPanel part with you, then this cloud session continues.
 
+## Cycle 43 — final production launch, no staging (stage 48, 2026-10-04)
+
+- **Built for your decision:** one workflow, *Launch production (no staging)*, confirm `LAUNCH`, runs these steps:
+  - **rehearsal of the exact commit in production mode on the runner** (`ops/production-rehearsal.sh`). Checked locally and passing:
+    - smoke test;
+    - foreign hosts get 400;
+    - www gets 301;
+    - all 65 old URLs redirect;
+    - no fee or debug text on 31 public pages;
+    - registration closed, payment closed;
+  - **encrypted backup of the current site and database, restore-tested;**
+  - **your one approval;**
+  - **cutover that puts the old site back automatically on any smoke failure;**
+  - **test email, then registration opens;**
+  - **full page review and public checks.**
+- **Folder and later deploys:** the folder the domain serves is found on the server (`auto`). Later releases use *Deploy to Hostinger* with the same rehearsal in place of staging.
+- **Found a launch blocker that only you can clear:** the domain runs **PHP 8.2.33**, and the new site needs **8.3**. The launch now checks this before backing up or changing anything. Fix: hPanel → Websites → Manage → Advanced → PHP Configuration → 8.3 → Save.
+- **Still blocked on access, honestly:** this cloud session has no tool that can drive your Chrome or hPanel. Nothing was changed on Hostinger; the current site is untouched. The remaining steps are in `ops/OWNER-CLICKLIST.md` (rewritten for no staging). There are now 4 repository settings, 1 database, 4 production secrets, 1 reviewer and the PHP version.
+- **Stripe:** nothing created; payment stays closed. Approved students see the three fees with "Payment is not open yet." and no payment button or bank transfer.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

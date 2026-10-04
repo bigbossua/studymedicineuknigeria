@@ -63,7 +63,7 @@ class DeploymentSafetyTest extends TestCase
 
         $workflow = $this->file('.github/workflows/deploy-hostinger.yml');
         $this->assertStringContainsString('composer install --no-dev', $workflow);
-        $this->assertStringContainsString('has no successful staging deploy', $workflow);
+        $this->assertStringContainsString('if [ "${REHEARSE:-0}" = 1 ]; then rm -f .env; ops/production-rehearsal.sh 8090; fi', $workflow, 'without a staging deploy of the commit, production is rehearsed on the runner first');
         $this->assertStringContainsString('required_reviewers', $workflow);
         $this->assertStringContainsString('STAGING_URL(variable)', $workflow);
     }
@@ -259,5 +259,28 @@ class DeploymentSafetyTest extends TestCase
         $workflow = $this->file('.github/workflows/update-env-hostinger.yml');
         $this->assertStringContainsString("printf 'export %s=%q\\n'", $workflow);
         $this->assertStringContainsString("'bash -s'", $workflow);
+    }
+
+    public function test_the_no_staging_launch_rehearses_backs_up_and_waits_for_approval_before_touching_the_site(): void
+    {
+        $launch = $this->file('.github/workflows/launch-production.yml');
+        $this->assertStringContainsString('[ "$CONFIRM" = LAUNCH ]', $launch, 'nothing runs without the typed confirmation');
+        $this->assertStringContainsString('production-required-reviewer', $launch);
+        $this->assertStringContainsString("needs: rehearse\n", $launch);
+        $this->assertStringContainsString("needs: backup\n", $launch);
+        $this->assertStringContainsString('environment: production', $launch);
+        $this->assertLessThan(strpos($launch, 'environment: production'), strpos($launch, 'ops/production-rehearsal.sh'));
+        $this->assertLessThan(strpos($launch, 'environment: production'), strpos($launch, 'restore_test'), 'the current site is restore-tested before the approval');
+        $this->assertStringContainsString('CUTOVER_DOCROOT: ${{ needs.backup.outputs.docroot }}', $launch);
+        $this->assertStringContainsString('the new site needs PHP 8.3', $launch);
+        $this->assertStringNotContainsString('STRIPE', $launch, 'payment stays closed: no Stripe key reaches the server at launch');
+        $this->assertStringContainsString('[ "$sent" = yes ]', $launch, 'registration opens only after a real test email');
+
+        $rehearsal = $this->file('ops/production-rehearsal.sh');
+        foreach (['APP_ENV=production', 'APP_DEBUG=false', 'SITE_REGISTRATION_OPEN=false', 'SITE_BANK_TRANSFER=false', 'legacy-redirects.csv', 'evil.example', 'paymentsOpen', '£695'] as $needle) {
+            $this->assertStringContainsString($needle, $rehearsal);
+        }
+        $this->assertStringContainsString('if [ "$D" = auto ]', $this->file('ops/deploy.sh'));
+        $this->assertStringContainsString('if [ "$D" = auto ]', $this->file('ops/backup.sh'));
     }
 }

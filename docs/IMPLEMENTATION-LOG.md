@@ -354,6 +354,37 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Smoke**: production fails when `www` does not redirect; every target checks two old-site URLs.
 - **Tests**: 194 on SQLite and MariaDB.
 
+## Stage 48: production launch without staging (cycle 43)
+
+- **Owner decision 2026-10-04:** no staging site. `ops/production-rehearsal.sh` stands in for the staging review. It serves the commit in production mode on the runner under the real host name, using a throwaway SQLite database, and runs:
+  - smoke;
+  - trusted hosts;
+  - www → apex;
+  - every legacy redirect;
+  - no debug output;
+  - no fee strings on the sitemap, apply and auth pages;
+  - registration closed;
+  - `paymentsOpen()` false.
+- **`launch-production.yml`** has five jobs, run in order:
+  1. **rehearse:**
+     - typed `LAUNCH` and the settings check, including the required reviewer;
+     - tests;
+     - rehearsal;
+     - web PHP ≥ 8.3 probe;
+     - public DNS/HTTPS.
+  2. **backup:**
+     - read-only inspection;
+     - encrypted site + database backup of the served folder (`auto` detection), restore-tested into MariaDB, kept as an artifact for 90 days.
+  3. **launch** (`production` environment approval):
+     - bootstrap without Stripe;
+     - deploy with preflight, cutover and automatic restore;
+     - test email, then registration opens.
+  4. **review:** production-mode page review.
+  5. **checks:** public checks.
+- **`deploy-hostinger.yml`:** a production deploy without a staging deploy of the commit now runs the rehearsal before building the release.
+- **The domain answers with PHP 8.2.33.** The launch stops before any change while the website's PHP version is below 8.3; checked again right before the cutover.
+- **Tests:** 195 on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

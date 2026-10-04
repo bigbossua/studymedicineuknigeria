@@ -1,7 +1,8 @@
 name: Deploy to Hostinger
 # Registered with GitHub Actions on 2026-10-03.
 # Builds the Laravel release on the runner and deploys it with ops/deploy.sh (release directories, backup,
-# symlink switch, smoke test, automatic rollback). Staging first; production only by explicit dispatch.
+# symlink switch, smoke test, automatic rollback). Production only by explicit dispatch, after a staging deploy of the
+# same commit or (no staging site, owner decision 2026-10-04) a production rehearsal of it on the runner.
 on:
   workflow_dispatch:
     inputs:
@@ -35,7 +36,7 @@ jobs:
       - name: Refuse production without explicit dispatch
         if: ${{ github.event_name != 'workflow_dispatch' && (github.event.inputs.target || 'staging') == 'production' }}
         run: echo "::error::Production deploys only via manual dispatch" && exit 1
-      - name: Require a successful staging deploy of this exact commit before production
+      - name: Staging deploy of this exact commit, or a production rehearsal of it on the runner
         if: ${{ (github.event.inputs.target || 'staging') == 'production' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -44,8 +45,12 @@ jobs:
           for u in $(gh api "repos/${{ github.repository }}/deployments?environment=staging&sha=${{ github.sha }}&per_page=20" --jq '.[].statuses_url'); do
             [ "$(gh api "$u" --jq '.[0].state // empty')" = "success" ] && ok=1 && break
           done
-          [ "$ok" = 1 ] || { echo "::error::Commit ${{ github.sha }} has no successful staging deploy. Deploy it to staging, review staging, then dispatch production."; exit 1; }
-          echo "staging deploy of ${{ github.sha }} succeeded; continuing to production"
+          if [ "$ok" = 1 ]; then echo "staging deploy of ${{ github.sha }} succeeded; continuing to production"
+          else
+            # owner decision 2026-10-04: no staging site. This commit is then served in production mode on the runner
+            # (ops/production-rehearsal.sh) before the release is built, and any failure stops the deploy.
+            echo "REHEARSE=1" >> "$GITHUB_ENV"; echo "no staging deploy of ${{ github.sha }}: the production rehearsal runs before deploying"
+          fi
       - name: Require the owner's approval rule on production
         if: ${{ (github.event.inputs.target || 'staging') == 'production' }}
         env:
@@ -100,6 +105,7 @@ jobs:
           cp .env.example .env && php artisan key:generate
           npm ci --no-audit --no-fund && npm run build
           php artisan test
+          if [ "${REHEARSE:-0}" = 1 ]; then rm -f .env; ops/production-rehearsal.sh 8090; fi
           # ship production dependencies only (no test runners or dev tooling on the server)
           composer install --no-dev --optimize-autoloader --no-interaction --no-progress
           rm -f .env database/*.sqlite public/hot

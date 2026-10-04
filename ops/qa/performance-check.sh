@@ -17,7 +17,8 @@ for p in "${PAGES[@]}"; do
     const s = (k) => Math.round((c[k]?.score ?? 0) * 100);
     const lcp = a["largest-contentful-paint"].numericValue / 1000, cls = a["cumulative-layout-shift"].numericValue, tbt = a["total-blocking-time"].numericValue;
     const bad = s("performance") < 80 || s("accessibility") < 95 || s("seo") < 95 || lcp > 4 || cls > 0.1 || tbt > 600;
-    console.log(`${s("performance")} | ${s("accessibility")} | ${s("best-practices")} | ${s("seo")} | ${lcp.toFixed(1)} s | ${cls.toFixed(3)} | ${Math.round(tbt)} ms |${bad ? "FAIL" : ""}`);
+    const shift = cls > 0.05 ? ((a["layout-shifts"]?.details?.items || [])[0]?.node?.selector || "") : "";
+    console.log(`${s("performance")} | ${s("accessibility")} | ${s("best-practices")} | ${s("seo")} | ${lcp.toFixed(1)} s | ${cls.toFixed(3)} | ${Math.round(tbt)} ms${shift ? " (shift: " + shift + ")" : ""} |${bad ? "FAIL" : ""}`);
   ' "$out")
   [[ "$row" == *FAIL ]] && fail=1
   echo "| $p | ${row%FAIL}"

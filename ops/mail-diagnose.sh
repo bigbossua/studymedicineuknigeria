@@ -11,6 +11,7 @@ echo "PHP 8.3 command line: $PHP"; echo "app path: $(cd "$APP" && pwd -P | sed -
 mask(){ sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email]/g'; }
 
 echo "== process sample: does Hostinger's cron start the scheduler? (watching 130 s, two minute boundaries) =="
+echo "processes visible to this account right now: $(ps -u "$(whoami)" -o pid= | wc -l) (the sample can see this account's processes)"
 echo "server time now: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
 seen=""; end=$((SECONDS+130))
 while [ $SECONDS -lt $end ]; do
@@ -88,5 +89,5 @@ env -i HOME="$HOME" PATH=/usr/bin:/bin /bin/sh -c "cd $APP && /opt/alt/php83/usr
 echo "== log files (names and last change only) =="
 ls -l --time-style=+%Y-%m-%dT%H:%M storage/logs 2>/dev/null | awk 'NR>1 {print $6, $7, $5" bytes"}'
 echo "== last 6 log entries today (first 160 characters, addresses masked) =="
-f=storage/logs/laravel.log; [ -f "$f" ] && grep -hE "^\[$(date -u +%Y-%m-%d)" "$f" | tail -6 | cut -c1-160 | mask || echo "no laravel.log"
+f=$(ls -t storage/logs/laravel*.log 2>/dev/null | head -1); [ -n "$f" ] && { echo "file: $(basename "$f")"; grep -hE '^\[[0-9]{4}-' "$f" | tail -6 | cut -c1-160 | mask; } || echo "no log file"
 

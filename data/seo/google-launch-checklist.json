@@ -12,7 +12,8 @@
   ".github/workflows/live-verify.yml",
   "tests/Feature/GoogleReadinessTest.php",
   "ops/qa/axe-audit.cjs",
-  "ops/qa/public-journey.cjs"
+  "ops/qa/public-journey.cjs",
+  "ops/sitemap-probe.sh"
  ],
  "items": [
   {
@@ -121,9 +122,9 @@
    "evidence": "CSP with nonces, nosniff, frame DENY, referrer and permissions policies, no X-Powered-By, foreign hosts refused"
   },
   {
-   "area": "Search Console readiness",
-   "status": "OWNER ACTION",
-   "evidence": "add a Domain property and its google-site-verification TXT record in Hostinger DNS (docs/seo/GOOGLE-READINESS.md); or a URL-prefix HTML tag via SITE_GOOGLE_VERIFICATION"
+   "area": "Search Console",
+   "status": "PASS",
+   "evidence": "property set up by the owner; sitemap submitted 2026-10-04, Google reports Success with 28 discovered pages; ops/sitemap-probe.sh checks it daily as Googlebot (200 application/xml, valid, 28 indexable self-canonical URLs)"
   },
   {
    "area": "GA4 readiness",

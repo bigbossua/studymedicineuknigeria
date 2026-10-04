@@ -452,6 +452,22 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - server: production, debug off, payment closed, Stripe off, 0 pending migrations, published-folder document root.
 - **Photography:** unsplash.com answers 401/307 to GitHub runners; the official API answers and needs a free Access Key (`UNSPLASH_ACCESS_KEY`, owner action). `ops/design/unsplash.py` uses the API when the key exists.
 
+## Stage 53: live payments, Search Console, final launch verification (cycle 47)
+
+- **Stripe live (owner-approved):**
+  - catalogue run 37219596869 created live products `smukn_t1`–`t3` with one active GBP price each (T1 £125, T2 £695, T3 £1,295) and webhook endpoint `we_1UMtAEPRsa8uF28s2QufAeVU` (6 events); no Payment Links;
+  - *Update server settings* installed the live keys.
+- **Fixed on the way:**
+  - `ops/update-env.sh` exported unused inputs as empty variables, which Laravel prefers to `.env`; the cache lost the webhook secret. Inputs are now unset before `config:cache` (test in DeploymentSafetyTest).
+- **Verification added:**
+  - `smukn:stripe-webhook --self-test`: a Stripe-signed harmless event through the public URL must be accepted (200) and a forged one refused (400);
+  - live verification "payments open" mode: live key, webhook secret, self-test, live catalogue, charges enabled, Stripe customer-facing name and statement descriptor are the brand (yes/no only: the repository and its logs are public);
+  - session cookie Secure and HttpOnly, no public storage link, WhatsApp contact, and no placeholder, development, key or personal-mailbox text on any public page.
+- **Content:** reviewer notes on facts no longer reach public pages (GoogleReadinessTest crawls every public page, school pages included).
+- **Search Console:** owner set up the property and submitted the sitemap; Google reports Success, 28 discovered pages. `ops/sitemap-probe.sh` re-checks it daily as Googlebot.
+- **Live verification 37224627170 (release `2026-10-04T18-24-28`): all passed.**
+- **Local QA on the same code:** 206 tests on SQLite and MariaDB; SEO crawl 28/28, 0 broken; axe 0; CSP 0; public journey phone and desktop; GA4 browser events; student, staff and paid journeys (stand-in Stripe: fee £695 = Checkout 695.00 GBP, signed webhook 200, paid).
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

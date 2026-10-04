@@ -45,10 +45,22 @@ class VerificationAdminTest extends TestCase
         $fact = ReferenceFact::where('verification_status', ReferenceFact::VERIFY_ON_PAGE)->first();
         $fact->forceFill(['source_url' => null])->save();
 
-        $this->admin()->post('/admin/verification/bulk', ['decision' => 'verify', 'fact_ids' => [$fact->id]])->assertSessionHas('status', '0 fact(s) marked verified; 1 skipped (no source URL).');
+        $this->admin()->post('/admin/verification/bulk', ['decision' => 'verify', 'fact_ids' => [$fact->id]])->assertSessionHas('status', '0 fact(s) marked verified; 1 skipped (no source URL, or the page changed: confirm those one at a time with the current wording).');
         $this->assertSame(ReferenceFact::VERIFY_ON_PAGE, $fact->fresh()->verification_status);
 
         $this->actingAs(User::factory()->create())->post('/admin/verification/bulk', ['decision' => 'verify', 'fact_ids' => [$fact->id]])->assertForbidden();
+    }
+
+    public function test_a_changed_source_is_never_bulk_verified_and_pages_follow_the_priority_order(): void
+    {
+        $this->seed(TopicFactsSeeder::class);
+        $changed = ReferenceFact::where('verification_status', ReferenceFact::SOURCE_CHANGED)->firstOrFail(); // the visa maintenance figures
+        $this->admin()->post('/admin/verification/bulk', ['decision' => 'verify', 'fact_ids' => [$changed->id]])->assertSessionHas('status');
+        $this->assertSame(ReferenceFact::SOURCE_CHANGED, $changed->fresh()->verification_status, 'the old value must be confirmed alone with the current wording');
+
+        $html = $this->admin()->get('/admin/verification/by-source')->assertOk()->assertSee('Confirm alone')->getContent();
+        $this->assertLessThan(strpos($html, 'P2 · UCAT dates and rules'), strpos($html, 'P1 · UCAS Medicine deadlines'), 'UCAS Medicine deadlines come first');
+        $this->assertLessThan(strpos($html, 'P7 · Visa and immigration'), strpos($html, 'P3 · GMC status and registration'));
     }
 
     public function test_admin_dashboard_shows_the_launch_checklist_with_live_state(): void

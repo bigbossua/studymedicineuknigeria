@@ -6,5 +6,6 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('queue:work --stop-when-empty --tries=3 --max-time=50')->everyMinute()->withoutOverlapping();
 Schedule::command('smukn:reminders')->dailyAt('08:10')->timezone('Africa/Lagos');
 Schedule::command('smukn:flag-review-due')->dailyAt('02:30');
+Schedule::command('smukn:sources-check')->dailyAt('03:40')->withoutOverlapping(); // un-verify facts whose official page changed
 Schedule::command('smukn:expire-payments')->hourly();
 Schedule::command('queue:prune-failed --hours=720')->weekly();

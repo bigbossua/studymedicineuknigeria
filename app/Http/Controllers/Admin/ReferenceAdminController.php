@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Console\Commands\ExportFactsWorksheet;
 use App\Http\Controllers\Controller;
 use App\Models\AdminAction;
+use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\University;
 use App\Support\Seo;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /** Verification queue — the only place a fact becomes VERIFIED (docs/architecture/17.1, 52, 53). */
 class ReferenceAdminController extends Controller
@@ -87,12 +90,19 @@ class ReferenceAdminController extends Controller
     public function sources(Request $request)
     {
         $pending = [ReferenceFact::VERIFY_ON_PAGE, ReferenceFact::REVIEW_DUE, ReferenceFact::SOURCE_CHANGED];
-        $sources = ReferenceFact::selectRaw('source_url, count(*) as c')->whereIn('verification_status', $pending)->whereNotNull('source_url')
-            ->groupBy('source_url')->orderByDesc('c')->orderBy('source_url')->paginate(20)->withQueryString();
-        $facts = ReferenceFact::with('subject')->whereIn('verification_status', $pending)->whereIn('source_url', $sources->pluck('source_url'))
-            ->orderBy('subject_type')->orderBy('subject_id')->orderBy('key')->get()->groupBy('source_url');
+        $all = ReferenceFact::with(['subject' => fn ($m) => $m->morphWith([Course::class => ['university']])])->whereIn('verification_status', $pending)->whereNotNull('source_url')->get();
+        // Same order as the worksheet: each page at the best priority of any fact on it, then by how many facts it resolves.
+        $groups = $all->groupBy('source_url')->map(function ($g, $url) {
+            $tier = $g->min(fn ($f) => ExportFactsWorksheet::priority($f));
+            $area = ExportFactsWorksheet::tier($g->first(fn ($f) => ExportFactsWorksheet::priority($f) === $tier))[1];
 
-        return view('admin.reference.sources', ['seo' => Seo::make('Verify by source')->noindex(), 'sources' => $sources, 'facts' => $facts,
+            return (object) ['source_url' => $url, 'c' => $g->count(), 'tier' => $tier, 'area' => $area, 'statuses' => $g->countBy('verification_status'),
+                'facts' => $g->sortBy(fn ($f) => [ExportFactsWorksheet::priority($f), $f->subject_type, $f->subject_id, $f->key])->values()];
+        })->sortBy(fn ($s) => [$s->tier, -$s->c, $s->source_url])->values();
+        $page = max(1, (int) $request->query('page', 1));
+        $sources = new LengthAwarePaginator($groups->forPage($page, 20)->values(), $groups->count(), 20, $page, ['path' => $request->url(), 'query' => $request->query()]);
+
+        return view('admin.reference.sources', ['seo' => Seo::make('Verify by source')->noindex(), 'sources' => $sources,
             'pendingTotal' => ReferenceFact::whereIn('verification_status', $pending)->count(), 'withoutSource' => ReferenceFact::whereIn('verification_status', $pending)->whereNull('source_url')->count()]);
     }
 
@@ -102,6 +112,13 @@ class ReferenceAdminController extends Controller
         $done = 0;
         $skipped = 0;
         ReferenceFact::whereIn('id', $data['fact_ids'])->get()->each(function (ReferenceFact $fact) use ($data, $request, &$done, &$skipped) {
+            // A fact whose page changed carries the old value: it is confirmed one at a time, with the current wording,
+            // never in bulk (an old verified value must not survive a change to its source).
+            if ($data['decision'] === 'verify' && $fact->verification_status === ReferenceFact::SOURCE_CHANGED) {
+                $skipped++;
+
+                return;
+            }
             if ($this->applyDecision($fact, $data['decision'], $request->user()->id)) {
                 $fact->reviewed_at = now();
                 $fact->save();
@@ -112,7 +129,7 @@ class ReferenceAdminController extends Controller
         });
         AdminAction::log('fact.bulk_'.$data['decision'], null, ['count' => $done, 'skipped' => $skipped, 'fact_ids' => $data['fact_ids']]);
 
-        return back()->with('status', "{$done} fact(s) marked ".($data['decision'] === 'verify' ? 'verified' : 'not published').($skipped ? "; {$skipped} skipped (no source URL)." : '.'));
+        return back()->with('status', "{$done} fact(s) marked ".($data['decision'] === 'verify' ? 'verified' : 'not published').($skipped ? "; {$skipped} skipped (no source URL, or the page changed: confirm those one at a time with the current wording)." : '.'));
     }
 
     public function universities()

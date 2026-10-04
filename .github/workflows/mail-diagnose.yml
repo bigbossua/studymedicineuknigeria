@@ -1,0 +1,39 @@
+name: Mail delivery diagnosis (read-only)
+# Runs ops/mail-diagnose.sh on the server: mail settings (never the password), queue and failed jobs (class names only),
+# cron and the queue worker's lock, mail errors in the application log, and an SMTP sign-in test that sends nothing.
+# Changes nothing. Every email address in the output is masked (the repository and its logs are public).
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target'
+        required: true
+        default: production
+        type: choice
+        options: [production]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Diagnose (read-only)
+        run: |
+          { printf 'export TARGET=%q\n' "${{ github.event.inputs.target }}"; cat ops/mail-diagnose.sh; } | \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s' | tee diag.txt
+          { echo '### Mail delivery diagnosis'; echo '```'; cat diag.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

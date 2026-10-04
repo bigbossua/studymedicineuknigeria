@@ -34,7 +34,7 @@ class StripeWebhookTest extends TestCase
         $this->actingAs($user)->post('/portal/start', ['service_tier_id' => $tier->id, 'intake_year' => 2028])->assertRedirect();
         $this->application = Application::first();
         $this->payment = $this->application->payments()->create([
-            'tier_price_id' => $tier->priceFor('full')->id, 'status' => 'INITIATED', 'amount_minor' => 39500, 'currency' => 'GBP', 'method' => 'STRIPE',
+            'tier_price_id' => $tier->priceFor('full')->id, 'status' => 'INITIATED', 'amount_minor' => 69500, 'currency' => 'GBP', 'method' => 'STRIPE',
             'stripe_checkout_session_id' => 'cs_test_123', 'terms_version_accepted' => 'v1',
         ]);
     }
@@ -70,7 +70,7 @@ class StripeWebhookTest extends TestCase
 
     public function test_completed_checkout_marks_the_payment_paid_once_and_notifies_the_student(): void
     {
-        $object = ['object' => 'checkout.session', 'id' => 'cs_test_123', 'payment_status' => 'paid', 'amount_total' => 39500, 'currency' => 'gbp', 'payment_intent' => 'pi_test_9', 'metadata' => ['payment_id' => (string) $this->payment->id, 'application_number' => $this->application->application_number]];
+        $object = ['object' => 'checkout.session', 'id' => 'cs_test_123', 'payment_status' => 'paid', 'amount_total' => 69500, 'currency' => 'gbp', 'payment_intent' => 'pi_test_9', 'metadata' => ['payment_id' => (string) $this->payment->id, 'application_number' => $this->application->application_number]];
         [$payload, $headers] = $this->signed($this->event('evt_paid', 'checkout.session.completed', $object));
 
         $this->webhook($payload, $headers)->assertOk()->assertSee('OK');
@@ -112,7 +112,7 @@ class StripeWebhookTest extends TestCase
         $this->assertSame('REFUNDED_PARTIAL', $this->payment->fresh()->status);
         $this->assertSame(10000, $this->payment->fresh()->refunded_minor);
 
-        [$p, $h] = $this->signed($this->event('evt_ref2', 'charge.refunded', ['object' => 'charge', 'id' => 'ch_1', 'payment_intent' => 'pi_fail', 'amount_refunded' => 39500]));
+        [$p, $h] = $this->signed($this->event('evt_ref2', 'charge.refunded', ['object' => 'charge', 'id' => 'ch_1', 'payment_intent' => 'pi_fail', 'amount_refunded' => 69500]));
         $this->webhook($p, $h)->assertOk();
         $this->assertSame('REFUNDED_FULL', $this->payment->fresh()->status);
 

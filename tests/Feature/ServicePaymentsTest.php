@@ -18,7 +18,7 @@ use Stripe\StripeClient;
 use Tests\TestCase;
 
 /**
- * The paid service journey with the owner-approved fees (T1 £75, T2 £395, T3 £795): what the page shows is what
+ * The paid service journey with the owner-approved fees (T1 £125, T2 £695, T3 £1,295): what the page shows is what
  * Stripe is asked to charge, the browser never sets a price, and only a verified Stripe event marks a fee paid.
  * Stripe itself is replaced by a recorder (no network); webhook events are signed with the test secret.
  */
@@ -100,19 +100,19 @@ class ServicePaymentsTest extends TestCase
     public function test_the_pricing_page_shows_the_approved_fees_with_t2_most_popular_and_the_disclaimer(): void
     {
         $page = $this->get('/apply-online/services')->assertOk();
-        $page->assertSee('£75')->assertSee('£395')->assertSee('£795')->assertDontSee('Price to be confirmed');
-        $this->assertMatchesRegularExpression('#Most popular</p>\s*<p class="eyebrow mt-2">Prepare your medical application</p>\s*<h2 id="t-T2"#', $page->getContent());
+        $page->assertSee('£125')->assertSee('£695')->assertSee('£1,295')->assertDontSee('Price to be confirmed');
+        $this->assertMatchesRegularExpression('#Most popular</p>\s*<p class="eyebrow mt-2">Core application preparation</p>\s*<h2 id="t-T2"#', $page->getContent());
         $page->assertSee('Our service fees are separate from university tuition, application fees and other third-party costs. We do not guarantee admission, a visa, a scholarship or an offer from any university.');
         $page->assertSee('UCAT or GAMSAT fees', false);
         foreach (['guaranteed admission', 'success rate', 'limited places', 'only a few'] as $claim) {
             $page->assertDontSee($claim);
         }
-        $this->assertSame(['T1' => 7500, 'T2' => 39500, 'T3' => 79500], ServiceTier::with('prices')->orderBy('sort')->get()->mapWithKeys(fn ($t) => [$t->code => $t->priceFor('full')->amount_minor])->all());
+        $this->assertSame(['T1' => 12500, 'T2' => 69500, 'T3' => 129500], ServiceTier::with('prices')->orderBy('sort')->get()->mapWithKeys(fn ($t) => [$t->code => $t->priceFor('full')->amount_minor])->all());
     }
 
     public function test_each_service_sends_stripe_exactly_the_price_the_page_shows_in_gbp(): void
     {
-        foreach (['T1' => [7500, '£75'], 'T2' => [39500, '£395'], 'T3' => [79500, '£795']] as $code => [$minor, $shown]) {
+        foreach (['T1' => [12500, '£125'], 'T2' => [69500, '£695'], 'T3' => [129500, '£1,295']] as $code => [$minor, $shown]) {
             $a = $this->applicationFor($code);
             $this->actingAs($a->user)->get("/portal/{$a->application_number}/payments")->assertOk()->assertSee($shown)
                 ->assertSee('Study Medicine UK Nigeria service fee, not a payment to any university')->assertSee('Continue to secure payment');
@@ -131,7 +131,7 @@ class ServicePaymentsTest extends TestCase
     {
         $a = $this->applicationFor('T2');
         $this->checkout($a, ['amount' => 1, 'unit_amount' => 100, 'amount_minor' => 100, 'currency' => 'ngn'])->assertRedirect();
-        $this->assertSame(39500, $this->stripe->created[0]['line_items'][0]['price_data']['unit_amount']);
+        $this->assertSame(69500, $this->stripe->created[0]['line_items'][0]['price_data']['unit_amount']);
         $this->assertSame('gbp', $this->stripe->created[0]['line_items'][0]['price_data']['currency']);
 
         $cheaper = ServiceTier::where('code', 'T1')->first()->priceFor('full');
@@ -169,7 +169,7 @@ class ServicePaymentsTest extends TestCase
 
         $this->webhook('evt_paid', 'checkout.session.completed', $this->completed($payment))->assertOk()->assertSee('OK');
         $payment->refresh();
-        $this->assertSame(['SUCCEEDED', 79500, 'pi_'.$payment->id], [$payment->status, $payment->amount_minor, $payment->stripe_payment_intent_id]);
+        $this->assertSame(['SUCCEEDED', 129500, 'pi_'.$payment->id], [$payment->status, $payment->amount_minor, $payment->stripe_payment_intent_id]);
         $this->assertTrue($a->fresh()->hasSucceededPayment());
 
         // the same event again, and a second event for the same session, change nothing
@@ -242,7 +242,7 @@ class ServicePaymentsTest extends TestCase
         $this->assertSame(['REFUNDED_PARTIAL', 2500], [$p->fresh()->status, $p->fresh()->refunded_minor]);
         $this->webhook('evt_ref_1b', 'charge.refunded', ['object' => 'charge', 'id' => 'ch_1', 'payment_intent' => 'pi_'.$p->id, 'amount_refunded' => 2500])->assertOk();
         $this->assertSame(1, $a->events()->where('type', 'payment.refunded')->count(), 'a repeated refund amount is not recorded twice');
-        $this->webhook('evt_ref_2', 'charge.refunded', ['object' => 'charge', 'id' => 'ch_1', 'payment_intent' => 'pi_'.$p->id, 'amount_refunded' => 7500])->assertOk();
+        $this->webhook('evt_ref_2', 'charge.refunded', ['object' => 'charge', 'id' => 'ch_1', 'payment_intent' => 'pi_'.$p->id, 'amount_refunded' => 12500])->assertOk();
         $this->assertSame('REFUNDED_FULL', $p->fresh()->status);
     }
 
@@ -301,22 +301,36 @@ class ServicePaymentsTest extends TestCase
         $admin = User::factory()->create();
         $admin->forceFill(['role' => 'admin', 'two_factor_secret' => Totp::generateSecret(), 'two_factor_confirmed_at' => now()])->save();
         $as = fn () => $this->actingAs($admin)->withSession([EnsureTwoFactor::SESSION_KEY => $admin->id]);
-        $as()->get("/admin/applications/{$a->application_number}")->assertOk()->assertSee('T2 £395.00')->assertSee('Paid')->assertSee('pi_'.$p->id)->assertSee('Payment received');
-        $as()->get('/admin/payments')->assertOk()->assertSee($a->application_number)->assertSee('£395.00');
+        $as()->get("/admin/applications/{$a->application_number}")->assertOk()->assertSee('T2 £695.00')->assertSee('Paid')->assertSee('pi_'.$p->id)->assertSee('Payment received');
+        $as()->get('/admin/payments')->assertOk()->assertSee($a->application_number)->assertSee('£695.00');
 
         $price = ServiceTier::where('code', 'T2')->first()->priceFor('full');
-        $as()->post("/admin/services/prices/{$price->id}", ['amount' => '400'])->assertSessionHas('status');
+        $as()->post("/admin/services/prices/{$price->id}", ['amount' => '700'])->assertSessionHas('status');
         $this->assertDatabaseHas('admin_actions', ['action' => 'price.update', 'target_id' => $price->id]);
-        $this->assertEquals(['tier' => 'T2', 'before_minor' => 39500, 'after_minor' => 40000], AdminAction::where('action', 'price.update')->first()->payload);
-        $this->assertSame(39500, $p->fresh()->amount_minor, 'a payment keeps the amount it was taken at');
+        $this->assertEquals(['tier' => 'T2', 'before_minor' => 69500, 'after_minor' => 70000], AdminAction::where('action', 'price.update')->first()->payload);
+        $this->assertSame(69500, $p->fresh()->amount_minor, 'a payment keeps the amount it was taken at');
 
         // a deploy's reference sync never reverts an admin's price, and fills only an empty one
         $this->seed(PlatformSeeder::class);
-        $this->assertSame(40000, $price->fresh()->amount_minor);
+        $this->assertSame(70000, $price->fresh()->amount_minor);
         $price->update(['amount_minor' => null]);
         $this->seed(PlatformSeeder::class);
-        $this->assertSame(39500, $price->fresh()->amount_minor);
+        $this->assertSame(69500, $price->fresh()->amount_minor);
         $this->assertSame(0, TierPrice::where('active', true)->whereNull('amount_minor')->count());
+    }
+
+    public function test_the_superseded_fees_are_replaced_by_the_approved_ones_but_a_custom_admin_price_is_kept(): void
+    {
+        $prices = fn () => ServiceTier::with('prices')->orderBy('sort')->get()->mapWithKeys(fn ($t) => [$t->code => $t->priceFor('full')]);
+        foreach (PlatformSeeder::SUPERSEDED_PRICES as $code => [$old]) {
+            $prices()[$code]->update(['amount_minor' => $old]);
+        }
+        $this->seed(PlatformSeeder::class);
+        $this->assertSame(PlatformSeeder::APPROVED_PRICES, $prices()->map->amount_minor->all());
+
+        $prices()['T3']->update(['amount_minor' => 99900]);
+        $this->seed(PlatformSeeder::class);
+        $this->assertSame(99900, $prices()['T3']->amount_minor, 'a price the owner set in admin is never overwritten');
     }
 
     public function test_the_local_stripe_stand_in_can_never_be_used_on_a_server(): void

@@ -34,7 +34,7 @@ already exist.
 | `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` | Secrets | **Environment `production`** | The production database from step 1 (only needed before the production bootstrap) |
 | Required reviewers | Protection rule | **Environment `production`** | Tick *Required reviewers*, add yourself, save. Production deploys refuse to run without it. |
 
-**Stripe test mode on staging (for the payment review).** Prices are already set (T1 £75, T2 £395, T3 £795). In the
+**Stripe test mode on staging (for the payment review).** Prices are already set (T1 £125, T2 £695, T3 £1,295). In the
 Stripe Dashboard switch to **Test mode**, then:
 1. Developers → API keys: copy the *publishable* key (`pk_test_…`) and the *secret* key (`sk_test_…`).
 2. Developers → Webhooks → Add endpoint: URL `https://staging.studymedicineuknigeria.com/webhooks/stripe`, events

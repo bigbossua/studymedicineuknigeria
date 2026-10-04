@@ -6,28 +6,33 @@ use App\Models\ChecklistRule;
 use App\Models\ServiceTier;
 use App\Models\TierPrice;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class PlatformSeeder extends Seeder
 {
     /**
-     * Owner-approved service fees (2026-10-04), GBP in pence. They fill a price only where none is set, so a price
-     * later changed by an admin (Admin → Services) is never reverted by a deploy's reference sync.
+     * Owner-approved service fees, GBP in pence (premium pricing approved 2026-10-04). A deploy's reference sync sets a
+     * price that is empty or still at a superseded approved value; any other amount was chosen by an admin
+     * (Admin → Services) and is never overwritten.
      */
-    public const APPROVED_PRICES = ['T1' => 7500, 'T2' => 39500, 'T3' => 79500];
+    public const APPROVED_PRICES = ['T1' => 12500, 'T2' => 69500, 'T3' => 129500];
+
+    /** Earlier owner-approved fees, replaced by APPROVED_PRICES (T1 £75, T2 £395, T3 £795 approved earlier on 2026-10-04). */
+    public const SUPERSEDED_PRICES = ['T1' => [7500], 'T2' => [39500], 'T3' => [79500]];
 
     public function run(): void
     {
         $tiers = [
-            ['code' => 'T1', 'name' => 'Eligibility & Course Assessment', 'tagline' => 'Start with eligibility', 'badge' => null, 'sort' => 1, 'payment_gate' => 'AT_START',
-                'summary' => 'A structured review of your Nigerian academic profile against the published requirements of UK medical schools, with a written assessment of which routes are open to you.',
+            ['code' => 'T1', 'name' => 'Eligibility & Course Assessment', 'tagline' => 'Specialist assessment: where to start', 'badge' => null, 'sort' => 1, 'payment_gate' => 'AT_START',
+                'summary' => 'The professional starting point: a specialist review of your Nigerian academic profile against the published requirements of UK medical schools, with a written assessment of which routes may be open to you.',
                 'deliverables' => ['Structured profile review by a qualified reviewer', 'Written assessment of which UK medicine routes appear open to you (standard, graduate, foundation), citing published requirements', 'Personalised requirements checklist', 'A list of relevant UK medical schools from our directory, with sources', 'One follow-up message thread with our team'],
                 'exclusions' => ['University tuition and application fees', 'UCAT or GAMSAT fees', 'English tests', 'Visa and Immigration Health Surcharge', 'Document certification or translation']],
-            ['code' => 'T2', 'name' => 'Medical Application Preparation', 'tagline' => 'Prepare your medical application', 'badge' => 'Most popular', 'sort' => 2, 'payment_gate' => 'AT_START',
-                'summary' => 'Everything in the assessment, plus hands-on preparation of a complete application you then submit through the official route.',
+            ['code' => 'T2', 'name' => 'Medical Application Preparation', 'tagline' => 'Core application preparation', 'badge' => 'Most popular', 'sort' => 2, 'payment_gate' => 'AT_START',
+                'summary' => 'Our main application service: everything in the assessment, plus hands-on preparation of a complete application that you then submit through the official route.',
                 'deliverables' => ['Everything in Eligibility & Course Assessment', 'University shortlisting support based on published requirements and your preferences', 'Personal document checklist and review of every document you upload, with feedback', 'Structural feedback on your personal statement (we do not write it for you)', 'UCAT or GAMSAT planning guidance', 'Application-readiness review before you submit through UCAS or the university'],
                 'exclusions' => ['Submission on your behalf', 'University tuition and application fees', 'UCAT or GAMSAT fees', 'English tests', 'Visa and Immigration Health Surcharge']],
-            ['code' => 'T3', 'name' => 'Full Medical Application Support', 'tagline' => 'Full application support', 'badge' => null, 'sort' => 3, 'payment_gate' => 'AT_START',
-                'summary' => 'Everything in preparation, plus the complete package, your recorded approval, submission support by the permitted route, and tracking until the university responds.',
+            ['code' => 'T3', 'name' => 'Full Medical Application Support', 'tagline' => 'Comprehensive end-to-end support', 'badge' => null, 'sort' => 3, 'payment_gate' => 'AT_START',
+                'summary' => 'The most complete level of support, end to end: everything in preparation, plus the complete package, your recorded approval, submission support by the permitted route, and tracking until the university responds.',
                 'deliverables' => ['Everything in Medical Application Preparation', 'Preparation of the complete application package', 'Student approval workflow before anything is submitted', 'Submission support by the route the university requires (guided UCAS, or direct where permitted)', 'Submission tracking and university correspondence support', 'Interview preparation guidance'],
                 'exclusions' => ['Any guarantee of admission, scholarship or visa', 'University tuition and application fees', 'UCAT or GAMSAT fees', 'English tests', 'Visa and Immigration Health Surcharge']],
         ];
@@ -35,8 +40,13 @@ class PlatformSeeder extends Seeder
             $tier = ServiceTier::updateOrCreate(['code' => $t['code']], $t);
             // One service fee per tier, paid before work begins. The display and the Stripe amount both read this row.
             $price = $tier->prices()->firstOrCreate(['component' => 'full', 'currency' => 'GBP'], ['amount_minor' => self::APPROVED_PRICES[$t['code']]]);
-            if ($price->amount_minor === null) {
-                $price->update(['amount_minor' => self::APPROVED_PRICES[$t['code']]]);
+            $approved = self::APPROVED_PRICES[$t['code']];
+            if ($price->amount_minor === null || in_array($price->amount_minor, self::SUPERSEDED_PRICES[$t['code']], true)) {
+                $before = $price->amount_minor;
+                $price->update(['amount_minor' => $approved]);
+                if ($before !== null && $before !== $approved) {
+                    Log::warning('price.owner_approval_applied', ['tier' => $t['code'], 'before_minor' => $before, 'after_minor' => $approved]);
+                }
             }
             // T3 was once split into preparation and submission components that were never priced; retire them.
             TierPrice::where('service_tier_id', $tier->id)->whereIn('component', ['preparation', 'submission'])->whereNull('amount_minor')->update(['active' => false]);

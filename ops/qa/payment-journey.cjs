@@ -65,7 +65,7 @@ const log = { flashes: [] }; const problems = []; let page;
   await page.goto(`${base}/portal/${appNo}/payments`, { waitUntil: 'networkidle' });
   log.paymentsPage = (await page.locator('h1').first().textContent()).trim();
   log.db = tinker(`$p = App\\Models\\Application::where('application_number','${appNo}')->first()->payments()->latest('id')->first(); echo $p->status.' '.$p->amount_minor.' '.$p->currency.' '.$p->tierPrice->tier->code;`);
-  log.pageEqualsCharge = log.confirmPrice === '£' + (last.amount_total / 100) && last.currency === 'gbp';
+  log.pageEqualsCharge = log.confirmPrice === '£' + (last.amount_total / 100).toLocaleString('en-GB') && last.currency === 'gbp';
   log.problems = problems;
   console.log(JSON.stringify(log, null, 1));
   await b.close();

@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Apply Online', 'title' => 'Services and pricing', 'lede' => 'Three levels of independent support for Nigerian students applying to study Medicine in the UK. Each lists exactly what you receive and what is not included, with one fee paid before work begins.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Apply Online', 'title' => 'Services and pricing', 'lede' => 'Specialist, independent support for Nigerian students applying to study Medicine in the UK, at three levels of depth. Each lists exactly what you receive and what is not included, with one fee paid before work begins.', 'seo' => $seo])
     <x-fee-disclaimer class="mt-8 max-w-4xl" />
     <div class="mt-10 grid gap-6 lg:grid-cols-3 lg:items-stretch">
         @foreach($tiers as $t)

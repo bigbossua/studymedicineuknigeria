@@ -257,6 +257,13 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Universe and register**: three research sweeps (allied-health long-tail, taxonomy gaps, Medicine long-tail; research 12 §F–§G, research 13). Taxonomy 36 subjects (Pharmacy VALIDATED; cardiac/clinical physiology folded into Healthcare Science; radiotherapy recorded as therapeutic radiography; ophthalmic and hearing aid dispensing RESEARCH; nursing associate, physician associate, clinical scientist and sonography REJECTED). Register 146 rows: sixteen allied-health families, thirteen Medicine families, legacy B04–B06 superseded; new subjects emit after existing families with an id-stability assertion. FAQ 6, 28 and new 41 answer JUPEB/IJMB/OND/HND, "is it free" and course length. Subject image plan in the imagery brief. Semrush lookup sheet 50 themes; Semrush itself still `no_api_units`.
 - **Tests**: 101.
 
+## Stage 37: second security audit and the allied-health course facts (cycle 32)
+
+- **Security audit 2026-10-04** (`ops/reports/security-audit-2026-10-04.md`): 16 findings, all fixed with regression tests (`SecurityAuditFixesTest`). The two medium ones: a forged Host header produced a password-reset email with a valid token on an attacker's link (now TrustHosts on the APP_URL host plus every URL forced onto APP_URL), and deploys replayed verification decisions with no ledger, reverting later reviews (now a `fact_imports` ledger by content hash). Also: admin-only prices and redirect deletion, redirect path normalisation, authenticator replacement guard, per-account login limit, session invalidation on password change (`auth.session`), reset-form enumeration, Markdown-escaped staff emails, capped PDF inflation and image size checks, response statuses only after submission, approval refused on closed applications, the admin preview's sandbox CSP kept, https-only imported sources, formula-escaped worksheets, warning-level import log, confined CLI paths, mysqldump password via the environment.
+- **Directory safety**: `University::medicalSchools()` (a Medicine course, or no courses yet) now gates every public university listing, count, statement list and school page.
+- **Allied-health course facts**: `data/healthcare/courses.json` → `HealthcareCoursesSeeder`: 21 non-Medicine courses, 39 statements seen on official pages, all VERIFY-ON-PAGE, priority 4 in the worksheet (675 facts, regenerated), never on a Medicine page, reviewer verifications kept on reseed. Two non-medical providers added (Northumbria, Manchester Metropolitan) with `international_policy` not_published.
+- **Tests**: 121.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

@@ -122,4 +122,15 @@ class DeploymentSafetyTest extends TestCase
             $this->app['env'] = 'testing';
         }
     }
+
+    public function test_server_scripts_only_run_artisan_with_php_8_3_or_newer(): void
+    {
+        // Hostinger keeps several PHP binaries; plain `php` can be an older CLI and /opt/alt/php83 holds 8.3 on CloudLinux.
+        foreach (['ops/server-bootstrap.sh', 'ops/deploy.sh', 'ops/rollback.sh', '.github/workflows/account-role-hostinger.yml'] as $path) {
+            $script = $this->file($path);
+            $this->assertStringContainsString('/opt/alt/php83/usr/bin/php', $script, $path);
+            $this->assertStringContainsString('PHP_VERSION_ID >= 80300', $script, $path);
+            $this->assertStringNotContainsString('command -v php8.3 || command -v php)', $script, $path.' still trusts the first php it finds');
+        }
+    }
 }

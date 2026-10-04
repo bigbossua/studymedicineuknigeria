@@ -295,6 +295,12 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Inspection** no longer prints `APP_KEY` lines or shell history.
 - **Tests**: 153, on SQLite and MariaDB.
 
+## Stage 41: first-deploy order and PHP selection (cycle 36)
+
+- **Second MariaDB/SSH rehearsal** of bootstrap → first deploy through a linked subdomain docroot → smoke (including the staging noindex header) → forced failure with automatic rollback → manual rollback → first admin over SSH with the *Grant account role* script: all passed.
+- **Fixed**: the documented order bootstrapped staging without linking its docroot, so the first deploy's smoke test would have met Hostinger's placeholder page and rolled back; `ops/STAGING-SETTINGS.md` now links it at bootstrap. Server scripts trusted the first `php` found; they now accept only a PHP 8.3+ binary from `php83`, `php8.3`, `/opt/alt/php83/usr/bin/php` (CloudLinux) or `php`, and say so when none exists (rehearsed with an old `php83` on the path).
+- **Tests**: 154, on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

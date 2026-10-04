@@ -23,7 +23,8 @@ $SSH "$HOST" bash -s <<REMOTE
 set -euo pipefail
 cd $REL
 rm -rf storage && ln -s $APP/shared/storage storage && ln -s $APP/shared/.env .env
-PHP=\$(command -v php83 || command -v php8.3 || command -v php)
+PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v "\$c" 2>/dev/null) && "\$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done
+[ -n "\$PHP" ] || { echo "no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)"; exit 3; }
 # .env is read with phpdotenv (ops/env-shell.php), exactly as Laravel reads it.
 ENVSH=\$(\$PHP ops/env-shell.php DB_CONNECTION DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD) || { echo "shared/.env unreadable: refusing to migrate"; exit 3; }; eval "\$ENVSH"
 # Never migrate without a verified backup: no database name, no mysqldump, a failed dump or an empty file stops here.
@@ -56,7 +57,7 @@ if [ -n "$SITE_URL" ]; then
   echo "== smoke $SITE_URL =="
   if ! ops/smoke.sh "$SITE_URL" "$TARGET"; then
     echo "SMOKE FAILED — rolling back"
-    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); PHP=\$(command -v php83 || command -v php8.3 || command -v php); if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && echo \$PREV >> $APP/releases/.history && cd $APP/current && \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && echo rolled back to \$PREV; else echo 'no previous release to roll back to'; fi"
+    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); PHP=\"\"; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v \"\$c\" 2>/dev/null) && \"\$p\" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done; [ -n \"\$PHP\" ] || { echo \"no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)\"; exit 3; }; if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && echo \$PREV >> $APP/releases/.history && cd $APP/current && \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && echo rolled back to \$PREV; else echo 'no previous release to roll back to'; fi"
     exit 1
   fi
 fi

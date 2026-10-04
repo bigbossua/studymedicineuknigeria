@@ -72,7 +72,8 @@ jobs:
             cat <<'REMOTE'
           set -euo pipefail
           cd ~/apps/smukn-$TARGET/current
-          PHP=$(command -v php83 || command -v php8.3 || command -v php)
+          PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
+          [ -n "$PHP" ] || { echo "no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)"; exit 3; }
           ARGS=("$EMAIL" "$ROLE"); [ "$VERIFY" = true ] && ARGS+=(--verify-email)
           $PHP artisan smukn:grant-role "${ARGS[@]}"
           REMOTE

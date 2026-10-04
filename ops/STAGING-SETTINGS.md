@@ -43,8 +43,11 @@ sent, and registration still works; card payments stay disabled until the Stripe
 
 1. *Diagnose Actions settings* → confirms every row above is PRESENT (values never printed).
 2. *Inspect Hostinger (read-only)* → server report: PHP binary, MySQL, disk, existing sites, document roots, host key.
-3. *Bootstrap Hostinger target* (`staging`, `link_docroot=false`) → `~/apps/smukn-staging/shared/.env` created on the
-   server; nothing existing touched. The staging document root is linked only after the inspection shows where it is.
+3. *Bootstrap Hostinger target* (`staging`, `link_docroot=true`, `docroot` = the staging subdomain's folder the
+   inspection reports, typically `~/domains/staging.studymedicineuknigeria.com/public_html`) → `shared/.env` created on
+   the server; the subdomain's placeholder folder is archived to `~/backups` and replaced by a link to the release that
+   the first deploy creates. Nothing belonging to the main domain is touched. The link must exist before the first
+   deploy, otherwise its smoke test meets Hostinger's placeholder page and rolls the deploy back.
 4. *Deploy to Hostinger* (`staging`) → tests, verified DB backup, migrate, reference sync, switch, smoke test,
    automatic rollback on any failure; then *Review staging* runs on its own (every page on desktop and mobile:
    status, CSP, accessibility, H1, noindex).

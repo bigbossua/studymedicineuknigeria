@@ -19,7 +19,8 @@ if [ "$TARGET" = staging ] && { [ -z "${STAGING_BASIC_USER:-}" ] || [ -z "${STAG
 fi
 DOCROOT="${DOCROOT:-}"; DOCROOT="${DOCROOT/#\~/$HOME}"   # a quoted ~ from the workflow input is not expanded by the shell
 APP=~/apps/smukn-$TARGET; SHARED=$APP/shared
-PHP=$(command -v php83 || command -v php8.3 || command -v php)
+PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
+[ -n "$PHP" ] || { echo "no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)"; exit 3; }
 echo "== bootstrap $TARGET at $APP (php: $($PHP -r 'echo PHP_VERSION;')) =="
 mkdir -p $APP/releases $SHARED/storage/app/private $SHARED/storage/framework/{cache,sessions,views} $SHARED/storage/logs ~/backups
 chmod 700 $SHARED/storage/app/private

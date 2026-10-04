@@ -17,7 +17,8 @@ CUR=\${CUR%/}; PREV=""
 H=$APP/releases/.history; [ -f "\$H" ] || { echo "no release history on $TARGET (deploy.sh writes releases/.history)"; exit 2; }
 while read -r d; do d=\${d/#\~/\$HOME}; [ "\$d" = "\$CUR" ] && continue; [ -d "\$d" ] && PREV=\$d; done < <(grep -v '^$' "\$H" | awk -v c="\$CUR" '{ sub("^~", ENVIRON["HOME"]); if (\$0 == c) exit; print }')
 [ -n "\$PREV" ] || { echo "no earlier live release of $TARGET to roll back to"; exit 2; }
-PHP=\$(command -v php83 || command -v php8.3 || command -v php)
+PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v "\$c" 2>/dev/null) && "\$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done
+[ -n "\$PHP" ] || { echo "no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)"; exit 3; }
 ln -sfn "\$PREV" $APP/current
 cd $APP/current && \$PHP artisan config:cache >/dev/null && \$PHP artisan route:cache >/dev/null && \$PHP artisan view:cache >/dev/null
 echo "previous=\$CUR" > $APP/releases/.last_switch

@@ -41,6 +41,21 @@ jobs:
           done
           [ "$ok" = 1 ] || { echo "::error::Commit ${{ github.sha }} has no successful staging deploy. Deploy it to staging, review staging, then dispatch production."; exit 1; }
           echo "staging deploy of ${{ github.sha }} succeeded; continuing to production"
+      - name: Check configuration
+        env:
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          STAGING_URL: ${{ vars.STAGING_URL }}
+          TARGET: ${{ github.event.inputs.target || 'staging' }}
+        run: |
+          missing=""
+          [ -z "$HOST" ] && missing="$missing HOSTINGER_SSH_HOST(variable)"
+          [ -z "$USER" ] && missing="$missing HOSTINGER_SSH_USER(variable)"
+          [ -z "$KEY" ]  && missing="$missing HOSTINGER_SSH_KEY(secret)"
+          # without a URL deploy.sh would skip the smoke test, and an unsmoked staging deploy must never unlock production
+          [ "$TARGET" = staging ] && [ -z "$STAGING_URL" ] && missing="$missing STAGING_URL(variable)"
+          if [ -n "$missing" ]; then echo "::error::Missing settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1; fi
       - uses: shivammathur/setup-php@v2
         with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_mysql', coverage: none }
       - uses: actions/setup-node@v7

@@ -483,6 +483,29 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Admin:** `info@studymedicineuknigeria.com` granted `admin` by *Grant account role* (logged as `account.role_granted_by_console`); two-step verification enrolled.
 - **Test fixture:** `ops/qa/fixtures/dummy-test-document.pdf` (plain, labelled "DUMMY TEST DOCUMENT", no personal data) for live operational tests; a test proves the document pipeline accepts it.
 
+## Stage 55: production-readiness pass (cycle 49)
+
+- **Document security (P0):** `DocumentSecurityTest` covers the negative paths:
+  - signed-out access, another student's access, mismatched ids and guessed ids;
+  - a student opening the staff preview; staff without a two-step session;
+  - an executable renamed `.pdf`, a text "PDF" and an oversized file; uploading into someone else's application;
+  - encryption at rest, nothing under the web root, no public storage link.
+  `live-verify.sh` checks that a guessed document URL and the private storage paths answer 404/403/redirect on live.
+- **Retention enforced:** `smukn:retention` runs weekly (Sunday 04:10). Documents are deleted 12 months after an application closes (`purged_at`; a download answers 410). Content is anonymised after 24 months (`anonymised_at`). Access logs are deleted after 24 months. `--dry-run` reports counts only.
+- **Scheduler heartbeat:** written every minute. The dashboard item *Scheduler and email queue running* is done only when the heartbeat is ≤ 3 min old, the oldest job has waited ≤ 10 min and 0 jobs have failed. *Live verification* fails on a heartbeat older than 5 min, a job waiting more than 10 min, or any failed job.
+- **Legal pages 0.9.2** (still marked "under legal review"):
+  - processors and US transfers named; the "UK/EU" hosting claim removed until confirmed;
+  - "checked on upload" replaces "scanned";
+  - the 14-day cancellation right, with the express request to start, is ticked at checkout;
+  - identity lines appear only from `SITE_LEGAL_NAME`, `SITE_COMPANY_NUMBER`, `SITE_ADDRESS`, `SITE_ICO_NUMBER`, `SITE_VAT_NUMBER` and `SITE_HOSTING_REGION`;
+  - unevidenced team-experience and certificate claims removed from About;
+  - `docs/legal/LEGAL-READINESS.md` holds the OWNER LEGAL DECISION LIST.
+- **Facts:** `smukn:facts-evidence` (weekly workflow, report committed to `data/verification/evidence-*.csv`) compares each pending value with its official page: exact, partial or none. It never verifies a fact. "NOT PUBLISHED" values read as "Not published by the university…". The university publication threshold is in `docs/seo/DECISION-ENGINE.md` §8. 0 of 578 facts are verified and 0 of 55 university pages are indexable, deliberately.
+- **Analytics:** `SITE_ANALYTICS_DECISION=first_party` records a decision to run without GA4, so the dashboard item is honest. A GA4 ID is honoured only in the `G-…` format.
+- **Phone layout:** `ops/qa/viewport-check.cjs` checks 144 page/width pairs (320/390/768/1366 px; public, portal, admin). It found 14 overflow problems: directory cards, fees table cells, the contact email and admin tables. Result after the fixes: 0 problems.
+- **Performance:** `performance-check.yml` runs Lighthouse weekly (mobile lab) on ten landing pages. Live, 2026-10-04: performance 94–100, accessibility 100, best practices 100, SEO 100 (home 92 until the vague "Start" link text was fixed), LCP 1.8–2.9 s, CLS ≤ 0.014 (one earlier run measured 0.103 on /medical-schools and did not repeat), TBT ≤ 69 ms.
+- **Search Console:** the baseline and owner routine are in `docs/ops/SEARCH-CONSOLE-AND-GA4.md`. Sitemap status: Success, 28 discovered. The indexed count is not yet established.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

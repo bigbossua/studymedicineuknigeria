@@ -43,7 +43,7 @@
                     ['stethoscope', 'Medicine', 'Five- or six-year degrees on a fixed annual calendar', route('medicine.index'), 'Medicine guide'],
                     ['scale', 'Evidence', 'Requirements, fees and dates with sources and verification dates', route('verify'), 'How we verify'],
                     ['clipboard-check', 'Application support', 'Profile assessment, document checklist and review', route('apply.services'), 'Our services'],
-                    ['file-text', 'Apply Online', 'A structured application you can leave and return to', route('apply.index'), 'Start'],
+                    ['file-text', 'Apply Online', 'A structured application you can leave and return to', route('apply.index'), 'Start your application'],
                 ] as $i => [$icon, $title, $text, $href, $cta])
                     <li class="card card-hover p-4! sm:p-6! lg:rounded-none lg:border-r-0 lg:first:rounded-l-lg lg:last:rounded-r-lg lg:last:border-r flex flex-col @if($i === 5) bg-navy-50 @endif">
                         <div class="flex items-center justify-between">

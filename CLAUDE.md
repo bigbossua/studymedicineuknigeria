@@ -8,7 +8,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 - Never commit `.env`, keys, or anything from `storage/app/private`. Secrets live only in GitHub Actions Secrets.
 - No deployment to production except by explicit `deploy-hostinger.yml` dispatch after staging passed; read-only inspection first.
 - Every public page must have a row in `docs/decision/page-asset-register.md`; do not add pages without evidence.
-- Healthcare subjects other than Medicine live in `data/healthcare/subjects.json` → `professions` (Admin → Subjects); only a PUBLISHED/INDEXING/MEASURING/UPDATE subject may have a public page, and its facts still go through `reference_facts`. Regenerate the register and the knowledge graph with `python3 ops/seo/build-register.py && python3 ops/seo/build-knowledge-graph.py` after editing the taxonomy; never edit the CSV or `docs/seo/KNOWLEDGE-GRAPH.md` by hand.
+- Healthcare subjects other than Medicine live in `data/healthcare/subjects.json` → `professions` (Admin → Subjects); only a PUBLISHED/INDEXING/MEASURING/UPDATE subject may have a public page, and its facts still go through `reference_facts`. Regenerate the register, knowledge graph and subject scorecard with `python3 ops/seo/build-register.py && python3 ops/seo/build-knowledge-graph.py && python3 ops/seo/build-subject-scorecard.py` after editing the taxonomy; never edit the CSV or `docs/seo/KNOWLEDGE-GRAPH.md` by hand.
 - Every indexable URL must have a live row in `data/seo/decision-register.csv` (one page per intent; statuses and reasons in `docs/seo/DECISION-ENGINE.md`); a test enforces it. Upgrade a thin page before adding a sibling.
 
 ## Commands
@@ -18,7 +18,9 @@ npm run build && php artisan serve --host=127.0.0.1 --port=8000     # stop with:
 vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 121 tests; run before every commit
 php artisan smukn:og          # regenerate Open Graph cards after changing a public title
 php artisan smukn:images      # build photo derivatives from brand/photos
-php artisan smukn:facts-export && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification worksheet round trip (data/verification/README.md)
+php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification round trip (data/verification/README.md)
+php artisan smukn:reference-sync   # repository reference data into this database (deploy runs it; never touches reviewed facts)
+php artisan smukn:sources-check --dry-run   # official-page change watcher (nightly on the server)
 node ops/qa/seo-crawl.cjs     # see ops/qa/README.md for the browser QA scripts
 ```
 Local demo accounts: `student@example.test` / `Testpass12345`, `admin@example.test` / `Adminpass12345` (admin has TOTP enrolled; compute codes with `App\Support\Totp::code($secret)` in tinker).

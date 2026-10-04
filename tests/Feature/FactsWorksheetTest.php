@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\Topic;
 use App\Models\University;
+use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
@@ -58,5 +59,31 @@ class FactsWorksheetTest extends TestCase
         // Re-running the same decisions changes nothing further.
         $this->artisan('smukn:facts-import', ['file' => $dec])->expectsOutputToContain('0 fact(s) updated')->assertSuccessful();
         File::delete([base_path($file), base_path($dec)]);
+    }
+
+    public function test_reseeding_topic_facts_never_overwrites_a_verified_value(): void
+    {
+        $this->seed(TopicFactsSeeder::class);
+        $fact = Topic::where('slug', 'student-visa')->firstOrFail()->facts()->where('key', 'maintenance_london_monthly_gbp')->firstOrFail();
+        $fact->update(['value_number' => 1529, 'verification_status' => ReferenceFact::VERIFIED, 'source_url' => 'https://www.gov.uk/student-visa/money', 'verified_at' => now()]);
+
+        $this->seed(TopicFactsSeeder::class);
+
+        $fact->refresh();
+        $this->assertSame(ReferenceFact::VERIFIED, $fact->verification_status);
+        $this->assertEquals(1529, $fact->value_number, 'a reviewer-verified value must survive a reseed');
+    }
+
+    public function test_the_prioritisation_explanation_appears_only_when_its_definition_is_publishable(): void
+    {
+        $this->seed(TopicFactsSeeder::class);
+        $this->app['env'] = 'production';
+        config(['site.publish_unverified' => false]);
+        $html = $this->get('/working-in-the-uk')->assertOk()->getContent();
+        $this->assertStringNotContainsString('The definition above decides', $html, 'an unverified legal definition must not be interpreted in production');
+        $this->assertStringContainsString('treat priority as policy direction, not a promise', $html);
+
+        Topic::where('slug', 'gmc-registration')->firstOrFail()->facts()->where('key', 'prioritisation_act')->update(['verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now()]);
+        $this->assertStringContainsString('The definition above decides', $this->get('/working-in-the-uk')->getContent());
     }
 }

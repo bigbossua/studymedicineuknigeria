@@ -16,7 +16,7 @@ use Illuminate\Console\Command;
  */
 class ExportFactsWorksheet extends Command
 {
-    protected $signature = 'smukn:facts-export {file=data/verification/worksheet.csv} {--status=VERIFY-ON-PAGE,NOT_FOUND,REVIEW_DUE : comma-separated statuses to include}';
+    protected $signature = 'smukn:facts-export {file=data/verification/worksheet.csv} {--status=VERIFY-ON-PAGE,NOT_FOUND,REVIEW_DUE,SOURCE_CHANGED : comma-separated statuses to include}';
 
     protected $description = 'Export unverified facts with their sources as a verification worksheet (CSV)';
 

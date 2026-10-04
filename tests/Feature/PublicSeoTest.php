@@ -122,7 +122,7 @@ class PublicSeoTest extends TestCase
 
         $topics = Topic::whereIn('slug', ['student-visa', 'graduate-visa', 'gmc-registration'])->pluck('id');
         ReferenceFact::where('subject_type', Topic::class)->whereIn('subject_id', $topics)->where('verification_status', ReferenceFact::NOT_FOUND)->update(['verification_status' => ReferenceFact::NOT_PUBLISHED]);
-        ReferenceFact::where('subject_type', Topic::class)->whereIn('subject_id', $topics)->where('verification_status', ReferenceFact::VERIFY_ON_PAGE)->update(['verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now()]);
+        ReferenceFact::where('subject_type', Topic::class)->whereIn('subject_id', $topics)->whereIn('verification_status', [ReferenceFact::VERIFY_ON_PAGE, ReferenceFact::SOURCE_CHANGED])->update(['verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now()]);
 
         $this->get('/working-in-the-uk')->assertOk()->assertSee('name="robots" content="index, follow', false)->assertDontSee('Verification in progress');
         $this->assertStringContainsString('/working-in-the-uk', $this->get('/sitemap.xml')->getContent());

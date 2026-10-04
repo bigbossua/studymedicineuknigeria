@@ -56,12 +56,16 @@
                 <p class="text-[0.9375rem] text-ink-700 mt-4">The length is set by the date of the Graduate visa application, not the course start date. A 2027 entrant finishing in 2032 or 2033 applies under whatever rule is then in force.</p>
             </section>
 
-            <section id="prioritisation"><h2>Prioritising UK graduates: what is law and what is proposed</h2>
+            <section id="prioritisation"><h2>Prioritising UK graduates for training</h2>
                 <dl class="card mt-4">
-                    <x-fact-row :fact="$gmc?->fact('prioritisation_proposal')" label="Current position" />
+                    <x-fact-row :fact="$gmc?->fact('prioritisation_act')" label="Who counts as a UK medical graduate" />
                 </dl>
                 <div class="prose-site mt-5">
-                    <p>The Government’s 10 Year Health Plan for England (July 2025) committed to prioritising UK medical graduates for Foundation and specialty training, and a Medical Training (Prioritisation) Bill was introduced to implement it. Two things are not settled and we will not guess at them: whether the Bill has become law and started, and whether “graduate of a UK medical school” includes international students who qualified in the UK. We re-read the Bill’s pages before every review of this page; until then, treat priority as policy direction, not a promise.</p>
+                    @if($gmc?->fact('prioritisation_act')?->isPublishable())
+                        <p>The definition above decides who is in the priority group for medical training allocation. Its wording turns on where the training took place, not on nationality or fee status, so it reads on international students who complete a UK medical degree in the UK in the same way as on home students; a degree awarded by a UK university but taught mostly outside the UK is treated differently. What the priority means in practice (which allocation rounds, at which stage, for which posts) is set in guidance that changes from year to year: read the NHS England applicant information and the UK Foundation Programme Office pages linked below before relying on it.</p>
+                    @else
+                        <p>Government policy is to give UK medical graduates priority in training allocation. Who counts as a UK medical graduate, and what that means for an international student who qualified in the UK, is set in legislation and NHS guidance that we are re-checking; until the definition is verified here, read the NHS England applicant information and the UK Foundation Programme Office pages linked below, and treat priority as policy direction, not a promise.</p>
+                    @endif
                 </div>
             </section>
 
@@ -71,7 +75,7 @@
                     <li>GOV.UK: <a href="https://www.gov.uk/student-visa" rel="noopener" target="_blank">Student visa</a>, <a href="https://www.gov.uk/graduate-visa" rel="noopener" target="_blank">Graduate visa</a>, <a href="https://www.gov.uk/health-care-worker-visa" rel="noopener" target="_blank">Health and Care Worker visa</a>.</li>
                     <li>General Medical Council: <a href="https://www.gmc-uk.org/education/medical-licensing-assessment" rel="noopener" target="_blank">Medical Licensing Assessment</a> and <a href="https://www.gmc-uk.org/registration-and-licensing/join-the-register/provisional-registration" rel="noopener" target="_blank">provisional registration</a>.</li>
                     <li>UK Foundation Programme Office: <a href="https://foundationprogramme.nhs.uk/" rel="noopener" target="_blank">eligibility and right-to-work guidance</a>.</li>
-                    <li>NHS England: <a href="https://www.england.nhs.uk/long-read/medical-training-prioritisation-bill-information-for-applicants-to-medical-training/" rel="noopener" target="_blank">the prioritisation Bill, information for applicants</a>.</li>
+                    <li>NHS England: <a href="https://www.england.nhs.uk/long-read/medical-training-prioritisation-bill-information-for-applicants-to-medical-training/" rel="noopener" target="_blank">medical training prioritisation, information for applicants</a>; the legislation itself: <a href="https://www.legislation.gov.uk/ukpga/2026/7" rel="noopener" target="_blank">Medical Training (Prioritisation) Act 2026</a>.</li>
                     <li>British Medical Association: <a href="https://www.bma.org.uk/advice-and-support/international-doctors/training-in-the-uk/visa-guide-for-international-doctors-and-students-training-in-the-uk" rel="noopener" target="_blank">visa guide for international students and doctors</a>.</li>
                 </ul>
             </section>

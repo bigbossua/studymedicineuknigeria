@@ -59,8 +59,8 @@ class TopicFactsSeeder extends Seeder
             ['student-visa', 'UK Student visa (Nigeria → UK)', '2026', [
                 ['work_term_time', 'text', 'Up to 20 hours per week during term time for degree-level students; full-time in vacations; no self-employment', $gov, $V, null],
                 ['dependants', 'text', 'Undergraduate students cannot bring dependants (rule in force since January 2024)', $gov, $V, null],
-                ['maintenance_london_monthly_gbp', 'number', 1483, $govMoney, $V, 'From January 2025. Reported rise to £1,570 from 30 November 2026 — not confirmed on GOV.UK.'],
-                ['maintenance_outside_london_monthly_gbp', 'number', 1136, $govMoney, $V, 'From January 2025. Reported rise to £1,203 from 30 November 2026 — not confirmed on GOV.UK.'],
+                ['maintenance_london_monthly_gbp', 'number', 1483, $govMoney, ReferenceFact::SOURCE_CHANGED, 'From January 2025. 2026-10-04: a search snippet of the GOV.UK money page showed £1,529 a month (London); the page appears to have changed. Read the page and record the current figure before verifying.'],
+                ['maintenance_outside_london_monthly_gbp', 'number', 1136, $govMoney, ReferenceFact::SOURCE_CHANGED, 'From January 2025. 2026-10-04: a search snippet of the GOV.UK money page showed £1,171 a month (outside London); the page appears to have changed. Read the page and record the current figure before verifying.'],
                 ['application_fee_gbp', 'number', null, $gov, $NF, 'Not reached in research; confirm on GOV.UK.'],
                 ['ihs_per_year_gbp', 'number', 1035, $ihs, $V, null],
                 ['tb_test', 'text', 'Applicants from Nigeria must take a tuberculosis test at an approved clinic before applying', 'https://www.gov.uk/tb-test-visa', $V, 'Clinic fee set by the clinic.'],
@@ -74,7 +74,8 @@ class TopicFactsSeeder extends Seeder
                 ['provisional_registration', 'text', 'UK graduates apply to the GMC for provisional registration to begin Foundation Year 1', $gmc, $V, null],
                 ['foundation_eligibility', 'text', 'International graduates of UK medical schools apply to the UK Foundation Programme on the same basis as home graduates; right-to-work evidence is required after allocation and visa sponsorship is arranged for those who need it', $ukfpo, $V, null],
                 ['f1_visa_route', 'text', 'Health and Care Worker visa (Skilled Worker route) with the employing trust as sponsor', 'https://www.gov.uk/health-care-worker-visa', $V, null],
-                ['prioritisation_proposal', 'text', 'The Government\'s 10 Year Health Plan (July 2025) and a Medical Training (Prioritisation) Bill propose prioritising UK medical graduates for specialty training from 2026–2027. Whether international UK graduates are in the priority group is not yet confirmed', 'https://commonslibrary.parliament.uk/', $V, 'Proposed / in progress — not settled law. Review quarterly.'],
+                ['prioritisation_proposal', 'text', 'The Government\'s 10 Year Health Plan (July 2025) and a Medical Training (Prioritisation) Bill propose prioritising UK medical graduates for specialty training from 2026–2027. Whether international UK graduates are in the priority group is not yet confirmed', 'https://commonslibrary.parliament.uk/', ReferenceFact::ARCHIVED, 'Superseded 2026-10-04 by prioritisation_act (the Bill appears to have become an Act). Previously: proposed / in progress, not settled law.'],
+                ['prioritisation_act', 'text', 'The Medical Training (Prioritisation) Act 2026 (2026 c. 7) defines a "UK medical graduate" as a holder of a primary UK qualification under the Medical Act 1983, excluding anyone who spent all or most of the training for it outside the British Islands', 'https://www.legislation.gov.uk/ukpga/2026/7', $V, 'From a 2026-10-04 search snippet of legislation.gov.uk; read the Act (definition section and commencement) before verifying. Royal Assent date (reported 5 March 2026) and application to Foundation Programme allocation come from BMA pages, not the Act: confirm separately.'],
             ]],
             ['costs-2026', 'Other costs of studying Medicine in the UK', '2026/27', [
                 ['living_costs_note', 'text', 'University cost-of-living pages and UKCISA guidance were not reached in research', 'https://www.ukcisa.org.uk/', $NF, 'Gap list, research 08 §4.'],
@@ -88,9 +89,12 @@ class TopicFactsSeeder extends Seeder
                 $existing = $t->facts()->where('key', $key)->first();
                 $attrs = ['value_text' => $type === 'text' ? $value : null, 'value_number' => $type === 'number' ? $value : null, 'source_url' => $src, 'source_type' => 'official', 'applies_to' => 'international', 'academic_year' => $cycle, 'notes' => $notes];
                 if ($existing) {
-                    if ($existing->verification_status !== ReferenceFact::VERIFIED) {
-                        $attrs['verification_status'] = $status;
-                    } $existing->update($attrs);
+                    // A verified fact belongs to the reviewer (admin queue or smukn:facts-import): re-seeding must never
+                    // replace its value or source, or a corrected value would be overwritten while still showing VERIFIED.
+                    if ($existing->verification_status === ReferenceFact::VERIFIED) {
+                        continue;
+                    }
+                    $existing->update($attrs + ['verification_status' => $status]);
                 } else {
                     $t->facts()->create($attrs + ['key' => $key, 'verification_status' => $status]);
                 }

@@ -23,6 +23,8 @@ for name in Googlebot Googlebot-smartphone curl; do
 done
 for fam in -4 -6; do
   [ "$fam" = -6 ] && [ -z "$(dig +short AAAA "$H" 2>/dev/null)" ] && continue
+  # GitHub's hosted runners have no IPv6 route: only judge IPv6 when this machine can reach another IPv6 site
+  [ "$fam" = -6 ] && ! curl -s -6 -o /dev/null --max-time 8 https://www.google.com/ && { info "IPv6 not testable from this machine (no IPv6 route); AAAA records are published"; continue; }
   c=$(curl -s $fam -A "$GOOGLEBOT" -o /dev/null -w '%{http_code}' --max-time 20 "$B/sitemap.xml"); [ "$c" = 200 ] && ok "IPv${fam#-}: $c" || bad "IPv${fam#-}: $c"
 done
 c=$(curl -sI -A "$GOOGLEBOT" -o /dev/null -w '%{http_code}' "$B/sitemap.xml"); [ "$c" = 200 ] && ok "HEAD: $c" || bad "HEAD: $c"

@@ -14,7 +14,9 @@ class PageController extends Controller
 {
     public function home(): View
     {
-        $seo = Seo::make('Study Medicine in the UK from Nigeria',
+        // Brand-first: the core query ("study medicine in the UK from Nigeria") belongs to the core landing page
+        // (register C01); home is the entry point and must not compete with it.
+        $seo = Seo::make('Study Medicine UK Nigeria: independent UK Medicine applications',
             'Check published entry requirements for WAEC, NECO, A-levels and Nigerian degrees, compare verified fees and UK medical schools, and apply online with support.')
             ->canonical(route('home'))
             ->jsonLd([

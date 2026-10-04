@@ -4,8 +4,8 @@
         <div class="container-site py-14 sm:py-20 lg:py-24 grid lg:grid-cols-12 gap-10 items-center">
             <div class="lg:col-span-7">
                 <p class="eyebrow mb-4"><span class="inline-block w-6 h-[2px] bg-nigeria-green align-middle mr-2"></span>Nigeria → United Kingdom · Medicine</p>
-                <h1 class="text-balance">Study Medicine in the UK from Nigeria</h1>
-                <p class="lede mt-6 max-w-[34rem]">Understand your options, check requirements, prepare your documents and apply online.</p>
+                <h1 class="text-balance">Your route from Nigeria to a UK medical school</h1>
+                <p class="lede mt-6 max-w-[34rem]">Understand your options, check requirements, prepare your documents and apply online. New to this? Start with <a href="{{ route('medicine.nigeria') }}">studying Medicine in the UK from Nigeria</a>.</p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-3">
                     <a href="{{ route('apply.index') }}" class="btn btn-primary btn-lg">Apply Online</a>
                     <a href="{{ route('apply.eligibility') }}" class="btn btn-secondary btn-lg">Check your eligibility</a>

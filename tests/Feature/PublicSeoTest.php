@@ -19,7 +19,7 @@ class PublicSeoTest extends TestCase
 
     public function test_home_renders_with_canonical_robots_and_json_ld(): void
     {
-        $this->get('/')->assertOk()->assertSee('<link rel="canonical"', false)->assertSee('application/ld+json', false)->assertSee('Study Medicine in the UK from Nigeria');
+        $this->get('/')->assertOk()->assertSee('<link rel="canonical"', false)->assertSee('application/ld+json', false)->assertSee('<title>Study Medicine UK Nigeria: independent UK Medicine applications</title>', false)->assertSee('href="'.url('/study-medicine-in-the-uk/from-nigeria').'"', false);
     }
 
     public function test_every_medicine_page_shows_the_route_map_up_to_the_hub_and_on_to_the_next_step(): void
@@ -102,6 +102,7 @@ class PublicSeoTest extends TestCase
         // Fact-gated pages are out of the sitemap until verified but enter it unchanged, so they are held to the same limits now.
         $gated = collect(Route::getRoutes()->getRoutes())->filter(fn ($r) => isset($r->defaults['sitemap']['gate']))->map(fn ($r) => url($r->uri()))->all();
         $this->assertNotEmpty($gated);
+        $primary = [];
         foreach (array_unique(array_merge($m[1], $gated)) as $url) {
             $path = parse_url($url, PHP_URL_PATH) ?: '/';
             $html = $this->get($path)->assertOk()->getContent();
@@ -114,7 +115,11 @@ class PublicSeoTest extends TestCase
             $this->assertLessThanOrEqual(165, mb_strlen($desc), "$path description too long (".mb_strlen($desc).')');
             $this->assertGreaterThanOrEqual(100, mb_strlen($desc), "$path description too short: $desc");
             $this->assertSame(1, preg_match_all('#<h1[\s>]#', $html), "$path must have exactly one h1");
+            $primary[$path] = mb_strtolower(trim(preg_split('/[:|]/', $title)[0]));
         }
+        // Cannibalisation guard: two pages never lead with the same title phrase (one page per intent).
+        $dupes = array_filter(array_count_values($primary), fn ($n) => $n > 1);
+        $this->assertSame([], $dupes, 'pages competing for the same title phrase: '.implode(', ', array_keys($dupes)));
     }
 
     public function test_fact_gated_pages_enter_the_index_only_when_their_topics_are_verified(): void

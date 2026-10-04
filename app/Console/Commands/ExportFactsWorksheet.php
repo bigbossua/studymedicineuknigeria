@@ -41,12 +41,18 @@ class ExportFactsWorksheet extends Command
             ->sortBy(fn ($f) => [self::priority($f), class_basename($f->subject_type), $f->subject?->name ?? $f->subject?->title ?? '', $f->key])->values();
         $path = base_path($this->argument('file'));
         @mkdir(dirname($path), 0755, true);
+        $dir = realpath(dirname($path));
+        if (! $dir || ! str_starts_with($dir.DIRECTORY_SEPARATOR, realpath(base_path()).DIRECTORY_SEPARATOR)) {
+            $this->error('The worksheet must be written inside the project directory.');
+
+            return self::FAILURE;
+        }
         $h = fopen($path, 'w');
         fputcsv($h, self::HEADER, ',', '"', '');
         foreach ($facts as $f) {
             $value = $f->value_text ?? ($f->value_number !== null ? (string) (float) $f->value_number : ($f->value_bool === null ? '' : ($f->value_bool ? 'yes' : 'no')));
             $subject = $f->subject instanceof Course ? ($f->subject->university?->name.' · '.$f->subject->title) : ($f->subject?->name ?? $f->subject?->title ?? '');
-            fputcsv($h, [self::ref($f), self::priority($f), $subject, $f->key, $f->academic_year, $value, $f->source_url, $f->verification_status, $f->notes, '', '', '', '', ''], ',', '"', '');
+            fputcsv($h, array_map([self::class, 'cell'], [self::ref($f), self::priority($f), $subject, $f->key, $f->academic_year, $value, $f->source_url, $f->verification_status, $f->notes, '', '', '', '', '']), ',', '"', '');
         }
         fclose($h);
         $this->info("{$facts->count()} fact(s) written to {$this->argument('file')} (priority 1 = dates and fees students act on).");
@@ -55,8 +61,18 @@ class ExportFactsWorksheet extends Command
     }
 
     /** 1 = cycle dates, fees and visa figures; 2 = Nigerian-applicant statements; 3 = everything else. */
+    /** Spreadsheet formula injection: the owner opens this file in Excel or Sheets, so no cell may start a formula. */
+    public static function cell(mixed $v): mixed
+    {
+        return is_string($v) && $v !== '' && in_array($v[0], ['=', '+', '-', '@', "\t", "\r"], true) ? "'".$v : $v;
+    }
+
     public static function priority(ReferenceFact $f): int
     {
+        // Medicine is the flagship: facts about other subjects' courses are reviewed after every Medicine fact.
+        if ($f->subject instanceof Course && ($f->subject->profession ?? 'medicine') !== 'medicine') {
+            return 4;
+        }
         if ($f->subject instanceof Topic || str_contains($f->key, 'fee') || str_contains($f->key, 'deadline')) {
             return 1;
         }

@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\ReferenceFact;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -16,17 +17,29 @@ use Illuminate\Support\Facades\Log;
  */
 class ImportFactsDecisions extends Command
 {
-    protected $signature = 'smukn:facts-import {file : worksheet CSV with the decision columns filled in} {--dry-run : report what would change without saving}';
+    protected $signature = 'smukn:facts-import {file : worksheet CSV with the decision columns filled in} {--dry-run : report what would change without saving} {--force : re-apply a file already recorded in the fact_imports ledger}';
 
     protected $description = 'Apply verification decisions recorded in a worksheet CSV to the reference facts';
 
     public function handle(): int
     {
         $path = base_path($this->argument('file'));
-        if (! is_file($path)) {
+        $real = realpath($path);
+        if (! $real || ! is_file($real)) {
             $this->error("No file at {$path}");
 
             return self::FAILURE;
+        }
+        if (! str_starts_with($real, realpath(base_path()).DIRECTORY_SEPARATOR)) {
+            $this->error('The decisions file must be inside the project directory.');
+
+            return self::FAILURE;
+        }
+        $hash = hash_file('sha256', $real);
+        if (! $this->option('dry-run') && ! $this->option('force') && DB::table('fact_imports')->where('sha256', $hash)->exists()) {
+            $this->info('Already applied in this environment (same file content); nothing changed. Use --force to re-apply deliberately.');
+
+            return self::SUCCESS;
         }
         $h = fopen($path, 'r');
         $header = fgetcsv($h, 0, ',', '"', '');
@@ -56,6 +69,12 @@ class ImportFactsDecisions extends Command
             $newSource = trim((string) ($row['new_source_url'] ?? ''));
             $newValue = trim((string) ($row['verified_value'] ?? ''));
             if ($newSource !== '') {
+                if (! preg_match('#^https://#i', $newSource) || ! filter_var($newSource, FILTER_VALIDATE_URL)) {
+                    $skipped++;
+                    $this->warn("skipped {$row['ref']}: new_source_url must be an https:// address");
+
+                    continue;
+                }
                 $fact->source_url = $newSource;
             }
             switch ($decision) {
@@ -103,9 +122,13 @@ class ImportFactsDecisions extends Command
             }
         }
         fclose($h);
-        if (! $this->option('dry-run') && $applied) {
-            // No signed-in admin on the command line: the audit trail is the committed decisions file plus the application log.
-            Log::info('fact.worksheet_import', ['file' => $this->argument('file'), 'applied' => $applied, 'skipped' => $skipped, 'unknown' => $unknown]);
+        if (! $this->option('dry-run')) {
+            // No signed-in admin on the command line: the audit trail is the committed decisions file, this ledger and the
+            // application log (warning level, because production logs at warning and above).
+            DB::table('fact_imports')->updateOrInsert(['sha256' => $hash], ['file' => (string) $this->argument('file'), 'applied' => $applied, 'skipped' => $skipped, 'unknown' => $unknown, 'created_at' => now(), 'updated_at' => now()]);
+            if ($applied) {
+                Log::warning('fact.worksheet_import', ['file' => $this->argument('file'), 'sha256' => $hash, 'applied' => $applied, 'skipped' => $skipped, 'unknown' => $unknown]);
+            }
         }
         $this->info(($this->option('dry-run') ? '[dry run] ' : '')."{$applied} fact(s) updated, {$skipped} skipped, {$unknown} unknown reference(s).");
 

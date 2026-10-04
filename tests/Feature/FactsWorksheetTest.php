@@ -57,7 +57,7 @@ class FactsWorksheetTest extends TestCase
         $this->assertSame('VERIFY-ON-PAGE', $date->fresh()->verification_status, 'no verified_on date: cannot be verified');
 
         // Re-running the same decisions changes nothing further.
-        $this->artisan('smukn:facts-import', ['file' => $dec])->expectsOutputToContain('0 fact(s) updated')->assertSuccessful();
+        $this->artisan('smukn:facts-import', ['file' => $dec])->expectsOutputToContain('Already applied')->assertSuccessful();
         File::delete([base_path($file), base_path($dec)]);
     }
 

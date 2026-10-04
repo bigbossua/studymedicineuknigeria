@@ -19,7 +19,7 @@ deployed; this worksheet does the same job **now**, from any browser, without de
 3. Save as `data/verification/decisions-YYYY-MM-DD.csv` (keep the header). Run
    `php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv --dry-run`, read the summary, then run it
    without `--dry-run`. Commit the file: the deploy script replays every `decisions-*.csv` after migrations, so the same
-   decisions apply on staging and production.
+   decisions apply on staging and production. Each file is applied once per environment (the `fact_imports` ledger keys it by content hash), so a replay never reverses a later review in the admin queue; `--force` re-applies deliberately. `new_source_url` must be an `https://` address. The exported worksheet escapes any cell that would start a spreadsheet formula with a leading apostrophe.
 
 Rules: a fact is `verified` only when you read it on the official page named in `source_url` (or `new_source_url`);
 never from a consultancy, agent or forum page. Never type a value you did not see. `verified` without a date is refused.

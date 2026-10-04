@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -11,6 +12,16 @@ class Course extends Model
     protected $guarded = [];
 
     protected $casts = ['published' => 'boolean'];
+
+    /**
+     * Medicine courses only. Every public Medicine page (directory, university pages, fees, admissions, requirements)
+     * reads courses through this scope so a course of another subject (courses.profession, data/healthcare) can never
+     * appear as, or be compared with, a Medicine course. A subject's own pages will use its own slug.
+     */
+    public function scopeMedicine(Builder $query): Builder
+    {
+        return $query->where('profession', 'medicine');
+    }
 
     public function university(): BelongsTo
     {

@@ -70,7 +70,7 @@ class ContentController extends Controller
         return view('content.medicine.foundation', ['seo' => $seo, 'faqs' => $faqs,
             'published' => $routes->where('verification_status', '!=', ReferenceFact::NOT_PUBLISHED)->values(),
             'notPublished' => $routes->where('verification_status', ReferenceFact::NOT_PUBLISHED)->values(),
-            'foundationCourses' => Course::with('university')->where('entry_type', 'foundation')->get()]);
+            'foundationCourses' => Course::medicine()->with('university')->where('entry_type', 'foundation')->get()]);
     }
 
     // ---------------- Requirements ----------------
@@ -128,7 +128,7 @@ class ContentController extends Controller
             ->where('verification_status', ReferenceFact::NOT_FOUND)->get()
             ->filter(fn ($f) => $f->isPublishable() && preg_match('/A10\d|A1\d\d|GEP|GPEP|ScotGEM/i', (string) $f->value_text))->sortBy(fn ($f) => $f->subject?->name)->values(); // research notes, so hidden in production like every unverified fact
         // Every graduate-entry course in the directory (by UCAS code or entry type), grouped by the university's international policy.
-        $gemCourses = Course::with(['university', 'facts'])->where(fn ($q) => $q->where('entry_type', 'graduate')->orWhereIn('ucas_code', ['A101', 'A102', 'A109']))->get()
+        $gemCourses = Course::medicine()->with(['university', 'facts'])->where(fn ($q) => $q->where('entry_type', 'graduate')->orWhereIn('ucas_code', ['A101', 'A102', 'A109']))->get()
             ->filter(fn ($c) => $c->university)->sortBy(fn ($c) => $c->university->name)->values();
 
         return view('content.requirements.gem', ['seo' => $seo, 'gem' => $gem, 'unknown' => $unknown, 'gemCourses' => $gemCourses, 'faqs' => $faqs, 'ucat' => Topic::bySlug('ucat-2026')]);
@@ -150,7 +150,7 @@ class ContentController extends Controller
     // ---------------- Fees ----------------
     private function feeRows(): Collection
     {
-        return ReferenceFact::with('subject.university')->where('subject_type', Course::class)->where('key', 'international_fee_gbp')->get()
+        return ReferenceFact::with('subject.university')->where('subject_type', Course::class)->whereIn('subject_id', Course::medicine()->select('id'))->where('key', 'international_fee_gbp')->get()
             ->groupBy('subject_id')->map(fn ($g) => $g->sortByDesc('academic_year')->first())->values()
             ->filter(fn ($f) => $f->subject && $f->subject->university)->sortBy(fn ($f) => $f->subject->university->name)->values();
     }
@@ -198,7 +198,7 @@ class ContentController extends Controller
 
     public function ucat()
     {
-        $courses = Course::with('university')->whereHas('university', fn ($q) => $q->whereIn('international_policy', ['accepts', 'international_only']))->get();
+        $courses = Course::medicine()->with('university')->whereHas('university', fn ($q) => $q->whereIn('international_policy', ['accepts', 'international_only']))->get();
 
         $faqs = collect($this->faqItems())->whereIn('id', [18, 19, 20])->values();
         $seo = $this->seo('UCAT for Nigerian students: dates, fees and test centres', 'The UCAT for applicants in Nigeria: 2026 cycle dates, the three-section structure scored out of 2700, fees, Pearson VUE centres in Nigeria and who requires it.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]);
@@ -220,7 +220,7 @@ class ContentController extends Controller
 
     public function howToApply()
     {
-        $direct = Course::with('university')->whereIn('application_route', ['DIRECT', 'BOTH'])->get();
+        $direct = Course::medicine()->with('university')->whereIn('application_route', ['DIRECT', 'BOTH'])->get();
         $faqs = collect($this->faqItems())->whereIn('id', [12, 30, 40])->values();
         $seo = $this->seo('How to apply to UK Medicine from Nigeria: UCAS and direct', 'Step by step: applying through UCAS as an individual, the four-choice rule, personal statement, references, documents, and the schools that take direct applications.', 'admissions.howto', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'How to apply']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);

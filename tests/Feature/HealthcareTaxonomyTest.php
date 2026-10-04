@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Course;
 use App\Models\Profession;
+use App\Models\University;
 use App\Models\User;
 use App\Support\Totp;
 use Database\Seeders\ProfessionSeeder;
@@ -109,5 +110,27 @@ class HealthcareTaxonomyTest extends TestCase
         $this->actingAs($admin)->withSession([EnsureTwoFactor::SESSION_KEY => $admin->id])
             ->get('/admin/professions')->assertOk()->assertSee('Healthcare subjects')->assertSee('Dentistry')->assertSee('approximately 15 international places')
             ->assertSee('<meta name="robots" content="noindex', false);
+    }
+
+    public function test_a_course_of_another_subject_never_appears_on_a_medicine_page(): void
+    {
+        $u = University::create(['slug' => 'alpha', 'name' => 'Alpha University', 'nation' => 'England', 'international_policy' => 'accepts', 'published' => true]);
+        $med = Course::create(['university_id' => $u->id, 'slug' => 'medicine', 'title' => 'Medicine MBBS', 'entry_type' => 'standard', 'application_route' => 'UCAS', 'admissions_test' => 'UCAT']);
+        $med->facts()->create(['key' => 'international_fee_gbp', 'value_number' => 41000, 'academic_year' => '2026/27', 'verification_status' => 'VERIFY-ON-PAGE', 'source_type' => 'official']);
+        // A nursing course at the same university, shaped to match every Medicine filter (test, route, foundation, graduate, fee).
+        foreach (['standard', 'foundation', 'graduate'] as $type) {
+            $nur = Course::create(['university_id' => $u->id, 'profession' => 'nursing', 'slug' => "nursing-{$type}", 'title' => "Adult Nursing Zqx {$type}", 'entry_type' => $type, 'application_route' => 'BOTH', 'admissions_test' => 'UCAT', 'official_url' => "https://alpha.example/nursing-zqx-{$type}"]);
+            $nur->facts()->create(['key' => 'international_fee_gbp', 'value_number' => 17777, 'academic_year' => '2026/27', 'verification_status' => 'VERIFY-ON-PAGE', 'source_type' => 'official']);
+        }
+
+        foreach (['/medical-schools', '/medical-schools?test=UCAT', '/medical-schools?route=BOTH', '/medical-schools/alpha', '/fees', '/fees?sort=fee', '/admissions/ucat', '/admissions/how-to-apply',
+            '/study-medicine-in-the-uk/foundation-routes', '/requirements/nigerian-degree-graduate-entry'] as $path) {
+            $html = $this->get($path)->assertOk()->getContent();
+            $this->assertStringNotContainsString('Zqx', $html, "{$path} shows a nursing course");
+            $this->assertStringNotContainsString('17,777', $html, "{$path} shows a nursing fee");
+            $this->assertStringNotContainsString('17777', $html, "{$path} shows a nursing fee");
+        }
+        $this->assertStringContainsString('Medicine MBBS', $this->get('/medical-schools/alpha')->getContent());
+        $this->assertStringNotContainsString('Alpha University', $this->get('/medical-schools?route=BOTH')->getContent(), 'a nursing course must not make a school match a Medicine filter');
     }
 }

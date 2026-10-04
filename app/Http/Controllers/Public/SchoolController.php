@@ -16,7 +16,7 @@ class SchoolController extends Controller
 {
     public function index(Request $request): View
     {
-        $q = University::query()->with(['courses.facts', 'facts'])->orderBy('name');
+        $q = University::query()->with(['courses' => fn ($c) => $c->medicine()->with('facts'), 'facts'])->orderBy('name');
 
         $filters = [
             'nation' => $request->string('nation')->toString(),
@@ -36,14 +36,14 @@ class SchoolController extends Controller
             $q->where(fn ($w) => $w->where('name', 'like', '%'.$filters['q'].'%')->orWhere('city', 'like', '%'.$filters['q'].'%')->orWhere('medical_school_name', 'like', '%'.$filters['q'].'%'));
         }
         if ($filters['test']) {
-            $q->whereHas('courses', fn ($c) => $c->where('admissions_test', $filters['test']));
+            $q->whereHas('courses', fn ($c) => $c->medicine()->where('admissions_test', $filters['test']));
         }
         if ($filters['waec'] === 'published') {
             $visible = (config('site.publish_unverified') || ! app()->isProduction()) ? [ReferenceFact::VERIFIED, ReferenceFact::VERIFY_ON_PAGE, ReferenceFact::REVIEW_DUE, ReferenceFact::SOURCE_CHANGED] : [ReferenceFact::VERIFIED];
             $q->whereHas('facts', fn ($f) => $f->where('key', 'waec_neco_statement')->whereIn('verification_status', $visible));
         }
         if ($filters['route']) {
-            $q->whereHas('courses', fn ($c) => $c->where('application_route', $filters['route']));
+            $q->whereHas('courses', fn ($c) => $c->medicine()->where('application_route', $filters['route']));
         }
 
         $universities = $q->get();
@@ -80,7 +80,7 @@ class SchoolController extends Controller
 
     public function show(University $university): View
     {
-        $university->load(['courses.facts', 'facts']);
+        $university->load(['courses' => fn ($c) => $c->medicine()->with('facts'), 'facts']);
         $course = $university->primaryCourse();
         $seo = Seo::make(($university->short_name ?: $university->name).' Medicine: international entry',
             "What {$university->name} publishes for international and Nigerian applicants to Medicine: eligibility, entry requirements, admissions test, fees, application route, with official sources and verification dates.")

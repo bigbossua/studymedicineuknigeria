@@ -5,6 +5,7 @@ namespace App\Services\Applications;
 use App\Enums\DocumentStatus;
 use App\Enums\Stage;
 use App\Models\Application;
+use App\Services\Payments\StripeService;
 
 /**
  * deriveStage() — a pure function over the application and its children (docs/architecture/12.4).
@@ -120,6 +121,10 @@ class StageResolver
             return ['Review and approve your application', route('portal.approve.show', $num), 'primary'];
         }
         if ($stage === Stage::PAYMENT_REQUIRED) {
+            if ($a->tier && ! app(StripeService::class)->paymentsOpen()) {
+                return ['You chose '.$a->tier->name.'. Online payment is not open yet; we will email you when it opens. You can continue your application meanwhile.', route('portal.payments.index', $num), 'info'];
+            }
+
             return $a->tier
                 ? ['Confirm and pay for '.$a->tier->name, route('portal.payments.index', $num), 'primary']
                 : ['Your profile has been reviewed: choose your service', route('portal.services.index', $num), 'primary'];

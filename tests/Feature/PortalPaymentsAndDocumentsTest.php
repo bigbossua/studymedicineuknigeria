@@ -34,6 +34,7 @@ class PortalPaymentsAndDocumentsTest extends TestCase
         parent::setUp();
         Notification::fake();
         Storage::fake('private');
+        config(['site.bank_transfer' => true]); // these tests cover the bank-transfer path, which the owner switches on
         $this->seed(PlatformSeeder::class);
         $this->student = User::factory()->create();
         $this->admin = User::factory()->create();

@@ -33,6 +33,15 @@ class StripeService
         return $this->liveAllowed() ? $live : ! $live;
     }
 
+    /**
+     * Whether any way to pay is open: card (a usable Stripe key) or bank transfer (owner-enabled). Until one is, a
+     * student can choose a service and see its fee and terms, but no payment action is offered or accepted.
+     */
+    public function paymentsOpen(): bool
+    {
+        return $this->enabled() || (bool) config('site.bank_transfer');
+    }
+
     public function liveAllowed(): bool
     {
         return app()->isProduction();

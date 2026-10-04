@@ -33,6 +33,7 @@ class NotificationRenderTest extends TestCase
             'document.rejected' => ['title' => 'WAEC certificate', 'reason' => 'Scan is cropped'],
             'documents.complete' => [],
             'services.approved' => ['note' => 'Your profile looks complete.'],
+            'payments.open' => [],
             'payment.succeeded' => ['amount' => '£250.00'],
             'approval.requested' => [],
             'student.approved' => ['at' => '3 October 2026, 14:00'],

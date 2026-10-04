@@ -80,6 +80,7 @@
                         <form method="post" action="{{ route('admin.applications.services',$a) }}" class="mt-2">@csrf<input type="hidden" name="decision" value="revoke"><button class="btn btn-tertiary">Withdraw approval</button></form>
                     @endunless
                 @else
+                    @unless(app(\App\Services\Payments\StripeService::class)->paymentsOpen())<p class="text-[0.875rem] text-accent-700 mb-2">Payment is not open yet (no Stripe key, bank transfer off): an approved student can see the fees and choose a service but cannot pay until it opens.</p>@endunless
                     <p class="text-[0.875rem] text-ink-700">Profile: {{ collect(array_keys(\App\Services\Applications\FormSteps::all()))->filter(fn ($s) => $a->sectionComplete($s))->count() }} of {{ count(\App\Services\Applications\FormSteps::all()) }} sections complete. Approving shows the student the service options with their fees and lets them choose and pay.</p>
                     <form method="post" action="{{ route('admin.applications.services',$a) }}" class="space-y-2 mt-2">@csrf<input type="hidden" name="decision" value="approve">
                         <textarea name="note" class="input min-h-16" placeholder="Optional note to the student (included in the email)"></textarea>

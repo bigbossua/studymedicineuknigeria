@@ -37,7 +37,7 @@ class ServicePaymentsTest extends TestCase
         parent::setUp();
         Notification::fake();
         $this->seed(PlatformSeeder::class);
-        config(['services.stripe.secret' => 'sk_test_fake', 'services.stripe.webhook_secret' => self::SECRET]);
+        config(['services.stripe.secret' => 'sk_test_fake', 'services.stripe.webhook_secret' => self::SECRET, 'site.bank_transfer' => true]);
         $this->stripe = new FakeStripeClient;
         $this->app->instance(StripeClient::class, $this->stripe);
     }

@@ -40,6 +40,7 @@ class ApplicationEvent extends Model
             'services.approved' => 'Profile reviewed: service options and fees shown to the student',
             'services.approval_withdrawn' => 'Service approval withdrawn',
             'profile.ready' => 'Profile complete and ready for review',
+            'payments.open_notified' => 'Told that payment is open',
             'review.started' => 'Review started by our team',
             'action.required' => 'Action required',
             'approval.requested' => 'Your approval requested',

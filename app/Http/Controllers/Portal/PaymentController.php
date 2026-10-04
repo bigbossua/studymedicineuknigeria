@@ -45,6 +45,7 @@ class PaymentController extends Controller
         $application->load('tier.prices', 'payments.tierPrice.tier');
 
         return view('portal.payments.index', ['seo' => Seo::make('Confirm your service and pay')->noindex(), 'application' => $application, 'stripeEnabled' => $this->stripe->enabled(),
+            'bankTransfer' => (bool) config('site.bank_transfer'),
             'prices' => $application->tier?->prices->filter(fn ($p) => $p->amount_minor !== null) ?? collect(),
             'canChange' => $this->canChangeService($application), 'cancelled' => $request->boolean('cancelled')]);
     }
@@ -63,7 +64,7 @@ class PaymentController extends Controller
             return redirect()->route('portal.payments.index', $application)->with('status', 'This service fee is already paid or awaiting confirmation; nothing more is due.');
         }
         if (! $this->stripe->enabled()) {
-            return back()->with('error', 'Online card payment is not enabled yet. Please use the bank transfer option below.');
+            return back()->with('error', 'Online payment is not open yet, so nothing has been charged. We will email you as soon as it opens.');
         }
         $payment = $this->stripe->createCheckout($application, $price, $price->tier->terms_version);
 
@@ -121,6 +122,9 @@ class PaymentController extends Controller
     public function manualTransfer(Request $request, Application $application)
     {
         abort_unless($application->user_id === auth()->id() && $request->user()->canSeeServicePrices($application), 403);
+        if (! config('site.bank_transfer')) {
+            return back()->with('error', 'Payment by bank transfer is not available.');
+        }
         $data = $request->validate(['tier_price_id' => 'required|exists:tier_prices,id', 'accept_terms' => 'required|accepted', 'reference' => 'nullable|string|max:120']);
         $price = TierPrice::where('active', true)->findOrFail($data['tier_price_id']);
         abort_unless($price->service_tier_id === $application->service_tier_id && $price->amount_minor !== null, 403);

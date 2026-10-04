@@ -33,7 +33,7 @@
         <h2>Refunds, plainly</h2>
         <p>Full refund if you ask within 14 days and no work has started. After work starts, a pro-rata refund by deliverables completed. Nothing is submitted to any university until you approve the package, and no refund is due for submission support once a submission has been made. If our assessment finds that no published UK medicine route is currently open to you and you do not wish to proceed to foundation or alternative guidance, the assessment fee is refunded in full. Details in the <a href="{{ route('legal.refunds') }}">refund policy</a>.</p>
         <h2>Payment</h2>
-        <p>Card payments are taken by Stripe's secure checkout in pounds sterling (GBP); we never see your card details. The payment is a Study Medicine UK Nigeria service fee, not a payment to any university. If your card is declined for international payments, bank transfer is available. Receipts are issued automatically.</p>
+        <p>The fee is paid in pounds sterling (GBP) through Stripe's secure checkout; we never see your card details.@if(config('site.bank_transfer')) If your card is declined for international payments, bank transfer is available.@endif The payment is a Study Medicine UK Nigeria service fee, not a payment to any university. Receipts are issued automatically.</p>
     </section>
     <x-cta-band class="mt-12" title="Ready to start?" :href="route('apply.index')" label="Apply Online" :secondary-href="route('apply.eligibility')" secondary-label="Check your eligibility">Create your account and application; our team reviews your profile and your portal then shows the service options and their fees.</x-cta-band>
 </article>

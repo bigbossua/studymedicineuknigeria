@@ -27,6 +27,8 @@ return [
 
     // Facts whose verification_status is not VERIFIED are hidden in production unless this is true.
     'publish_unverified' => env('SITE_PUBLISH_UNVERIFIED', false),
+    // Bank transfer as a payment method: off until the owner confirms the account to give students (owner step).
+    'bank_transfer' => (bool) env('SITE_BANK_TRANSFER', false),
 
     'nav' => [
         ['label' => 'Medicine', 'route' => 'medicine.index'],

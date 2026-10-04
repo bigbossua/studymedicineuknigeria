@@ -82,9 +82,14 @@ sent, and registration still works; card payments stay disabled until the Stripe
 ## 4. Production launch (after the staging review)
 
 Production is refused by the scripts unless all of this is true, so nothing half-configured can go live: `APP_ENV=production`,
-`APP_DEBUG=false`, `APP_URL=https://studymedicineuknigeria.com`, real email (`MAIL_MAILER=smtp` with a password), live
-Stripe keys only (test keys are refused in production, live keys on staging), unverified facts hidden, and a
-successful staging deploy of the same commit.
+`APP_DEBUG=false`, `APP_URL=https://studymedicineuknigeria.com`, real email (`MAIL_MAILER=smtp` with a password),
+Stripe keys either absent (payment closed) or live ones only (test keys are refused in production, live keys on
+staging), unverified facts hidden, and a successful staging deploy of the same commit.
+
+**Stripe is a post-launch step (owner decision 2026-10-04).** Production launches without Stripe keys: an approved
+student can see the fees and choose a service, but no payment button or bank-transfer form is shown and the server
+refuses any payment request until live keys are written with *Update server settings*; that run then emails each
+waiting student once. Bank transfer stays off unless `SITE_BANK_TRANSFER=true` is set in the server's `.env`.
 
 **Owner inputs, all in GitHub → Settings → Environments → `production` → secrets** (typed there, never in chat):
 
@@ -92,8 +97,8 @@ successful staging deploy of the same commit.
 |---|---|
 | `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` | the production database in hPanel → Databases (a new, empty one; never the old site's database) |
 | `SMUKN_MAIL_PASSWORD` | the password of the mailbox `info@studymedicineuknigeria.com` (hPanel → Emails) |
-| `STRIPE_KEY`, `STRIPE_SECRET` | Stripe Dashboard in **live mode** → Developers → API keys: `pk_live_…` and `sk_live_…` (a restricted `rk_live_…` key with Checkout Sessions write access also works) |
-| `STRIPE_WEBHOOK_SECRET` | Stripe (live mode) → Developers → Webhooks → Add endpoint `https://studymedicineuknigeria.com/webhooks/stripe`, the six events listed in section 2 → reveal the signing secret `whsec_…` |
+| `STRIPE_KEY`, `STRIPE_SECRET` (after launch) | Stripe Dashboard in **live mode** → Developers → API keys: `pk_live_…` and `sk_live_…` (a restricted `rk_live_…` key with Checkout Sessions write access also works) |
+| `STRIPE_WEBHOOK_SECRET` (after launch) | Stripe (live mode) → Developers → Webhooks → Add endpoint `https://studymedicineuknigeria.com/webhooks/stripe`, the six events listed in section 2 → reveal the signing secret `whsec_…` |
 | Required reviewers | protection rule on `production` (yourself) |
 
 Stripe products and prices need no manual setup: *Stripe catalogue* (`production`, `create`), every deploy and the first

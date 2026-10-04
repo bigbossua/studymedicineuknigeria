@@ -250,6 +250,48 @@ class PricingVisibilityTest extends TestCase
         $this->assertSame(1, Artisan::call('smukn:stripe-webhook', ['--url' => 'http://127.0.0.1:8000/webhooks/stripe']), 'Stripe needs a public https URL');
     }
 
+    public function test_until_stripe_is_configured_no_payment_is_offered_or_accepted_and_students_are_told_when_it_opens(): void
+    {
+        config(['services.stripe.secret' => null, 'site.bank_transfer' => false]);
+        [$student, $a] = $this->student();
+        $a = $this->approveServices($a, 'T2');
+        $n = $a->application_number;
+        $page = $this->actingAs($student)->get("/portal/$n/payments")->assertOk()
+            ->assertSee('£695')->assertSee('Payment terms:')->assertSee('Refunds:')->assertSee('Payment is not open yet')
+            ->assertDontSee('Continue to secure payment')->assertDontSee('Request bank transfer details')->assertDontSee('Pay £695 securely');
+        $this->actingAs($student)->get('/portal')->assertSee('Online payment is not open yet');
+        $price = $a->tier->priceFor('full');
+        $this->actingAs($student)->post("/portal/$n/payments/checkout", ['tier_price_id' => $price->id, 'accept_terms' => 1])->assertSessionHas('error');
+        $this->actingAs($student)->post("/portal/$n/payments/manual", ['tier_price_id' => $price->id, 'accept_terms' => 1])->assertSessionHas('error');
+        $this->assertSame(0, $a->payments()->count());
+        $this->assertSame([], $this->stripe->created);
+        $this->get('/apply-online/services')->assertDontSee('bank transfer is available');
+        $staff = $this->staff('admin');
+        $this->actingAs($staff)->withSession([EnsureTwoFactor::SESSION_KEY => $staff->id])->get('/admin')->assertSee('card payment closed (post-launch step)');
+
+        // nobody is told while payment is closed; once Stripe is configured, each waiting student is told exactly once
+        $this->assertSame(0, Artisan::call('smukn:payments-open-notify'));
+        Notification::assertNotSentTo($student, ApplicationNotification::class, fn ($x) => $x->type === 'payments.open');
+        config(['services.stripe.secret' => 'sk_test_fake']);
+        Artisan::call('smukn:payments-open-notify');
+        Artisan::call('smukn:payments-open-notify');
+        Notification::assertSentToTimes($student, ApplicationNotification::class, 2); // services.approved is not sent by the shortcut; started + payments.open
+        $this->assertSame(1, $a->events()->where('type', 'payments.open_notified')->count());
+        $this->actingAs($student)->get("/portal/$n/payments")->assertSee('Continue to secure payment')->assertDontSee('Payment is not open yet');
+    }
+
+    public function test_bank_transfer_is_offered_only_when_the_owner_switches_it_on(): void
+    {
+        config(['services.stripe.secret' => null, 'site.bank_transfer' => true]);
+        [$student, $a] = $this->student();
+        $a = $this->approveServices($a, 'T1');
+        $n = $a->application_number;
+        $this->actingAs($student)->get("/portal/$n/payments")->assertOk()->assertSee('Request bank transfer details')->assertDontSee('Continue to secure payment')->assertDontSee('Payment is not open yet');
+        $this->actingAs($student)->post("/portal/$n/payments/manual", ['tier_price_id' => $a->tier->priceFor('full')->id, 'accept_terms' => 1])->assertSessionHas('status');
+        $this->assertSame(['MANUAL_REVIEW', 12500], [$a->payments()->first()->status, $a->payments()->first()->amount_minor]);
+        $this->get('/apply-online/services')->assertSee('bank transfer is available');
+    }
+
     public function test_no_payment_link_is_ever_created_and_the_secret_key_never_reaches_a_page(): void
     {
         $source = (string) file_get_contents(app_path('Services/Payments/StripeCatalog.php')).file_get_contents(app_path('Services/Payments/StripeService.php'));

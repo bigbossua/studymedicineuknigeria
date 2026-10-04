@@ -336,6 +336,13 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Real Stripe journey**: *Stripe test-mode journey* runs the app on a GitHub runner with the staging test key, syncs the catalogue, forwards real Stripe-signed events with `stripe listen`, and drives three new students through admin approval → fees → choice → Stripe's hosted Checkout (test cards; T1 first declined) → signed webhook → paid, reading each session back from Stripe (amount, currency, price id, test mode); then the price-leakage tests and a crawl of the running app. Rehearsed here against the stand-in, which now mimics the hosted form, the decline and `stripe listen`: T1/T2/T3 paid at 12500/69500/129500 GBP with the catalogue price ids.
 - **Tests**: 184 on SQLite and MariaDB.
 
+## Stage 46: launch without Stripe, payment honestly closed (cycle 40)
+
+- **Owner decision (2026-10-04)**: production launches before Stripe; Stripe configuration is a post-launch step. Nothing in the Stripe integration or the approved-student model changed.
+- **Payment closed until it works**: `StripeService::paymentsOpen()` is true only with a usable Stripe key or when the owner sets `SITE_BANK_TRANSFER=true` (new, default false; bootstrap writes it). Until then the confirmation page still shows the service, exact fee, inclusions, exclusions, terms and refunds, but replaces every payment action with "Payment is not open yet" (no card button, no bank-transfer form); the dashboard says so; checkout and bank-transfer requests are refused on the server; the admin approval card and launch checklist say payment is closed. The public services page mentions bank transfer only when it is on.
+- **When it opens**: `smukn:payments-open-notify` emails each approved student who chose a service and has not paid, once (`payments.open_notified`); *Update server settings* runs it after writing Stripe keys.
+- **Tests**: 186 on SQLite and MariaDB; browser check of the closed confirmation page (no payment action, axe 0 violations).
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

@@ -34,4 +34,6 @@ if [ -d "$APP/current" ]; then
   PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
   [ -n "$PHP" ] || { echo "no PHP 8.3+ command-line binary found"; exit 3; }
   (cd "$APP/current" && $PHP artisan config:cache >/dev/null && echo "config cache rebuilt")
+  # students who chose a service while payment was closed are told once that they can now pay
+  if [ -n "${STRIPE_SECRET:-}" ]; then (cd "$APP/current" && $PHP artisan smukn:payments-open-notify) || echo "warn: could not notify waiting students"; fi
 fi

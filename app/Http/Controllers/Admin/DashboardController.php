@@ -40,7 +40,7 @@ class DashboardController extends Controller
             ['label' => 'University pages published', 'done' => $published > 0, 'detail' => "{$published} of {$universities} marked indexable", 'url' => route('admin.reference.universities')],
             ['label' => 'Service prices set', 'done' => $priced > 0, 'detail' => $priced ? "{$priced} price(s) set" : "no prices yet across {$tiers} active tier(s); students can still apply", 'url' => route('admin.tiers')],
             ['label' => 'Card payments enabled', 'done' => app(StripeService::class)->enabled(), 'detail' => match (true) {
-                ! config('services.stripe.secret') => 'STRIPE_SECRET not set; bank transfer only',
+                ! config('services.stripe.secret') => 'STRIPE_SECRET not set: card payment closed (post-launch step)'.(config('site.bank_transfer') ? '; bank transfer open' : '; bank transfer off, so students cannot pay yet'),
                 ! app(StripeService::class)->enabled() => 'a live Stripe key is refused outside production; use a test key (sk_test_)',
                 str_starts_with((string) config('services.stripe.secret'), 'sk_test_') => 'Stripe test mode',
                 default => 'Stripe live mode',

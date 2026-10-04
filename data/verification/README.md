@@ -36,3 +36,16 @@ never from a consultancy, agent or forum page. Never type a value you did not se
 - **Changed pages are caught between reviews.** `smukn:sources-check` (nightly on the server, 03:40) fingerprints every official page behind a verified fact. If a page disappears, or changes and the verified wording or figure is no longer on it, the fact becomes `SOURCE_CHANGED` (hidden in production) and admins are emailed. Unchanged values on a changed page stay verified with a note; network errors change nothing.
 - **Changed sources are confirmed one at a time.** The admin "verify by source" page never bulk-verifies a `SOURCE_CHANGED` fact: it carries the old value, so it is confirmed alone with the page's current wording.
 - **Decisions apply once.** The `fact_imports` ledger stops a deploy replay from reversing a later review.
+
+## Evidence pre-check (read-only)
+
+`smukn:facts-evidence` (*Fact evidence pre-check* workflow, weekly and on demand) fetches every official page behind a
+pending Medicine fact and writes `data/verification/evidence-<date>.csv`: for each fact whether the stored value appears
+on the page (`exact` / `partial` with what is missing / `none` / `fetch_failed`) and a short quotation. It changes no
+fact; verification stays a person reading the page (How we verify). Use it to order the review:
+
+1. `exact` rows: open the page, confirm, verify (fast).
+2. `partial` and `none` rows: the page probably changed, or the value is on another page; read carefully and record the
+   current wording (`source_changed`) or `not_published`.
+3. `fetch_failed` with 404: the source moved; find the official page and record it as `new_source_url`.
+4. `fetch_failed` with 403: the site refuses automated requests (GMC, UCAT, several universities); check by hand.

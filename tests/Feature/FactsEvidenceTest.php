@@ -48,5 +48,7 @@ class FactsEvidenceTest extends TestCase
         $this->assertSame('partial', $match);
         $this->assertStringContainsString('missing 13 January 2027', $evidence);
         $this->assertSame('none', FactsEvidence::find($f, 'Nothing about dates here')[0]);
+        // official pages often abbreviate and drop the year: "13 Jan (18:00 UK time)"
+        $this->assertSame('exact', FactsEvidence::find($f, 'Equal consideration date 13 Jan (18:00 UK time)')[0]);
     }
 }

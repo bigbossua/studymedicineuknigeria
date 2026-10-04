@@ -98,14 +98,14 @@ class FactsEvidence extends Command
         // figures inside the wording (dates, £ amounts, times, larger numbers): all must be on the page
         $figures = self::figures((string) $f->value_text);
         if ($figures) {
-            $found = array_filter($figures, fn ($x) => mb_stripos($text, $x) !== false || mb_stripos($text, str_replace(',', '', $x)) !== false);
+            $found = array_filter($figures, fn ($x) => self::onPage($text, $x) !== null);
             if (count($found) === count($figures)) {
-                $p = mb_stripos($text, reset($figures)) ?: mb_stripos($text, str_replace(',', '', reset($figures)));
+                $p = self::onPage($text, reset($figures));
 
                 return ['exact', mb_substr($quote((int) $p, 30), 0, 200)];
             }
             if ($found) {
-                $p = mb_stripos($text, reset($found));
+                $p = self::onPage($text, reset($found));
 
                 return ['partial', mb_substr('missing '.implode(', ', array_diff($figures, $found)).' · '.$quote((int) $p, 30), 0, 200)];
             }
@@ -162,5 +162,23 @@ class FactsEvidence extends Command
         preg_match_all("/\\b\\d{1,2}(?:st|nd|rd|th)? (?:$months)(?: \\d{4})?|£\\s?\\d[\\d,]*(?:\\.\\d+)?|\\b\\d{1,2}:\\d{2}\\b|\\b\\d{1,3}(?:,\\d{3})+\\b|\\b\\d{3,}\\b/u", $t, $m);
 
         return array_values(array_unique(array_map(fn ($x) => preg_replace('/^£\\s+/', '£', trim($x)), $m[0])));
+    }
+
+    /** Position of a figure on the page, accepting the forms official pages use: "15 Oct", "15 October", no year, no separators. */
+    public static function onPage(string $text, string $figure): ?int
+    {
+        $forms = [$figure, str_replace(',', '', $figure)];
+        if (preg_match('/^(\d{1,2})(?:st|nd|rd|th)? ([A-Z][a-z]+)(?: (\d{4}))?$/', $figure, $m)) {
+            $abbr = mb_substr($m[2], 0, 3);
+            array_push($forms, "{$m[1]} {$m[2]}", "{$m[1]} {$abbr}", "{$m[2]} {$m[1]}", "{$abbr} {$m[1]}");
+        }
+        foreach ($forms as $f) {
+            $p = mb_stripos($text, $f);
+            if ($p !== false) {
+                return $p;
+            }
+        }
+
+        return null;
     }
 }

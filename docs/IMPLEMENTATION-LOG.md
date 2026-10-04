@@ -468,6 +468,21 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Live verification 37224627170 (release `2026-10-04T18-24-28`): all passed.**
 - **Local QA on the same code:** 206 tests on SQLite and MariaDB; SEO crawl 28/28, 0 broken; axe 0; CSP 0; public journey phone and desktop; GA4 browser events; student, staff and paid journeys (stand-in Stripe: fee £695 = Checkout 695.00 GBP, signed webhook 200, paid).
 
+## Stage 54: scheduler cron, transactional email and first admin (cycle 48)
+
+- **Symptom:** the owner's verification email never arrived.
+- **Read-only diagnosis (`ops/mail-diagnose.sh`, *Mail delivery diagnosis* workflow; counts and class names only, addresses masked):**
+  - SMTP settings and sign-in to `smtp.hostinger.com:465` were fine;
+  - 3 `QueuedVerifyEmail` jobs were waiting with 0 attempts;
+  - Hostinger offers no `crontab` over SSH, so the bootstrap's cron line was never installed (its warning went unnoticed) and the queue worker, which runs from `schedule:run`, never ran.
+- **Fix (owner, hPanel → Cron Jobs, every minute):**
+  - a first `cd … && php artisan schedule:run` entry was never executed;
+  - the absolute form `/opt/alt/php83/usr/bin/php ~/apps/smukn-production/current/artisan schedule:run >> ~/apps/smukn-production/shared/cron.log 2>&1` runs every minute (Hostinger wraps it in `flock` and a 1800 s timeout);
+  - the queue drained to 0 with no failed jobs; the owner verified the admin email and enrolled two-step verification.
+- **Guard:** *Live verification* now fails when a queued job waits more than 10 minutes; the bootstrap prints the exact hPanel cron line.
+- **Admin:** `info@studymedicineuknigeria.com` granted `admin` by *Grant account role* (logged as `account.role_granted_by_console`); two-step verification enrolled.
+- **Test fixture:** `ops/qa/fixtures/dummy-test-document.pdf` (plain, labelled "DUMMY TEST DOCUMENT", no personal data) for live operational tests; a test proves the document pipeline accepts it.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

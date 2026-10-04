@@ -97,7 +97,10 @@ CRON_LINE="* * * * * cd $APP/current && $PHP artisan schedule:run >> /dev/null 2
 if command -v crontab >/dev/null; then
   ( crontab -l 2>/dev/null | grep -vF "$APP/current && " ; echo "$CRON_LINE" ) | crontab - && echo "cron installed for $TARGET"
 else
-  echo "WARNING: crontab not available; add this line in hPanel → Cron Jobs: $CRON_LINE"
+  # Hostinger shared hosting: no crontab over SSH. hPanel → Advanced → Cron Jobs → Custom, every minute (* * * * *).
+  # Use the absolute form below: a "cd … &&" command saved there on 2026-10-04 never ran; this one does.
+  echo "ACTION REQUIRED (queued emails are not sent until this exists): add in hPanel → Advanced → Cron Jobs, every minute:"
+  echo "  $PHP $APP/current/artisan schedule:run >> $APP/shared/cron.log 2>&1"
 fi
 
 # Document root link — explicit opt-in only, with backup of whatever is there

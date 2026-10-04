@@ -191,4 +191,14 @@ class PortalPaymentsAndDocumentsTest extends TestCase
         $this->actingAs($this->student)->post("/portal/$n/documents/{$doc->id}", ['file' => UploadedFile::fake()->createWithContent('plain.pdf', $plain)])->assertRedirect();
         $this->assertSame(1, $doc->fresh()->versions()->count());
     }
+
+    public function test_the_operational_test_dummy_pdf_is_accepted_as_a_plain_pdf(): void
+    {
+        // ops/qa/fixtures/dummy-test-document.pdf: what the owner uploads in live operational tests instead of a real document
+        $doc = $this->application->documents()->where('code', 'PASSPORT')->first();
+        $file = UploadedFile::fake()->createWithContent('dummy-test-document.pdf', file_get_contents(base_path('ops/qa/fixtures/dummy-test-document.pdf')));
+        $this->actingAs($this->student)->post("/portal/{$this->application->application_number}/documents/{$doc->id}", ['file' => $file])
+            ->assertRedirect()->assertSessionHasNoErrors();
+        $this->assertSame('application/pdf', $doc->fresh()->versions()->first()->mime);
+    }
 }

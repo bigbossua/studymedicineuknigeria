@@ -5,21 +5,41 @@ namespace App\Services\Payments;
 use App\Models\Application;
 use App\Models\Payment;
 use App\Models\TierPrice;
+use App\Models\User;
 use App\Notifications\ApplicationNotification;
+use App\Notifications\StaffNotification;
 use Stripe\Checkout\Session;
 use Stripe\Event;
 use Stripe\StripeClient;
 
 class StripeService
 {
+    /** Card payments need a key, and outside production only a test-mode key is ever used. */
     public function enabled(): bool
     {
-        return (bool) config('services.stripe.secret');
+        $secret = (string) config('services.stripe.secret');
+
+        return $secret !== '' && ($this->liveAllowed() || ! str_starts_with($secret, 'sk_live_'));
     }
 
-    public function client(): StripeClient
+    public function liveAllowed(): bool
     {
-        return new StripeClient(config('services.stripe.secret'));
+        return app()->isProduction();
+    }
+
+    /**
+     * Resolved from the container so tests can stand in for Stripe without network access.
+     *
+     * @return StripeClient
+     */
+    public function client(): object
+    {
+        if (app()->bound(StripeClient::class)) {
+            return app(StripeClient::class);
+        }
+        $base = app()->environment('local', 'testing') ? config('services.stripe.api_base') : null; // never redirectable on a server
+
+        return new StripeClient(array_filter(['api_key' => (string) config('services.stripe.secret'), 'api_base' => $base]));
     }
 
     public function createCheckout(Application $a, TierPrice $price, string $termsVersion): Payment
@@ -39,10 +59,9 @@ class StripeService
             'metadata' => ['application_id' => $a->id, 'application_number' => $a->application_number, 'payment_id' => $payment->id, 'tier_price_id' => $price->id],
             'payment_intent_data' => ['metadata' => ['application_number' => $a->application_number, 'payment_id' => $payment->id]],
             'success_url' => route('portal.payments.return', $a).'?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => route('portal.payments.index', $a),
-            'line_items' => [$price->stripe_price_id
-                ? ['price' => $price->stripe_price_id, 'quantity' => 1]
-                : ['quantity' => 1, 'price_data' => ['currency' => strtolower($price->currency), 'unit_amount' => $price->amount_minor, 'product_data' => ['name' => $price->tier->name.($price->component !== 'full' ? ' — '.ucfirst($price->component) : ''), 'description' => 'Application '.$a->application_number]]]],
+            'cancel_url' => route('portal.payments.index', $a).'?cancelled=1',
+            // Always our own amount from tier_prices (never a Stripe-side price object that could drift from what the page shows).
+            'line_items' => [['quantity' => 1, 'price_data' => ['currency' => strtolower($price->currency), 'unit_amount' => $price->amount_minor, 'product_data' => ['name' => 'Study Medicine UK Nigeria service fee: '.$price->tier->name.($price->component !== 'full' ? ' — '.ucfirst($price->component) : ''), 'description' => 'Application '.$a->application_number.'. Separate from university tuition, application and test fees.']]]],
         ];
         if (config('services.stripe.adaptive_pricing')) {
             $params['adaptive_pricing'] = ['enabled' => true];
@@ -77,6 +96,12 @@ class StripeService
             return false;
         }
 
+        if (($event->livemode ?? false) && ! $this->liveAllowed()) {
+            return false; // a live-mode event never changes anything outside production
+        }
+        if ($obj instanceof Session && $payment->stripe_checkout_session_id && $obj->id !== $payment->stripe_checkout_session_id) {
+            return false; // the session must be the one created for this payment
+        }
         $a = $payment->application;
         switch ($event->type) {
             case 'checkout.session.completed':
@@ -87,6 +112,14 @@ class StripeService
                 if ($payment->status === 'SUCCEEDED') {
                     return false;
                 }
+                if (! $this->amountMatches($obj, $payment) || $payment->tierPrice?->service_tier_id !== $a->service_tier_id) {
+                    // Paid, but not the amount and currency this application owes: never treat it as paid automatically.
+                    $payment->update(['status' => 'MANUAL_REVIEW', 'note' => 'Stripe reported '.strtoupper((string) ($obj->currency ?? '?')).' '.(int) ($obj->amount_total ?? 0).' (minor units); expected '.$payment->currency.' '.$payment->amount_minor.'.']);
+                    $a->record('payment.amount_mismatch', ['payment_id' => $payment->id]);
+                    User::where('role', 'admin')->get()->each->notify(new StaffNotification('Payment needs review — '.$a->application_number, ['Stripe confirmed a payment whose amount, currency or service differs from what this application owes. It has not been marked paid.'], route('admin.applications.show', $a)));
+
+                    return true;
+                }
                 $payment->forceFill(['status' => 'SUCCEEDED', 'succeeded_at' => now(), 'stripe_payment_intent_id' => is_string($obj->payment_intent ?? null) ? $obj->payment_intent : $payment->stripe_payment_intent_id])->save();
                 $a->record('payment.succeeded', ['payment_id' => $payment->id, 'amount' => $payment->formattedAmount()]);
                 $a->user->notify(new ApplicationNotification($a, 'payment.succeeded', ['amount' => $payment->formattedAmount()]));
@@ -95,6 +128,7 @@ class StripeService
             case 'checkout.session.expired':
                 if ($payment->status === 'INITIATED') {
                     $payment->update(['status' => 'EXPIRED']);
+                    $a->record('payment.expired', ['payment_id' => $payment->id]);
 
                     return true;
                 }
@@ -110,7 +144,11 @@ class StripeService
                 return true;
             case 'charge.refunded':
                 $refunded = (int) ($obj->amount_refunded ?? 0);
+                if ($refunded <= $payment->refunded_minor) {
+                    return false;
+                }
                 $payment->update(['refunded_minor' => $refunded, 'status' => $refunded >= $payment->amount_minor ? 'REFUNDED_FULL' : 'REFUNDED_PARTIAL']);
+                $a->record('payment.refunded', ['payment_id' => $payment->id, 'refunded' => $payment->formattedRefund()]);
 
                 return true;
             case 'charge.dispute.created':
@@ -121,5 +159,18 @@ class StripeService
         }
 
         return false;
+    }
+
+    /**
+     * Whether Stripe charged exactly the fee recorded for this payment. With adaptive pricing the customer may pay in
+     * their own currency; Stripe then reports the original (source) amount under currency_conversion.
+     */
+    private function amountMatches(object $session, Payment $payment): bool
+    {
+        $conversion = $session->currency_conversion ?? null;
+        $amount = $conversion->amount_total ?? $session->amount_total ?? null;
+        $currency = $conversion->source_currency ?? $session->currency ?? null;
+
+        return $amount !== null && (int) $amount === (int) $payment->amount_minor && strtoupper((string) $currency) === strtoupper($payment->currency);
     }
 }

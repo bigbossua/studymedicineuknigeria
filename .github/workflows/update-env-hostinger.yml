@@ -1,0 +1,59 @@
+name: Update server settings (Hostinger)
+# Writes settings that arrive after bootstrap into ~/apps/smukn-<target>/shared/.env: Stripe keys and webhook secret,
+# the mailbox password. Values come from this environment's (or the repository's) secrets, travel on stdin and are
+# never printed; empty ones are left unchanged. Staging refuses live Stripe keys. Production needs its reviewer.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target'
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ github.event.inputs.target }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check configuration
+        env:
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          ANY: ${{ secrets.STRIPE_SECRET }}${{ secrets.SMUKN_MAIL_PASSWORD }}
+        run: |
+          m=""; [ -z "$HOST" ] && m="$m HOSTINGER_SSH_HOST"; [ -z "$USER" ] && m="$m HOSTINGER_SSH_USER"; [ -z "$KEY" ] && m="$m HOSTINGER_SSH_KEY"
+          if [ -n "$m" ]; then echo "::error::Missing settings:$m"; exit 1; fi
+          [ -n "$ANY" ] || { echo "::error::No STRIPE_SECRET or SMUKN_MAIL_PASSWORD secret to write"; exit 1; }
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
+          # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Write settings on the server
+        env:
+          TARGET: ${{ github.event.inputs.target }}
+          STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          MAIL_PASSWORD: ${{ secrets.SMUKN_MAIL_PASSWORD }}
+          HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+          PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          USER: ${{ vars.HOSTINGER_SSH_USER }}
+        run: |
+          { for v in TARGET STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD; do printf 'export %s=%q\n' "$v" "${!v}"; done
+            cat ops/update-env.sh; } | \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s'

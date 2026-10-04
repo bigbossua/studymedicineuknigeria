@@ -23,7 +23,8 @@ class DashboardController extends Controller
         $user = $request->user()->load('applications.tier', 'applications.documents', 'applications.payments.tierPrice', 'applications.submissions.university', 'applications.authorisations');
         $application = $user->currentApplication();
         if (! $application) {
-            return view('portal.start', ['seo' => Seo::make('Start your application')->noindex(), 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
+            return view('portal.start', ['seo' => Seo::make('Start your application')->noindex(), 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get(),
+                'intended' => $request->session()->get('intended_service')]);
         }
         $this->stages->sync($application);
         $application->load('events');
@@ -49,6 +50,12 @@ class DashboardController extends Controller
         $this->stages->sync($application);
         $user->notify(new ApplicationNotification($application, 'application.started'));
         User::where('role', 'admin')->get()->each->notify(new StaffNotification('New application '.$application->application_number, [$user->name.' started '.$application->tier->name.' for '.$application->intake_year.' entry.'], route('admin.applications.show', $application)));
+
+        $request->session()->forget('intended_service');
+        if ($application->tier->hasPrices()) {
+            // Confirm the service and its fee next; the form can be filled in before or after paying.
+            return redirect()->route('portal.payments.index', $application)->with('status', 'Your application '.$application->application_number.' has been created. Confirm your service below; your form is saved as you go and you can start it at any time.');
+        }
 
         return redirect()->route('portal.application.step', [$application, 'personal'])->with('status', 'Your application '.$application->application_number.' has been created. Everything you enter is saved automatically.');
     }

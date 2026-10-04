@@ -20,7 +20,7 @@
 <section class="container-site py-14">
     <h2 class="text-balance">Three levels of support</h2>
     <div class="mt-6 grid gap-5 lg:grid-cols-3">
-        @foreach($tiers as $t)<div class="card flex flex-col"><p class="eyebrow">{{ $t->code }}</p><h3 class="mt-1">{{ $t->name }}</h3><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $t->summary }}</p><p class="mt-3 font-semibold">{{ $t->hasPrices() ? $t->prices->whereNotNull('amount_minor')->map->formatted()->join(' + ') : 'Price to be confirmed' }}</p></div>@endforeach
+        @foreach($tiers as $t)<div class="card flex flex-col {{ $t->badge ? 'border-2 border-navy-700' : '' }}"><p class="eyebrow">{{ $t->tagline ?? $t->code }}@if($t->badge) · <span class="text-navy-700">{{ $t->badge }}</span>@endif</p><h3 class="mt-1">{{ $t->name }}</h3><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $t->summary }}</p><p class="mt-3 text-xl font-serif font-semibold">{{ $t->priceFor('full')?->formatted() ?? 'Price not yet published' }} <span class="text-[0.8125rem] font-sans font-normal text-ink-500">service fee</span></p></div>@endforeach
     </div>
     <a href="{{ route('apply.services') }}" class="btn btn-tertiary mt-4">Full list of what is included and excluded</a>
 </section>

@@ -149,6 +149,9 @@ class ApplicationWorkflowTest extends TestCase
             $this->assertSame('PROPOSED', $sub->fresh()->status);
         }
 
+        // the service fee (payable at the start) must be paid before the package can go to the student
+        $this->asAdmin()->post("/admin/applications/{$a->application_number}/stage", ['stage_override' => 'READY_FOR_STUDENT_APPROVAL'])->assertSessionHas('error');
+        $a->payments()->create(['tier_price_id' => $a->tier->priceFor('full')->id, 'status' => 'SUCCEEDED', 'amount_minor' => 39500, 'currency' => 'GBP', 'method' => 'STRIPE', 'succeeded_at' => now()]);
         $this->asAdmin()->post("/admin/applications/{$a->application_number}/stage", ['stage_override' => 'READY_FOR_STUDENT_APPROVAL'])->assertSessionHas('status');
         app(StageResolver::class)->sync($a->fresh());
         $this->assertSame(Stage::READY_FOR_STUDENT_APPROVAL, $a->fresh()->stage);

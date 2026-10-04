@@ -27,12 +27,19 @@ class Payment extends Model
         return $symbol.number_format($this->amount_minor / 100, 2);
     }
 
+    public function formattedRefund(): string
+    {
+        $symbol = ['GBP' => '£', 'NGN' => '₦', 'USD' => '$'][$this->currency] ?? $this->currency.' ';
+
+        return $symbol.number_format($this->refunded_minor / 100, 2);
+    }
+
     public function statusLabel(): string
     {
         return match ($this->status) {
             'REQUIRED' => 'Payment required', 'INITIATED' => 'Payment started — awaiting confirmation', 'SUCCEEDED' => 'Paid',
             'FAILED' => 'Payment failed', 'EXPIRED' => 'Checkout expired', 'REFUNDED_PARTIAL' => 'Partly refunded', 'REFUNDED_FULL' => 'Refunded',
-            'DISPUTED' => 'Under dispute', 'MANUAL_REVIEW' => 'Bank transfer — awaiting confirmation', 'REJECTED' => 'Not confirmed',
+            'DISPUTED' => 'Under dispute', 'MANUAL_REVIEW' => $this->method === 'MANUAL_TRANSFER' ? 'Bank transfer — awaiting confirmation' : 'Being checked by our team', 'REJECTED' => 'Not confirmed',
             default => $this->status,
         };
     }

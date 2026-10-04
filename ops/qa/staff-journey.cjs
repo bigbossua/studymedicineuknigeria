@@ -13,7 +13,7 @@ const log = { flashes: [] }; const problems = []; let current = null;
   log.application = info.no;
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
   const watch = (page) => {
-    page.on('console', m => { if (m.type() === 'error' || /Content Security Policy|Refused/.test(m.text())) problems.push(page.url() + ' :: ' + m.text().slice(0, 160)); });
+    page.on('console', m => { if (!page.url().startsWith('http://127.0.0.1:12111') && (m.type() === 'error' || /Content Security Policy|Refused/.test(m.text()))) problems.push(page.url() + ' :: ' + m.text().slice(0, 160)); }); // the Stripe stand-in's own page is not under test
     page.on('pageerror', e => problems.push(page.url() + ' :: ' + e.message.slice(0, 160)));
     page.on('response', r => { if (r.status() >= 500) problems.push('HTTP ' + r.status() + ' ' + r.url()); });
   };
@@ -34,6 +34,25 @@ const log = { flashes: [] }; const problems = []; let current = null;
   if (await review.count()) { await review.locator('select[name=decision]').selectOption('accept'); await review.locator('button').click(); await admin.waitForLoadState('networkidle'); await flash(admin, 'document review'); } else { log.flashes.push('document review: no reviewable upload (already decided)'); }
   tinker(`$a = App\\Models\\Application::where('application_number','${info.no}')->first(); $id = App\\Models\\User::where('email','admin@example.test')->value('id'); foreach ($a->documents as $d) { if (! $d->currentVersion && $d->status !== App\\Enums\\DocumentStatus::NOT_REQUIRED) { $d->transition(App\\Enums\\DocumentStatus::NOT_REQUIRED, $id, 'QA: not uploaded in this run'); } } echo 'ok';`); // QA shortcut: waive what the student journey did not upload
 
+  // student signs in and pays the service fee: through checkout and a signed webhook when the Stripe stand-in is
+  // running (ops/qa/fake-stripe.php), otherwise by a labelled local shortcut
+  const student = await (await b.newContext({ viewport: { width: 390, height: 844 } })).newPage(); watch(student);
+  await student.goto(base + '/login'); await student.fill('#email', info.email); await student.fill('#password', 'Longpass12345'); await student.click('button[type=submit]'); await student.waitForLoadState('networkidle');
+  await student.goto(`${base}/portal/${info.no}/payments`, { waitUntil: 'networkidle' });
+  const payButton = student.locator('button:has-text("Continue to secure payment")');
+  if (await payButton.count() && await payButton.isEnabled()) {
+    await student.check('input[name=accept_terms]'); await payButton.click(); await student.waitForLoadState('networkidle');
+    const store = process.env.FAKE_STRIPE_STORE || require('os').tmpdir() + '/fake-stripe-sessions.json';
+    const last = Object.values(JSON.parse(require('fs').readFileSync(store, 'utf8'))).pop();
+    const payload = JSON.stringify({ id: 'evt_staffqa_' + Date.now(), object: 'event', type: 'checkout.session.completed', api_version: '2024-06-20', created: Math.floor(Date.now() / 1000), livemode: false,
+      data: { object: { object: 'checkout.session', id: last.id, payment_status: 'paid', amount_total: last.amount_total, currency: last.currency, payment_intent: 'pi_' + last.id, metadata: last.metadata } } });
+    const ts = Math.floor(Date.now() / 1000); const sig = require('crypto').createHmac('sha256', process.env.STRIPE_WEBHOOK_SECRET || 'whsec_local_qa').update(`${ts}.${payload}`).digest('hex');
+    log.payment = (await student.request.post(base + '/webhooks/stripe', { data: payload, headers: { 'Stripe-Signature': `t=${ts},v1=${sig}`, 'Content-Type': 'application/json' } })).status() + ' via webhook';
+  } else {
+    tinker(`$a = App\\Models\\Application::where('application_number','${info.no}')->first(); $a->payments()->create(['tier_price_id' => $a->tier->priceFor('full')->id, 'status' => 'SUCCEEDED', 'amount_minor' => $a->tier->priceFor('full')->amount_minor, 'currency' => 'GBP', 'method' => 'MANUAL_TRANSFER', 'note' => 'QA shortcut', 'succeeded_at' => now()]); echo 'ok';`);
+    log.payment = 'QA shortcut (card payments not enabled on this server)';
+  }
+
   // QA shortcut (local only): the student journey fills one step; mark every form section complete so the approval gate can open
   tinker(`$a = App\\Models\\Application::where('application_number','${info.no}')->first(); $a->forceFill(['section_status' => array_fill_keys(array_keys(App\\Services\\Applications\\FormSteps::all()), 'complete')])->save(); echo 'ok';`);
 
@@ -52,8 +71,7 @@ const log = { flashes: [] }; const problems = []; let current = null;
   await admin.screenshot({ path: `${out}/s-admin-ready.png`, fullPage: true });
 
   // student: approve the exact package
-  const student = await (await b.newContext({ viewport: { width: 390, height: 844 } })).newPage(); watch(student); current = student;
-  await student.goto(base + '/login'); await student.fill('#email', info.email); await student.fill('#password', 'Longpass12345'); await student.click('button[type=submit]'); await student.waitForLoadState('networkidle');
+  current = student;
   await student.goto(`${base}/portal/${info.no}/approve`, { waitUntil: 'networkidle' }); log.approvePage = student.url();
   await student.screenshot({ path: `${out}/s-approve.png`, fullPage: true });
   await student.fill('[name=typed_name]', info.name); await student.check('[name=confirm]');

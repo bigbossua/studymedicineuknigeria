@@ -54,9 +54,10 @@ class MiscAdminController extends Controller
     public function priceUpdate(Request $request, TierPrice $price)
     {
         abort_unless($request->user()->isAdmin(), 403); // prices are what students pay: admin only, like roles and redirects
-        $data = $request->validate(['amount' => 'nullable|numeric|min:0', 'stripe_price_id' => 'nullable|string|max:64']);
-        $price->update(['amount_minor' => ($data['amount'] ?? null) === null || $data['amount'] === '' ? null : (int) round($data['amount'] * 100), 'stripe_price_id' => ($data['stripe_price_id'] ?? null) ?: null]);
-        AdminAction::log('price.update', $price, $data);
+        $data = $request->validate(['amount' => 'nullable|numeric|min:0|max:100000']);
+        $before = $price->amount_minor;
+        $price->update(['amount_minor' => ($data['amount'] ?? null) === null || $data['amount'] === '' ? null : (int) round($data['amount'] * 100)]);
+        AdminAction::log('price.update', $price, ['tier' => $price->tier?->code, 'before_minor' => $before, 'after_minor' => $price->amount_minor]);
 
         return back()->with('status', 'Price saved.');
     }

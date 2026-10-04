@@ -301,6 +301,15 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Fixed**: the documented order bootstrapped staging without linking its docroot, so the first deploy's smoke test would have met Hostinger's placeholder page and rolled back; `ops/STAGING-SETTINGS.md` now links it at bootstrap. Server scripts trusted the first `php` found; they now accept only a PHP 8.3+ binary from `php83`, `php8.3`, `/opt/alt/php83/usr/bin/php` (CloudLinux) or `php`, and say so when none exists (rehearsed with an old `php83` on the path).
 - **Tests**: 154, on SQLite and MariaDB.
 
+## Stage 42: approved prices and the paid service journey (cycle 36)
+
+- **Prices**: owner-approved fees T1 £75, T2 £395, T3 £795 (GBP) live in `tier_prices` (seeded by `PlatformSeeder::APPROVED_PRICES`, filled only where empty so an admin change is never reverted by a deploy). T3 is one fee paid at the start like T1 and T2; its two never-priced components are retired, and the refund policy and terms say "submission support" (refund by the existing pro-rata rule; none after submission) instead of a separately priced component. T2 carries the "Most popular" badge (`service_tiers.badge`, `tagline`).
+- **Pages**: services page rebuilt (fees, badge, inclusions and exclusions, the owner's disclaimer word for word via `<x-fee-disclaimer>`); "Choose this service" remembers the choice through sign-up; the start page preselects it; creating an application leads to a confirmation page (service, fee, included, not included, third-party costs, no guarantee, terms) with "Continue to secure payment", bank transfer and change of service before payment.
+- **Stripe**: Checkout session from the price record only (browser-sent amounts ignored, another service's price refused), labelled as our service fee; payment marked paid only by a signed webhook whose amount, currency, session and service all match (otherwise held for staff); replays and repeated refunds change nothing; expiry, refund, dispute, amount mismatch and service change are in the application history; no second checkout once paid; cancel returns with an explanation; return page waits for the webhook; live keys refused and live events ignored outside production. Staff see service, amount, status, dates and the Stripe reference; price changes are audited with before and after.
+- **Server**: *Update server settings* (`ops/update-env.sh`) writes Stripe keys and the mail password into `.env` after bootstrap (stdin, literal quoting, staging refuses live keys).
+- **QA**: local Stripe stand-in (`ops/qa/fake-stripe.php`, local only) and `ops/qa/payment-journey.cjs`: on phone and desktop the page price equals the amount sent to checkout (39500 GBP), cancel/retry/pay/webhook all behave; staff journey now pays before review. Axe: 0 violations (public, portal, admin); staging review: 64 page views clean; crawl 28/28.
+- **Tests**: 168, on SQLite and MariaDB.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

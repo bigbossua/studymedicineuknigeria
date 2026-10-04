@@ -41,7 +41,7 @@ class SecurityHeaders
             "frame-ancestors 'none'",
             "object-src 'none'",
             "base-uri 'self'",
-            "form-action 'self' https://checkout.stripe.com",
+            "form-action 'self' https://checkout.stripe.com".$this->localCheckout(),
         ]);
         // A response that sets its own policy keeps it (the admin document preview is served with a sandbox CSP).
         if (! $response->headers->has('Content-Security-Policy')) {
@@ -59,5 +59,13 @@ class SecurityHeaders
         }
 
         return $response;
+    }
+
+    /** Local browser QA only: the Stripe stand-in (ops/qa/fake-stripe.php) serves its checkout page from its own origin. */
+    private function localCheckout(): string
+    {
+        $base = app()->environment('local') ? (string) config('services.stripe.api_base') : '';
+
+        return preg_match('#^http://(127\.0\.0\.1|localhost)(:\d+)?$#', $base) ? ' '.$base : '';
     }
 }

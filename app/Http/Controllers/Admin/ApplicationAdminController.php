@@ -43,7 +43,7 @@ class ApplicationAdminController extends Controller
     public function show(Application $application)
     {
         $this->stages->sync($application);
-        $application->load('user', 'tier.prices', 'documents.currentVersion', 'documents.events', 'payments.tierPrice', 'submissions.university', 'submissions.course', 'submissions.events', 'submissions.authorisation', 'submissions.choices.course.university', 'messages.sender', 'events.actor', 'authorisations', 'assignedStaff');
+        $application->load('user', 'tier.prices', 'documents.currentVersion', 'documents.events', 'payments.tierPrice.tier', 'submissions.university', 'submissions.course', 'submissions.events', 'submissions.authorisation', 'submissions.choices.course.university', 'messages.sender', 'events.actor', 'authorisations', 'assignedStaff');
         $application->messages->where('sender_user_id', $application->user_id)->whereNull('read_at')->each->update(['read_at' => now()]);
 
         return view('admin.applications.show', [

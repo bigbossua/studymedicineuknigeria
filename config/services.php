@@ -40,6 +40,8 @@ return [
         'secret' => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
         'adaptive_pricing' => env('STRIPE_ADAPTIVE_PRICING', false),
+        // Local browser QA only (ops/qa/fake-stripe.php); ignored outside the local and testing environments.
+        'api_base' => env('STRIPE_API_BASE'),
     ],
 
 ];

@@ -239,10 +239,21 @@ class ContentController extends Controller
         return view('content.apply.index', ['seo' => $applySeo, 'faqs' => $faqs, 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
     }
 
+    /** "Choose this service" from the pricing page: remember it, then sign up or go straight to the start page. */
+    public function chooseService(Request $request, string $code)
+    {
+        $tier = ServiceTier::where('active', true)->where('code', strtoupper($code))->firstOrFail(); // URLs are lowercase site-wide
+        $request->session()->put('intended_service', $tier->code);
+        Funnel::track('service_chosen', ['tier' => $tier->code]);
+
+        return redirect()->route(auth()->check() ? 'portal.dashboard' : 'register');
+    }
+
     public function services()
     {
         $tiers = ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get();
         $seo = $this->seo('Services and pricing for UK Medicine application support', 'What each level of application support includes and excludes, when work begins and our refund terms. Our fee is separate from university tuition and fees.', 'apply.services', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Services']], false);
+        $seo->reviewed('2026-10-04', null); // approved service fees published
         foreach ($tiers as $t) {
             $offer = $t->hasPrices() ? ['@type' => 'Offer', 'priceCurrency' => 'GBP', 'price' => number_format($t->prices->whereNotNull('amount_minor')->sum('amount_minor') / 100, 2, '.', '')] : null;
             $seo->jsonLd(array_filter(['@type' => 'Service', 'name' => $t->name, 'description' => $t->summary, 'provider' => ['@type' => 'Organization', 'name' => config('site.name')], 'offers' => $offer]));

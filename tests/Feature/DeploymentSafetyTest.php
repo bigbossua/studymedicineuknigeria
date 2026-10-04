@@ -126,11 +126,21 @@ class DeploymentSafetyTest extends TestCase
     public function test_server_scripts_only_run_artisan_with_php_8_3_or_newer(): void
     {
         // Hostinger keeps several PHP binaries; plain `php` can be an older CLI and /opt/alt/php83 holds 8.3 on CloudLinux.
-        foreach (['ops/server-bootstrap.sh', 'ops/deploy.sh', 'ops/rollback.sh', '.github/workflows/account-role-hostinger.yml'] as $path) {
+        foreach (['ops/server-bootstrap.sh', 'ops/deploy.sh', 'ops/rollback.sh', 'ops/update-env.sh', '.github/workflows/account-role-hostinger.yml'] as $path) {
             $script = $this->file($path);
             $this->assertStringContainsString('/opt/alt/php83/usr/bin/php', $script, $path);
             $this->assertStringContainsString('PHP_VERSION_ID >= 80300', $script, $path);
             $this->assertStringNotContainsString('command -v php8.3 || command -v php)', $script, $path.' still trusts the first php it finds');
         }
+    }
+
+    public function test_settings_added_after_bootstrap_travel_on_stdin_and_staging_takes_only_test_stripe_keys(): void
+    {
+        $script = $this->file('ops/update-env.sh');
+        $this->assertStringContainsString('takes test keys only', $script);
+        $this->assertStringContainsString('ENVIRON["L"]', $script, 'values reach awk unaltered');
+        $workflow = $this->file('.github/workflows/update-env-hostinger.yml');
+        $this->assertStringContainsString("printf 'export %s=%q\\n'", $workflow);
+        $this->assertStringContainsString("'bash -s'", $workflow);
     }
 }

@@ -54,7 +54,7 @@ class PortalPaymentsAndDocumentsTest extends TestCase
     {
         config(['services.stripe.secret' => null]);
         $n = $this->application->application_number;
-        $this->actingAs($this->student)->get("/portal/$n/payments")->assertOk()->assertSee('Bank tran');
+        $this->actingAs($this->student)->get("/portal/$n/payments")->assertOk()->assertSee('bank transfer');
         $this->actingAs($this->student)->post("/portal/$n/payments/checkout", ['tier_price_id' => $this->price->id, 'accept_terms' => 1])->assertSessionHas('error');
         $this->assertDatabaseCount('payments', 0);
 

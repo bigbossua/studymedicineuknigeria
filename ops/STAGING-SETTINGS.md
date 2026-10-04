@@ -34,8 +34,18 @@ already exist.
 | `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` | Secrets | **Environment `production`** | The production database from step 1 (only needed before the production bootstrap) |
 | Required reviewers | Protection rule | **Environment `production`** | Tick *Required reviewers*, add yourself, save. Production deploys refuse to run without it. |
 
+**Stripe test mode on staging (for the payment review).** Prices are already set (T1 £75, T2 £395, T3 £795). In the
+Stripe Dashboard switch to **Test mode**, then:
+1. Developers → API keys: copy the *publishable* key (`pk_test_…`) and the *secret* key (`sk_test_…`).
+2. Developers → Webhooks → Add endpoint: URL `https://staging.studymedicineuknigeria.com/webhooks/stripe`, events
+   `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.expired`,
+   `payment_intent.payment_failed`, `charge.refunded`, `charge.dispute.created`; then reveal its signing secret (`whsec_…`).
+3. GitHub → Settings → Environments → `staging` → add secrets `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`.
+4. Actions → *Update server settings* (`staging`) writes them into the server's `.env` (a live key is refused on staging).
+Pay with Stripe's test card `4242 4242 4242 4242` (any future date, any CVC); `4000 0000 0000 0002` is declined.
+
 Optional, later: `SMUKN_MAIL_PASSWORD` (mailbox `info@studymedicineuknigeria.com`), `SITE_WHATSAPP`, `SITE_LEGAL_NAME`,
-Stripe test keys (`STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`) in the `staging` environment. Staging works
+Stripe test keys (`STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`) in the `staging` environment (applied with *Update server settings*). Staging works
 without them: without a mail password, emails (verification links, resets) are written to the server log instead of
 sent, and registration still works; card payments stay disabled until the Stripe keys exist.
 

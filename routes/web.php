@@ -73,7 +73,8 @@ Route::get('faq', [ContentController::class, 'faq'])->name('faq.index')->default
 
 // Apply Online (commercial gateway)
 Route::get('apply-online', [ContentController::class, 'apply'])->name('apply.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
-Route::get('apply-online/services', [ContentController::class, 'services'])->name('apply.services')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
+Route::get('apply-online/services', [ContentController::class, 'services'])->name('apply.services')->defaults('sitemap', ['lastmod' => '2026-10-04', 'changefreq' => 'monthly']);
+Route::get('apply-online/start/{code}', [ContentController::class, 'chooseService'])->where('code', 't[1-9]')->name('apply.choose');
 Route::get('apply-online/eligibility', [ContentController::class, 'eligibility'])->name('apply.eligibility')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
 Route::post('apply-online/eligibility', [ContentController::class, 'eligibilitySubmit'])->middleware('throttle:10,10,apply.eligibility.submit')->name('apply.eligibility.submit');
 
@@ -152,6 +153,7 @@ Route::middleware(['auth', 'auth.session', 'verified', '2fa'])->prefix('portal')
         Route::post('payments/checkout', [PaymentController::class, 'checkout'])->middleware('throttle:10,10,payments.checkout')->name('payments.checkout');
         Route::get('payments/return', [PaymentController::class, 'return'])->name('payments.return');
         Route::post('payments/manual', [PaymentController::class, 'manualTransfer'])->middleware('throttle:10,10,payments.manual')->name('payments.manual');
+        Route::post('payments/service', [PaymentController::class, 'changeService'])->middleware('throttle:10,10,payments.service')->name('payments.service');
         Route::get('approve', [ApprovalController::class, 'show'])->name('approve.show');
         Route::post('approve', [ApprovalController::class, 'approve'])->name('approve.store');
         Route::post('approve/changes', [ApprovalController::class, 'requestChanges'])->name('approve.changes');

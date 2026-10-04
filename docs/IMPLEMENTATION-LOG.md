@@ -264,6 +264,17 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Allied-health course facts**: `data/healthcare/courses.json` → `HealthcareCoursesSeeder`: 21 non-Medicine courses, 39 statements seen on official pages, all VERIFY-ON-PAGE, priority 4 in the worksheet (675 facts, regenerated), never on a Medicine page, reviewer verifications kept on reseed. Two non-medical providers added (Northumbria, Manchester Metropolitan) with `international_policy` not_published.
 - **Tests**: 121.
 
+## Stage 38: deployment readiness, the verification engine and search architecture (cycle 33)
+
+- **First deploy would have been empty**: `ops/deploy.sh` migrated but never seeded, and the runbook only seeded the medical school dataset, so production would have had no service tiers (no application could start), checklist rules, topic facts or taxonomy. `smukn:reference-sync` now runs after migrations on every deploy.
+- **Seeders were unsafe to repeat**: the dataset importer kept VERIFIED but overwrote the value and reset reviewer decisions; the allied seeder reset non-verified decisions. One rule now governs every seeder (`App\Support\FactSeeding`): create missing facts, refresh unreviewed ones, never touch a fact a person decided on (`reviewed_at`, set by the admin queue and the worksheet import). Editing a verified value in the admin queue un-verifies it.
+- **Verification engine**: the worksheet follows the owner's priority order (P1 UCAS Medicine deadlines … P10 course availability, P12 other subjects), groups facts by official page with a count of facts each page resolves, and `--sources` writes a one-row-per-page browsing list (202 pages; 46 resolve 413 facts); P0 (71) and P1 (285) sheets. The admin by-source page uses the same order, shows each page's area and status mix, and never bulk-verifies a SOURCE_CHANGED fact. `smukn:sources-check` (nightly on the server) fingerprints the pages behind verified facts: a removed page, or a changed page where the verified wording or figure is gone, turns its facts to SOURCE_CHANGED and emails admins.
+- **Deployment safeguards**: production dispatch requires a successful staging deployment of the same commit; no migration without a verified database backup (previously a failed or skipped dump let migrations run); smoke test checks reference data arrived; workflows can pin the server host key (`HOSTINGER_SSH_KNOWN_HOSTS`).
+- **Semrush**: the importer reads Semrush's own export and matches it to the lookup sheet by keyword; `paste-list.txt` holds the 50 clean keywords, so one paste-and-export replaces 50 manual lookups.
+- **Search architecture**: home and the core guide both led with "Study Medicine in the UK from Nigeria"; home is now brand-first with its own H1 and links to the guide; the snippet test fails whenever two pages lead with the same title phrase. Crawl 28/28 clean.
+- **Healthcare**: `docs/research/14-subject-scorecard.md` (generated) shows per subject the evidence the promotion rule needs and what is missing; no subject promoted (Dentistry, Nursing, Pharmacy have good but unverified evidence).
+- **Tests**: 132.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

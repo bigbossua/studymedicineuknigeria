@@ -41,9 +41,13 @@ Rollback = repoint `current` to the previous release and clear caches. Takes sec
 
 ## 21.4 Rollback
 
-```
-ln -sfn releases/<previous> current && cd current && php artisan config:cache route:cache view:cache
-```
+- **Automatic:** `ops/deploy.sh` repoints `current` to the previous release whenever the smoke test fails.
+- **Manual:** Actions → *Roll back Hostinger release* → target (`ops/rollback.sh`). It moves `current` to the last
+  release that actually went live (`releases/.history`; a deploy that failed before its switch is never a candidate),
+  rebuilds caches, smoke-tests, and names the database backup taken before the abandoned release. Production runs in
+  the `production` environment, so the required reviewer approves a rollback too.
+- **Database:** never restored automatically. Restore deliberately from `~/backups/<target>-db-<release>.sql.gz` or an
+  off-site artifact (`ops/RESTORE.md`).
 Database migrations are written to be backward-compatible for one release (add-only; destructive changes land one release after the code stops using the column).
 
 ## 21.5 Backups (ongoing)
@@ -66,5 +70,13 @@ Only in `shared/.env` on the server and in the deployer's password manager. Neve
 - **No migration without a verified backup.** `ops/deploy.sh` stops before `migrate` if `DB_DATABASE` is missing, `mysqldump` is unavailable, the dump fails, or the gzip file is corrupt or empty.
 - **Reference data on every deploy.** `smukn:reference-sync` runs after migrations (never demo accounts; never touches reviewed facts or owner prices).
 - **Smoke test covers content.** Besides status codes and headers it requires the directory to list at least 20 schools and the fee guide and eligibility check to render; any failure rolls the symlink back to the previous release.
+- **Production needs the owner's approval rule.** A production deploy stops unless the `production` environment has a required reviewer, so it can never start unapproved.
+- **Backups do not wait for approval.** The backup workflow uses no deployment environment; its key and passphrase are repository secrets.
+- **Secrets never on a command line.** Bootstrap sends values on stdin; `.env` values are single-quoted (literal); a value with `'` or a line break is refused. Scripts read `.env` with phpdotenv (`ops/env-shell.php`), and MySQL tools get the password through `MYSQL_PWD`.
+- **Releases carry no local state.** No development SQLite database, no `public/hot`, no dev dependencies (`composer install --no-dev`).
+- **Smoke test fails on exposure or debug output.** `/.env`, `/composer.json`, `/artisan`, logs, `.git` and `vendor` must not be served (a document root on the release instead of `public/`); exception text fails it; staging must answer 401 without credentials and disallow crawling; production must be crawlable.
+- **Strict host keys once pinned.** With `HOSTINGER_SSH_KNOWN_HOSTS` set, every workflow uses `StrictHostKeyChecking=yes`; the inspection prints the scanned fingerprints to compare first.
+- **MySQL in CI.** The suite also runs on MySQL 8, and CI proves the smoke test fails on an empty application.
+- Rehearsed end to end on MariaDB: `ops/reports/deployment-rehearsal-2026-10-04.md`.
 - **No unsmoked staging deploy.** A staging dispatch fails at its first step unless `STAGING_URL` is set (with SSH host, user and key), because `ops/deploy.sh` skips the smoke test when it has no URL, and a staging deploy that was never smoke-tested must not count as the success that unlocks production.
 - **Pinned host key (optional, recommended).** Set the repository variable `HOSTINGER_SSH_KNOWN_HOSTS` to the server's line(s) from `ssh-keyscan -p 65002 <host>` (checked against hPanel's SSH fingerprint) and every workflow uses it instead of trusting the key on first connection.

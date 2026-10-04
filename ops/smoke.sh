@@ -1,17 +1,49 @@
 #!/usr/bin/env bash
-# Smoke tests for a deployed environment. Usage: ops/smoke.sh https://studymedicineuknigeria.com
-set -u; B=${1:?base url}; fail=0; AUTH=(); [ -n "${SMOKE_AUTH:-}" ] && AUTH=(-u "$SMOKE_AUTH")  # user:password for a basic-auth staging site
-chk(){ local want=$1 path=$2; local got; got=$(curl -s "${AUTH[@]}" -o /dev/null -w "%{http_code}" "$B$path"); if [ "$got" = "$want" ]; then echo "ok   $got $path"; else echo "FAIL $got (want $want) $path"; fail=1; fi; }
+# Smoke tests for a deployed environment. Usage: ops/smoke.sh https://studymedicineuknigeria.com [staging|production|local]
+# SMOKE_AUTH=user:password for a basic-auth staging site. Exit 1 on any FAIL; deploy.sh rolls back on that.
+set -u; B=${1:?base url}; T=${2:-}; fail=0; AUTH=(); [ -n "${SMOKE_AUTH:-}" ] && AUTH=(-u "$SMOKE_AUTH")
+[ -n "$T" ] || { [ "$B" = https://studymedicineuknigeria.com ] && T=production || T=staging; }
+ok(){ echo "ok   $*"; }; bad(){ echo "FAIL $*"; fail=1; }
+chk(){ local want=$1 path=$2; local got; got=$(curl -s "${AUTH[@]}" -o /dev/null -w "%{http_code}" "$B$path"); [ "$got" = "$want" ] && ok "$got $path" || bad "$got (want $want) $path"; }
+# never served: a document root pointing at the release instead of public/ would expose these
+deny(){ local got; got=$(curl -s "${AUTH[@]}" -o /dev/null -w "%{http_code}" "$B$1"); [ "$got" != 200 ] && ok "$got $1 not served" || bad "$1 is publicly readable (document root must be current/public)"; }
+
 chk 200 /; chk 200 /up; chk 200 /robots.txt; chk 200 /sitemap.xml; chk 200 /favicon.svg; chk 200 /site.webmanifest
 chk 301 /Fees/; chk 404 /no-such-page; chk 200 /login
-# reference data reached this environment (smukn:reference-sync): the directory lists schools and the fee guide renders
-n=$(curl -s "${AUTH[@]}" "$B/medical-schools" | grep -o 'href="[^"]*/medical-schools/[a-z0-9-]*"' | sort -u | wc -l); [ "$n" -ge 20 ] && echo "ok   directory lists $n schools" || { echo "FAIL directory lists $n schools (reference data missing?)"; fail=1; }
-chk 200 /fees; chk 200 /apply-online/eligibility
-curl -sI "${AUTH[@]}" "$B/login" | grep -qi "x-robots-tag: noindex" && echo "ok   noindex header on /login" || { echo "FAIL noindex header missing on /login"; fail=1; }
-curl -sI "${AUTH[@]}" "$B/" | grep -qi "strict-transport-security" && echo "ok   HSTS" || echo "warn HSTS header missing"
-# canonical host and scheme (only meaningful against a public https URL)
-case "$B" in https://studymedicineuknigeria.com) 
-  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "http://studymedicineuknigeria.com/fees"); echo "http→https: $code" | grep -q "301 https://studymedicineuknigeria.com/fees" && echo "ok   http redirects to https" || { echo "FAIL http→https redirect ($code)"; fail=1; }
-  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://www.studymedicineuknigeria.com/fees"); echo "$code" | grep -q "301 https://studymedicineuknigeria.com/fees" && echo "ok   www redirects to apex" || echo "warn www→apex redirect not confirmed ($code)";;
+chk 200 /fees; chk 200 /apply-online/eligibility; chk 200 /medical-schools
+for p in /.env /.env.example /composer.json /artisan /storage/logs/laravel.log /.git/HEAD /vendor/autoload.php /database/database.sqlite; do deny "$p"; done
+
+# the application itself rendered, not a placeholder, an error page or a debug screen
+home=$(curl -s "${AUTH[@]}" "$B/")
+echo "$home" | grep -q 'Study Medicine UK Nigeria' && ok "home renders the site" || bad "home does not contain the site name (placeholder or wrong document root?)"
+nf=$(curl -s "${AUTH[@]}" "$B/no-such-page")
+if printf '%s\n%s' "$home" "$nf" | grep -qiE 'Whoops|Stack trace|SQLSTATE|vendor/laravel/framework|ignition'; then bad "debug output or exception text in a response (APP_DEBUG must be false)"; else ok "no debug output"; fi
+
+# reference data reached this environment (smukn:reference-sync): the directory lists schools
+n=$(curl -s "${AUTH[@]}" "$B/medical-schools" | grep -o 'href="[^"]*/medical-schools/[a-z0-9-]*"' | sort -u | wc -l)
+[ "$n" -ge 20 ] && ok "directory lists $n schools" || bad "directory lists $n schools (reference data missing?)"
+
+h=$(curl -sI "${AUTH[@]}" "$B/login")
+echo "$h" | grep -qi "x-robots-tag: noindex" && ok "noindex header on /login" || bad "noindex header missing on /login"
+echo "$h" | grep -qi "content-security-policy:" && ok "CSP header" || bad "Content-Security-Policy header missing"
+curl -sI "${AUTH[@]}" "$B/" | grep -qi "strict-transport-security" && ok "HSTS" || echo "warn HSTS header missing"
+
+robots=$(curl -s "${AUTH[@]}" "$B/robots.txt")
+case "$T" in
+  staging)
+    # staging must never be public or indexable
+    got=$(curl -s -o /dev/null -w "%{http_code}" "$B/")
+    [ "$got" = 401 ] && ok "staging asks for credentials without them" || bad "staging answered $got without credentials (StagingGate inactive: set STAGING_BASIC_USER and STAGING_BASIC_PASSWORD)"
+    echo "$robots" | grep -qx 'Disallow: /' && ok "staging robots.txt disallows all" || bad "staging robots.txt does not disallow crawling";;
+  production)
+    echo "$robots" | grep -qx 'Disallow: /' && bad "production robots.txt disallows everything" || ok "production robots.txt allows crawling"
+    echo "$home" | grep -qi '<meta name="robots" content="noindex' && bad "production home is noindex" || ok "production home indexable";;
 esac
+
+# canonical host and scheme (only meaningful against the public https URL)
+case "$B" in https://studymedicineuknigeria.com)
+  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "http://studymedicineuknigeria.com/fees"); echo "$code" | grep -q "301 https://studymedicineuknigeria.com/fees" && ok "http redirects to https" || bad "http→https redirect ($code)"
+  code=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://www.studymedicineuknigeria.com/fees"); echo "$code" | grep -q "301 https://studymedicineuknigeria.com/fees" && ok "www redirects to apex" || echo "warn www→apex redirect not confirmed ($code)";;
+esac
+[ "$fail" = 0 ] && echo "smoke: all checks passed ($T)" || echo "smoke: FAILED ($T)"
 exit $fail

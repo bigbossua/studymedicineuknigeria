@@ -14,3 +14,55 @@ jobs:
       - run: npm ci && npm run build
       - run: vendor/bin/pint --test
       - run: php artisan test
+      - name: Workflows and ops scripts parse
+        run: |
+          python3 -c "import yaml" 2>/dev/null || pip install --quiet pyyaml
+          for f in .github/workflows/*.yml; do python3 -c "import sys,yaml; yaml.safe_load(open(sys.argv[1]))" "$f" || { echo "::error file=$f::invalid YAML"; exit 1; }; done
+          for f in ops/*.sh; do bash -n "$f" || { echo "::error file=$f::bash syntax error"; exit 1; }; done
+
+  # Production runs MySQL/MariaDB, which enforces column lengths and returns decimals as strings; SQLite does
+  # neither, so a first deploy once failed only on MySQL. The whole suite runs on MySQL too.
+  test-mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env: { MYSQL_DATABASE: smukn_test, MYSQL_USER: smukn, MYSQL_PASSWORD: smukn, MYSQL_ROOT_PASSWORD: root }
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1" --health-interval=5s --health-timeout=5s --health-retries=20
+    env: { DB_CONNECTION: mysql, DB_HOST: 127.0.0.1, DB_PORT: 3306, DB_DATABASE: smukn_test, DB_USERNAME: smukn, DB_PASSWORD: smukn }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, pdo_mysql', coverage: none }
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: cp .env.example .env && php artisan key:generate
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - run: npm ci && npm run build
+      - run: php artisan test
+      - name: First-deploy sequence on MySQL (migrate, reference sync, idempotent re-sync)
+        run: php artisan migrate:fresh --force && php artisan smukn:reference-sync && php artisan smukn:reference-sync
+
+  # ops/smoke.sh is the gate that rolls a deploy back; prove it fails on an empty application and passes on a
+  # complete one, so a deploy that lost its reference data can never count as a success.
+  smoke-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, sqlite3, pdo_sqlite', coverage: none }
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: cp .env.example .env && php artisan key:generate && touch database/database.sqlite
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - run: npm ci && npm run build
+      - name: Empty database must fail the smoke test
+        run: |
+          php artisan migrate --force
+          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/serve.log 2>&1 & sleep 3
+          if ops/smoke.sh http://127.0.0.1:8000 local; then echo "::error::smoke test passed an application with no reference data"; exit 1; fi
+      - name: Synced application must pass the smoke test
+        run: |
+          php artisan smukn:reference-sync
+          ops/smoke.sh http://127.0.0.1:8000 local

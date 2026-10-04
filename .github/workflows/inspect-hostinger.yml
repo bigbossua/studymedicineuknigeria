@@ -32,13 +32,19 @@ jobs:
           install -d -m 700 ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
           # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
-          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"; fi
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"; fi
+      - name: Server host key (public; compare before pinning)
+        run: |
+          # These lines are public keys, not secrets. Compare a fingerprint with the one hPanel or your own
+          # `ssh-keyscan -p <port> <host> | ssh-keygen -lf -` shows, then store the lines as HOSTINGER_SSH_KNOWN_HOSTS.
+          ssh-keygen -lf ~/.ssh/known_hosts || echo "no host key recorded"
+          echo "--- known_hosts lines ---"; cat ~/.ssh/known_hosts || true
       - name: Connectivity and authentication check
         env:
           HOST: ${{ vars.HOSTINGER_SSH_HOST || secrets.HOSTINGER_SSH_HOST }}
           PORT: ${{ vars.HOSTINGER_SSH_PORT || secrets.HOSTINGER_SSH_PORT || '65002' }}
           USER: ${{ vars.HOSTINGER_SSH_USER || secrets.HOSTINGER_SSH_USER }}
-        run: ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'echo "connected as $(whoami) on $(hostname)"'
+        run: ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'echo "connected as $(whoami) on $(hostname)"'
       - name: Run read-only inspection
         env:
           HOST: ${{ vars.HOSTINGER_SSH_HOST || secrets.HOSTINGER_SSH_HOST }}
@@ -46,7 +52,7 @@ jobs:
           USER: ${{ vars.HOSTINGER_SSH_USER || secrets.HOSTINGER_SSH_USER }}
         run: |
           mkdir -p out
-          ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -p "$PORT" "$USER@$HOST" 'bash -s' < ops/inspect-hostinger.sh > out/inspect-$(date -u +%F).txt 2>&1 || true
+          ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -p "$PORT" "$USER@$HOST" 'bash -s' < ops/inspect-hostinger.sh > out/inspect-$(date -u +%F).txt 2>&1 || true
           # redact anything that looks like a password or key before it leaves the runner
           sed -i -E 's/(DB_PASSWORD|PASSWORD|SECRET|KEY|TOKEN)(=|\x27, \x27)[^ \x27"]+/\1\2[redacted]/Ig' out/*.txt
           echo "lines: $(wc -l < out/*.txt)"

@@ -32,7 +32,8 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    environment: production
+    # No deployment environment: production's required reviewer would hold every scheduled backup for approval.
+    # The SSH key and BACKUP_PASSPHRASE are repository secrets.
     env:
       TARGET: ${{ github.event.inputs.target || 'production' }}
       # scheduled: Sunday 03:20 run is the full copy, every other schedule is db-only
@@ -62,7 +63,7 @@ jobs:
           install -d -m 700 ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
           # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
-          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"; fi
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"; fi
       - name: Create encrypted backup on the server
         env:
           BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
@@ -70,14 +71,14 @@ jobs:
           # The passphrase is the first stdin line (read by the remote shell into a variable), the script follows;
           # it is never on a command line, in a file, or in the log.
           { printf '%s\n' "$BACKUP_PASSPHRASE"; cat ops/backup.sh; } | \
-            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" \
             "read -r BACKUP_PASSPHRASE && export BACKUP_PASSPHRASE && TARGET='$TARGET' SCOPE='$SCOPE' bash -s" | tee server.log
           grep -q '^backup=' server.log || { echo "::error::backup did not report an output file"; exit 1; }
           echo "FILE=$(grep '^backup=' server.log | cut -d= -f2-)" >> "$GITHUB_ENV"
       - name: Fetch to runner and verify checksum
         run: |
           mkdir -p out
-          scp -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -P "$PORT" "$USER@$HOST:$FILE" "$USER@$HOST:$FILE.sha256" out/
+          scp -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -P "$PORT" "$USER@$HOST:$FILE" "$USER@$HOST:$FILE.sha256" out/
           (cd out && sha256sum -c "$(basename "$FILE").sha256")
           size=$(stat -c %s "out/$(basename "$FILE")")
           echo "size_bytes=$size"

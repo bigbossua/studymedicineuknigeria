@@ -121,7 +121,14 @@ class DatasetImporter
             $attrs['value_text'] = (string) $value;
         }
 
-        $match = ['key' => $key, 'academic_year' => $extra['academic_year'] ?? null, 'qualification_code' => $extra['qualification_code'] ?? null];
+        // academic_year is a matching key (16 characters): only a real year label goes there. Anything else the
+        // dataset recorded ("UNCLEAR (likely 2025/26 or 2026/27)") is kept word for word in the notes, never guessed.
+        $year = $extra['academic_year'] ?? null;
+        if ($year !== null && ! preg_match('#^\d{4}(/\d{2,4})?( entry)?$#', (string) $year)) {
+            $extra['notes'] = trim('Year as recorded: '.$year.'. '.($extra['notes'] ?? ''));
+            $year = null;
+        }
+        $match = ['key' => $key, 'academic_year' => $year, 'qualification_code' => $extra['qualification_code'] ?? null];
         $payload = $attrs + [
             'applies_to' => $extra['applies_to'] ?? 'international',
             'source_url' => $source,
@@ -184,10 +191,17 @@ class DatasetImporter
             [$route] = $this->val($row, 'application_route');
             [$url] = $this->val($row, 'official_course_url');
             $title = $courseName ?: 'Medicine';
-            $course = Course::updateOrCreate(['university_id' => $u->id, 'slug' => $ucas ? Str::lower($ucas) : 'medicine'], [
+            // The dataset's ucas_code field sometimes carries notes ("A100 (also A104 with Health Foundation Year)");
+            // the full text stays in the ucas_code fact, the course row keeps the bare code (column is 16 characters).
+            $code = is_string($ucas) && preg_match('/\b([A-Z]\d{3})\b/', $ucas, $m) ? $m[1] : null;
+            $slug = $code ? Str::lower($code) : 'medicine';
+            if ($ucas && Str::lower($ucas) !== $slug) {
+                Course::where('university_id', $u->id)->where('slug', Str::lower($ucas))->update(['slug' => $slug]);
+            }
+            $course = Course::updateOrCreate(['university_id' => $u->id, 'slug' => $slug], [
                 'title' => $title,
                 'award' => $this->awardFrom($title),
-                'ucas_code' => $ucas,
+                'ucas_code' => $code,
                 'entry_type' => 'standard',
                 'length_years' => is_numeric($len) ? (int) $len : null,
                 'application_route' => $this->routeFrom($route),

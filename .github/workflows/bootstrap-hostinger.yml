@@ -38,16 +38,19 @@ jobs:
           DBN: ${{ secrets.SMUKN_DB_DATABASE }}
           DBU: ${{ secrets.SMUKN_DB_USERNAME }}
           DBP: ${{ secrets.SMUKN_DB_PASSWORD }}
+          SBU: ${{ vars.STAGING_BASIC_USER }}
+          SBP: ${{ secrets.STAGING_BASIC_PASSWORD }}
         run: |
           m=""; [ -z "$HOST" ] && m="$m HOSTINGER_SSH_HOST"; [ -z "$USER" ] && m="$m HOSTINGER_SSH_USER"; [ -z "$KEY" ] && m="$m HOSTINGER_SSH_KEY"
           [ -z "$DBN" ] && m="$m SMUKN_DB_DATABASE"; [ -z "$DBU" ] && m="$m SMUKN_DB_USERNAME"; [ -z "$DBP" ] && m="$m SMUKN_DB_PASSWORD"
+          if [ "${{ github.event.inputs.target }}" = staging ]; then [ -z "$SBU" ] && m="$m STAGING_BASIC_USER(variable)"; [ -z "$SBP" ] && m="$m STAGING_BASIC_PASSWORD(secret)"; fi
           [ -n "$m" ] && { echo "::error::Missing:$m (environment '${{ github.event.inputs.target }}' secrets/variables)"; exit 1; }; true
       - name: Prepare SSH
         env: { KEY: "${{ secrets.HOSTINGER_SSH_KEY }}", HOST: "${{ vars.HOSTINGER_SSH_HOST }}", PORT: "${{ vars.HOSTINGER_SSH_PORT || '65002' }}", KNOWN_HOSTS: "${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}" }
         run: |
           install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
           # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
-          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
       - name: Run bootstrap on server
         env:
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}
@@ -70,5 +73,9 @@ jobs:
           STAGING_BASIC_USER: ${{ vars.STAGING_BASIC_USER }}
           STAGING_BASIC_PASSWORD: ${{ secrets.STAGING_BASIC_PASSWORD }}
         run: |
-          ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new -p "$PORT" "$USER@$HOST" \
-            "TARGET='$TARGET' APP_URL='$APP_URL' LINK_DOCROOT='$LINK_DOCROOT' DOCROOT='$DOCROOT' DB_DATABASE='$DB_DATABASE' DB_USERNAME='$DB_USERNAME' DB_PASSWORD='$DB_PASSWORD' DB_HOST='$DB_HOST' MAIL_PASSWORD='$MAIL_PASSWORD' STRIPE_KEY='$STRIPE_KEY' STRIPE_SECRET='$STRIPE_SECRET' STRIPE_WEBHOOK_SECRET='$STRIPE_WEBHOOK_SECRET' SITE_WHATSAPP='$SITE_WHATSAPP' SITE_LEGAL_NAME='$SITE_LEGAL_NAME' STAGING_BASIC_USER='$STAGING_BASIC_USER' STAGING_BASIC_PASSWORD='$STAGING_BASIC_PASSWORD' bash -s" < ops/server-bootstrap.sh
+          # Values travel on stdin as bash-quoted exports ahead of the script, never on the remote command line
+          # (where they would appear in the server's process list and break on quotes).
+          { for v in TARGET APP_URL LINK_DOCROOT DOCROOT DB_DATABASE DB_USERNAME DB_PASSWORD DB_HOST MAIL_PASSWORD STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET SITE_WHATSAPP SITE_LEGAL_NAME STAGING_BASIC_USER STAGING_BASIC_PASSWORD; do
+              printf 'export %s=%q\n' "$v" "${!v}"; done
+            cat ops/server-bootstrap.sh; } | \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s'

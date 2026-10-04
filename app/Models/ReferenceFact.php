@@ -24,6 +24,7 @@ class ReferenceFact extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'value_number' => 'float',
         'value_bool' => 'boolean',
         'value_json' => 'array',
         'verified_at' => 'date',

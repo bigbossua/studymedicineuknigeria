@@ -24,7 +24,7 @@ trap 'rm -rf "$WORK"' EXIT
 case "$SCOPE" in db|full) ;; *) echo "SCOPE must be db or full" >&2; exit 2;; esac
 mkdir -p "$OUT" "$WORK/$NAME"
 
-envval() { (grep -E "^$1=" "$APP/shared/.env" || true) | head -1 | cut -d= -f2- | sed -e 's/^"//' -e 's/"$//'; }
+envval() { (grep -E "^$1=" "$APP/shared/.env" || true) | head -1 | cut -d= -f2- | sed -E -e "s/^'(.*)'\$/\\1/" -e 's/^"(.*)"$/\1/'; }
 DB_CONNECTION="$(envval DB_CONNECTION)"; DB_HOST="$(envval DB_HOST)"; DB_PORT="$(envval DB_PORT)"
 DB_DATABASE="$(envval DB_DATABASE)"; DB_USERNAME="$(envval DB_USERNAME)"; DB_PASSWORD="$(envval DB_PASSWORD)"
 

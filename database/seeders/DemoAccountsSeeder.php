@@ -26,7 +26,7 @@ class DemoAccountsSeeder extends Seeder
         }
 
         $student = User::firstOrNew(['email' => 'student@example.test']);
-        $student->fill(['name' => 'Demo Student', 'password' => 'Testpass12345', 'country' => 'Nigeria']);
+        $student->fill(['name' => 'Demo Student', 'password' => 'Testpass12345', 'country' => 'NG']);
         $student->forceFill(['role' => 'student', 'email_verified_at' => $student->email_verified_at ?? now()])->save();
 
         $admin = User::firstOrNew(['email' => 'admin@example.test']);

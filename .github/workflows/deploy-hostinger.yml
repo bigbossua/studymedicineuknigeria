@@ -19,6 +19,7 @@ concurrency: deploy-${{ github.event.inputs.target || 'staging' }}
 permissions:
   contents: read
   deployments: read
+  actions: read   # read the production environment's protection rules
 
 jobs:
   deploy:
@@ -41,12 +42,24 @@ jobs:
           done
           [ "$ok" = 1 ] || { echo "::error::Commit ${{ github.sha }} has no successful staging deploy. Deploy it to staging, review staging, then dispatch production."; exit 1; }
           echo "staging deploy of ${{ github.sha }} succeeded; continuing to production"
+      - name: Require the owner's approval rule on production
+        if: ${{ (github.event.inputs.target || 'staging') == 'production' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # This job only starts after the environment's reviewers approved it; if no reviewer rule exists it
+          # would start unapproved, so stop here instead.
+          n=$(gh api "repos/${{ github.repository }}/environments/production" --jq '[.protection_rules[]? | select(.type == "required_reviewers")] | length' 2>/dev/null || echo 0)
+          [ "${n:-0}" -ge 1 ] || { echo "::error::The production environment has no required reviewer. Settings → Environments → production → Required reviewers: add the owner, then dispatch again."; exit 1; }
+          echo "production approval rule present"
       - name: Check configuration
         env:
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}
           USER: ${{ vars.HOSTINGER_SSH_USER }}
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
           STAGING_URL: ${{ vars.STAGING_URL }}
+          SBU: ${{ vars.STAGING_BASIC_USER }}
+          SBP: ${{ secrets.STAGING_BASIC_PASSWORD }}
           TARGET: ${{ github.event.inputs.target || 'staging' }}
         run: |
           missing=""
@@ -54,7 +67,11 @@ jobs:
           [ -z "$USER" ] && missing="$missing HOSTINGER_SSH_USER(variable)"
           [ -z "$KEY" ]  && missing="$missing HOSTINGER_SSH_KEY(secret)"
           # without a URL deploy.sh would skip the smoke test, and an unsmoked staging deploy must never unlock production
-          [ "$TARGET" = staging ] && [ -z "$STAGING_URL" ] && missing="$missing STAGING_URL(variable)"
+          if [ "$TARGET" = staging ]; then
+            [ -z "$STAGING_URL" ] && missing="$missing STAGING_URL(variable)"
+            # the smoke test requires staging to refuse anonymous visitors, so the gate's credentials must exist
+            [ -z "$SBU" ] && missing="$missing STAGING_BASIC_USER(variable)"; [ -z "$SBP" ] && missing="$missing STAGING_BASIC_PASSWORD(secret)"
+          fi
           if [ -n "$missing" ]; then echo "::error::Missing settings:$missing. Add them under Settings → Secrets and variables → Actions."; exit 1; fi
       - uses: shivammathur/setup-php@v2
         with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_mysql', coverage: none }
@@ -66,6 +83,9 @@ jobs:
           cp .env.example .env && php artisan key:generate
           npm ci --no-audit --no-fund && npm run build
           php artisan test
+          # ship production dependencies only (no test runners or dev tooling on the server)
+          composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+          rm -f .env database/*.sqlite public/hot
       - name: Prepare SSH
         env:
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
@@ -77,7 +97,7 @@ jobs:
           install -d -m 700 ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
           # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
-          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
       - name: Deploy
         env:
           TARGET: ${{ github.event.inputs.target || 'staging' }}
@@ -88,5 +108,5 @@ jobs:
           # staging sits behind HTTP basic auth (StagingGate); the smoke test must present the credentials
           SMOKE_AUTH: ${{ (github.event.inputs.target || 'staging') != 'production' && vars.STAGING_BASIC_USER != '' && format('{0}:{1}', vars.STAGING_BASIC_USER, secrets.STAGING_BASIC_PASSWORD) || '' }}
         run: |
-          export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=accept-new"
+          export SSH_OPTS="-i $HOME/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new}"
           ops/deploy.sh "$USER@$HOST" "$PORT" "$TARGET" "$SITE_URL"

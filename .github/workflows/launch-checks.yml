@@ -21,3 +21,11 @@ jobs:
           set +e; ops/launch-checks.sh studymedicineuknigeria.com | tee report.txt; status=${PIPESTATUS[0]}; set -e
           { echo '### Launch checks'; echo '```'; cat report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           exit $status
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: launch-checks
+          path: |
+            report.txt
+            current-site-urls.txt
+          retention-days: 30

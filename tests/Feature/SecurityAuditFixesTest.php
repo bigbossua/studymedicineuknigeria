@@ -269,4 +269,23 @@ class SecurityAuditFixesTest extends TestCase
         $this->expectException(ValidationException::class);
         $m->invoke(app(DocumentStore::class), $pdf);
     }
+
+    public function test_only_the_exact_site_host_and_its_www_form_are_trusted_in_production(): void
+    {
+        config(['app.url' => 'https://studymedicineuknigeria.com']);
+        $this->app['env'] = 'production';
+        try {
+            foreach (['staging.studymedicineuknigeria.com', 'studymedicineuknigeria.com.evil.example', 'wwwxstudymedicineuknigeria.com', 'evil.example'] as $host) {
+                \Illuminate\Http\Request::setTrustedHosts([]);
+                $this->get("https://{$host}/fees")->assertStatus(400);
+            }
+            \Illuminate\Http\Request::setTrustedHosts([]);
+            $this->get('https://www.studymedicineuknigeria.com/fees')->assertStatus(301)->assertRedirect('https://studymedicineuknigeria.com/fees');
+            \Illuminate\Http\Request::setTrustedHosts([]);
+            $this->get('https://studymedicineuknigeria.com/fees')->assertOk();
+        } finally {
+            $this->app['env'] = 'testing';
+            \Illuminate\Http\Request::setTrustedHosts([]);
+        }
+    }
 }

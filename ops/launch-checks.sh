@@ -40,6 +40,12 @@ info "generator: $(printf '%s' "$b" | grep -oiE '<meta name="generator" content=
 printf '%s' "$b" | grep -q 'wp-content' && info "WordPress assets present (wp-content): back up its database too (Backup, scope site)" || info "no wp-content in the home page"
 info "home page size: $(printf '%s' "$b" | wc -c) bytes"
 for p in /robots.txt /sitemap.xml /sitemap_index.xml; do info "$p → $(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "https://$D$p")"; done
+# every URL the current site lists, so the new site can answer or redirect each one (no indexed page may break)
+urls=$(curl -s --max-time 20 "https://$D/sitemap.xml" | grep -oE '<loc>[^<]+</loc>' | sed -E 's#</?loc>##g')
+for sm in $(printf '%s\n' "$urls" | grep -E '\.xml$'); do urls="$urls
+$(curl -s --max-time 20 "$sm" | grep -oE '<loc>[^<]+</loc>' | sed -E 's#</?loc>##g')"; done
+printf '%s\n' "$urls" | grep -vE '\.xml$' | grep . | sort -u > current-site-urls.txt
+info "current sitemap lists $(wc -l < current-site-urls.txt) page URL(s) (current-site-urls.txt)"; sed 's/^/url   /' current-site-urls.txt | head -300
 
 hr "RESULT"
 [ "$fail" = 0 ] && echo "email DNS ready for student registration (confirm DKIM with a test message)" || echo "email DNS NOT ready: fix the MISS lines in hPanel → Domains → DNS / Emails (docs/ops/EMAIL-DELIVERABILITY.md)"

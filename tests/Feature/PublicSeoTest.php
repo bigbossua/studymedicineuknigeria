@@ -10,6 +10,7 @@ use App\Support\PublishGate;
 use Database\Seeders\ReferenceDataSeeder;
 use Database\Seeders\TopicFactsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
@@ -191,5 +192,14 @@ class PublicSeoTest extends TestCase
                 $this->assertStringNotContainsString($needle, $html, "$path shows unverified wording in production: ".mb_substr($needle, 0, 60));
             }
         }
+    }
+
+    public function test_www_answers_301_to_the_one_canonical_host_with_the_same_path(): void
+    {
+        config(['app.url' => 'https://studymedicineuknigeria.com', 'app.force_canonical_host' => true]);
+        Request::setTrustedHosts([]); // the trusted-host list is static; another test may have set it for a different APP_URL
+        $this->get('http://www.studymedicineuknigeria.com/fees?ref=x')->assertStatus(301)->assertRedirect('https://studymedicineuknigeria.com/fees?ref=x');
+        $this->get('http://www.studymedicineuknigeria.com/')->assertStatus(301)->assertRedirect('https://studymedicineuknigeria.com/');
+        $this->get('https://studymedicineuknigeria.com/fees')->assertOk();
     }
 }

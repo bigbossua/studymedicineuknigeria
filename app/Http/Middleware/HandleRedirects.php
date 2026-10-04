@@ -22,6 +22,13 @@ class HandleRedirects
             return $next($request);
         }
 
+        // One host: www.<domain> answers 301 to the APP_URL host with the same path (duplicate pages otherwise; the
+        // certificate covers both names). Off in local development, where the host is whatever the developer uses.
+        $canonicalHost = (string) parse_url((string) config('app.url'), PHP_URL_HOST);
+        if ((! app()->environment('local', 'testing') || config('app.force_canonical_host')) && $canonicalHost !== '' && strtolower($request->getHost()) === 'www.'.$canonicalHost) {
+            return redirect()->away(rtrim((string) config('app.url'), '/').$request->getRequestUri(), 301);
+        }
+
         // The front controller must never be a public URL: /index.php and /index.php/fees duplicate / and /fees
         // (Apache and `php artisan serve` both answer them). Checked on the raw request URI because Laravel strips
         // the script name into the base URL before routing.

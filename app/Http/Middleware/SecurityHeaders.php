@@ -43,7 +43,10 @@ class SecurityHeaders
             "base-uri 'self'",
             "form-action 'self' https://checkout.stripe.com",
         ]);
-        $response->headers->set('Content-Security-Policy', $csp);
+        // A response that sets its own policy keeps it (the admin document preview is served with a sandbox CSP).
+        if (! $response->headers->has('Content-Security-Policy')) {
+            $response->headers->set('Content-Security-Policy', $csp);
+        }
         $response->headers->remove('Content-Security-Policy-Report-Only');
 
         $private = $request->is('portal*', 'admin*', 'login', 'register', 'password*', 'email*', 'documents*', 'webhooks*');

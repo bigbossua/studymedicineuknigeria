@@ -17,7 +17,7 @@ use Illuminate\Validation\ValidationException;
 
 class TwoFactorController extends Controller
 {
-    private const PENDING_SECRET = 'two_factor.pending_secret';
+    public const PENDING_SECRET = 'two_factor.pending_secret';
 
     private const FRESH_CODES = 'two_factor.fresh_codes';
 
@@ -44,6 +44,11 @@ class TwoFactorController extends Controller
     public function confirm(Request $request): RedirectResponse
     {
         $user = $request->user();
+        if ($user->hasTwoFactorEnabled()) {
+            // Never replace an enrolled authenticator from a session-held secret: changing it needs the challenge first,
+            // then disable and set up again (security audit 2026-10-04).
+            return redirect()->route('two-factor.challenge');
+        }
         $data = $request->validate(['code' => 'required|string|max:12']);
         $secret = $request->session()->get(self::PENDING_SECRET);
         if (! $secret || Totp::matchingCounter($secret, $data['code']) === null) {

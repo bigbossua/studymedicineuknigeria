@@ -2,15 +2,25 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Auth\TwoFactorController;
+use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Course;
 use App\Models\ReferenceFact;
+use App\Models\TierPrice;
 use App\Models\University;
 use App\Models\User;
+use App\Notifications\StaffNotification;
+use App\Services\Documents\DocumentStore;
+use App\Support\Totp;
+use Database\Seeders\PlatformSeeder;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\TestCase;
 
@@ -140,5 +150,123 @@ class SecurityAuditFixesTest extends TestCase
     {
         $this->artisan('smukn:facts-export', ['file' => '../outside.csv'])->assertFailed();
         $this->artisan('smukn:facts-import', ['file' => '../../etc/hostname'])->assertFailed();
+    }
+
+    public function test_student_text_in_a_staff_email_cannot_become_a_link(): void
+    {
+        $admin = User::factory()->create();
+        $html = (string) (new StaffNotification('New message', ['[Reset your admin password](https://evil.example/login) and <https://evil.example/x>'], 'http://localhost/admin'))->toMail($admin)->render();
+        $this->assertStringNotContainsString('href="https://evil.example', $html);
+        $this->assertStringContainsString('Reset your admin password', $html, 'the text itself is still shown to staff');
+    }
+
+    private function staff(string $role): User
+    {
+        $u = User::factory()->create(['email_verified_at' => now()]);
+        $u->forceFill(['role' => $role, 'two_factor_secret' => Totp::generateSecret(), 'two_factor_confirmed_at' => now()])->save();
+
+        return $u;
+    }
+
+    private function as(User $u): static
+    {
+        return $this->actingAs($u)->withSession([EnsureTwoFactor::SESSION_KEY => $u->id]);
+    }
+
+    public function test_only_admins_change_prices_or_remove_redirects(): void
+    {
+        $this->seed(PlatformSeeder::class);
+        $price = TierPrice::firstOrFail();
+        $before = $price->amount_minor;
+        $id = DB::table('redirects')->insertGetId(['from_path' => '/old', 'to_path' => '/fees', 'active' => true, 'status_code' => 301, 'created_at' => now(), 'updated_at' => now()]);
+
+        $staff = $this->staff('staff');
+        $this->as($staff)->post(route('admin.tiers.price', $price), ['amount' => 1])->assertForbidden();
+        $this->as($staff)->delete(route('admin.redirects.delete', $id))->assertForbidden();
+        $this->assertSame($before, $price->fresh()->amount_minor);
+        $this->assertDatabaseHas('redirects', ['id' => $id]);
+
+        // admins can, and omitting the Stripe field no longer raises an error
+        $this->as($this->staff('admin'))->post(route('admin.tiers.price', $price), ['amount' => 12.5])->assertSessionHas('status');
+        $this->assertSame(1250, $price->fresh()->amount_minor);
+    }
+
+    public function test_a_redirect_cannot_be_placed_over_sign_in_with_a_double_slash(): void
+    {
+        $admin = $this->staff('admin');
+        foreach (['//login', '//admin', '/', ''] as $from) {
+            $this->as($admin)->post(route('admin.redirects.store'), ['from_path' => $from, 'to_path' => '/fees'])->assertSessionHasErrors('from_path');
+        }
+        $this->assertDatabaseCount('redirects', 0);
+    }
+
+    public function test_an_enrolled_authenticator_is_never_replaced_from_a_session_secret(): void
+    {
+        $admin = $this->staff('admin');
+        $original = $admin->two_factor_secret;
+        $planted = Totp::generateSecret();
+        $this->actingAs($admin)->withSession([TwoFactorController::PENDING_SECRET => $planted])
+            ->post('/two-factor/setup', ['code' => Totp::code($planted)])->assertRedirect(route('two-factor.challenge'));
+        $this->assertSame($original, $admin->fresh()->two_factor_secret);
+    }
+
+    public function test_signing_in_discards_a_secret_planted_before_sign_in(): void
+    {
+        $user = User::factory()->create(['email' => 'ada@example.test', 'password' => 'Testpass12345', 'email_verified_at' => now()]);
+        $this->withSession([TwoFactorController::PENDING_SECRET => 'PLANTED'])
+            ->post('/login', ['email' => 'ada@example.test', 'password' => 'Testpass12345'])->assertSessionMissing(TwoFactorController::PENDING_SECRET);
+    }
+
+    public function test_one_account_is_locked_after_many_failures_from_many_addresses(): void
+    {
+        User::factory()->create(['email' => 'target@example.test']);
+        for ($i = 0; $i < 50; $i++) {
+            $this->withServerVariables(['REMOTE_ADDR' => "10.0.{$i}.1"])->post('/login', ['email' => 'target@example.test', 'password' => 'wrong-password-1']);
+        }
+        $this->withServerVariables(['REMOTE_ADDR' => '10.9.9.9'])->post('/login', ['email' => 'target@example.test', 'password' => 'wrong-password-1'])
+            ->assertSessionHasErrors(['email' => 'Too many attempts. Try again in 60 minutes.']);
+    }
+
+    public function test_changing_the_password_signs_out_other_sessions(): void
+    {
+        $user = User::factory()->create(['password' => 'Oldpass12345', 'email_verified_at' => now()]);
+        // another device: a session that recorded the old password hash
+        $old = ['password_hash_web' => $user->getAuthPassword()];
+        $this->actingAs($user)->withSession($old)->get('/portal')->assertOk();
+
+        $this->actingAs($user)->withSession($old)->put('/portal/profile/password', ['current_password' => 'Oldpass12345', 'password' => 'Newpass12345', 'password_confirmation' => 'Newpass12345'])->assertSessionHas('status');
+
+        // the other device still carries the old hash: it is signed out
+        $this->actingAs($user->fresh())->withSession($old)->get('/portal')->assertRedirect(route('login'));
+    }
+
+    public function test_the_reset_form_does_not_reveal_whether_an_account_exists(): void
+    {
+        User::factory()->create(['email' => 'known@example.test']);
+        $message = __(Password::InvalidToken);
+        foreach (['known@example.test', 'nobody@example.test'] as $email) {
+            $this->post('/password/reset', ['token' => 'bogus', 'email' => $email, 'password' => 'Newpass12345', 'password_confirmation' => 'Newpass12345'])
+                ->assertSessionHasErrors(['email' => $message]);
+        }
+    }
+
+    public function test_an_image_declaring_enormous_dimensions_is_refused_before_decoding(): void
+    {
+        $this->seed(PlatformSeeder::class);
+        // a valid PNG header that declares 20,000 × 20,000 pixels
+        $ihdr = pack('N', 20000).pack('N', 20000)."\x08\x02\x00\x00\x00";
+        $png = "\x89PNG\r\n\x1a\n".pack('N', 13).'IHDR'.$ihdr.pack('N', crc32('IHDR'.$ihdr));
+        $m = new \ReflectionMethod(DocumentStore::class, 'reencodeImage');
+        $this->expectException(ValidationException::class);
+        $m->invoke(app(DocumentStore::class), $png, 'image/png');
+    }
+
+    public function test_a_pdf_whose_object_stream_inflates_beyond_the_cap_is_refused(): void
+    {
+        $bomb = gzcompress(str_repeat('A', 17 * 1024 * 1024), 9);
+        $pdf = "%PDF-1.7\n1 0 obj\n<< /Type /ObjStm /N 1 /First 4 /Filter /FlateDecode /Length ".strlen($bomb)." >>\nstream\n".$bomb."\nendstream\nendobj\n%%EOF";
+        $m = new \ReflectionMethod(DocumentStore::class, 'assertSafePdf');
+        $this->expectException(ValidationException::class);
+        $m->invoke(app(DocumentStore::class), $pdf);
     }
 }

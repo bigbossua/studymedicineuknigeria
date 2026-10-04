@@ -136,6 +136,8 @@ class PortalPaymentsAndDocumentsTest extends TestCase
         $this->assertStringNotContainsString('scan', $r->headers->get('Content-Disposition'));
         $r = $this->asAdmin()->get("/admin/applications/{$this->application->application_number}/documents/{$doc->id}/view");
         $this->assertStringContainsString('passport-v1.png', $r->headers->get('Content-Disposition'));
+        // the preview keeps its own sandbox policy; the site-wide CSP must not replace it (security audit 2026-10-04)
+        $this->assertStringStartsWith('sandbox', (string) $r->headers->get('Content-Security-Policy'));
     }
 
     public function test_macro_enabled_word_files_are_refused_even_when_renamed_to_docx(): void

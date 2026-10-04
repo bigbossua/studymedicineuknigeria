@@ -53,8 +53,9 @@ class MiscAdminController extends Controller
 
     public function priceUpdate(Request $request, TierPrice $price)
     {
+        abort_unless($request->user()->isAdmin(), 403); // prices are what students pay: admin only, like roles and redirects
         $data = $request->validate(['amount' => 'nullable|numeric|min:0', 'stripe_price_id' => 'nullable|string|max:64']);
-        $price->update(['amount_minor' => $data['amount'] === null || $data['amount'] === '' ? null : (int) round($data['amount'] * 100), 'stripe_price_id' => $data['stripe_price_id'] ?: null]);
+        $price->update(['amount_minor' => ($data['amount'] ?? null) === null || $data['amount'] === '' ? null : (int) round($data['amount'] * 100), 'stripe_price_id' => ($data['stripe_price_id'] ?? null) ?: null]);
         AdminAction::log('price.update', $price, $data);
 
         return back()->with('status', 'Price saved.');
@@ -68,7 +69,11 @@ class MiscAdminController extends Controller
     public function redirectStore(Request $request)
     {
         abort_unless($request->user()->isAdmin(), 403);
-        $data = $request->validate(['from_path' => ['required', 'string', 'max:255', 'starts_with:/', 'not_regex:#^/(portal|admin|login|register|password|email|two-factor|webhooks|up)(/|$)#i'], 'to_path' => ['required', 'string', 'max:255', 'regex:#^/[^\s]*$#', 'not_regex:#^//#'], 'reason' => 'nullable|string|max:255'], ['from_path.not_regex' => 'Redirects cannot be placed over portal, admin or sign-in paths.', 'to_path.regex' => 'The destination must be a relative path on this site, starting with /.']);
+        // Normalise before validating: '//login' would pass the reserved-path rule and then be stored as '/login'.
+        if (trim((string) $request->input('from_path'), '/ ') !== '') {
+            $request->merge(['from_path' => '/'.trim((string) $request->input('from_path'), '/')]);
+        }
+        $data = $request->validate(['from_path' => ['required', 'string', 'max:255', 'starts_with:/', 'not_in:/', 'not_regex:#^/(portal|admin|login|register|password|email|two-factor|webhooks|up)(/|$)#i'], 'to_path' => ['required', 'string', 'max:255', 'regex:#^/[^\s]*$#', 'not_regex:#^//#'], 'reason' => 'nullable|string|max:255'], ['from_path.not_regex' => 'Redirects cannot be placed over portal, admin or sign-in paths.', 'to_path.regex' => 'The destination must be a relative path on this site, starting with /.']);
         DB::table('redirects')->updateOrInsert(['from_path' => '/'.trim($data['from_path'], '/')], ['to_path' => $data['to_path'], 'reason' => $data['reason'] ?? null, 'active' => true, 'status_code' => 301, 'created_at' => now(), 'updated_at' => now()]);
         Cache::forget('redirects.map');
         AdminAction::log('redirect.store', null, $data);
@@ -76,8 +81,9 @@ class MiscAdminController extends Controller
         return back()->with('status', 'Redirect saved.');
     }
 
-    public function redirectDelete(int $id)
+    public function redirectDelete(Request $request, int $id)
     {
+        abort_unless($request->user()->isAdmin(), 403);
         DB::table('redirects')->where('id', $id)->delete();
         Cache::forget('redirects.map');
         AdminAction::log('redirect.delete', null, ['id' => $id]);

@@ -106,7 +106,7 @@ Route::middleware('guest')->group(function () {
     Route::post('password/reset', [AuthController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
 });
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('email/verify', [AuthController::class, 'verificationNotice'])->name('verification.notice');
     Route::get('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
@@ -130,7 +130,7 @@ Route::middleware('auth')->group(function () {
 | Student portal (private, noindex)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified', '2fa'])->prefix('portal')->name('portal.')->group(function () {
+Route::middleware(['auth', 'auth.session', 'verified', '2fa'])->prefix('portal')->name('portal.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('start', [DashboardController::class, 'start'])->middleware('throttle:10,10')->name('start');
     Route::get('profile', [ProfileController::class, 'show'])->name('profile');
@@ -169,7 +169,7 @@ Route::post('webhooks/stripe', StripeWebhookController::class)->name('webhooks.s
 | Admin (staff + admin roles)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified', 'staff', '2fa'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'auth.session', 'verified', 'staff', '2fa'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('applications', [ApplicationAdminController::class, 'index'])->name('applications.index');
     Route::get('applications/{application}', [ApplicationAdminController::class, 'show'])->name('applications.show');

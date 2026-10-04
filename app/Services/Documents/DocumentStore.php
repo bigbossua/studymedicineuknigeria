@@ -107,17 +107,22 @@ class DocumentStore
             throw ValidationException::withMessages(['file' => 'This does not appear to be a valid PDF.']);
         }
         $haystacks = [$bytes];
-        if (preg_match_all('/stream\r?\n(.*?)\r?\nendstream/s', $bytes, $m)) {
-            foreach (array_slice($m[1], 0, 2000) as $stream) {
-                $inflated = @gzuncompress($stream);
-                if ($inflated === false) {
-                    $inflated = @gzinflate($stream);
-                }
-                if ($inflated === false && strlen($stream) > 2) {
-                    $inflated = @gzinflate(substr($stream, 2));
-                }
-                if (is_string($inflated) && $inflated !== '') {
+        // Inflate incrementally with caps so a small upload cannot expand to gigabytes (security audit 2026-10-04):
+        // 16 MB per stream, 64 MB in total. Object streams hide dictionaries, so one that does not fit is refused.
+        $budget = 64 * 1024 * 1024;
+        if (preg_match_all('/stream\r?\n(.*?)\r?\nendstream/s', $bytes, $m, PREG_OFFSET_CAPTURE)) {
+            foreach (array_slice($m[1], 0, 2000) as [$stream, $offset]) {
+                $isObjectStream = str_contains(substr($bytes, max(0, $offset - 600), min(600, $offset)), '/ObjStm');
+                [$inflated, $complete] = self::inflateCapped($stream, min(16 * 1024 * 1024, $budget));
+                if ($inflated !== '') {
+                    $budget -= strlen($inflated);
                     $haystacks[] = $inflated;
+                }
+                if ($isObjectStream && ! $complete) {
+                    throw ValidationException::withMessages(['file' => 'This PDF is too complex to check. Please export a plain PDF (for example, "Print to PDF").']);
+                }
+                if ($budget <= 0) {
+                    break;
                 }
             }
         }
@@ -133,11 +138,50 @@ class DocumentStore
         }
     }
 
+    /**
+     * Inflate zlib or raw-deflate data up to $cap bytes. Returns [output, complete]; output is '' when the data is not
+     * compressed at all (images, plain streams). Never allocates more than $cap.
+     */
+    private static function inflateCapped(string $data, int $cap): array
+    {
+        foreach ([[ZLIB_ENCODING_DEFLATE, $data], [ZLIB_ENCODING_RAW, $data], [ZLIB_ENCODING_RAW, substr($data, 2)]] as [$encoding, $input]) {
+            $ctx = @inflate_init($encoding);
+            if ($ctx === false || $input === '') {
+                continue;
+            }
+            $out = '';
+            $ok = true;
+            foreach (str_split($input, 8192) as $chunk) {
+                $piece = @inflate_add($ctx, $chunk, ZLIB_SYNC_FLUSH);
+                if ($piece === false) {
+                    $ok = false;
+                    break;
+                }
+                $out .= $piece;
+                if (strlen($out) >= $cap) {
+                    return [substr($out, 0, $cap), false];
+                }
+            }
+            if ($ok && $out !== '') {
+                $status = @inflate_get_status($ctx);
+
+                return [$out, $status === ZLIB_STREAM_END];
+            }
+        }
+
+        return ['', true];
+    }
+
     private function reencodeImage(string $bytes, string $mime): string
     {
         if (! function_exists('imagecreatefromstring')) {
             return $bytes;
         } // GD unavailable: store as-is (flagged in DPIA)
+        // Read the declared size before decoding: a small PNG can declare 20,000 × 20,000 pixels and exhaust memory.
+        $size = @getimagesizefromstring($bytes);
+        if (! $size || $size[0] * $size[1] > 40_000_000) {
+            throw ValidationException::withMessages(['file' => $size ? 'The image is too large. Please upload a photo or scan under 40 megapixels.' : 'The image could not be read. Please upload a JPG or PNG.']);
+        }
         $img = @imagecreatefromstring($bytes);
         if (! $img) {
             throw ValidationException::withMessages(['file' => 'The image could not be read. Please upload a JPG or PNG.']);

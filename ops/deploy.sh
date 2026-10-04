@@ -22,7 +22,7 @@ cd $REL
 rm -rf storage && ln -s $APP/shared/storage storage && ln -s $APP/shared/.env .env
 PHP=\$(command -v php83 || command -v php8.3 || command -v php)
 DB=\$(grep -E '^DB_DATABASE=' .env | cut -d= -f2- | tr -d '"'); DU=\$(grep -E '^DB_USERNAME=' .env | cut -d= -f2- | tr -d '"'); DP=\$(grep -E '^DB_PASSWORD=' .env | cut -d= -f2- | tr -d '"'); DH=\$(grep -E '^DB_HOST=' .env | cut -d= -f2- | tr -d '"')
-if [ -n "\$DB" ] && command -v mysqldump >/dev/null; then mysqldump -h"\${DH:-127.0.0.1}" -u"\$DU" -p"\$DP" "\$DB" 2>/dev/null | gzip > ~/backups/$TARGET-db-$TS.sql.gz && echo "db backup: ~/backups/$TARGET-db-$TS.sql.gz"; fi
+if [ -n "\$DB" ] && command -v mysqldump >/dev/null; then MYSQL_PWD="\$DP" mysqldump --single-transaction -h"\${DH:-127.0.0.1}" -u"\$DU" "\$DB" 2>/dev/null | gzip > ~/backups/$TARGET-db-$TS.sql.gz && echo "db backup: ~/backups/$TARGET-db-$TS.sql.gz"; fi
 \$PHP artisan migrate --force
 for f in data/verification/decisions-*.csv; do [ -e "\$f" ] && \$PHP artisan smukn:facts-import "\$f"; done
 \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && \$PHP artisan event:cache

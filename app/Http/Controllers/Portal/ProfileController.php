@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Notifications\StaffNotification;
 use App\Support\Seo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class ProfileController extends Controller
@@ -28,9 +30,11 @@ class ProfileController extends Controller
     public function password(Request $request)
     {
         $data = $request->validate(['current_password' => 'required|current_password', 'password' => ['required', 'confirmed', PasswordRule::min(10)->letters()->numbers()]]);
-        $request->user()->forceFill(['password' => Hash::make($data['password'])])->save();
+        $request->user()->forceFill(['password' => Hash::make($data['password']), 'remember_token' => Str::random(60)])->save();
+        // Sessions elsewhere (and remember-me cookies) made under the old password end; this one continues.
+        Auth::logoutOtherDevices($data['password']);
 
-        return back()->with('status', 'Your password has been changed.');
+        return back()->with('status', 'Your password has been changed and you have been signed out everywhere else.');
     }
 
     public function export(Request $request)

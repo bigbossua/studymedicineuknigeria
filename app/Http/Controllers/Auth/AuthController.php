@@ -30,15 +30,21 @@ class AuthController extends Controller
     {
         $data = $request->validate(['email' => 'required|email', 'password' => 'required|string', 'remember' => 'nullable|boolean']);
         $key = 'login:'.Str::lower($data['email']).'|'.$request->ip();
-        if (RateLimiter::tooManyAttempts($key, 10)) {
-            throw ValidationException::withMessages(['email' => 'Too many attempts. Try again in '.ceil(RateLimiter::availableIn($key) / 60).' minutes.']);
+        // A second limit on the account alone: credential stuffing from many addresses against one account.
+        $accountKey = 'login-account:'.Str::lower($data['email']);
+        foreach ([[$key, 10], [$accountKey, 50]] as [$k, $max]) {
+            if (RateLimiter::tooManyAttempts($k, $max)) {
+                throw ValidationException::withMessages(['email' => 'Too many attempts. Try again in '.ceil(RateLimiter::availableIn($k) / 60).' minutes.']);
+            }
         }
         if (! Auth::attempt(['email' => $data['email'], 'password' => $data['password']], (bool) ($data['remember'] ?? false))) {
             RateLimiter::hit($key, 900);
+            RateLimiter::hit($accountKey, 3600);
             throw ValidationException::withMessages(['email' => 'These details do not match our records.']);
         }
         RateLimiter::clear($key);
         $request->session()->regenerate();
+        $request->session()->forget(TwoFactorController::PENDING_SECRET); // a secret planted before sign-in never survives it
         $request->session()->forget(EnsureTwoFactor::SESSION_KEY); // every sign-in repeats the authenticator step
         $request->user()->forceFill(['last_login_at' => now()])->saveQuietly();
 
@@ -119,6 +125,7 @@ class AuthController extends Controller
 
         return $status === Password::PasswordReset
             ? redirect()->route('login')->with('status', 'Your password has been changed. You can sign in now.')
-            : back()->withErrors(['email' => __($status)]);
+            // An unknown email gets the same message as a bad token, so this form never confirms that an account exists.
+            : back()->withErrors(['email' => __($status === Password::InvalidUser ? Password::InvalidToken : $status)]);
     }
 }

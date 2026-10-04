@@ -34,6 +34,9 @@ class ApprovalController extends Controller
     public function approve(Request $request, Application $application)
     {
         abort_unless($application->user_id === auth()->id(), 403);
+        if ($application->isTerminal()) {
+            return back()->with('error', 'This application is withdrawn or closed, so nothing can be approved for submission.');
+        }
         $submission = $application->submissions()->where('status', 'PROPOSED')->latest('id')->first();
         abort_unless($submission, 404);
         $data = $request->validate(['typed_name' => 'required|string|max:160', 'confirm' => 'required|accepted', 'hash' => 'required|string']);

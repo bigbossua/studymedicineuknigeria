@@ -143,6 +143,11 @@ class ApplicationWorkflowTest extends TestCase
         // staff cannot mark submitted before the student approves
         $this->asAdmin()->post("/admin/applications/{$a->application_number}/submissions/{$sub->id}", ['status' => 'SUBMITTED', 'external_reference' => 'X'])->assertSessionHas('error');
         $this->assertSame('PROPOSED', $sub->fresh()->status);
+        // nor record a university response for a proposal that was never approved or sent (security audit 2026-10-04)
+        foreach (['ACKNOWLEDGED', 'OFFER_CONDITIONAL', 'INTERVIEW'] as $response) {
+            $this->asAdmin()->post("/admin/applications/{$a->application_number}/submissions/{$sub->id}", ['status' => $response])->assertSessionHas('error');
+            $this->assertSame('PROPOSED', $sub->fresh()->status);
+        }
 
         $this->asAdmin()->post("/admin/applications/{$a->application_number}/stage", ['stage_override' => 'READY_FOR_STUDENT_APPROVAL'])->assertSessionHas('status');
         app(StageResolver::class)->sync($a->fresh());

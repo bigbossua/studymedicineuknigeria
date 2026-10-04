@@ -22,12 +22,21 @@ class StaffNotification extends Notification implements ShouldQueue
     {
         $m = (new MailMessage)->subject('[SMUKN] '.$this->subject);
         foreach ($this->lines as $l) {
-            $m->line($l);
+            $m->line(self::plain((string) $l));
         }
         if ($this->url) {
             $m->action('Open in admin', $this->url);
         }
 
         return $m;
+    }
+
+    /**
+     * Lines carry student-written text (messages, change requests, transfer references, names). Markdown in them must
+     * stay literal so a student cannot plant a working link or formatting in an email staff trust.
+     */
+    public static function plain(string $text): string
+    {
+        return preg_replace('/([\\\\`*_{}\[\]()#+\-.!<>|~])/', '\\\\$1', $text) ?? '';
     }
 }

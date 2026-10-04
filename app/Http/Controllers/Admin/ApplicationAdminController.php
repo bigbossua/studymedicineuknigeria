@@ -173,6 +173,12 @@ class ApplicationAdminController extends Controller
     {
         abort_unless($submission->application_id === $application->id, 404);
         $data = $request->validate(['status' => 'required|in:PACKAGE_READY,SUBMITTED,ACKNOWLEDGED,INTERVIEW,OFFER_CONDITIONAL,OFFER_UNCONDITIONAL,REJECTED,WAITLISTED,ACCEPTED_BY_STUDENT,DECLINED,CLOSED', 'external_reference' => 'nullable|string|max:64', 'note' => 'nullable|string|max:2000']);
+        // A university's response can only follow a submission: a proposal the student never approved cannot jump to
+        // acknowledged, interview or offer (that would imply it was sent without approval). CLOSED is always allowed.
+        $after = ['ACKNOWLEDGED', 'INTERVIEW', 'OFFER_CONDITIONAL', 'OFFER_UNCONDITIONAL', 'REJECTED', 'WAITLISTED', 'ACCEPTED_BY_STUDENT', 'DECLINED'];
+        if (in_array($data['status'], $after, true) && ! in_array($submission->status, array_merge(['SUBMITTED'], $after), true)) {
+            return back()->with('error', 'Record a university response only after the submission is marked submitted.');
+        }
         if (in_array($data['status'], ['PACKAGE_READY', 'SUBMITTED'], true)) {
             // Invariant: never without a live student authorisation (docs/architecture/12.5)
             $auth = $submission->authorisation;

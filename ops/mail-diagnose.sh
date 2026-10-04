@@ -7,6 +7,7 @@ set -uo pipefail
 APP=~/apps/smukn-${TARGET:-production}/current
 cd "$APP" || { echo "no $APP"; exit 2; }
 PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
+echo "PHP 8.3 command line: $PHP"; echo "app path: $(cd "$APP" && pwd -P | sed -E 's#/releases/[^/]+$#/current#')"
 mask(){ sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email]/g'; }
 
 echo "== cron (the queue worker runs from schedule:run every minute) =="

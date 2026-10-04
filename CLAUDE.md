@@ -21,7 +21,7 @@ php artisan smukn:images      # build photo derivatives from brand/photos
 php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification round trip (data/verification/README.md)
 php artisan smukn:reference-sync   # repository reference data into this database (deploy runs it; never touches reviewed facts)
 php artisan smukn:sources-check --dry-run   # official-page change watcher (nightly on the server)
-node ops/qa/seo-crawl.cjs     # see ops/qa/README.md for the browser QA scripts (journey.cjs, staff-journey.cjs)
+node ops/qa/seo-crawl.cjs     # see ops/qa/README.md for the browser QA scripts (journey.cjs, staff-journey.cjs, public-journey.cjs)
 npm i --no-save world-atlas@2 d3-geo@3 topojson-client@3 lucide-static && node ops/design/build-maps.mjs && node ops/design/build-icons.mjs   # map illustrations and icon set (public-domain / ISC data; no stock photos)
 python3 ops/seo/google-audit.py      # Google-readiness audit of the live site (--connect http://127.0.0.1:8090 for a production-mode server; docs/seo/GOOGLE-READINESS.md)
 python3 ops/seo/page-audit.py # regenerate docs/seo/PAGE-AUDIT.md (every indexable page: query, intent, links, routes to eligibility/apply)

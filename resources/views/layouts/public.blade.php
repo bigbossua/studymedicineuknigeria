@@ -120,12 +120,14 @@
     </div>
 </footer>
 
-@unless(($hideFloatingCta ?? false))
-<aside data-floating-cta class="floating-cta flex flex-col items-end gap-3" aria-label="Quick contact and apply">
+{{-- hideFloatingCta: true hides both buttons (sign-in, errors); 'apply' keeps WhatsApp on the pages that are the apply route --}}
+@php($fab = ($hideFloatingCta ?? false) === 'apply' ? 'contact' : (($hideFloatingCta ?? false) ? null : 'all'))
+@if($fab && ($fab === 'all' || config('site.whatsapp')))
+<aside data-floating-cta class="floating-cta flex flex-col items-end gap-3" aria-label="{{ $fab === 'all' ? 'Quick contact and apply' : 'Quick contact' }}">
     <x-whatsapp-cta />
-    <a href="{{ route('apply.index') }}" class="btn btn-primary">Apply Online</a>
+    @if($fab === 'all')<a href="{{ route('apply.index') }}" class="btn btn-primary shadow-[var(--shadow-card)]">Apply Online</a>@endif
 </aside>
-@endunless
+@endif
 @stack('body-end')
 @stack('scripts')
 </body>

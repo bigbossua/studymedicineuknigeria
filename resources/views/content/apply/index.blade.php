@@ -1,4 +1,4 @@
-<x-layouts.public :seo="$seo" :hide-floating-cta="true">
+<x-layouts.public :seo="$seo" hide-floating-cta="apply">
 <section class="bg-paper-warm border-b border-ink-200">
     <div class="container-site py-14 sm:py-20 grid lg:grid-cols-12 gap-10 items-center">
         <div class="lg:col-span-7">

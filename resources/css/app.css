@@ -219,7 +219,7 @@
   /* Floating CTA (public only) */
   .photo { @apply overflow-hidden rounded-md; }
   .photo img { @apply transition-opacity duration-300; }
-  .floating-cta { @apply fixed bottom-4 right-4 z-40 shadow-[var(--shadow-card)] md:bottom-6 md:right-6; }
+  .floating-cta { @apply fixed bottom-4 right-4 z-40 md:bottom-6 md:right-6; }
 }
 
 @layer utilities {

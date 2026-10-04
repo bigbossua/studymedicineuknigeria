@@ -54,7 +54,13 @@ class ConversionRoutesTest extends TestCase
         $this->assertStringContainsString('role="tooltip"', $aside);
         $this->assertStringContainsString('Questions about studying Medicine in the UK?', $aside);
         // Apply Online stays in the same corner, as the primary button
-        $this->assertStringContainsString('class="btn btn-primary">Apply Online</a>', $aside);
+        $this->assertMatchesRegularExpression('#class="btn btn-primary[^"]*">Apply Online</a>#', $aside);
+        // the apply route itself keeps WhatsApp but not a second Apply Online button
+        foreach (['/apply-online', '/apply-online/eligibility'] as $path) {
+            $fab = explode('</aside>', explode('data-floating-cta', $this->get($path)->getContent(), 2)[1], 2)[0];
+            $this->assertStringContainsString('wa.me/447842292527', $fab, $path);
+            $this->assertStringNotContainsString('Apply Online</a>', $fab, $path);
+        }
         // the sign-in pages keep their screen free of floating buttons
         $this->assertStringNotContainsString('data-floating-cta', $this->get('/login')->getContent());
         config(['site.whatsapp' => '']);

@@ -11,7 +11,8 @@
   "ops/seo/google-audit.py",
   ".github/workflows/live-verify.yml",
   "tests/Feature/GoogleReadinessTest.php",
-  "ops/qa/axe-audit.cjs"
+  "ops/qa/axe-audit.cjs",
+  "ops/qa/public-journey.cjs"
  ],
  "items": [
   {
@@ -50,6 +51,11 @@
    "evidence": "28 unique, 100–165 characters"
   },
   {
+   "area": "H1",
+   "status": "PASS",
+   "evidence": "exactly one H1 on each of the 28 pages, matching the page intent"
+  },
+  {
    "area": "headings",
    "status": "PASS",
    "evidence": "one H1 per page, no skipped levels"
@@ -68,6 +74,26 @@
    "area": "internal links",
    "status": "PASS",
    "evidence": "all sitemap pages reachable from home; ≥2 in-body inbound links each; Next step on every guide page"
+  },
+  {
+   "area": "Open Graph",
+   "status": "PASS",
+   "evidence": "og:title, og:description, og:url, og:type, og:image (1200x630 per page) and twitter:card on all 28 pages; every card file exists"
+  },
+  {
+   "area": "images",
+   "status": "PASS",
+   "evidence": "57 images, all with width/height; SVG globe and maps; phones get a placeholder instead of the globe; photo pipeline builds WebP+JPEG 480/960/1440 with srcset and lazy loading, self-hosted"
+  },
+  {
+   "area": "photography",
+   "status": "OWNER ACTION",
+   "evidence": "Unsplash website blocks GitHub runners (401/307); the official API answers and needs a free Access Key in secret UNSPLASH_ACCESS_KEY"
+  },
+  {
+   "area": "alt text",
+   "status": "PASS",
+   "evidence": "every img has alt; informative images described, decorative ones empty or aria-hidden"
   },
   {
    "area": "mobile",
@@ -108,6 +134,31 @@
    "area": "analytics events",
    "status": "NOT YET AVAILABLE",
    "evidence": "event code ready and tested (browser after consent; journey events server-side with consent, whitelisted parameters); no data until SITE_GA4_ID is set"
+  },
+  {
+   "area": "WhatsApp",
+   "status": "PASS",
+   "evidence": "floating WhatsApp us (+44 7842 292527) above Apply Online with pre-filled message and tooltip; lifts above the consent banner; contact_click without personal data; tested in ConversionRoutesTest"
+  },
+  {
+   "area": "application funnel",
+   "status": "PASS",
+   "evidence": "ops/qa/public-journey.cjs phone+desktop: Home > Medicine > Requirements > Medical schools > Fees > Eligibility > Apply Online > Registration via visible in-page links, no errors, no fee shown"
+  },
+  {
+   "area": "privacy",
+   "status": "PASS with OWNER ACTION",
+   "evidence": "privacy notice, consent before analytics, no third-party script in portal/admin, encrypted documents, no PII to GA4; ICO number is owner-only"
+  },
+  {
+   "area": "legal",
+   "status": "OWNER ACTION",
+   "evidence": "terms, application terms, refund policy and privacy published and cross-linked, marked under legal review; registered name, address, ICO number and legal sign-off are owner-only"
+  },
+  {
+   "area": "admin",
+   "status": "OWNER ACTION",
+   "evidence": "roles, 2FA for staff/admin, audit log in place; production has no account yet; ops/NEXT-PHASE.md step 1"
   },
   {
    "area": "trust / quality",

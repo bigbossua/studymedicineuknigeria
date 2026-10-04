@@ -45,7 +45,14 @@ class GoogleReadinessTest extends TestCase
 
     public function test_sitemap_lists_only_public_canonical_urls(): void
     {
-        $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
+        $r = $this->get('/sitemap.xml')->assertOk();
+        $this->assertStringStartsWith('application/xml', $r->headers->get('Content-Type'));
+        $xml = $r->getContent();
+        $this->assertStringStartsWith('<?xml', $xml, 'nothing (BOM, whitespace) may precede the XML declaration');
+        $doc = simplexml_load_string($xml);
+        $this->assertNotFalse($doc, 'the sitemap is well-formed XML');
+        $this->assertSame('http://www.sitemaps.org/schemas/sitemap/0.9', $doc->getNamespaces()[''] ?? null);
+        $this->assertNull($r->headers->get('X-Robots-Tag'));
         preg_match_all('#<loc>([^<]+)</loc>#', $xml, $m);
         $this->assertNotEmpty($m[1]);
         foreach ($m[1] as $loc) {

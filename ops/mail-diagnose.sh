@@ -10,6 +10,16 @@ PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v 
 echo "PHP 8.3 command line: $PHP"; echo "app path: $(cd "$APP" && pwd -P | sed -E 's#/releases/[^/]+$#/current#')"
 mask(){ sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email]/g'; }
 
+echo "== shared/cron.log (written by the hPanel cron job) =="
+CL=~/apps/smukn-${TARGET:-production}/shared/cron.log
+if [ -f "$CL" ]; then
+  echo "exists: $(stat -c '%s bytes, last written %y' "$CL" | cut -c1-60) (server time now $(date '+%Y-%m-%d %H:%M:%S %z'))"
+  echo "lines: $(wc -l < "$CL"); lines mentioning queue:work runs: $(grep -c 'queue:work' "$CL"); DONE: $(grep -c 'DONE' "$CL"); FAIL: $(grep -c 'FAIL' "$CL")"
+  echo "last 15 lines (addresses masked, 200 characters max):"; tail -15 "$CL" | cut -c1-200 | sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email]/g; s#/home/[^/ ]+#~#g'
+else
+  echo "NOT FOUND: $CL (the cron job has not written to it)"
+fi
+
 echo "== process sample: does Hostinger's cron start the scheduler? (watching 130 s, two minute boundaries) =="
 echo "processes visible to this account right now: $(ps -u "$(whoami)" -o pid= | wc -l) (the sample can see this account's processes)"
 echo "server time now: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"

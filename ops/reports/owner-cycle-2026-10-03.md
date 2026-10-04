@@ -2,14 +2,14 @@
 
 Format per the owner directive: inspected / found / changed / why / tested / passed / failed / remains / next.
 
-## State at 23:00 UTC (read this first)
+## State at 02:30 UTC on 2026-10-04 (read this first)
 
 | Area | State |
 |---|---|
-| Code | HEAD on `claude/new-session-p6gdm6`, 91 tests green (incl. a production-mode sweep that no unverified wording reaches any public page, which found and fixed three leaks today: UCAS-code notes, GMC-status wording, research notes in two course titles and one school name), CI green on every push; 28 indexable pages crawl clean; axe zero violations; fresh-account journey clean |
+| Code | HEAD on `claude/new-session-p6gdm6`, 101 tests green (incl. a production-mode sweep that no unverified wording reaches any public page, which found and fixed three leaks today: UCAS-code notes, GMC-status wording, research notes in two course titles and one school name), CI green on every push; 28 indexable pages crawl clean; axe zero violations; fresh-account journey clean |
 | Deployment | Ready (inspect → bootstrap → deploy → smoke → rollback rehearsed) but **blocked**: no Actions secrets or variables exist in any scope (last check 22:33 UTC, run 13: all 18 settings missing in repository, staging and production scopes); the deploy workflow has never run |
 | Facts | 636 pending (535 VERIFY-ON-PAGE, 101 NOT_FOUND); official domains are blocked from this environment, so verification runs from the owner's browser via `data/verification/worksheet-2026-10-04.csv` (110 priority-1 rows; regenerated 2026-10-04 to add the prioritisation Act and two changed visa figures) |
-| SEO | Decision register with 111 query families incl. cluster V (30-subject healthcare taxonomy, `data/healthcare/subjects.json`, Admin → Subjects; only Medicine may have a page) and reasons (`data/seo/decision-register.csv`, Admin → SEO); 22-point technical audit clean; eleven intent pages upgraded; Semrush figures await the owner's export |
+| SEO | Decision register with 146 query families incl. cluster V (36-subject healthcare taxonomy, `data/healthcare/subjects.json`, Admin → Subjects; only Medicine may have a page) and reasons (`data/seo/decision-register.csv`, Admin → SEO); 22-point technical audit clean; eleven intent pages upgraded; Semrush figures await the owner's export |
 | Conversion | Eligibility → account → application → documents → payments → export tested on a phone viewport; two wording defects found and fixed today (route-map headline, passport checklist reason) |
 | Owner-only | listed in the last section, in order of value: verification worksheet · Actions settings · network allow-list · Semrush export · Unsplash picks · prices, legal review, email DNS |
 
@@ -146,6 +146,13 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 ## Cycle 30 — subject long-tail families, derived register columns, knowledge graph (stage 35)
 
 - **Found**: the register lacked the owner's subject, indexation, internal-link and conversion columns, and Nursing and Dentistry had no query-family evidence. **Changed**: columns derived by the builder; `docs/seo/KNOWLEDGE-GRAPH.md` generated per subject; 36 SERP observations clustered into sixteen cluster V family rows (three VALIDATED, eleven RESEARCH, two REJECTED) with research doc 12 §E and eleven new Semrush lookup themes. **Tested / passed**: 91 tests; CI green on every push. **Remains**: Semrush `ng` volumes (owner export) decide the nursing route family; every §E official statement is VERIFY-ON-PAGE.
+
+## Cycle 31 — audit, course scoping, fact integrity, expanded universe (stage 36, 2026-10-04)
+
+- **Inspected**: crawl, link graph, axe, CSP, fresh-account journey, robots/sitemap/canonical/redirect behaviour, every public course query, the topic seeder, portal copy; three research sweeps (49 + 45 + 45 searches); Semrush (still `no_api_units`); Unsplash (blocked from this environment).
+- **Found and fixed**: `/index.php` duplicate pages; Medicine hub weakly linked; unscoped course queries; verified facts overwritable on reseed; stale prioritisation and maintenance facts; portal deadline, year and age claims; an over-long gated description; demo accounts missing. Each has a regression test.
+- **Changed (research)**: 36-subject taxonomy, 146-row register, FAQ answers for three Nigerian question families, subject image plan, worksheet 2026-10-04.
+- **Tested / passed**: 101 tests; CI green on every push. **Remains**: settings still missing (last check 22:33 UTC on 2026-10-03, run 13); every new official statement is VERIFY-ON-PAGE.
 
 ## Owner actions still required (unchanged, one place)
 

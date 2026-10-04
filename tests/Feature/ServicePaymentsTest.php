@@ -307,7 +307,7 @@ class ServicePaymentsTest extends TestCase
         $price = ServiceTier::where('code', 'T2')->first()->priceFor('full');
         $as()->post("/admin/services/prices/{$price->id}", ['amount' => '400'])->assertSessionHas('status');
         $this->assertDatabaseHas('admin_actions', ['action' => 'price.update', 'target_id' => $price->id]);
-        $this->assertSame(['tier' => 'T2', 'before_minor' => 39500, 'after_minor' => 40000], AdminAction::where('action', 'price.update')->first()->payload);
+        $this->assertEquals(['tier' => 'T2', 'before_minor' => 39500, 'after_minor' => 40000], AdminAction::where('action', 'price.update')->first()->payload);
         $this->assertSame(39500, $p->fresh()->amount_minor, 'a payment keeps the amount it was taken at');
 
         // a deploy's reference sync never reverts an admin's price, and fills only an empty one

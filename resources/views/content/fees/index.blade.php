@@ -43,7 +43,7 @@
         </div>
         <aside class="lg:col-span-4"><x-cta-band title="Know what the costs are. Ready to check your application?" :href="route('apply.index')" label="Apply Online" class="flex-col items-start" /></aside>
     </section>
-    <x-related :items="[['label' => 'Study Medicine in the UK from Nigeria', 'url' => route('medicine.nigeria'), 'description' => 'The full guide: routes, schools, calendar and cost in one place'], ['label' => 'Total cost of studying Medicine in the UK', 'url' => route('fees.total')], ['label' => 'Medical school directory', 'url' => route('schools.index')], ['label' => 'Requirements hub', 'url' => route('requirements.index')], ['label' => 'Services and pricing', 'url' => route('apply.services')]]" />
+    <x-related :items="[['label' => 'Study Medicine in the UK from Nigeria', 'url' => route('medicine.nigeria'), 'description' => 'The full guide: routes, schools, calendar and cost in one place'], ['label' => 'Total cost of studying Medicine in the UK', 'url' => route('fees.total')], ['label' => 'Medical school directory', 'url' => route('schools.index')], ['label' => 'Requirements hub', 'url' => route('requirements.index')], ['label' => 'Our application support services', 'url' => route('apply.services')]]" />
     <x-route-map current="fees" />
 </article>
 </x-layouts.public>

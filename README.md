@@ -40,7 +40,7 @@ brand/                    logo/favicon/OG generator (`brand/build.py`) and maste
 docs/                     research, decisions, architecture, logs, ops checklists, the SEO decision engine (`docs/seo`)
 ops/                      deploy.sh, server-bootstrap.sh, backup.sh, inspect-hostinger.sh, smoke.sh, RESTORE.md, reports/
 .github/workflows/        ci, inspect-hostinger, bootstrap-hostinger, deploy-hostinger, backup-hostinger, uptime-check
-tests/Feature             175 tests (SEO and decision register, healthcare taxonomy, workflow, documents, approval gate, two-step, CSP, funnel, staging gate, verification, worksheet round trip)
+tests/Feature             182 tests (SEO and decision register, healthcare taxonomy, workflow, documents, approval gate, two-step, CSP, funnel, staging gate, verification, worksheet round trip)
 ```
 
 ## Local development

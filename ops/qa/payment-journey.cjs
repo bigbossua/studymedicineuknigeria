@@ -1,5 +1,6 @@
 // Paid-service journey in a phone-sized browser, against a local site whose Stripe calls go to ops/qa/fake-stripe.php:
-// pricing page → choose T2 → register → (verify, local shortcut) → start with T2 preselected → confirmation page →
+// public services page (no fee in the source) → Apply Online → register → (verify, local shortcut) → start (no fee) →
+// profile approved (local shortcut) → service choice with fees → choose T2 → confirmation page →
 // cancel at checkout → retry → pay → return page waits (not paid) → signed webhook → paid → staff see it.
 // Checks that the amount on the website equals the amount sent to the checkout, and reports console/CSP/5xx problems.
 // Run: see ops/qa/README.md (needs the app served with STRIPE_SECRET=sk_test_local, STRIPE_WEBHOOK_SECRET and
@@ -20,25 +21,37 @@ const log = { flashes: [] }; const problems = []; let page;
   page.on('response', r => { if (r.status() >= 500) problems.push('HTTP ' + r.status() + ' ' + r.url()); });
   const email = 'pay-' + Date.now() + '@example.test';
 
-  // pricing page
+  // public services page: services and inclusions, no fee anywhere in the page source
   await page.goto(base + '/apply-online/services', { waitUntil: 'networkidle' });
-  log.prices = await page.$$eval('[data-price]', els => Object.fromEntries(els.map(e => [e.dataset.price, e.textContent.trim()])));
+  const publicHtml = await page.content();
+  log.publicFeeLeaks = ['£125', '£695', '£1,295', '12500', '69500', '129500', 'priceCurrency'].filter(x => publicHtml.includes(x));
+  log.publicNotice = await page.locator('text=Service options and pricing are provided after your profile has been reviewed.').count();
   log.mostPopular = await page.locator('text=Most popular').count();
   log.disclaimer = await page.locator('text=We do not guarantee admission, a visa, a scholarship or an offer from any university.').count();
-  await page.screenshot({ path: `${out}/p-pricing${desktop ? '-desktop' : ''}.png`, fullPage: true });
-  await page.click('[data-choose="T2"]'); await page.waitForLoadState('networkidle'); log.afterChoose = page.url();
+  await page.screenshot({ path: `${out}/p-services${desktop ? '-desktop' : ''}.png`, fullPage: true });
+  await page.click('[data-cta="services-apply"]'); await page.waitForLoadState('networkidle'); log.afterApply = page.url().replace(base, '');
+  await page.goto(base + '/register', { waitUntil: 'networkidle' });
 
-  // register, verify (local shortcut), start
+  // register, verify (local shortcut), start: no service and no fee yet
   await page.fill('#name', 'Payment Tester'); await page.fill('#email', email); await page.fill('#password', 'Longpass12345'); await page.fill('#password_confirmation', 'Longpass12345'); await page.check('input[name=terms]');
   await page.click('button[type=submit]'); await page.waitForLoadState('networkidle');
   tinker(`App\\Models\\User::where('email','${email}')->first()->forceFill(['email_verified_at'=>now()])->save(); echo 'ok';`);
   await page.goto(base + '/portal', { waitUntil: 'networkidle' });
-  log.preselected = await page.$eval('input[name=service_tier_id]:checked', e => e.getAttribute('aria-label')).catch(() => 'none');
+  const startHtml = await page.content(); log.startPageFeeLeaks = ['£125', '£695', '£1,295'].filter(x => startHtml.includes(x));
   await page.click('button:has-text("Create my application")'); await page.waitForLoadState('networkidle');
-  log.afterStart = page.url().replace(base, '');
+  const appNo = page.url().match(/SMUKN-\d{4}-\d+/)[0]; log.application = appNo;
+  await page.goto(`${base}/portal/${appNo}/services`, { waitUntil: 'networkidle' }); log.servicesBeforeApproval = page.url().replace(base, '');
+
+  // our team reviews the profile (QA shortcut for the admin's "Approve for service selection")
+  tinker(`App\\Models\\Application::where('application_number','${appNo}')->first()->forceFill(['services_approved_at'=>now()])->save(); echo 'ok';`);
+  await page.goto(`${base}/portal/${appNo}/services`, { waitUntil: 'networkidle' });
+  log.prices = await page.$$eval('[data-service-price]', els => Object.fromEntries(els.map(e => [e.dataset.servicePrice, e.textContent.trim()])));
+  log.preselected = await page.$$eval('input[name=service_tier_id]:checked', els => els.length);
+  await page.screenshot({ path: `${out}/p-choose${desktop ? '-desktop' : ''}.png`, fullPage: true });
+  await page.click('[data-service="T2"]'); await page.click('button:has-text("Continue with this service")'); await page.waitForLoadState('networkidle');
+  log.afterChoose = page.url().replace(base, '');
   log.confirmPrice = (await page.textContent('[data-checkout-price]')).trim();
   await page.screenshot({ path: `${out}/p-confirm${desktop ? '-desktop' : ''}.png`, fullPage: true });
-  const appNo = page.url().match(/SMUKN-\d{4}-\d+/)[0]; log.application = appNo;
 
   // first attempt: cancel at checkout
   await page.check('input[name=accept_terms]'); await page.click('button:has-text("Continue to secure payment")'); await page.waitForLoadState('networkidle');
@@ -51,7 +64,7 @@ const log = { flashes: [] }; const problems = []; let page;
   await page.click('[data-pay]'); await page.waitForLoadState('domcontentloaded');
   log.returnBeforeWebhook = (await page.locator('h1').first().textContent()).trim();
   const sessions = JSON.parse(fs.readFileSync(store, 'utf8')); const last = Object.values(sessions).pop();
-  log.sentToCheckout = { amount_minor: last.amount_total, currency: last.currency };
+  log.sentToCheckout = { amount_minor: last.amount_total, currency: last.currency, stripe_price: last.price };
 
   // Stripe confirms: a signed checkout.session.completed with what was charged
   const payload = JSON.stringify({ id: 'evt_qa_' + Date.now(), object: 'event', type: 'checkout.session.completed', api_version: '2024-06-20', created: Math.floor(Date.now() / 1000), livemode: false,
@@ -64,7 +77,7 @@ const log = { flashes: [] }; const problems = []; let page;
   await page.screenshot({ path: `${out}/p-paid${desktop ? '-desktop' : ''}.png`, fullPage: true });
   await page.goto(`${base}/portal/${appNo}/payments`, { waitUntil: 'networkidle' });
   log.paymentsPage = (await page.locator('h1').first().textContent()).trim();
-  log.db = tinker(`$p = App\\Models\\Application::where('application_number','${appNo}')->first()->payments()->latest('id')->first(); echo $p->status.' '.$p->amount_minor.' '.$p->currency.' '.$p->tierPrice->tier->code;`);
+  log.db = tinker(`$p = App\\Models\\Application::where('application_number','${appNo}')->first()->payments()->latest('id')->first(); echo $p->status.' '.$p->amount_minor.' '.$p->currency.' '.$p->tierPrice->tier->code.' '.$p->stripe_price_id;`);
   log.pageEqualsCharge = log.confirmPrice === '£' + (last.amount_total / 100).toLocaleString('en-GB') && last.currency === 'gbp';
   log.problems = problems;
   console.log(JSON.stringify(log, null, 1));

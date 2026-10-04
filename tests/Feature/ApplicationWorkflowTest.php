@@ -7,7 +7,6 @@ use App\Enums\Stage;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Application;
 use App\Models\Authorisation;
-use App\Models\ServiceTier;
 use App\Models\Submission;
 use App\Models\University;
 use App\Models\User;
@@ -48,10 +47,9 @@ class ApplicationWorkflowTest extends TestCase
 
     private function startApplication(): Application
     {
-        $tier = ServiceTier::where('code', 'T2')->first();
-        $this->actingAs($this->student)->post('/portal/start', ['service_tier_id' => $tier->id, 'intake_year' => 2028])->assertRedirect();
+        $this->actingAs($this->student)->post('/portal/start', ['intake_year' => 2028])->assertRedirect();
 
-        return Application::firstOrFail();
+        return $this->approveServices(Application::firstOrFail(), 'T2');
     }
 
     private function completeForm(Application $a): void

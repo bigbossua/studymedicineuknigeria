@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Application;
 use App\Models\FunnelEvent;
-use App\Models\ServiceTier;
 use App\Models\University;
 use App\Models\User;
 use App\Support\Totp;
@@ -49,14 +48,13 @@ class FunnelTest extends TestCase
     {
         $this->seed(PlatformSeeder::class);
         $student = User::factory()->create();
-        $tier = ServiceTier::where('code', 'T2')->first();
-        $this->actingAs($student)->post('/portal/start', ['service_tier_id' => $tier->id, 'intake_year' => 2028])->assertRedirect();
+        $this->actingAs($student)->post('/portal/start', ['intake_year' => 2028])->assertRedirect();
         $a = Application::first();
 
         $e = FunnelEvent::where('name', 'application_started')->first();
         $this->assertNotNull($e);
         $this->assertSame(hash('sha256', $a->application_number), $e->application_hash);
-        $this->assertSame('T2', $e->tier);
+        $this->assertNull($e->tier, 'no service is chosen until the profile has been reviewed');
         $this->assertSame(2028, $e->intake_year);
         $this->assertSame('student', $e->properties['actor']);
         $this->assertStringNotContainsString($a->application_number, json_encode($e->toArray()));

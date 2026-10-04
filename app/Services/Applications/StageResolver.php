@@ -28,7 +28,8 @@ class StageResolver
 
         $gate = $a->tier?->payment_gate ?? 'AT_START';
         $paid = $a->hasSucceededPayment();
-        $needsPay = $a->tier && $a->tier->hasPrices() && ! $paid;
+        // A fee is due only once our team has approved the profile and the student can see and choose a service.
+        $needsPay = $a->servicesApproved() && ! $paid && (! $a->tier || $a->tier->hasPrices());
 
         if ($gate === 'AT_START' && $needsPay) {
             return Stage::PAYMENT_REQUIRED;
@@ -119,7 +120,9 @@ class StageResolver
             return ['Review and approve your application', route('portal.approve.show', $num), 'primary'];
         }
         if ($stage === Stage::PAYMENT_REQUIRED) {
-            return ['Complete payment for '.($a->tier?->name ?? 'your service'), route('portal.payments.index', $num), 'primary'];
+            return $a->tier
+                ? ['Confirm and pay for '.$a->tier->name, route('portal.payments.index', $num), 'primary']
+                : ['Your profile has been reviewed: choose your service', route('portal.services.index', $num), 'primary'];
         }
         $doc = $a->documents->first(fn ($d) => $d->status->needsStudent());
         if ($doc) {
@@ -129,6 +132,9 @@ class StageResolver
             if (! $a->sectionComplete($key)) {
                 return ['Continue: '.$meta['title'], route('portal.application.step', [$num, $key]), 'primary'];
             }
+        }
+        if (! $a->servicesApproved() && ! $a->hasSucceededPayment() && ! $a->isTerminal()) {
+            return ['Your profile is with our team for review. Once it is reviewed, your portal shows the service options and their fees.', null, 'info'];
         }
         if ($stage === Stage::ACTION_REQUIRED) {
             return ['Read the message from our team and respond', route('portal.messages.index', $num), 'primary'];

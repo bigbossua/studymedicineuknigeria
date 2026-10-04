@@ -34,14 +34,18 @@ already exist.
 | `SMUKN_DB_DATABASE`, `SMUKN_DB_USERNAME`, `SMUKN_DB_PASSWORD` | Secrets | **Environment `production`** | The production database from step 1 (only needed before the production bootstrap) |
 | Required reviewers | Protection rule | **Environment `production`** | Tick *Required reviewers*, add yourself, save. Production deploys refuse to run without it. |
 
-**Stripe test mode on staging (for the payment review).** Prices are already set (T1 £125, T2 £695, T3 £1,295). In the
-Stripe Dashboard switch to **Test mode**, then:
+**Stripe test mode on staging (for the payment review).** The fees are in the service records (T1 £125, T2 £695,
+T3 £1,295) and are shown only in the portal, to a student whose profile staff approved. In the Stripe Dashboard switch
+to **Test mode**, then:
 1. Developers → API keys: copy the *publishable* key (`pk_test_…`) and the *secret* key (`sk_test_…`).
 2. Developers → Webhooks → Add endpoint: URL `https://staging.studymedicineuknigeria.com/webhooks/stripe`, events
    `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.expired`,
    `payment_intent.payment_failed`, `charge.refunded`, `charge.dispute.created`; then reveal its signing secret (`whsec_…`).
 3. GitHub → Settings → Environments → `staging` → add secrets `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`.
 4. Actions → *Update server settings* (`staging`) writes them into the server's `.env` (a live key is refused on staging).
+5. Actions → *Stripe catalogue* (`staging`, `create`) creates the three products (`smukn_t1`, `smukn_t2`, `smukn_t3`) and
+   their one-time GBP prices in test mode, or finds them if they exist (never duplicates; no Payment Links). Every deploy
+   repeats this check, and the first checkout would do it too.
 Pay with Stripe's test card `4242 4242 4242 4242` (any future date, any CVC); `4000 0000 0000 0002` is declined.
 
 Optional, later: `SMUKN_MAIL_PASSWORD` (mailbox `info@studymedicineuknigeria.com`), `SITE_WHATSAPP`, `SITE_LEGAL_NAME`,
@@ -86,8 +90,11 @@ successful staging deploy of the same commit.
 | `STRIPE_WEBHOOK_SECRET` | Stripe (live mode) → Developers → Webhooks → Add endpoint `https://studymedicineuknigeria.com/webhooks/stripe`, the six events listed in section 2 → reveal the signing secret `whsec_…` |
 | Required reviewers | protection rule on `production` (yourself) |
 
-Stripe prices need no setup: Checkout is created from the service records (T1 £125, T2 £695, T3 £1,295, GBP), so the
-website price and the charge are always the same number.
+Stripe products and prices need no manual setup: *Stripe catalogue* (`production`, `create`), every deploy and the first
+checkout create or find one product per service (`smukn_t1`..`t3`) with one active one-time GBP price matching the
+service record (T1 £125, T2 £695, T3 £1,295). Checkout charges that price, chosen by the server; an admin price change
+creates a new Stripe price and switches the old one off. Do not create Payment Links: they would bypass the profile
+review.
 
 **Sequence (Claude runs each step; you approve every production run as its required reviewer):**
 1. *Diagnose Actions settings* → every production row PRESENT, Stripe mode "live".

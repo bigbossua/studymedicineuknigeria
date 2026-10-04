@@ -12,7 +12,7 @@
         <div class="lg:col-span-5 card-raised">
             <p class="eyebrow mb-3">What happens, in order</p>
             <ol class="space-y-3 text-[0.9375rem]">
-                @foreach(['Choose a service level and create your application number', 'Complete nine short sections, saved automatically', 'Upload the documents on your personal checklist; each is reviewed', 'We review your file and propose where it should go', 'You approve the exact package; only then does submission begin', 'Track the university\'s response in your portal'] as $i => $s)<li class="flex gap-3"><span class="font-mono text-ink-500">0{{ $i+1 }}</span><span>{{ $s }}</span></li>@endforeach
+                @foreach(['Create your account and application number', 'Tell us about your qualifications and plans, saved automatically', 'Our team reviews your profile', 'Your portal shows the service options and fees; you choose one and pay', 'Upload the documents on your personal checklist; each is reviewed', 'You approve the exact package before any submission; then track the university\'s response'] as $i => $s)<li class="flex gap-3"><span class="font-mono text-ink-500">0{{ $i+1 }}</span><span>{{ $s }}</span></li>@endforeach
             </ol>
         </div>
     </div>
@@ -20,12 +20,13 @@
 <section class="container-site py-14">
     <h2 class="text-balance">Three levels of support</h2>
     <div class="mt-6 grid gap-5 lg:grid-cols-3">
-        @foreach($tiers as $t)<div class="card flex flex-col {{ $t->badge ? 'border-2 border-navy-700' : '' }}"><p class="eyebrow">{{ $t->tagline ?? $t->code }}@if($t->badge) · <span class="text-navy-700">{{ $t->badge }}</span>@endif</p><h3 class="mt-1">{{ $t->name }}</h3><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $t->summary }}</p><p class="mt-3 text-xl font-serif font-semibold">{{ $t->priceFor('full')?->formatted() ?? 'Price not yet published' }} <span class="text-[0.8125rem] font-sans font-normal text-ink-500">service fee</span></p></div>@endforeach
+        @foreach($tiers as $t)<div class="card flex flex-col {{ $t->badge ? 'border-2 border-navy-700' : '' }}"><p class="eyebrow">{{ $t->tagline ?? $t->code }}@if($t->badge) · <span class="text-navy-700">{{ $t->badge }}</span>@endif</p><h3 class="mt-1">{{ $t->name }}</h3><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $t->summary }}</p></div>@endforeach
     </div>
+    <p class="mt-5 text-[0.9375rem] text-ink-700 max-w-3xl"><span class="font-semibold">Service options and pricing are provided after your profile has been reviewed.</span> Your portal then shows each service open to you with its exact fee, and you choose one before anything is charged.</p>
     <a href="{{ route('apply.services') }}" class="btn btn-tertiary mt-4">Full list of what is included and excluded</a>
 </section>
 <section class="container-site pb-14 grid lg:grid-cols-12 gap-8">
-    <div class="lg:col-span-5"><h2 class="text-balance">What you need before you create an account</h2><p class="mt-3 text-ink-700 text-[0.9375rem]">Nothing is taken when you create an account or start an application; a service fee applies only to the level you choose and is shown before you pay. You can start today with incomplete information and add documents as you obtain them.</p></div>
+    <div class="lg:col-span-5"><h2 class="text-balance">What you need before you create an account</h2><p class="mt-3 text-ink-700 text-[0.9375rem]">Nothing is taken when you create an account or start an application. After our team has reviewed your profile, your portal shows the service options and their fees; a fee applies only to the service you choose, and you see it before you pay. You can start today with incomplete information and add documents as you obtain them.</p></div>
     <div class="lg:col-span-7"><ul class="grid sm:grid-cols-2 gap-3 text-[0.9375rem]">
         @foreach([['An email address you check', 'Verification, document feedback and messages from us arrive there.'], ['Your name as written in your international passport', 'It must match across UCAS, the university and the visa; we check every document against it.'], ['Your qualifications so far', 'WAEC or NECO results, A-levels or IB (achieved or predicted), any degree, any English test; the eligibility check maps them to open routes.'], ['An intake year in mind', 'The year you want to start decides every deadline in your plan; we show the calendar for it.']] as [$h, $p])
             <li class="card"><p class="font-semibold">{{ $h }}</p><p class="mt-1 text-ink-700">{{ $p }}</p></li>

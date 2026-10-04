@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application;
+use App\Models\User;
+use App\Notifications\StaffNotification;
 use App\Services\Applications\ChecklistBuilder;
 use App\Services\Applications\FormSteps;
 use App\Services\Applications\StageResolver;
@@ -62,6 +64,11 @@ class ApplicationController extends Controller
             $this->checklist->refresh($application);
         }
         $this->stages->sync($application);
+        if ($complete && ! $application->servicesApproved() && collect(array_keys(FormSteps::all()))->every(fn ($s) => $application->sectionComplete($s))
+            && ! $application->events()->where('type', 'profile.ready')->exists()) {
+            $application->record('profile.ready', [], $request->user()->id);
+            User::where('role', 'admin')->get()->each->notify(new StaffNotification('Profile ready for review — '.$application->application_number, [$application->user->name.' has completed every section. Review the profile and approve it for service selection.'], route('admin.applications.show', $application)));
+        }
 
         if ($request->expectsJson()) {
             return response()->json(['saved' => true, 'complete' => $complete, 'errors' => $validator->errors()]);

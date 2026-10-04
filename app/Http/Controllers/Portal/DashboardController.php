@@ -23,8 +23,7 @@ class DashboardController extends Controller
         $user = $request->user()->load('applications.tier', 'applications.documents', 'applications.payments.tierPrice', 'applications.submissions.university', 'applications.authorisations');
         $application = $user->currentApplication();
         if (! $application) {
-            return view('portal.start', ['seo' => Seo::make('Start your application')->noindex(), 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get(),
-                'intended' => $request->session()->get('intended_service')]);
+            return view('portal.start', ['seo' => Seo::make('Start your application')->noindex(), 'tiers' => ServiceTier::where('active', true)->orderBy('sort')->get()]);
         }
         $this->stages->sync($application);
         $application->load('events');
@@ -35,28 +34,25 @@ class DashboardController extends Controller
 
     public function start(Request $request)
     {
-        $data = $request->validate(['service_tier_id' => 'required|exists:service_tiers,id', 'intake_year' => 'required|integer|min:'.(now()->year + 1).'|max:'.(now()->year + 4)]);
+        // No service is chosen here: the student chooses one, with its fee, after our team has reviewed the profile.
+        $data = $request->validate(['intake_year' => 'required|integer|min:'.(now()->year + 1).'|max:'.(now()->year + 4)]);
         $user = $request->user();
         if ($user->currentApplication() && ! $user->currentApplication()->isTerminal()) {
             return redirect()->route('portal.dashboard');
         }
         $application = Application::create([
-            'application_number' => Application::nextNumber((int) $data['intake_year']), 'user_id' => $user->id, 'service_tier_id' => $data['service_tier_id'],
+            'application_number' => Application::nextNumber((int) $data['intake_year']), 'user_id' => $user->id, 'service_tier_id' => null,
             'intake_year' => $data['intake_year'], 'form' => ['study' => ['intake_year' => (int) $data['intake_year']]], 'section_status' => [], 'last_activity_at' => now(),
         ]);
-        $application->record('application.started', ['tier' => $application->tier->name], $user->id);
+        $interest = ServiceTier::where('active', true)->where('code', (string) $request->session()->get('intended_service'))->value('name');
+        $application->record('application.started', array_filter(['interest' => $interest]), $user->id);
         $this->checklist->refresh($application);
         $application->record('documents.generated', ['count' => $application->documents()->count()]);
         $this->stages->sync($application);
         $user->notify(new ApplicationNotification($application, 'application.started'));
-        User::where('role', 'admin')->get()->each->notify(new StaffNotification('New application '.$application->application_number, [$user->name.' started '.$application->tier->name.' for '.$application->intake_year.' entry.'], route('admin.applications.show', $application)));
-
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('New application '.$application->application_number, [$user->name.' started an application for '.$application->intake_year.' entry.'.($interest ? ' Interested in: '.$interest.'.' : '')], route('admin.applications.show', $application)));
         $request->session()->forget('intended_service');
-        if ($application->tier->hasPrices()) {
-            // Confirm the service and its fee next; the form can be filled in before or after paying.
-            return redirect()->route('portal.payments.index', $application)->with('status', 'Your application '.$application->application_number.' has been created. Confirm your service below; your form is saved as you go and you can start it at any time.');
-        }
 
-        return redirect()->route('portal.application.step', [$application, 'personal'])->with('status', 'Your application '.$application->application_number.' has been created. Everything you enter is saved automatically.');
+        return redirect()->route('portal.application.step', [$application, 'personal'])->with('status', 'Your application '.$application->application_number.' has been created. Everything you enter is saved automatically; once your profile is complete, our team reviews it and your portal shows the service options and their fees.');
     }
 }

@@ -39,8 +39,8 @@ class PortalPaymentsAndDocumentsTest extends TestCase
         $this->admin = User::factory()->create();
         $this->admin->forceFill(['role' => 'admin', 'two_factor_secret' => Totp::generateSecret(), 'two_factor_confirmed_at' => now()])->save();
         $tier = ServiceTier::where('code', 'T2')->first();
-        $this->actingAs($this->student)->post('/portal/start', ['service_tier_id' => $tier->id, 'intake_year' => 2028])->assertRedirect();
-        $this->application = Application::first();
+        $this->actingAs($this->student)->post('/portal/start', ['intake_year' => 2028])->assertRedirect();
+        $this->application = $this->approveServices(Application::first(), 'T2');
         $this->price = TierPrice::where('service_tier_id', $tier->id)->first();
         $this->price->update(['amount_minor' => 25000, 'currency' => 'GBP']);
     }

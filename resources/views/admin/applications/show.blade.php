@@ -73,6 +73,19 @@
                     <button class="btn btn-primary w-full">Apply</button></form>
                 <p class="hint mt-2">Derived stages (form, documents, payment, submission) update automatically; only judgement stages are set here.</p>
             </section>
+            <section class="card" aria-labelledby="svc-approval"><p class="eyebrow mb-3" id="svc-approval">Service selection</p>
+                @if($a->servicesApproved())
+                    <p class="text-[0.875rem]">Approved {{ $a->services_approved_at->format('j M Y H:i') }}: the student sees the service options and fees{{ $a->tier ? ' and chose '.$a->tier->name : '' }}.</p>
+                    @unless($a->payments->whereIn('status', ['SUCCEEDED', 'MANUAL_REVIEW', 'INITIATED'])->isNotEmpty())
+                        <form method="post" action="{{ route('admin.applications.services',$a) }}" class="mt-2">@csrf<input type="hidden" name="decision" value="revoke"><button class="btn btn-tertiary">Withdraw approval</button></form>
+                    @endunless
+                @else
+                    <p class="text-[0.875rem] text-ink-700">Profile: {{ collect(array_keys(\App\Services\Applications\FormSteps::all()))->filter(fn ($s) => $a->sectionComplete($s))->count() }} of {{ count(\App\Services\Applications\FormSteps::all()) }} sections complete. Approving shows the student the service options with their fees and lets them choose and pay.</p>
+                    <form method="post" action="{{ route('admin.applications.services',$a) }}" class="space-y-2 mt-2">@csrf<input type="hidden" name="decision" value="approve">
+                        <textarea name="note" class="input min-h-16" placeholder="Optional note to the student (included in the email)"></textarea>
+                        <button class="btn btn-primary w-full">Approve for service selection</button></form>
+                @endif
+            </section>
             <section class="card"><p class="eyebrow mb-3">Assignment and notes</p>
                 <form method="post" action="{{ route('admin.applications.assign',$a) }}" class="space-y-2">@csrf
                     <select name="assigned_staff_id" class="input" aria-label="Assigned staff member"><option value="">Unassigned</option>@foreach($staff as $s)<option value="{{ $s->id }}" @selected($a->assigned_staff_id===$s->id)>{{ $s->name }}</option>@endforeach</select>

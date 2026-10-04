@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Application;
-use App\Models\ServiceTier;
 use App\Models\User;
 use App\Services\Applications\ChecklistBuilder;
 use App\Services\Applications\StageResolver;
@@ -37,13 +36,14 @@ class DemoAccountsSeeder extends Seeder
         }
         $admin->save();
 
-        if (! $student->applications()->exists() && ($tier = ServiceTier::query()->orderBy('id')->first())) {
+        if (! $student->applications()->exists()) {
+            // like a real new student: no service yet; the demo admin approves the profile to show the service choice
             $year = now()->year + 2;
             $application = Application::create([
-                'application_number' => Application::nextNumber($year), 'user_id' => $student->id, 'service_tier_id' => $tier->id,
+                'application_number' => Application::nextNumber($year), 'user_id' => $student->id, 'service_tier_id' => null,
                 'intake_year' => $year, 'form' => ['study' => ['intake_year' => $year]], 'section_status' => [], 'last_activity_at' => now(),
             ]);
-            $application->record('application.started', ['tier' => $tier->name, 'demo' => true], $student->id);
+            $application->record('application.started', ['demo' => true], $student->id);
             app(ChecklistBuilder::class)->refresh($application);
             app(StageResolver::class)->sync($application);
         }

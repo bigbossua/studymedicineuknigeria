@@ -51,24 +51,27 @@ class StripeService
 
     public function createCheckout(Application $a, TierPrice $price, string $termsVersion): Payment
     {
+        // The server picks the Stripe Price that matches our own price record (never anything the browser sent);
+        // resolved first, so a Stripe error leaves no half-made payment behind.
+        $stripePrice = app(StripeCatalog::class)->ensure($price);
+
         // one open session per price component; expire older INITIATED ones
         $a->payments()->where('tier_price_id', $price->id)->where('status', 'INITIATED')->update(['status' => 'EXPIRED']);
 
         $payment = $a->payments()->create([
             'tier_price_id' => $price->id, 'status' => 'INITIATED', 'amount_minor' => $price->amount_minor, 'currency' => $price->currency,
-            'method' => 'STRIPE', 'terms_version_accepted' => $termsVersion,
+            'method' => 'STRIPE', 'terms_version_accepted' => $termsVersion, 'stripe_price_id' => $stripePrice,
         ]);
-
+        $label = 'Study Medicine UK Nigeria service fee: '.$price->tier->name.' (application '.$a->application_number.'). Separate from university tuition, application and test fees.';
         $params = [
             'mode' => 'payment',
             'client_reference_id' => $a->application_number,
             'customer_email' => $a->user->email,
-            'metadata' => ['application_id' => $a->id, 'application_number' => $a->application_number, 'payment_id' => $payment->id, 'tier_price_id' => $price->id],
-            'payment_intent_data' => ['metadata' => ['application_number' => $a->application_number, 'payment_id' => $payment->id]],
+            'metadata' => ['application_id' => $a->id, 'application_number' => $a->application_number, 'payment_id' => $payment->id, 'tier_price_id' => $price->id, 'stripe_price_id' => $stripePrice],
+            'payment_intent_data' => ['description' => $label, 'metadata' => ['application_number' => $a->application_number, 'payment_id' => $payment->id]],
             'success_url' => route('portal.payments.return', $a).'?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('portal.payments.index', $a).'?cancelled=1',
-            // Always our own amount from tier_prices (never a Stripe-side price object that could drift from what the page shows).
-            'line_items' => [['quantity' => 1, 'price_data' => ['currency' => strtolower($price->currency), 'unit_amount' => $price->amount_minor, 'product_data' => ['name' => 'Study Medicine UK Nigeria service fee: '.$price->tier->name.($price->component !== 'full' ? ' — '.ucfirst($price->component) : ''), 'description' => 'Application '.$a->application_number.'. Separate from university tuition, application and test fees.']]]],
+            'line_items' => [['quantity' => 1, 'price' => $stripePrice]],
         ];
         if (config('services.stripe.adaptive_pricing')) {
             $params['adaptive_pricing'] = ['enabled' => true];

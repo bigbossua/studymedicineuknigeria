@@ -26,9 +26,8 @@ const { execSync } = require('child_process'); const fs = require('fs');
   execSync(`php artisan tinker --execute="App\\\\Models\\\\User::where('email','${email}')->first()->forceFill(['email_verified_at'=>now()])->save(); echo 'verified';"`, { cwd: process.cwd() });
   await page.goto(base + '/portal', { waitUntil: 'networkidle' }); log.portalAfterVerify = page.url();
   await page.screenshot({ path: `${out}/j-start.png`, fullPage: true });
-  // start an application (T2)
-  const tierOptions = await page.$$eval('input[name=service_tier_id]', els => els.map(e => e.value)).catch(() => []);
-  if (tierOptions.length) await page.check(`input[name=service_tier_id][value="${tierOptions[1] || tierOptions[0]}"]`); else await page.selectOption('select[name=service_tier_id]', { index: 1 }).catch(() => {});
+  // start an application (no service yet: the service and its fee are chosen after our team reviews the profile)
+  log.startPageShowsFee = /£\d/.test(await page.content());
   await page.selectOption('select[name=intake_year]', '2028'); await page.click('form[action$="/portal/start"] button[type=submit]'); await page.waitForLoadState('networkidle');
   log.afterStart = page.url(); log.applicationNumber = (await page.textContent('body')).match(/SMUKN-\d{4}-\d{6}/)?.[0] || 'none';
   await page.screenshot({ path: `${out}/j-dashboard.png`, fullPage: true });

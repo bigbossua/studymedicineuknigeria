@@ -63,6 +63,39 @@ class ApplicationAdminController extends Controller
         return back()->with('status', 'Saved.');
     }
 
+    /**
+     * Profile reviewed: the student may now see the service options with their fees, choose one and pay. Staff judgement;
+     * the form state is shown next to the button. Reversible only while nothing has been paid.
+     */
+    public function approveServices(Request $request, Application $application)
+    {
+        $data = $request->validate(['decision' => 'required|in:approve,revoke', 'note' => 'nullable|string|max:2000']);
+        if ($data['decision'] === 'revoke') {
+            if ($application->payments()->whereIn('status', ['SUCCEEDED', 'MANUAL_REVIEW', 'INITIATED'])->exists()) {
+                return back()->with('error', 'A payment exists or is in progress for this application, so service approval cannot be withdrawn here.');
+            }
+            $application->forceFill(['services_approved_at' => null, 'services_approved_by' => null, 'service_tier_id' => null])->save();
+            $application->record('services.approval_withdrawn', ['note' => $data['note'] ?? null], $request->user()->id);
+            AdminAction::log('application.services_revoke', $application, ['note' => $data['note'] ?? null]);
+            $this->stages->sync($application->refresh());
+
+            return back()->with('status', 'Service approval withdrawn; the student no longer sees service fees.');
+        }
+        if ($application->isTerminal()) {
+            return back()->with('error', 'This application is closed or withdrawn.');
+        }
+        if ($application->servicesApproved()) {
+            return back()->with('status', 'Already approved for service selection.');
+        }
+        $application->forceFill(['services_approved_at' => now(), 'services_approved_by' => $request->user()->id])->save();
+        $application->record('services.approved', ['note' => $data['note'] ?? null], $request->user()->id);
+        AdminAction::log('application.services_approve', $application, ['note' => $data['note'] ?? null]);
+        $this->stages->sync($application->refresh());
+        $application->user->notify(new ApplicationNotification($application, 'services.approved', ['note' => $data['note'] ?? null]));
+
+        return back()->with('status', 'Approved: the student now sees the service options and their fees.');
+    }
+
     public function stage(Request $request, Application $application)
     {
         $data = $request->validate(['stage_override' => 'nullable|in:INTERNAL_REVIEW,ACTION_REQUIRED,READY_FOR_STUDENT_APPROVAL,ON_HOLD,CLOSED,CLEAR', 'note' => 'nullable|string|max:2000', 'hold_until' => 'nullable|date|after:today']);

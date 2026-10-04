@@ -16,6 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Stripe\Event;
 use Stripe\StripeClient;
+use Tests\Support\FakeStripeClient;
 use Tests\TestCase;
 
 /**
@@ -29,7 +30,7 @@ class ServicePaymentsTest extends TestCase
 
     private const SECRET = 'whsec_service_test';
 
-    private object $stripe;
+    private FakeStripeClient $stripe;
 
     protected function setUp(): void
     {
@@ -37,47 +38,16 @@ class ServicePaymentsTest extends TestCase
         Notification::fake();
         $this->seed(PlatformSeeder::class);
         config(['services.stripe.secret' => 'sk_test_fake', 'services.stripe.webhook_secret' => self::SECRET]);
-        $this->stripe = new class
-        {
-            public object $checkout;
-
-            public array $created = [];
-
-            public array $expired = [];
-
-            public function __construct()
-            {
-                $root = $this;
-                $this->checkout = (object) ['sessions' => new class($root)
-                {
-                    public function __construct(private object $root) {}
-
-                    public function create(array $params): object
-                    {
-                        $this->root->created[] = $params;
-                        $id = 'cs_test_'.count($this->root->created);
-
-                        return (object) ['id' => $id, 'url' => 'https://checkout.stripe.com/c/pay/'.$id, 'payment_intent' => null];
-                    }
-
-                    public function expire(string $id): object
-                    {
-                        $this->root->expired[] = $id;
-
-                        return (object) ['id' => $id];
-                    }
-                }];
-            }
-        };
+        $this->stripe = new FakeStripeClient;
         $this->app->instance(StripeClient::class, $this->stripe);
     }
 
     private function applicationFor(string $code, ?User $student = null): Application
     {
         $student ??= User::factory()->create();
-        $this->actingAs($student)->post('/portal/start', ['service_tier_id' => ServiceTier::where('code', $code)->value('id'), 'intake_year' => now()->year + 2])->assertRedirect();
+        $this->actingAs($student)->post('/portal/start', ['intake_year' => now()->year + 2])->assertRedirect();
 
-        return Application::where('user_id', $student->id)->latest('id')->firstOrFail();
+        return $this->approveServices(Application::where('user_id', $student->id)->latest('id')->firstOrFail(), $code);
     }
 
     private function checkout(Application $a, array $extra = [])
@@ -98,42 +68,52 @@ class ServicePaymentsTest extends TestCase
         return $override + ['object' => 'checkout.session', 'id' => $p->stripe_checkout_session_id, 'payment_status' => 'paid', 'amount_total' => $p->amount_minor, 'currency' => 'gbp', 'payment_intent' => 'pi_'.$p->id, 'metadata' => ['payment_id' => (string) $p->id]];
     }
 
-    public function test_the_pricing_page_shows_the_approved_fees_with_t2_most_popular_and_the_disclaimer(): void
+    public function test_the_public_services_page_explains_the_three_services_without_any_fee(): void
     {
         $page = $this->get('/apply-online/services')->assertOk();
-        $page->assertSee('£125')->assertSee('£695')->assertSee('£1,295')->assertDontSee('Price to be confirmed');
+        foreach (['£125', '£695', '£1,295', '125.00', '695.00', '1295', '12500', '69500', '129500', 'Price to be confirmed', '"offers"', 'priceCurrency'] as $leak) {
+            $page->assertDontSee($leak, false);
+        }
+        $page->assertSee('Service options and pricing are provided after your profile has been reviewed.');
+        foreach (['Eligibility &amp; Course Assessment', 'Medical Application Preparation', 'Full Medical Application Support'] as $name) {
+            $page->assertSee($name, false);
+        }
         $this->assertMatchesRegularExpression('#Most popular</p>\s*<p class="eyebrow mt-2">Core application preparation</p>\s*<h2 id="t-T2"#', $page->getContent());
+        $page->assertSee('href="'.route('apply.index').'" class="btn btn-primary btn-lg"', false);
         $page->assertSee('Our service fees are separate from university tuition, application fees and other third-party costs. We do not guarantee admission, a visa, a scholarship or an offer from any university.');
         $page->assertSee('UCAT or GAMSAT fees', false);
         foreach (['guaranteed admission', 'success rate', 'limited places', 'only a few'] as $claim) {
             $page->assertDontSee($claim);
         }
+        // the fees still exist, in the controlled price records
         $this->assertSame(['T1' => 12500, 'T2' => 69500, 'T3' => 129500], ServiceTier::with('prices')->orderBy('sort')->get()->mapWithKeys(fn ($t) => [$t->code => $t->priceFor('full')->amount_minor])->all());
     }
 
     public function test_each_service_sends_stripe_exactly_the_price_the_page_shows_in_gbp(): void
     {
-        foreach (['T1' => [12500, '£125'], 'T2' => [69500, '£695'], 'T3' => [129500, '£1,295']] as $code => [$minor, $shown]) {
+        foreach (['T1' => [12500, '£125', 'smukn_t1'], 'T2' => [69500, '£695', 'smukn_t2'], 'T3' => [129500, '£1,295', 'smukn_t3']] as $code => [$minor, $shown, $product]) {
             $a = $this->applicationFor($code);
             $this->actingAs($a->user)->get("/portal/{$a->application_number}/payments")->assertOk()->assertSee($shown)
-                ->assertSee('Study Medicine UK Nigeria service fee, not a payment to any university')->assertSee('Continue to secure payment');
+                ->assertSee('Study Medicine UK Nigeria service fee, not a payment to any university')->assertSee('Payment terms:')->assertSee('Continue to secure payment');
             $this->checkout($a)->assertRedirect('https://checkout.stripe.com/c/pay/cs_test_'.count($this->stripe->created));
             $params = end($this->stripe->created);
-            $this->assertSame($minor, $params['line_items'][0]['price_data']['unit_amount'], $code);
-            $this->assertSame('gbp', $params['line_items'][0]['price_data']['currency']);
-            $this->assertStringStartsWith('Study Medicine UK Nigeria service fee', $params['line_items'][0]['price_data']['product_data']['name']);
+            $stripePrice = $this->stripe->priceStore[$params['line_items'][0]['price']];
+            $this->assertSame([$minor, 'gbp', $product, 'one_time'], [$stripePrice->unit_amount, $stripePrice->currency, $stripePrice->product, $stripePrice->type], $code);
+            $this->assertArrayNotHasKey('price_data', $params['line_items'][0], 'only a catalogue price chosen by the server');
+            $this->assertStringStartsWith('Study Medicine UK Nigeria service fee', $params['payment_intent_data']['description']);
             $this->assertSame($a->application_number, $params['client_reference_id']);
             $payment = $a->payments()->latest('id')->first();
-            $this->assertSame([$minor, 'GBP', 'INITIATED'], [$payment->amount_minor, $payment->currency, $payment->status]);
+            $this->assertSame([$minor, 'GBP', 'INITIATED', $stripePrice->id], [$payment->amount_minor, $payment->currency, $payment->status, $payment->stripe_price_id]);
         }
+        $this->assertSame([3, 3], [$this->stripe->productCreates, $this->stripe->priceCreates]);
     }
 
     public function test_the_browser_can_never_set_or_switch_the_price(): void
     {
         $a = $this->applicationFor('T2');
-        $this->checkout($a, ['amount' => 1, 'unit_amount' => 100, 'amount_minor' => 100, 'currency' => 'ngn'])->assertRedirect();
-        $this->assertSame(69500, $this->stripe->created[0]['line_items'][0]['price_data']['unit_amount']);
-        $this->assertSame('gbp', $this->stripe->created[0]['line_items'][0]['price_data']['currency']);
+        $this->checkout($a, ['amount' => 1, 'unit_amount' => 100, 'amount_minor' => 100, 'currency' => 'ngn', 'price' => 'price_attacker', 'stripe_price_id' => 'price_attacker'])->assertRedirect();
+        $this->assertSame([69500, 'gbp'], $this->stripe->chargedAmount($this->stripe->created[0]));
+        $this->assertNotSame('price_attacker', $this->stripe->created[0]['line_items'][0]['price']);
 
         $cheaper = ServiceTier::where('code', 'T1')->first()->priceFor('full');
         $this->actingAs($a->user)->post("/portal/{$a->application_number}/payments/checkout", ['tier_price_id' => $cheaper->id, 'accept_terms' => 1])->assertForbidden();
@@ -286,15 +266,23 @@ class ServicePaymentsTest extends TestCase
         $this->assertFalse($stripe->enabled());
     }
 
-    public function test_choosing_a_service_on_the_pricing_page_carries_through_sign_up_and_can_change_before_payment(): void
+    public function test_an_approved_student_chooses_any_service_and_can_change_it_before_payment(): void
     {
-        $this->get('/apply-online/start/t3')->assertRedirect(route('register'));
         $student = User::factory()->create();
-        $this->actingAs($student)->withSession(['intended_service' => 'T3'])->get('/portal')->assertOk()
-            ->assertSee('value="'.ServiceTier::where('code', 'T3')->value('id').'" class="mt-1 w-5 h-5" aria-label="Full Medical Application Support" checked', false);
-        $this->get('/apply-online/start/t9')->assertNotFound();
+        $this->actingAs($student)->post('/portal/start', ['intake_year' => now()->year + 2])->assertRedirect();
+        $a = $this->approveServices(Application::where('user_id', $student->id)->firstOrFail());
+        $this->assertNull($a->service_tier_id, 'nothing is chosen for the student');
+        $page = $this->actingAs($student)->get("/portal/{$a->application_number}/services")->assertOk();
+        foreach (['T1' => '£125', 'T2' => '£695', 'T3' => '£1,295'] as $code => $fee) {
+            $this->assertMatchesRegularExpression('#data-service-price="'.$code.'">'.preg_quote($fee).'<#', $page->getContent());
+        }
+        $this->assertSame(0, substr_count($page->getContent(), ' checked'), 'no service is preselected (T2 is marked, never forced)');
+        $page->assertSee('Most popular');
 
-        $a = $this->applicationFor('T3', $student);
+        $t3 = ServiceTier::where('code', 'T3')->first();
+        $this->actingAs($student)->post("/portal/{$a->application_number}/payments/service", ['service_tier_id' => $t3->id])->assertRedirect(route('portal.payments.index', $a));
+        $this->assertDatabaseHas('application_events', ['application_id' => $a->id, 'type' => 'service.chosen']);
+        $a = $a->fresh();
         $this->checkout($a);
         $t1 = ServiceTier::where('code', 'T1')->first();
         $this->actingAs($student)->post("/portal/{$a->application_number}/payments/service", ['service_tier_id' => $t1->id])->assertRedirect();
@@ -311,6 +299,7 @@ class ServicePaymentsTest extends TestCase
         // once paid, the service is fixed
         $this->checkout($a = $a->fresh());
         $paid = $a->payments()->latest('id')->first();
+        $this->assertSame([12500, 'gbp'], $this->stripe->chargedAmount(end($this->stripe->created)));
         $this->webhook('evt_paid_t1', 'checkout.session.completed', $this->completed($paid))->assertOk();
         $this->actingAs($student)->post("/portal/{$a->application_number}/payments/service", ['service_tier_id' => ServiceTier::where('code', 'T2')->value('id')])->assertSessionHas('error');
         $this->assertSame($t1->id, $a->fresh()->service_tier_id);

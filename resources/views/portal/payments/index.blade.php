@@ -45,6 +45,7 @@
             <section class="card mt-6" aria-labelledby="pay">
                 <h2 id="pay" class="text-lg font-semibold">Pay {{ $price->formatted() }} securely</h2>
                 <div class="mt-3 text-[0.9375rem] text-ink-700 space-y-2">
+                    <p><span class="font-semibold">Payment terms:</span> one payment of {{ $price->formatted() }} in pounds sterling (GBP) for {{ $application->tier->name }}, taken by Stripe's secure checkout. This is our service fee only; university, UCAS, test, English test, visa and health-surcharge costs are paid by you to those organisations.</p>
                     <p><span class="font-semibold">When work begins:</span> as soon as Stripe confirms your payment to us. Returning from the checkout page alone does not count as payment.</p>
                     <p><span class="font-semibold">Refunds:</span> full refund within 14 days if no work has started; otherwise pro-rata by deliverables completed. See the <a href="{{ route('legal.refunds') }}" target="_blank" rel="noopener">refund policy</a>.</p>
                 </div>
@@ -63,14 +64,7 @@
         @endif
 
         @if($canChange && ! $paid)
-            <details class="card mt-6"><summary class="cursor-pointer font-medium">Choose a different service</summary>
-                <form method="post" action="{{ route('portal.payments.service', $application) }}" class="mt-4 space-y-3">@csrf
-                    @foreach($tiers as $t)
-                        <label class="flex items-start gap-3 text-[0.9375rem]"><input type="radio" name="service_tier_id" value="{{ $t->id }}" class="mt-1 w-4 h-4" @checked($t->id === $application->service_tier_id)>
-                            <span><span class="font-semibold">{{ $t->name }}</span> · {{ $t->priceFor('full')?->formatted() ?? 'not yet priced' }}@if($t->badge) <span class="chip chip-info ml-1">{{ $t->badge }}</span>@endif</span></label>
-                    @endforeach
-                    <button class="btn btn-secondary">Change service</button>
-                </form></details>
+            <p class="mt-6 text-[0.9375rem]"><a href="{{ route('portal.services.index', $application) }}">Choose a different service</a> (any time before you pay).</p>
         @endif
 
         @if($application->payments->isNotEmpty())

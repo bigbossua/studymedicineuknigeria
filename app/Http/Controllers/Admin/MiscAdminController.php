@@ -57,6 +57,10 @@ class MiscAdminController extends Controller
         $data = $request->validate(['amount' => 'nullable|numeric|min:0|max:100000']);
         $before = $price->amount_minor;
         $price->update(['amount_minor' => ($data['amount'] ?? null) === null || $data['amount'] === '' ? null : (int) round($data['amount'] * 100)]);
+        if ($price->amount_minor !== $before) {
+            // Stripe Prices are fixed: the next checkout creates one for the new amount and retires the old (StripeCatalog).
+            $price->forceFill(['stripe_price_id' => null, 'stripe_price_amount' => null])->save();
+        }
         AdminAction::log('price.update', $price, ['tier' => $price->tier?->code, 'before_minor' => $before, 'after_minor' => $price->amount_minor]);
 
         return back()->with('status', 'Price saved.');

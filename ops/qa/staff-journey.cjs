@@ -1,5 +1,5 @@
 // Staff and approval journey in a browser, continuing the latest application (run journey.cjs first):
-// admin two-step sign-in → document review → submission proposal → ready for approval → student approves the exact
+// admin two-step sign-in → document review → service approval → student chooses T2 and pays → submission proposal → ready for approval → student approves the exact
 // package → admin marks it submitted → student tracks it. Local only (uses tinker for TOTP codes and to accept the
 // remaining placeholder documents). Reports console/CSP problems, 5xx responses and every flash message seen.
 // Usage: node ops/qa/staff-journey.cjs <output-dir>
@@ -34,10 +34,18 @@ const log = { flashes: [] }; const problems = []; let current = null;
   if (await review.count()) { await review.locator('select[name=decision]').selectOption('accept'); await review.locator('button').click(); await admin.waitForLoadState('networkidle'); await flash(admin, 'document review'); } else { log.flashes.push('document review: no reviewable upload (already decided)'); }
   tinker(`$a = App\\Models\\Application::where('application_number','${info.no}')->first(); $id = App\\Models\\User::where('email','admin@example.test')->value('id'); foreach ($a->documents as $d) { if (! $d->currentVersion && $d->status !== App\\Enums\\DocumentStatus::NOT_REQUIRED) { $d->transition(App\\Enums\\DocumentStatus::NOT_REQUIRED, $id, 'QA: not uploaded in this run'); } } echo 'ok';`); // QA shortcut: waive what the student journey did not upload
 
-  // student signs in and pays the service fee: through checkout and a signed webhook when the Stripe stand-in is
-  // running (ops/qa/fake-stripe.php), otherwise by a labelled local shortcut
+  // staff approve the profile for service selection; the student then sees the fees and chooses a service
+  await admin.goto(show, { waitUntil: 'networkidle' });
+  const approve = admin.locator('button:has-text("Approve for service selection")');
+  if (await approve.count()) { await approve.click(); await admin.waitForLoadState('networkidle'); await flash(admin, 'service approval'); } else { log.flashes.push('service approval: already approved'); }
   const student = await (await b.newContext({ viewport: { width: 390, height: 844 } })).newPage(); watch(student);
   await student.goto(base + '/login'); await student.fill('#email', info.email); await student.fill('#password', 'Longpass12345'); await student.click('button[type=submit]'); await student.waitForLoadState('networkidle');
+  await student.goto(`${base}/portal/${info.no}/services`, { waitUntil: 'networkidle' });
+  log.servicePrices = await student.$$eval('[data-service-price]', els => Object.fromEntries(els.map(e => [e.dataset.servicePrice, e.textContent.trim()])));
+  if (await student.locator('[data-service="T2"] input:not([disabled])').count()) { await student.click('[data-service="T2"]'); await student.click('button:has-text("Continue with this service")'); await student.waitForLoadState('networkidle'); }
+
+  // student pays the service fee: through checkout and a signed webhook when the Stripe stand-in is running
+  // (ops/qa/fake-stripe.php), otherwise by a labelled local shortcut
   await student.goto(`${base}/portal/${info.no}/payments`, { waitUntil: 'networkidle' });
   const payButton = student.locator('button:has-text("Continue to secure payment")');
   if (await payButton.count() && await payButton.isEnabled()) {

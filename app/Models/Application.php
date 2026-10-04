@@ -14,8 +14,14 @@ class Application extends Model
 
     protected $casts = [
         'form' => 'array', 'section_status' => 'array', 'withdrawn_at' => 'datetime', 'closed_at' => 'datetime',
-        'hold_until' => 'date', 'last_activity_at' => 'datetime', 'stage' => Stage::class,
+        'hold_until' => 'date', 'last_activity_at' => 'datetime', 'stage' => Stage::class, 'services_approved_at' => 'datetime',
     ];
+
+    /** Our team has reviewed the profile: the student may now see the service fees, choose one and pay. */
+    public function servicesApproved(): bool
+    {
+        return $this->services_approved_at !== null;
+    }
 
     public function user(): BelongsTo
     {

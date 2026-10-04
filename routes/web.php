@@ -149,6 +149,7 @@ Route::middleware(['auth', 'auth.session', 'verified', '2fa'])->prefix('portal')
         Route::get('documents/{document}', [DocumentController::class, 'show'])->name('documents.show');
         Route::post('documents/{document}', [DocumentController::class, 'upload'])->middleware('throttle:20,10,documents.upload')->name('documents.upload');
         Route::get('documents/{document}/v/{version}', [DocumentController::class, 'download'])->name('documents.download');
+        Route::get('services', [PaymentController::class, 'services'])->name('services.index');
         Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::post('payments/checkout', [PaymentController::class, 'checkout'])->middleware('throttle:10,10,payments.checkout')->name('payments.checkout');
         Route::get('payments/return', [PaymentController::class, 'return'])->name('payments.return');
@@ -177,6 +178,7 @@ Route::middleware(['auth', 'auth.session', 'verified', 'staff', '2fa'])->prefix(
     Route::get('applications/{application}', [ApplicationAdminController::class, 'show'])->name('applications.show');
     Route::post('applications/{application}/assign', [ApplicationAdminController::class, 'assign'])->name('applications.assign');
     Route::post('applications/{application}/stage', [ApplicationAdminController::class, 'stage'])->name('applications.stage');
+    Route::post('applications/{application}/services-approval', [ApplicationAdminController::class, 'approveServices'])->name('applications.services');
     Route::post('applications/{application}/documents/request', [ApplicationAdminController::class, 'requestDocument'])->name('applications.document.request');
     Route::post('applications/{application}/documents/{document}/review', [ApplicationAdminController::class, 'reviewDocument'])->name('applications.document.review');
     Route::get('applications/{application}/documents/{document}/view', [ApplicationAdminController::class, 'document'])->name('applications.document');

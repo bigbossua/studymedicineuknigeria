@@ -87,7 +87,7 @@
                 <p class="eyebrow mb-3">Apply</p>
                 <ul class="space-y-2">
                     <li><a href="{{ route('apply.index') }}">Apply Online</a></li>
-                    <li><a href="{{ route('apply.services') }}">Services &amp; pricing</a></li>
+                    <li><a href="{{ route('apply.services') }}">Our services</a></li>
                     <li><a href="{{ route('apply.eligibility') }}">Check your eligibility</a></li>
                     <li><a href="{{ route('login') }}">Student portal login</a></li>
                     <li><a href="{{ route('faq.index') }}">Questions</a></li>

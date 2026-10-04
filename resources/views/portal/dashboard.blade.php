@@ -11,6 +11,9 @@
                 <p id="next-action" class="eyebrow">Next action</p>
                 <p class="mt-2 text-xl font-serif font-semibold text-balance">{{ $next['label'] }}</p>
                 @if($next['url'])<a href="{{ $next['url'] }}" class="btn {{ $next['kind']==='primary' ? 'btn-primary' : 'btn-secondary' }} mt-4">{{ $next['kind']==='primary' ? 'Continue' : 'View' }}</a>@endif
+                @unless($a->servicesApproved() || $a->hasSucceededPayment())
+                    <p class="mt-4 text-[0.9375rem] text-ink-700">Service options and pricing are provided after your profile has been reviewed. Complete your profile and our team will review it; nothing is charged before you have chosen a service and seen its fee.</p>
+                @endunless
             </section>
 
             <section class="card">

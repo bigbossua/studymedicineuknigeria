@@ -48,6 +48,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return in_array($this->role, ['staff', 'admin'], true);
     }
 
+    /**
+     * Service fees are not public: staff see them, and a student only once our team has approved one of their
+     * applications for service selection. Enforced on the server for every page and form that carries a price.
+     */
+    public function canSeeServicePrices(?Application $application = null): bool
+    {
+        if ($this->isStaff()) {
+            return true;
+        }
+        if ($application) {
+            return $application->user_id === $this->id && $application->servicesApproved();
+        }
+
+        return $this->applications()->whereNotNull('services_approved_at')->exists();
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

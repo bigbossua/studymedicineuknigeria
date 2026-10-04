@@ -225,6 +225,26 @@ Format per the owner directive: inspected / found / changed / why / tested / pas
 3. **Live payment check (your decision)** → after launch, you pay T1 (£125) with your own card and refund it in the Stripe Dashboard → proves the live path end to end; Stripe keeps its processing fee on a refunded payment, so this costs that fee → I confirm the webhook, the amounts and the refund in the admin and audit log. If you prefer not to, the first student payment is the first live one, and I watch it.
 4. **P0 facts and Semrush** → unchanged from cycle 36 items 2 and 3 → unverified facts stay hidden in production → I import them and update the pages and register.
 
+## Cycle 38 — fees shown only to approved students; Stripe catalogue (stage 44, 2026-10-04)
+
+| Item | Status |
+|---|---|
+| Public website | No fee on any public page, feed or JSON (tested across every sitemap URL); services explained with inclusions and exclusions; "Service options and pricing are provided after your profile has been reviewed."; CTA Apply Online |
+| Unapproved student | Sees services, never a fee; price pages refuse on the server |
+| Approval | Staff press *Approve for service selection* on the application (audited; student emailed) |
+| Approved student | Sees T1 £125, T2 £695 (Most popular), T3 £1,295; chooses any; sees exact fee and all terms before paying |
+| Staff | See fees (Admin → Services, application page); only admins change them; changes audited |
+| Stripe products found/created | **None yet in your Stripe account**: this environment cannot reach stripe.com and has no access to your browser. Ready to create: `smukn_t1` Eligibility & Course Assessment, `smukn_t2` Medical Application Preparation, `smukn_t3` Full Medical Application Support |
+| Stripe prices | One-time GBP 125.00 / 695.00 / 1,295.00 with lookup keys `smukn_t1_gbp`, `smukn_t2_gbp`, `smukn_t3_gbp`; price ids are issued by Stripe on creation and printed by the *Stripe catalogue* run (rehearsed against the local stand-in: created once, found on every repeat) |
+| Payment configuration | Checkout charges the catalogue price chosen by the server from the service record; no Payment Links; webhook verifies signature, amount, currency, session, service; live keys only in production, test keys only on staging |
+| Tests | 182 green on SQLite and MariaDB; browser journeys (phone and desktop) and accessibility clean |
+
+### OWNER ACTION REQUIRED (WHAT → WHERE → WHY → WHAT YOU WILL DO IMMEDIATELY AFTER)
+
+1. **Stripe test keys and webhook for staging** → Stripe Dashboard (Test mode) → Developers → API keys (`pk_test_…`, `sk_test_…`) and Webhooks → endpoint `https://staging.studymedicineuknigeria.com/webhooks/stripe` with the six events in `ops/STAGING-SETTINGS.md`; then GitHub → Settings → Environments → `staging` → secrets `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET` → I cannot open your Stripe tab or reach stripe.com from here, and keys must never pass through chat → I run *Stripe catalogue* (`staging`, `check`, then `create`), report the three product and price ids, and test each service end to end once staging exists.
+2. **Live keys and webhook for production** → the same in Stripe **live mode**, endpoint `https://studymedicineuknigeria.com/webhooks/stripe`, secrets in Environments → `production` → live mode needs its own catalogue → after your approval of the run I create the live products and prices with *Stripe catalogue* (`production`) and report the ids. Do not create products, prices or Payment Links by hand: hand-made duplicates would not carry the lookup keys, and a Payment Link would bypass the profile review.
+3. Everything in cycle 37 (server access, production secrets, reviewer) still applies.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

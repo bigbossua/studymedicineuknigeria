@@ -31,8 +31,8 @@ class StripeWebhookTest extends TestCase
         config(['services.stripe.webhook_secret' => self::SECRET]);
         $user = User::factory()->create();
         $tier = ServiceTier::where('code', 'T2')->first();
-        $this->actingAs($user)->post('/portal/start', ['service_tier_id' => $tier->id, 'intake_year' => 2028])->assertRedirect();
-        $this->application = Application::first();
+        $this->actingAs($user)->post('/portal/start', ['intake_year' => 2028])->assertRedirect();
+        $this->application = $this->approveServices(Application::first(), 'T2');
         $this->payment = $this->application->payments()->create([
             'tier_price_id' => $tier->priceFor('full')->id, 'status' => 'INITIATED', 'amount_minor' => 69500, 'currency' => 'GBP', 'method' => 'STRIPE',
             'stripe_checkout_session_id' => 'cs_test_123', 'terms_version_accepted' => 'v1',

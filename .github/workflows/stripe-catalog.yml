@@ -1,0 +1,55 @@
+name: Stripe catalogue (products and prices)
+# Creates or checks the three Stripe products (smukn_t1..t3) and their one-time GBP prices from the service price
+# records, using the STRIPE_SECRET of the chosen environment: staging = Stripe test mode, production = live mode (the
+# app refuses the wrong mode). Idempotent: products are found by id and prices by lookup key before anything is created,
+# so repeated runs never duplicate them; no Payment Links are created. Prints ids and amounts only, never a key.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Environment whose Stripe key to use (staging = test mode, production = live mode)'
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+      mode:
+        description: 'check = read only; create = create what is missing'
+        required: true
+        default: check
+        type: choice
+        options: [check, create]
+
+permissions:
+  contents: read
+
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ github.event.inputs.target }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check configuration
+        env:
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+        run: |
+          [ -n "$STRIPE_SECRET" ] || { echo "::error::No STRIPE_SECRET in the '${{ github.event.inputs.target }}' environment (Settings → Environments → ${{ github.event.inputs.target }} → secrets)"; exit 1; }
+          case "$STRIPE_SECRET" in sk_live_*|rk_live_*) live=1;; *) live=0;; esac
+          if [ "${{ github.event.inputs.target }}" = production ] && [ "$live" = 0 ]; then echo "::error::production takes a live key only"; exit 1; fi
+          if [ "${{ github.event.inputs.target }}" != production ] && [ "$live" = 1 ]; then echo "::error::staging takes a test key only"; exit 1; fi
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, intl, bcmath', coverage: none }
+      - name: Prepare the price records (the repository's approved fees)
+        run: |
+          composer install --no-dev --no-interaction --prefer-dist --no-progress
+          cp .env.example .env && php artisan key:generate
+          touch database/database.sqlite && php artisan migrate --force && php artisan smukn:reference-sync
+      - name: Sync with Stripe
+        env:
+          APP_ENV: ${{ github.event.inputs.target == 'production' && 'production' || 'staging' }}
+          APP_DEBUG: 'false'
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+        run: |
+          set -o pipefail
+          php artisan smukn:stripe-sync ${{ github.event.inputs.mode == 'check' && '--check' || '' }} | tee out.txt
+          { echo '### Stripe catalogue (${{ github.event.inputs.target }}, ${{ github.event.inputs.mode }})'; echo '```'; cat out.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

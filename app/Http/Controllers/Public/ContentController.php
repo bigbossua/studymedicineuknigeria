@@ -236,10 +236,10 @@ class ContentController extends Controller
         $applySeo = $this->seo('Apply Online: application support for Nigerian applicants', 'Create your account, enter your qualifications once, upload the documents that apply to you, approve your package and track submission. No guarantees claimed.', 'apply.index', [['label' => 'Apply Online']], false);
         $applySeo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.apply.index', ['seo' => $applySeo, 'faqs' => $faqs, 'tiers' => ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get()]);
+        return view('content.apply.index', ['seo' => $applySeo, 'faqs' => $faqs, 'tiers' => ServiceTier::where('active', true)->orderBy('sort')->get()]);
     }
 
-    /** "Choose this service" from the pricing page: remember it, then sign up or go straight to the start page. */
+    /** Older "choose this service" links: remember the interest (no price involved), then sign up or open the portal. */
     public function chooseService(Request $request, string $code)
     {
         $tier = ServiceTier::where('active', true)->where('code', strtoupper($code))->firstOrFail(); // URLs are lowercase site-wide
@@ -251,12 +251,12 @@ class ContentController extends Controller
 
     public function services()
     {
-        $tiers = ServiceTier::where('active', true)->with('prices')->orderBy('sort')->get();
-        $seo = $this->seo('Services and pricing for UK Medicine application support', 'What each level of application support includes and excludes, when work begins and our refund terms. Our fee is separate from university tuition and fees.', 'apply.services', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Services']], false);
-        $seo->reviewed('2026-10-04', null); // approved service fees published
+        // Prices are not loaded here at all: service fees reach only staff and approved students (User::canSeeServicePrices).
+        $tiers = ServiceTier::where('active', true)->orderBy('sort')->get();
+        $seo = $this->seo('Application support services for UK Medicine', 'What each level of our UK Medicine application support includes and excludes, how service options are offered after profile review, and our refund terms.', 'apply.services', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Services']], false);
+        $seo->reviewed('2026-10-04', null);
         foreach ($tiers as $t) {
-            $offer = $t->hasPrices() ? ['@type' => 'Offer', 'priceCurrency' => 'GBP', 'price' => number_format($t->prices->whereNotNull('amount_minor')->sum('amount_minor') / 100, 2, '.', '')] : null;
-            $seo->jsonLd(array_filter(['@type' => 'Service', 'name' => $t->name, 'description' => $t->summary, 'provider' => ['@type' => 'Organization', 'name' => config('site.name')], 'offers' => $offer]));
+            $seo->jsonLd(['@type' => 'Service', 'name' => $t->name, 'description' => $t->summary, 'provider' => ['@type' => 'Organization', 'name' => config('site.name')], 'areaServed' => 'NG']);
         }
 
         return view('content.apply.services', ['seo' => $seo, 'tiers' => $tiers]);

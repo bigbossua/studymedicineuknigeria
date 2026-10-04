@@ -406,6 +406,17 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Rehearsed locally** against a sandbox server home: failed launch with restore, successful launch passing the production smoke test, later deploy, code rollback, and restore of the previous site.
 - **Tests:** 196 on SQLite and MariaDB.
 
+## Stage 50: production launched (cycle 44)
+
+- **Launch run 37205984027:** commit `0dfdba8`, release `2026-10-04T13-38-31`, approved 13:38 UTC.
+  - The cutover published into a real `public_html`.
+  - The production smoke test passed all 37 checks.
+  - The page review covered 64 views with 0 problems.
+  - The info@ test email was accepted and registration opened.
+- **Live verification:** `ops/live-verify.sh` and `live-verify.yml` (read-only) check every old-site URL, fee and debug text on every public page, canonicals, JSON-LD, the auth pages, portal and admin protection, foreign hosts and headers, plus the server state over SSH. The run passed.
+  - Foreign hosts are refused at Hostinger's CDN (connection closed, curl code 000).
+- **Server state:** payment closed, Stripe off, debug off, unverified facts hidden, 0 pending migrations; 55 universities, 77 courses, 701 facts, 65 redirects, 0 users.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

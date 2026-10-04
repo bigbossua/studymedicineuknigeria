@@ -322,6 +322,39 @@ Recommended, not blocking: add `rua=mailto:info@studymedicineuknigeria.com` to t
 - **Still blocked on access, honestly:** this cloud session has no tool that can drive your Chrome or hPanel. Nothing was changed on Hostinger; the current site is untouched. The remaining steps are in `ops/OWNER-CLICKLIST.md` (rewritten for no staging). There are now 4 repository settings, 1 database, 4 production secrets, 1 reviewer and the PHP version.
 - **Stripe:** nothing created; payment stays closed. Approved students see the three fees with "Payment is not open yet." and no payment button or bank transfer.
 
+## Cycle 44 — production launched (2026-10-04, 13:38 UTC)
+
+- **Live:** https://studymedicineuknigeria.com serves the new application, release `2026-10-04T13-38-31` of commit `0dfdba8`. It was launched by *Launch production (no staging)* run 37205984027 and approved by you at 13:38 UTC.
+- **First attempt, 12:38 UTC (run 37200863527):** the cutover linked `public_html` to the release. Hostinger answers 403 for any document root reached through a symbolic link, so every path failed. The smoke test caught it and the old site was restored automatically within two seconds. The cause was proved with a read-only probe. The fix copies the release's public files into a real `public_html` (`ops/publish-docroot.sh`); the application stays outside the web root. It was rehearsed locally: failed launch with restore, launch, later deploy, rollback, and restore of the old site.
+- **Before the switch:**
+  - 195 tests passed;
+  - the production rehearsal passed;
+  - the web PHP version is 8.3;
+  - an encrypted backup of the old site (4,582 files, no database found for it) was checksum-verified and decrypted, then kept for 90 days as a GitHub artifact and on the server;
+  - a dump of the new production database was verified before migrating.
+- **Old site:** kept, never deleted, at `~/domains/studymedicineuknigeria.com/public_html.pre-smukn-2026-10-04T13-38-31` and in `~/backups/docroot-production-2026-10-04T13-38-31.tgz`. `ops/rollback.sh` with `RESTORE_PREVIOUS_SITE=1` (*Roll back* workflow) brings it back.
+- **Production smoke test, all 37 checks:** HTTPS, HSTS, http→https, www→apex, old-URL 301s, the 404 page, 53 schools listed, no debug output, no exposed files.
+- **Page review:** 64 page views (every sitemap page, desktop and mobile), 0 problems in status, CSP, accessibility, canonical and indexability.
+- **Live verification (run 37206806119):**
+  - all 65 old URLs answer 301 and the 7 retired ones answer 404;
+  - no fee and no debug text on any of the 28 sitemap pages, apply, services, register or login;
+  - every sitemap page has its own canonical and JSON-LD;
+  - registration and sign-in forms render; the portal and admin require sign-in;
+  - foreign hosts are refused (Hostinger's CDN closes the connection);
+  - HSTS, CSP, nosniff, referrer, frame and permissions headers are sent, and there is no X-Powered-By.
+- **Server state:**
+  - production, debug off, unverified facts hidden;
+  - Stripe disabled, bank transfer off, **payment closed**;
+  - 0 pending migrations;
+  - 55 universities, 77 courses, 701 facts, 65 redirects, 3 tier prices, 0 users.
+- **Email:** the test message from info@ was accepted by Hostinger's SMTP and the email DNS checks passed, so **student registration is open**. Check the info@ inbox (and its spam folder) for the test message.
+- **Stripe:** untouched. Approved students see the three fees with "Payment is not open yet." and no payment button or bank transfer.
+
+**Your next steps (owner-only):**
+1. Register at https://studymedicineuknigeria.com/register with your own email and confirm it. Then say so here: I run *Account role* (production, `admin`), which needs your approval in GitHub. Your first admin sign-in sets up two-step verification.
+2. Optional: GitHub repository variables `PRODUCTION_URL` = `https://studymedicineuknigeria.com` (starts the uptime check) and `HOSTINGER_SSH_KNOWN_HOSTS` (pins the server key; the fingerprints are printed in the launch run).
+3. Later: live Stripe keys, when you are ready to take payments.
+
 ## Owner actions still required (unchanged, one place)
 
 The complete, current list is `ops/STAGING-SETTINGS.md`; the table below is the original minimum.

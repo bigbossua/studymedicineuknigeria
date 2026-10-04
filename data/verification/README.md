@@ -5,8 +5,12 @@ research but not yet read on the official page are `VERIFY-ON-PAGE`; those not f
 unverified fact is hidden (or shown as pending). The admin verification queue does this in the browser once the site is
 deployed; this worksheet does the same job **now**, from any browser, without deployment or special network access.
 
-1. Export (already done for 2026-10-04, superseding the 2026-10-03 sheet; references are stable, so decisions already made against the old sheet still import; `worksheet-2026-10-04-priority1.csv` holds just the priority-1 rows if you want to start small; regenerate any time): `php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv`
-   Rows are ordered by priority: **1** cycle dates, fees and visa figures; **2** Nigerian-applicant statements; **3** the rest; **4** facts about other subjects' courses (dentistry, pharmacy, nursing…), reviewed after every Medicine fact.
+1. Export (already done for 2026-10-04; references are stable, so decisions made against an older sheet still import; regenerate any time):
+   `php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv`
+   - **Start with `worksheet-2026-10-04-p0.csv` (71 facts)**, then `-p1.csv` (285). The full sheet holds all 675.
+   - **Work page by page, not row by row.** Rows are grouped by `source_group` (S001, S002…): every fact taken from one official page sits together, and `facts_on_source` says how many one visit resolves. `sources-2026-10-04.csv` lists each page once (202 pages; the 46 pages with five or more facts cover 413 of them) in the order to open them.
+   - `priority` follows the owner's order: **1** UCAS Medicine deadlines · **2** UCAT dates and rules · **3** GMC status and registration · **4** medical school eligibility · **5** Nigerian qualifications and entry · **6** international fees and costs · **7** visa and immigration · **8** graduate and work rules · **9** application routes · **10** course availability · **11** other · **12** other healthcare subjects (after every Medicine fact). A page is placed at the highest priority of any fact on it.
+   - `status` shows why a row is here: `VERIFY-ON-PAGE` (found in research, never read on the page), `SOURCE_CHANGED` (the page appears to have changed: read it again and record what it says now), `REVIEW_DUE` (verified before, review date passed), `NOT_FOUND` (research did not locate it).
 2. Open the CSV in a spreadsheet. For each row, open `source_url` in your browser and compare `current_value` with the page.
    Fill in:
    - `decision`: `verified` (the page says this), `not_published` (the page does not state it), `source_changed`
@@ -23,3 +27,10 @@ deployed; this worksheet does the same job **now**, from any browser, without de
 
 Rules: a fact is `verified` only when you read it on the official page named in `source_url` (or `new_source_url`);
 never from a consultancy, agent or forum page. Never type a value you did not see. `verified` without a date is refused.
+
+## What keeps a verified value honest
+
+- **Verified facts are never overwritten by data syncs.** Every deploy runs `smukn:reference-sync`, which creates new facts and refreshes facts nobody has reviewed, but never touches a fact a person has decided on (`reviewed_at`).
+- **Editing a verified value un-verifies it.** Changing the wording, number, year or source of a verified fact in the admin queue returns it to `VERIFY-ON-PAGE` until someone verifies the new value on the page.
+- **Review dates.** Fees and deadlines are due for review six months after verification, everything else after twelve; `smukn:flag-review-due` (nightly) moves overdue facts to `REVIEW_DUE`, which hides them in production until re-verified.
+- **Decisions apply once.** The `fact_imports` ledger stops a deploy replay from reversing a later review.

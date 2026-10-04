@@ -173,7 +173,7 @@ class HealthcareTaxonomyTest extends TestCase
         $this->assertStringNotContainsString('36,500', $this->get('/fees')->getContent(), 'the Manchester BDS fee is not a Medicine fee');
 
         // in the worksheet, Medicine facts come first
-        $this->assertSame(4, ExportFactsWorksheet::priority($allied->first()));
+        $this->assertSame(12, ExportFactsWorksheet::priority($allied->first()));
         // re-seeding keeps a reviewer's verification
         $allied->first()->update(['verification_status' => 'VERIFIED', 'value_text' => 'Reviewer wording', 'verified_at' => now()]);
         $this->seed(HealthcareCoursesSeeder::class);

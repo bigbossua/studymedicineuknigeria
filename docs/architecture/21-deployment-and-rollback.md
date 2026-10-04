@@ -59,3 +59,11 @@ Database migrations are written to be backward-compatible for one release (add-o
 ## 21.7 Secrets
 
 Only in `shared/.env` on the server and in the deployer's password manager. Never in git, logs, screenshots, chat or `ops/reports/`.
+
+## 21.8 Deployment safeguards (reviewed 2026-10-04)
+
+- **Production only after staging, for the same commit.** `deploy-hostinger.yml` refuses a production dispatch unless GitHub records a successful `staging` deployment of the exact commit being deployed. Recommended owner setting on top: Settings → Environments → `production` → Required reviewers (yourself), so every production run waits for an explicit approval click.
+- **No migration without a verified backup.** `ops/deploy.sh` stops before `migrate` if `DB_DATABASE` is missing, `mysqldump` is unavailable, the dump fails, or the gzip file is corrupt or empty.
+- **Reference data on every deploy.** `smukn:reference-sync` runs after migrations (never demo accounts; never touches reviewed facts or owner prices).
+- **Smoke test covers content.** Besides status codes and headers it requires the directory to list at least 20 schools and the fee guide and eligibility check to render; any failure rolls the symlink back to the previous release.
+- **Pinned host key (optional, recommended).** Set the repository variable `HOSTINGER_SSH_KNOWN_HOSTS` to the server's line(s) from `ssh-keyscan -p 65002 <host>` (checked against hPanel's SSH fingerprint) and every workflow uses it instead of trusting the key on first connection.

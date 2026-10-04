@@ -16,6 +16,10 @@ on:
 
 concurrency: deploy-${{ github.event.inputs.target || 'staging' }}
 
+permissions:
+  contents: read
+  deployments: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,6 +30,17 @@ jobs:
       - name: Refuse production without explicit dispatch
         if: ${{ github.event_name != 'workflow_dispatch' && (github.event.inputs.target || 'staging') == 'production' }}
         run: echo "::error::Production deploys only via manual dispatch" && exit 1
+      - name: Require a successful staging deploy of this exact commit before production
+        if: ${{ (github.event.inputs.target || 'staging') == 'production' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ok=0
+          for u in $(gh api "repos/${{ github.repository }}/deployments?environment=staging&sha=${{ github.sha }}&per_page=20" --jq '.[].statuses_url'); do
+            [ "$(gh api "$u" --jq '.[0].state // empty')" = "success" ] && ok=1 && break
+          done
+          [ "$ok" = 1 ] || { echo "::error::Commit ${{ github.sha }} has no successful staging deploy. Deploy it to staging, review staging, then dispatch production."; exit 1; }
+          echo "staging deploy of ${{ github.sha }} succeeded; continuing to production"
       - uses: shivammathur/setup-php@v2
         with: { php-version: '8.3', extensions: 'mbstring, gd, fileinfo, intl, bcmath, pdo_mysql', coverage: none }
       - uses: actions/setup-node@v7
@@ -39,13 +54,15 @@ jobs:
       - name: Prepare SSH
         env:
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}
           PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
         run: |
           [ -n "$KEY" ] || { echo "::error::HOSTINGER_SSH_KEY secret missing"; exit 1; }
           install -d -m 700 ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
-          ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
       - name: Deploy
         env:
           TARGET: ${{ github.event.inputs.target || 'staging' }}

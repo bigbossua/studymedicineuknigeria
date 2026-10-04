@@ -22,7 +22,13 @@ cd $REL
 rm -rf storage && ln -s $APP/shared/storage storage && ln -s $APP/shared/.env .env
 PHP=\$(command -v php83 || command -v php8.3 || command -v php)
 DB=\$(grep -E '^DB_DATABASE=' .env | cut -d= -f2- | tr -d '"'); DU=\$(grep -E '^DB_USERNAME=' .env | cut -d= -f2- | tr -d '"'); DP=\$(grep -E '^DB_PASSWORD=' .env | cut -d= -f2- | tr -d '"'); DH=\$(grep -E '^DB_HOST=' .env | cut -d= -f2- | tr -d '"')
-if [ -n "\$DB" ] && command -v mysqldump >/dev/null; then MYSQL_PWD="\$DP" mysqldump --single-transaction -h"\${DH:-127.0.0.1}" -u"\$DU" "\$DB" 2>/dev/null | gzip > ~/backups/$TARGET-db-$TS.sql.gz && echo "db backup: ~/backups/$TARGET-db-$TS.sql.gz"; fi
+# Never migrate without a verified backup: no database name, no mysqldump, a failed dump or an empty file stops here.
+[ -n "\$DB" ] || { echo "DB_DATABASE missing in shared/.env: refusing to migrate without a backup"; exit 3; }
+command -v mysqldump >/dev/null || { echo "mysqldump not found: refusing to migrate without a backup"; exit 3; }
+BK=~/backups/$TARGET-db-$TS.sql.gz
+MYSQL_PWD="\$DP" mysqldump --single-transaction -h"\${DH:-127.0.0.1}" -u"\$DU" "\$DB" | gzip > "\$BK" || { echo "database backup failed: refusing to migrate"; exit 3; }
+gzip -t "\$BK" && [ "\$(gzip -dc "\$BK" | head -c 4096 | wc -c)" -gt 100 ] || { echo "database backup is empty or corrupt: refusing to migrate"; exit 3; }
+echo "db backup verified: \$BK (\$(du -h "\$BK" | cut -f1))"
 \$PHP artisan migrate --force
 \$PHP artisan smukn:reference-sync   # repository reference data; never touches reviewed facts or owner prices
 for f in data/verification/decisions-*.csv; do [ -e "\$f" ] && \$PHP artisan smukn:facts-import "\$f"; done

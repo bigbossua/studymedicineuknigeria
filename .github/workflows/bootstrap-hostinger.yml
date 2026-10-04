@@ -43,10 +43,11 @@ jobs:
           [ -z "$DBN" ] && m="$m SMUKN_DB_DATABASE"; [ -z "$DBU" ] && m="$m SMUKN_DB_USERNAME"; [ -z "$DBP" ] && m="$m SMUKN_DB_PASSWORD"
           [ -n "$m" ] && { echo "::error::Missing:$m (environment '${{ github.event.inputs.target }}' secrets/variables)"; exit 1; }; true
       - name: Prepare SSH
-        env: { KEY: "${{ secrets.HOSTINGER_SSH_KEY }}", HOST: "${{ vars.HOSTINGER_SSH_HOST }}", PORT: "${{ vars.HOSTINGER_SSH_PORT || '65002' }}" }
+        env: { KEY: "${{ secrets.HOSTINGER_SSH_KEY }}", HOST: "${{ vars.HOSTINGER_SSH_HOST }}", PORT: "${{ vars.HOSTINGER_SSH_PORT || '65002' }}", KNOWN_HOSTS: "${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}" }
         run: |
           install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
-          ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          # Pin the server key when HOSTINGER_SSH_KNOWN_HOSTS is set (recommended); otherwise trust on first use.
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
       - name: Run bootstrap on server
         env:
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}

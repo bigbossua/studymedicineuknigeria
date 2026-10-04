@@ -55,7 +55,7 @@ class BuildImages extends Command
             }
             $w = imagesx($img);
             $h = imagesy($img);
-            $entry = ['slug' => $p['slug'], 'alt' => $p['alt'], 'credit' => $p['credit'] ?? null, 'source_url' => $p['source_url'], 'licence' => $p['licence'], 'page' => $p['page'] ?? null, 'width' => $w, 'height' => $h, 'focal' => $p['focal'] ?? 'center', 'sizes' => []];
+            $entry = ['slug' => $p['slug'], 'alt' => $p['alt'], 'credit' => $p['credit'] ?? null, 'source_url' => $p['source_url'], 'licence' => $p['licence'], 'page' => $p['page'] ?? null, 'intended_use' => $p['intended_use'] ?? null, 'width' => $w, 'height' => $h, 'focal' => $p['focal'] ?? 'center', 'sizes' => []];
             foreach (self::WIDTHS as $tw) {
                 if ($tw > $w) {
                     continue;

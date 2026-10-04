@@ -20,7 +20,7 @@ class ImagePipelineTest extends TestCase
         imagefill($img, 0, 0, imagecolorallocate($img, 11, 61, 92));
         imagejpeg($img, "$src/library.jpg", 85);
         File::put("$src/manifest.json", json_encode(['photos' => [
-            ['slug' => 'library', 'alt' => 'Students reading in a university library', 'credit' => 'Example Photographer / Unsplash', 'source_url' => 'https://unsplash.com/photos/example', 'licence' => 'Unsplash License', 'focal' => '50% 40%'],
+            ['slug' => 'library', 'alt' => 'Students reading in a university library', 'credit' => 'Example Photographer / Unsplash', 'source_url' => 'https://unsplash.com/photos/example', 'licence' => 'Unsplash License', 'focal' => '50% 40%', 'page' => '/ (hero)', 'intended_use' => 'hero, right column'],
             ['slug' => 'no-licence', 'alt' => 'x', 'source_url' => 'https://unsplash.com/photos/y'],
         ]]));
 
@@ -33,6 +33,8 @@ class ImagePipelineTest extends TestCase
         $this->assertFileDoesNotExist("$dest/library-1440.jpg", 'never upscales beyond the original');
         $manifest = json_decode(File::get("$dest/manifest.json"), true);
         $this->assertSame([480, 960], $manifest['photos']['library']['sizes']);
+        $this->assertSame('hero, right column', $manifest['photos']['library']['intended_use'], 'the image record keeps its intended use');
+        $this->assertSame('/ (hero)', $manifest['photos']['library']['page']);
         $this->assertStringStartsWith('data:image/jpeg;base64,', $manifest['photos']['library']['placeholder']);
         [$w] = getimagesize("$dest/library-480.jpg");
         $this->assertSame(480, $w);

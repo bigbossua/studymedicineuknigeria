@@ -1,0 +1,52 @@
+name: Fact evidence pre-check (read-only)
+# Fetches every official page behind a pending Medicine fact and records whether the stored value appears on it, with a
+# short quotation (smukn:facts-evidence). It changes no fact: a person still verifies in Admin → Verification, as the
+# published policy requires. The report is committed to data/verification/evidence-<date>.csv. Public pages only.
+on:
+  workflow_dispatch:
+    inputs:
+      max_priority:
+        description: 'Highest priority tier (1 UCAS deadlines … 7 visa … 11 all Medicine)'
+        required: true
+        default: '11'
+  schedule:
+    - cron: '17 4 * * 1'   # weekly, Mondays
+
+permissions:
+  contents: write
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'mbstring, intl, bcmath, pdo_sqlite', coverage: none }
+      - name: Reference data into a local database
+        run: |
+          composer install --no-dev --no-interaction --prefer-dist --no-progress
+          cp .env.example .env && php artisan key:generate
+          touch database/database.sqlite && php artisan migrate --force && php artisan smukn:reference-sync
+          for f in data/verification/decisions-*.csv; do [ -f "$f" ] && php artisan smukn:facts-import "$f"; done; true
+      - name: Pre-check against the official pages
+        run: |
+          set -o pipefail
+          out=data/verification/evidence-$(date -u +%F).csv
+          php artisan smukn:facts-evidence "$out" --max-priority=${{ github.event.inputs.max_priority || '11' }} | tee summary.txt
+          python3 - "$out" >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import csv, sys, collections
+          rows = list(csv.DictReader(open(sys.argv[1])))
+          by = collections.defaultdict(collections.Counter)
+          for r in rows: by[f"P{r['priority']} {r['priority_area']}"][r['match']] += 1
+          print('### Fact evidence pre-check\n\n| Priority | exact | partial | none | fetch_failed |\n|---|---|---|---|---|')
+          for k in sorted(by, key=lambda x: int(x.split()[0][1:])):
+              c = by[k]; print(f"| {k} | {c['exact']} | {c['partial']} | {c['none']} | {c['fetch_failed']} |")
+          PY
+          echo "OUT=$out" >> "$GITHUB_ENV"
+      - name: Commit the report
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$OUT"; git diff --cached --quiet && exit 0
+          git commit -m "Add the fact evidence pre-check of $(date -u +%F)"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

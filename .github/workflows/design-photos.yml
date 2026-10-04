@@ -1,0 +1,38 @@
+name: Design photos (Unsplash)
+# Fetches candidate contact sheets or chosen originals from Unsplash (free licence only, Unsplash+ excluded) and commits
+# them to this branch under brand/photos/. Nothing is published until a photo is added to brand/photos/manifest.json.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'search (contact sheets) or fetch (originals)'
+        required: true
+        default: search
+        type: choice
+        options: [search, fetch]
+      arg:
+        description: 'search: "query one|query two"; fetch: "slug=photoId,slug=photoId"'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - run: pip install --quiet pillow
+      - name: Unsplash
+        env:
+          MODE: ${{ inputs.mode }}
+          ARG: ${{ inputs.arg }}
+        run: python3 ops/design/unsplash.py "$MODE" "$ARG"
+      - name: Commit to this branch
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add brand/photos
+          git diff --cached --quiet && { echo "nothing new"; exit 0; }
+          git commit -m "Add Unsplash ${{ inputs.mode }} results for design review"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

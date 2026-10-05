@@ -1,0 +1,20 @@
+{
+ "university:aberdeen:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.abdn.ac.uk/study/international/english/undergraduate-english-requirements/",
+  "page": "https://www.abdn.ac.uk/study/international/english/undergraduate-english-requirements/, read 2026-10-05 via page-excerpts run 37257718253, sha256 6da5f6c99ecff693",
+  "verified_value": "Medicine (MBChB): IELTS Academic or IELTS UKVI Academic 7.0 overall, with Listening 5.5, Reading 5.5, Speaking 7.0 and Writing 6.0 or above; certification must be within the two years before the course starts",
+  "quote": "IELTS Academic or IELTS UKVI Academic … Requirement for Medicine (MBChB): ⏎ Listening - 5.5 or above ⏎ Reading - 5.5 or above ⏎ Speaking - 7.0 or above ⏎ Writing - 6.0 or above ⏎ Overall - 7.0 … Please note certification must be within the two years prior to commencement of your course, unless otherwise stated. [the WAEC/NECO English waiver in our earlier record is not stated for MBChB here; removed]"
+ },
+ "university:aberdeen:international_accepted": {
+  "decision": "verified",
+  "page": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/, read 2026-10-05 via page-excerpts run 37257334724, sha256 adcf4d8104ce14d8",
+  "quote": "International Applicants ⏎ See our international entry requirements page … EU / International students ⏎ Tuition Fees for 2026/27 Academic Year ⏎ £50,100"
+ },
+ "course:aberdeen/medicine:application_route": {
+  "decision": "verified",
+  "page": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/, read 2026-10-05 via page-excerpts run 37257334724, sha256 adcf4d8104ce14d8",
+  "verified_value": "UCAS (UCAS code A100)",
+  "quote": "UCAS Code ⏎ A100 [and the School of Medicine international requirements page: \"Applications will not be considered unless all areas of the UCAS form have been completed\"]"
+ }
+}

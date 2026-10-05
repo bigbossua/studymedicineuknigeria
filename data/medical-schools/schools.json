@@ -5120,9 +5120,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -5146,9 +5147,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS",
+        "source": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -5161,9 +5163,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_only_or_home_only": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "neither (home and international)",
+        "source": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "english_language_requirement": {
         "value": null,

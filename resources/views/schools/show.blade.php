@@ -6,7 +6,7 @@
             'international_accepted' => 'International applicants accepted', 'international_places' => 'International places', 'gmc_status' => 'GMC status',
             'msc_member' => 'Medical Schools Council member', 'english_language_requirement' => 'English language requirement',
             'waec_neco_statement' => 'What the university says about WAEC / NECO', 'a_level_requirement' => 'A-level / IB requirement',
-            'gem_international' => 'Graduate entry for international applicants', 'english_requirement' => 'English language requirement (Nigeria page)',
+            'gem_international' => 'Graduate entry for international applicants', 'english_requirement' => 'English language requirement',
             'foundation_route' => 'Foundation route', 'international_places_open' => 'International places / eligibility',
             'ucas_code' => 'UCAS code', 'course_length_years' => 'Course length (years)', 'admissions_test' => 'Admissions test', 'interview_format' => 'Interview format',
             'application_route' => 'Application route', 'intake_month' => 'Intake', 'graduate_entry_course' => 'Graduate-entry course', 'international_fee_gbp' => 'International tuition fee (per year)', 'clinical_years_fee_differs' => 'Clinical years charged at a different fee',

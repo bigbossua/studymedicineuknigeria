@@ -18,5 +18,5 @@ for f in sorted(glob.glob(f'ops/verification/reviews/{date}-*.json')):
         r['verified_on'] = date
         rows.append(r)
 with open(out, 'w', newline='') as fh:
-    w = csv.DictWriter(fh, fieldnames=header); w.writeheader(); w.writerows(rows)
+    w = csv.DictWriter(fh, fieldnames=header, lineterminator='\n'); w.writeheader(); w.writerows(rows)
 print(len(rows), 'decisions ->', out)

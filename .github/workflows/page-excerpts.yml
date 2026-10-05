@@ -1,0 +1,35 @@
+name: Official page excerpts (read-only)
+# Opens official pages (UCAS, UCAT, GMC, GOV.UK, universities) in Chrome and prints the exact text around requested
+# terms, for fact verification by a reviewer. Public pages only; no secret is used; nothing is written anywhere.
+on:
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: 'One page per line: URL | term; term; ... (or a path to a spec file in the repository)'
+        required: true
+      context:
+        description: 'Characters of context either side of each term'
+        required: false
+        default: '280'
+
+permissions:
+  contents: read
+
+jobs:
+  excerpts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Read pages
+        env:
+          SPEC: ${{ inputs.spec }}
+          CONTEXT: ${{ inputs.context }}
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+        run: |
+          npm i --no-save playwright@1 >/dev/null 2>&1
+          if [ -f "$SPEC" ]; then cp "$SPEC" spec.txt; else printf '%s\n' "$SPEC" > spec.txt; fi
+          node ops/verification/page-excerpts.cjs spec.txt "${CONTEXT:-280}" | tee excerpts.txt
+          { echo '### Official page excerpts'; echo '```'; head -c 60000 excerpts.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

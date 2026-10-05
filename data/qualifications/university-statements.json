@@ -351,7 +351,7 @@
     "a_level_requirement": "A*AA incl. Chemistry and Biology with A* in one; IB 38. International applicants subject to same academic and UCAT requirements. 74 overseas places (AGENT-LEAD).",
     "gem_international": "A109 GEM exists; DATA UNAVAILABLE (search budget) — confirm directly with the university",
     "english_requirement": "Imperial 'higher' English requirement (score not captured).",
-    "foundation_route": "NOT PUBLISHED — confirm directly with the university",
+    "foundation_route": "Imperial does not offer its own Foundation Programme",
     "international_places_open": "Yes.",
     "sources": [
       "https://www.imperial.ac.uk/study/courses/undergraduate/medicine/"
@@ -784,5 +784,118 @@
       "method": "WebSearch snippets of official pages only; direct page fetch blocked; 30 university queries completed, further queries refused (session search budget 200/200).",
       "rule": "Nothing with status VERIFY-ON-PAGE or AGENT-LEAD may be shown to students until a human sets VERIFIED with a date."
     }
+  },
+  {
+    "university": "University of Brighton and University of Sussex (joint)",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.bsms.ac.uk/undergraduate/international-students/international-entry-requirements.aspx"
+    ],
+    "waec_neco_statement": "Medicine (BM BS), Nigeria: the Senior Secondary School Certificate (SSSC) or West African Senior School Certificate (WASSC) is considered only together with a BSMS-recognised foundation/premed course; English and Maths at grade B3 or above",
+    "waec_statement_is_medicine_specific": true
+  },
+  {
+    "university": "University of Brighton and University of Sussex (joint)",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.bsms.ac.uk/undergraduate/applying-to-bsms/entry-requirements.aspx"
+    ],
+    "english_requirement": "Medicine (BM BS): IELTS 7.0 overall with a minimum of 7.0 in each component, if English is not the first language (BSMS entry requirements page: achieved no more than three years before enrolment; University of Brighton course page: no more than two years before registration)"
+  },
+  {
+    "university": "University of Bristol",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.bristol.ac.uk/study/undergraduate/2027/medicine/mb-chb-medicine"
+    ],
+    "english_requirement": "IELTS 7.5 overall with 7.0 in all skills; or GCSE English Language grade B or 6; or an alternative qualification in Profile level A"
+  },
+  {
+    "university": "Keele University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements/internationalentryrequirements"
+    ],
+    "waec_neco_statement": "The Senior School Certificate Examination (SSC) and West African Senior School Certificate (WASSC) are not sufficient to enter Medicine at Keele directly, but may be supplemented with GCE A levels or equivalent; the WASSC is acceptable at grades 1-3 in lieu of GCSE on a subject-for-subject basis",
+    "waec_statement_is_medicine_specific": true
+  },
+  {
+    "university": "Keele University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements/internationalentryrequirements"
+    ],
+    "english_requirement": "IELTS 7.0 with a minimum of 7.0 in each sub-test (for students whose first language is not English and those not taught in English)"
+  },
+  {
+    "university": "University of Southampton",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.southampton.ac.uk/courses/medicine-bm5-degree-bmbs"
+    ],
+    "english_requirement": "Medicine BM5: IELTS 7.0 overall with at least 7.0 in reading, writing, speaking and listening"
+  },
+  {
+    "university": "University of Southampton",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.southampton.ac.uk/courses/medicine-bm5-degree-bmbs"
+    ],
+    "a_level_requirement": "Typical offer AAA (academic year 2027/28 entry requirements page)"
+  },
+  {
+    "university": "University of Surrey",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry"
+    ],
+    "english_requirement": "IELTS Academic 7.0 overall and at least 7.0 in all components (Medicine Graduate Entry BMBS)"
+  },
+  {
+    "university": "University of Cambridge",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.undergraduate.study.cam.ac.uk/international-students/international-entry-requirements"
+    ],
+    "waec_neco_statement": "General undergraduate statement (not Medicine-specific): applicants studying for the West African Senior School Certificate Examination are strongly recommended to undertake further study; applicants with the West African Senior School Certificate alone will not be competitive and are unlikely to be successful (2027 entry).",
+    "waec_statement_is_medicine_specific": false
+  },
+  {
+    "university": "Edge Hill University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.edgehill.ac.uk/departments/support/international/your-country/nigeria"
+    ],
+    "waec_neco_statement": "General undergraduate statement (not Medicine-specific): a Secondary School Certificate (WAEC or NECO) along with a National Diploma, Nigerian Certificate of Education, or a recognised International Foundation Year.",
+    "waec_statement_is_medicine_specific": false
+  },
+  {
+    "university": "University of Hertfordshire",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.herts.ac.uk/courses/undergraduate-courses/medicine/mbbs-int-ent-req"
+    ],
+    "english_requirement": "IELTS 7.0 with 7.0 in all components."
+  },
+  {
+    "university": "University of Hertfordshire",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.herts.ac.uk/courses/undergraduate-courses/medicine/mbbs-int-ent-req"
+    ],
+    "waec_neco_statement": "MBBS international entry requirements: WAEC / WASSCE / NECO with a pass in English at grade C5 is listed among accepted English qualifications; the academic entry listed for Nigeria is a pass in the National Diploma or Higher National Diploma in a subject relevant to medicine with a minimum grade of distinction.",
+    "waec_statement_is_medicine_specific": true
   }
 ]

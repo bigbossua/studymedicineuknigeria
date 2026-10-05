@@ -314,7 +314,11 @@ class DatasetImporter
             return null;
         }
         $u = Str::upper($v);
-        if (str_contains($u, 'UCAS') && (str_contains($u, 'DIRECT') || str_contains($u, 'OR'))) {
+        // "direct entry, not through UCAS" is a direct route; "OR" counts only as a word ("UCAS or direct"), never inside "for"
+        if (preg_match('/\bNOT\s+(THROUGH\s+|VIA\s+)?UCAS\b/', $u)) {
+            return 'DIRECT';
+        }
+        if (str_contains($u, 'UCAS') && (str_contains($u, 'DIRECT') || preg_match('/\bOR\b/', $u))) {
             return 'BOTH';
         }
         if (str_contains($u, 'UCAS')) {

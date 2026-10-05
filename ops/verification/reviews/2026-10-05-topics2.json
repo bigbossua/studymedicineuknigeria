@@ -1,0 +1,10 @@
+{
+ "topic:student-visa:work_term_time:2026": {
+  "decision": "verified",
+  "new_source_url": "https://www.ukcisa.org.uk/student-advice/working/student-work/",
+  "verified_value": "Up to 20 hours a week in term time for a full-time course at degree level or above with a sponsor that has a track record of compliance, and full time outside term time (including vacations); Student visa holders cannot be self-employed. Check any lower limit your university sets",
+  "note": "UKCISA guidance (UK Council for International Student Affairs); GOV.UK says the amount depends on course level and term time.",
+  "page": "https://www.ukcisa.org.uk/student-advice/working/student-work/, read 2026-10-05 via page-excerpts run 37350714067, sha256 cd54346efdf8b2f0; https://www.gov.uk/student-visa sha256 efb00d7a1b676829",
+  "quote": "If your Student sponsor has a track record of compliance and your course is full-time, your hours of work are: ⏎ Up to 20 hours a week in term time if you are studying for a qualification at degree level or above. ... Full time outside term time (for study at all levels), which includes in vacations ... Always check any limits on work that your university, college or school imposes or recommends. ... You may be able to work - how much depends on what you’re studying and whether you’re working in or out of term-time. ⏎ You cannot: ⏎ claim public funds (benefits) and pensions ⏎ work in certain jobs, for example as a professional sportsperson or sports coach ⏎ be self-employed"
+ }
+}

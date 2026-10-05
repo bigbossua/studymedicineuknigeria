@@ -690,9 +690,10 @@
         "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.bristol.ac.uk/study/undergraduate/2027/medicine/mb-chb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -724,9 +725,10 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Applicants must be available for an interview from November to April following submission of their application (format not stated in excerpt)",
+        "source": "https://www.bristol.ac.uk/study/undergraduate/2027/medicine/mb-chb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS",
@@ -925,9 +927,10 @@
         "source_type": "lead (non-authoritative)"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "71A8",
+        "source": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
         "value": 4.5,
@@ -965,9 +968,10 @@
         "source_type": "lead (non-authoritative)"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Three-stage selection: academic screening, a digital Multiple Mini Assessment (MMA), then a Multiple Mini Interview (MMI)",
+        "source": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS or direct via university website",
@@ -999,7 +1003,8 @@
       "notes": [
         "No official buckingham.ac.uk page surfaced in this session; all course facts here are leads and must be confirmed on the university site before use."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -1051,9 +1056,10 @@
         "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 6,
+        "source": "https://www.undergraduate.study.cam.ac.uk/courses/medicine-mb-bchir",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -1550,9 +1556,10 @@
         "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.exeter.ac.uk/undergraduate-degrees/bmbs-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -1791,9 +1798,10 @@
         "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 6,
+        "source": "https://www.imperial.ac.uk/study/courses/undergraduate/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": true,
@@ -1915,9 +1923,10 @@
         "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -2422,14 +2431,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "admissions_test": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAT (taken in the year of application; BMAT and GAMSAT not accepted instead)",
+        "source": "https://courses.leeds.ac.uk/5580/medicine-and-surgery-mbchb",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple mini-interviews; for 2027 entry face-to-face on 4, 5 and 6 January 2027, overseas interviews online",
+        "source": "https://courses.leeds.ac.uk/5580/medicine-and-surgery-mbchb",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS",
@@ -2626,14 +2637,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.lincoln.ac.uk/course/mdcmbcub",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.lincoln.ac.uk/course/mdcmbcub",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -2658,14 +2671,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "admissions_test": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAT (same year as application; SJT Band 4 not considered)",
+        "source": "https://www.lincoln.ac.uk/course/mdcmbcub",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple Mini Interviews (MMIs), in person on campus",
+        "source": "https://www.lincoln.ac.uk/course/mdcmbcub",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": null,
@@ -2696,7 +2711,8 @@
       "notes": [
         "Degree awarded via University of Nottingham per GMC awarding-body list context; VERIFY."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -2988,10 +3004,10 @@
         "source_type": "official"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION",
-        "note": "Lead sites label it 'A100' but no UCAS listing was found; the school appears to recruit by direct application"
+        "value": "A100",
+        "source": "https://greatermanchester.ac.uk/course/mbchb-medicine-full-time-5-years-university-of-greater-manchester/2026-27",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
         "value": 5,
@@ -3075,7 +3091,8 @@
         "No partnership with any other institution is stated here; none should be asserted.",
         "The GMC lists the school as 'University of Greater Manchester School of Medicine'."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -3128,9 +3145,10 @@
         "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.ncl.ac.uk/undergraduate/degrees/a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -3138,9 +3156,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.ncl.ac.uk/undergraduate/degrees/a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -3255,9 +3274,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.nottingham.ac.uk/medicine/study-with-us/undergraduate/undergraduate-medicine/applying-to-medicine.aspx",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -3276,9 +3296,10 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Interview required before an offer; usually December to February; international fee status applicants likely online via Microsoft Teams, home fee status applicants likely in person",
+        "source": "https://www.nottingham.ac.uk/medicine/study-with-us/undergraduate/undergraduate-medicine/applying-to-medicine.aspx",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS",
@@ -3471,14 +3492,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -3512,9 +3535,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (UCAS course code A100, institution code P60)",
+        "source": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -3539,7 +3563,8 @@
       "notes": [
         "Search budget exhausted before this school was researched."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -3585,14 +3610,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://sheffield.ac.uk/smph/undergraduate/medicine-admissions",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://sheffield.ac.uk/smph/undergraduate/medicine-admissions",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -3600,14 +3627,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://sheffield.ac.uk/smph/undergraduate/medicine-admissions",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 18,
+        "source": "https://sheffield.ac.uk/smph/undergraduate/medicine-admissions",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_fee_per_year_gbp": {
         "value": null,
@@ -3626,9 +3655,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (deadline for 2027 entry: 15 October 2026)",
+        "source": "https://sheffield.ac.uk/smph/undergraduate/medicine-admissions",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -3654,7 +3684,8 @@
       "notes": [
         "Search budget exhausted before this school was researched."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -3701,14 +3732,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.southampton.ac.uk/courses/medicine-bm5-degree-bmbs",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.southampton.ac.uk/courses/medicine-bm5-degree-bmbs",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -3744,9 +3777,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (UCAS course code A100, institution code S27)",
+        "source": "https://www.southampton.ac.uk/courses/medicine-bm5-degree-bmbs",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -3771,7 +3805,8 @@
       "notes": [
         "Search budget exhausted before this school was researched."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -3932,9 +3967,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.sunderland.ac.uk/undergraduate/mbchb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
         "value": 5,
@@ -3971,14 +4007,16 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple mini-interviews (MMIs), in person, from the week commencing 7 December 2026",
+        "source": "https://www.sunderland.ac.uk/undergraduate/mbchb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (deadline 15 October each year; home fee status only)",
+        "source": "https://www.sunderland.ac.uk/how-to-apply/applying-for-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -4002,7 +4040,8 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "notes": [],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -4652,14 +4691,16 @@
         "note": "Programme 'will begin September 2026' per 2025 news item"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.herts.ac.uk/courses/undergraduate/mbbs-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.herts.ac.uk/courses/undergraduate/mbbs-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -4667,9 +4708,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.herts.ac.uk/courses/undergraduate-courses/medicine/mbbs-int-ent-req",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -4688,9 +4730,10 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple Mini Interviews (MMIs)",
+        "source": "https://www.herts.ac.uk/courses/undergraduate-courses/medicine/mbbs-int-ent-req",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": null,
@@ -4721,7 +4764,8 @@
       "notes": [
         "International acceptance NOT FOUND IN THIS SESSION."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -4785,9 +4829,10 @@
         "note": "MSC lists a 'Head of Graduate Entry Medicine'; implies graduate-entry programme - VERIFY"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -4810,9 +4855,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (course code A101, institution code S85)",
+        "source": "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -5007,9 +5053,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.wlv.ac.uk/courses/mbchb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -5022,19 +5069,22 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "admissions_test": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAT (minimum threshold set annually above the national mean; total score used to rank for interview and offers; SJT Bands 1-4 accepted)",
+        "source": "https://www.wlv.ac.uk/courses/mbchb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Online Multiple Mini Interviews (MMIs), normally between December and March in the year of application",
+        "source": "https://www.wlv.ac.uk/courses/mbchb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Direct entry to the university, not through UCAS; applications open September 2026 for the September 2027 intake",
+        "source": "https://www.wlv.ac.uk/courses/mbchb-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -5376,9 +5426,10 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Assessment day (interview) for about 800 top-scoring applicants, held at Edinburgh Medical School or online",
+        "source": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS",
@@ -5457,14 +5508,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.gla.ac.uk/undergraduate/degrees/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.gla.ac.uk/undergraduate/degrees/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -5472,9 +5525,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.gla.ac.uk/undergraduate/fees/intlfees",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -5498,9 +5552,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (A100)",
+        "source": "https://www.gla.ac.uk/undergraduate/degrees/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -5525,7 +5580,8 @@
       "notes": [
         "Search budget exhausted before this school was researched."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -5578,9 +5634,10 @@
         "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 6,
+        "source": "https://www.st-andrews.ac.uk/subjects/medicine/medicine-bsc-a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -5588,9 +5645,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.st-andrews.ac.uk/subjects/medicine/medicine-bsc-a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -5839,9 +5897,10 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple mini interview (MMI); no offer is made without an interview",
+        "source": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/medicine-mbbch",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS",
@@ -6162,9 +6221,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.qub.ac.uk/courses/undergraduate/medicine-mb-a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -6177,19 +6237,22 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "admissions_test": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAT (all applicants; results used in selection before interview)",
+        "source": "https://www.qub.ac.uk/courses/undergraduate/medicine-mb-a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multi-mini interview; December to March in Belfast for home fee paying applicants; international fee paying applicants interviewed online",
+        "source": "https://www.qub.ac.uk/courses/undergraduate/medicine-mb-a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (UCAS code A100)",
+        "source": "https://www.qub.ac.uk/courses/undergraduate/medicine-mb-a100",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,

@@ -24,14 +24,14 @@
                     <x-fact-row :fact="$visa?->fact('ihs_per_year_gbp')" label="Immigration Health Surcharge (per year of visa)"  />
                 </dl>
                 <div class="prose-site mt-5">
-                    <p>Not allowed on a Student visa: self-employment or freelance work, work as a professional sportsperson or entertainer, and filling a permanent full-time vacancy. Paid work and volunteering hours count together towards the weekly cap. Healthcare-assistant bank shifts in vacations are employment, not self-employment, but confirm with your university’s immigration team before you start.</p>
+                    <p>Not allowed on a Student visa, according to GOV.UK: self-employment, and work in certain jobs (for example as a professional sportsperson or sports coach). Before taking any job, including vacation work, confirm with your university’s immigration team what counts as term time and whether the work is allowed.</p>
                 </div>
             </section>
 
             <section id="after"><h2>After you graduate: from final year to Foundation Year 1</h2>
                 <p class="text-ink-700 mt-2">The order of steps for a graduate of a UK medical school who needs a visa. Nationality is not a criterion at any step; none of the steps is automatic.</p>
                 <ol class="mt-4 space-y-3 list-decimal pl-5 text-[0.9375rem] text-ink-700 max-w-prose">
-                    <li><strong>Pass the Medical Licensing Assessment inside your degree.</strong> The Applied Knowledge Test and the Clinical and Professional Skills Assessment are part of the course for UK students from 2024/25.</li>
+                    <li><strong>Pass the Medical Licensing Assessment inside your degree.</strong> Its Applied Knowledge Test and Clinical and Professional Skills Assessment are taken as part of the course (see the GMC fact below).</li>
                     <li><strong>Apply to the UK Foundation Programme in the autumn of final year</strong> through your medical school, on the same basis as home graduates. You indicate on the application that you will need sponsorship.</li>
                     <li><strong>Allocation</strong> to a foundation school follows a national process. After allocation, those who need a work visa are contacted about a Certificate of Sponsorship.</li>
                     <li><strong>Apply to the GMC for provisional registration with a licence to practise</strong> after graduating, with a fitness-to-practise declaration.</li>

@@ -6,8 +6,10 @@ use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\User;
 use App\Support\Totp;
 use Database\Seeders\ReferenceDataSeeder;
+use Database\Seeders\TopicFactsSeeder;
 use Database\Seeders\UniversityPublicationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 /**
@@ -67,7 +69,11 @@ class SeoDecisionRegisterTest extends TestCase
 
     public function test_live_rows_point_at_indexable_pages_and_drafts_stay_noindex(): void
     {
-        $this->seed([ReferenceDataSeeder::class, UniversityPublicationSeeder::class]); // live university rows need their schools
+        // as on deploy: reference data, then the committed verification decisions (fact-gated pages open only when verified)
+        $this->seed([ReferenceDataSeeder::class, TopicFactsSeeder::class, UniversityPublicationSeeder::class]);
+        foreach (glob(base_path('data/verification/decisions-*.csv')) as $file) {
+            Artisan::call('smukn:facts-import', ['file' => 'data/verification/'.basename($file)]);
+        }
         foreach ($this->rows() as $r) {
             $path = strtok($r['current_url'], '#');
             if ($path === '—' || $path === '' || str_contains($path, '{') || str_contains($path, '?')) {

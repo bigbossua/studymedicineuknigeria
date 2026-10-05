@@ -4,9 +4,35 @@
     "rule": "Add a school only when its decision-register row records the evidence: verified international acceptance, Nigeria statement, English requirement, international fee with year, application route, and Nigerian search evidence."
   },
   "published": [
-    {"slug": "aberdeen", "register": "D07", "decided_on": "2026-10-05"},
-    {"slug": "cardiff", "register": "D08", "decided_on": "2026-10-05"},
-    {"slug": "manchester", "register": "D10", "decided_on": "2026-10-05"},
-    {"slug": "edinburgh", "register": "D11", "decided_on": "2026-10-05"}
+    {
+      "slug": "aberdeen",
+      "register": "D07",
+      "decided_on": "2026-10-05"
+    },
+    {
+      "slug": "cardiff",
+      "register": "D08",
+      "decided_on": "2026-10-05"
+    },
+    {
+      "slug": "manchester",
+      "register": "D10",
+      "decided_on": "2026-10-05"
+    },
+    {
+      "slug": "edinburgh",
+      "register": "D11",
+      "decided_on": "2026-10-05"
+    },
+    {
+      "slug": "brighton-sussex",
+      "register": "D12",
+      "decided_on": "2026-10-05"
+    },
+    {
+      "slug": "buckingham",
+      "register": "D13",
+      "decided_on": "2026-10-05"
+    }
   ]
 }

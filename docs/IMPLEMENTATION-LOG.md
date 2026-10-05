@@ -527,7 +527,7 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - **Cardiff:** the general Nigeria undergraduate rule, labelled as general; WAEC or IGCSE English in lieu of IELTS (general); £47,450 for every year; UCAS A100.
   - **Lancashire (D09):** core facts verified, but it stays RESEARCH until Nigerian search demand is evidenced.
   - **Leicester:** Cloudflare blocks its course and fee pages; a person must check them by hand.
-- **Recruitment-agent research** (`docs/research/15-recruitment-agent-opportunities.md`):
+- **Recruitment-agent research** (`docs/research/15-recruitment-agent-opportunities.md`) — **archived the same day by owner decision; off the roadmap**:
   - Edinburgh's agent guidance states MBChB is ineligible for commission (official read).
   - Brunel, Aberdeen and Cardiff pay contracted agents commission but say nothing about Medicine.
   - No university publishes a commission rate.

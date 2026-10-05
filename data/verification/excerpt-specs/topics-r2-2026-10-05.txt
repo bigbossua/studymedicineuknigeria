@@ -1,0 +1,8 @@
+# Remaining topic facts: student work hours, UCAS documents and agents, UCAT centres, international funding (2026-10-05)
+https://www.gov.uk/student-visa | work; 20 hours; term; vacation || links: what you can; work
+https://www.ucas.com/undergraduate/applying-to-university | document; upload; agent || links: document; agent; adviser; international
+https://www.ucas.com/advisers | agent; international || links: agent; international
+https://www.ucat.ac.uk/ | test centre; Pearson || links: test centre; centre; locations; booking
+https://www.ucat.ac.uk/ucat/registration-booking/ | test centre; Pearson; Nigeria; international || links: test centre; locations
+https://www.hyms.ac.uk/medicine/international-students | funding; scholarship; loan; fee || links: fees; funding
+https://www.ukcisa.org.uk/student-advice/working/student-work/ | 20 hours; term time; vacation

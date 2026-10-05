@@ -1,0 +1,11 @@
+# Topic facts on indexable pages: UCAS key dates, application fee, choices, personal statement; GOV.UK visa, IHS, TB, Graduate visa
+https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications | UCAS applications open for 2027; Completed applications can be submitted; Extra opens; Clearing opens; Final date for 2027
+https://www.ucas.com/faqs/what-is-the-application-fee-for-the-2027-cycle | £
+https://www.ucas.com/undergraduate/applying-university/filling-your-ucas-undergraduate-application | maximum of four; medicine; five choices
+https://www.ucas.com/applying/applying-to-university/writing-your-personal-statement/how-to-write-your-personal-statement-for-2026-entry-onwards | 4,000; 350; three questions
+https://www.gov.uk/student-visa | dependants; 20 hours; £; work
+https://www.gov.uk/student-visa/money | £; London; month
+https://www.gov.uk/student-visa/family-members | undergraduate; dependants
+https://www.gov.uk/healthcare-immigration-application/how-much-pay | £; student
+https://www.gov.uk/tb-test-visa | Nigeria
+https://www.gov.uk/graduate-visa | months; £; 1 January 2027

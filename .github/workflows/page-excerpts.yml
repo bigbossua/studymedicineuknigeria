@@ -29,7 +29,7 @@ jobs:
           CONTEXT: ${{ inputs.context }}
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: |
-          npm i --no-save playwright@1 >/dev/null 2>&1
+          npm i --no-save playwright@1 pdf-parse@1 >/dev/null 2>&1
           if [ -f "$SPEC" ]; then cp "$SPEC" spec.txt; else printf '%s\n' "$SPEC" > spec.txt; fi
           node ops/verification/page-excerpts.cjs spec.txt "${CONTEXT:-280}" | tee excerpts.txt
           { echo '### Official page excerpts'; echo '```'; head -c 60000 excerpts.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

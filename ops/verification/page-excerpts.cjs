@@ -17,6 +17,14 @@ const { chromium } = require('playwright');
     const page = await ctx.newPage();
     let status = 0; let text = ''; let finalUrl = url; let title = '';
     try {
+      if (/\.pdf($|\?)/i.test(url)) {
+        // PDFs (admissions statements) are read as text, not rendered
+        const r = await ctx.request.get(url, { timeout: 45000 });
+        status = r.status(); title = 'PDF';
+        const pdf = await require('pdf-parse')(await r.body());
+        text = pdf.text.replace(/[ \t\u00a0]+/g, ' ').replace(/\n\s*\n+/g, '\n');
+        throw { pdfDone: true };
+      }
       const r = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
       await page.waitForTimeout(2500);
       // cookie banners and accordions hide text from innerText; open every <details> and read textContent of the main region
@@ -27,7 +35,7 @@ const { chromium } = require('playwright');
         root.querySelectorAll('script,style,noscript,svg').forEach((n) => n.remove());
         return (root.innerText || root.textContent || '').replace(/[ \t ]+/g, ' ').replace(/\n\s*\n+/g, '\n');
       });
-    } catch (e) { status = -1; text = ''; title = String(e.message).split('\n')[0]; }
+    } catch (e) { if (!e.pdfDone) { status = -1; text = ''; title = String(e.message).split('\n')[0]; } }
     await page.close();
     const sha = crypto.createHash('sha256').update(text).digest('hex').slice(0, 16);
     console.log(`\n=== ${url}\nfinal: ${finalUrl}\nstatus: ${status} | title: ${title} | chars: ${text.length} | sha256: ${sha} | read: ${checked}`);

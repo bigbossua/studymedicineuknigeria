@@ -1,6 +1,8 @@
 // Reads official pages in a real browser and prints, for each requested term, the exact text around it, so a reviewer
 // can verify facts from the page's own words (the container that drafts decisions cannot reach these sites). Read-only.
 // Spec, one page per line:   https://official.page/path | term one; term two; ...
+// Optional link discovery:   https://official.page/path | terms || links: nigeria; tuition fees
+//   prints every link on the page whose text or address contains a link term (finds the country, fee and entry pages)
 //   node ops/verification/page-excerpts.cjs spec.txt [context-chars]
 const fs = require('fs');
 const crypto = require('crypto');
@@ -8,12 +10,15 @@ const { chromium } = require('playwright');
 (async () => {
   const spec = fs.readFileSync(process.argv[2], 'utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
   const ctxChars = parseInt(process.argv[3] || '280', 10);
-  const browser = await chromium.launch({ channel: process.env.CHROME_CHANNEL || 'chrome' });
+  const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: process.env.CHROME_CHANNEL || 'chrome' });
   const ctx = await browser.newContext({ locale: 'en-GB', userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36' });
   const checked = new Date().toISOString().slice(0, 10);
   for (const line of spec) {
-    const [url, termList = ''] = line.split('|').map((s) => s.trim());
+    const [main, linkPart = ''] = line.split('||').map((s) => s.trim());
+    const [url, termList = ''] = main.split('|').map((s) => s.trim());
     const terms = termList.split(';').map((t) => t.trim()).filter(Boolean);
+    const linkTerms = linkPart.replace(/^links:\s*/i, '').split(';').map((t) => t.trim().toLowerCase()).filter(Boolean);
+    let links = [];
     const page = await ctx.newPage();
     let status = 0; let text = ''; let finalUrl = url; let title = '';
     try {
@@ -37,6 +42,11 @@ const { chromium } = require('playwright');
         });
       });
       status = r ? r.status() : 0; finalUrl = page.url(); title = await page.title();
+      if (linkTerms.length) {
+        links = await page.evaluate((lt) => [...document.querySelectorAll('a[href]')]
+          .map((a) => [(a.innerText || a.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 90), a.href])
+          .filter(([t, h]) => /^https?:/.test(h) && lt.some((x) => t.toLowerCase().includes(x) || h.toLowerCase().includes(x.replace(/ /g, '-')))), linkTerms);
+      }
       text = await page.evaluate(() => {
         const root = document.querySelector('main') || document.body;
         root.querySelectorAll('script,style,noscript,svg').forEach((n) => n.remove());
@@ -46,7 +56,9 @@ const { chromium } = require('playwright');
     await page.close();
     const sha = crypto.createHash('sha256').update(text).digest('hex').slice(0, 16);
     console.log(`\n=== ${url}\nfinal: ${finalUrl}\nstatus: ${status} | title: ${title} | chars: ${text.length} | sha256: ${sha} | read: ${checked}`);
-    if (!terms.length && text) console.log(text.slice(0, 4000));
+    if (!terms.length && !linkTerms.length && text) console.log(text.slice(0, 4000));
+    const seenLinks = new Set();
+    for (const [t, h] of links) { if (seenLinks.has(h) || seenLinks.size >= 40) continue; seenLinks.add(h); console.log(`+++ link: ${t} -> ${h}`); }
     const flat = text.replace(/\n/g, ' ⏎ ');
     for (const term of terms) {
       const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');

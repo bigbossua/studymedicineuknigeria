@@ -1,0 +1,10 @@
+# Recruitment-agent research (docs/research/15): upgrade leads to official reads
+https://student-recruitment.ed.ac.uk/agent-guidance/commission-and-contracts | MBChB; ineligible; commission
+https://www.brunel.ac.uk/international/Applying-to-Brunel-University-of-London-through-an-Agent | medicine; commission; approved
+https://www.brunel.ac.uk/brunel-medical-school/documents/pdf/Agent-slides-Medicine-2024.pdf | agent; commission; international; direct
+https://www.birmingham.ac.uk/study/international/working-with-our-representatives | Medicine; MBChB; commission; representative
+https://www.aston.ac.uk/international/education-agents | Medicine; MBChB; commission
+https://www.abdn.ac.uk/study/international/working-recruitment-partners/ | Medicine; commission; Quality Framework; National Code
+https://cardiff.ac.uk/study/international/educational-advisors/for-students | Medicine; commission; fee
+https://www.buila.ac.uk/uploads/docs/National-Code-of-Ethical-Practice-for-UK-Education-Agents-FINAL-Flag-version-2.pdf | conflict; fee; commission; transparent
+https://www.britishcouncil.org/education/agents-counsellors/uk-quality-agent-framework | Agent Quality Framework; commit; National Code

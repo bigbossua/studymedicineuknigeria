@@ -46,7 +46,7 @@ The 28 URLs: `/`, `/study-medicine-in-the-uk`, `/study-medicine-in-the-uk/from-n
 `/apply-online/eligibility`, `/about`, `/our-status`, `/how-we-verify`, `/contact`, `/privacy`, `/terms`, `/application-terms`,
 `/refund-policy`.
 
-### Update 2026-10-05: 32 URLs, first four university pages
+### Update 2026-10-05: 32 URLs, first four university pages (35 with the round-1 release)
 
 Release `2026-10-05T12-54-19` added the first four university pages (DECISION-ENGINE §8 threshold, register rows D07, D08, D10, D11). Live checks from that day:
 - `sitemap-probe.yml`: 32 URLs, each 200, indexable and self-canonical when fetched as Googlebot.
@@ -73,9 +73,12 @@ The other 51 schools stay `noindex` and out of the sitemap. Their pages remain c
 | 10 | `https://studymedicineuknigeria.com/medical-schools/cardiff` | D08 |
 | 11 | `https://studymedicineuknigeria.com/medical-schools/manchester` | D10 |
 | 12 | `https://studymedicineuknigeria.com/medical-schools/edinburgh` | D11 |
+| 13 | `https://studymedicineuknigeria.com/working-in-the-uk` | R01: fact gate passed 2026-10-05 (all visa, GMC and Foundation facts verified) |
+| 14 | `https://studymedicineuknigeria.com/medical-schools/brighton-sussex` | D12: BSMS's own Nigeria rule; named in a Nigeria-specific SERP |
+| 15 | `https://studymedicineuknigeria.com/medical-schools/buckingham` | D13: January start, 4.5 years; its PreMed PDF ranks for 'A-level medicine UK Nigeria' |
 
 After the requests:
-- Sitemaps → open `sitemap.xml` and confirm *Discovered pages* reads 32. Resubmit only if it still reads 28 after a week.
+- Sitemaps → open `sitemap.xml` and confirm *Discovered pages* reads 35 once the release with rows 13–15 is live (32 before it). Resubmit only if the count is still behind after a week.
 - Indexing → Pages: record the counts as in the routine below. Submitted or discovered is **not** indexed. A URL counts as indexed only when URL inspection says *URL is on Google*.
 
 ### Owner routine (about 10 minutes, Search Console has no free API access configured here)

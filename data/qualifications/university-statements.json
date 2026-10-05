@@ -933,5 +933,15 @@
       "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements"
     ],
     "foundation_route": "International applicants are not eligible for the 6-year MBChB with Health Foundation Year for Medicine (A104)."
+  },
+  {
+    "university": "University of Hull and University of York (joint)",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.hyms.ac.uk/medicine/entry-requirements/entry-requirements-medicine"
+    ],
+    "waec_neco_statement": "MB BS Medicine (2027 entry), Nigeria: the West African Senior School Certificate Examination is not enough to make a competitive entry; it must be supplemented with GCE A-levels or an equivalent qualification.",
+    "waec_statement_is_medicine_specific": true
   }
 ]

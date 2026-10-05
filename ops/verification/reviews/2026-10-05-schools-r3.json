@@ -1,0 +1,50 @@
+{
+ "university:brunel:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Medicine MBBS: IELTS 7.0 overall (minimum 7.0 in all areas); Pearson 64 overall",
+  "new_source_url": "https://www.brunel.ac.uk/study/courses/medicine-mbbs",
+  "note": "Medicine-specific statement. Stated on the Medicine MBBS course page (key information shows 2027/8 entry requirements); the Pearson component minimum is cut off in the excerpt.",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37354226577, sha256 bf2710d28fa6b400",
+  "quote": "Entry requirements ⏎ 2027/8 ⏎ AAA (A-level) ... English language requirements ⏎ IELTS :7.0 overall (min 7.0 in all areas) ⏎ Pearson : 64 overall"
+ },
+ "university:imperial:a_level_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Minimum entry standard (October 2027 start): A*AA at A-level including Chemistry and Biology, with A* in one of these subjects; 38 points in the International Baccalaureate",
+  "new_source_url": "https://www.imperial.ac.uk/study/courses/undergraduate/medicine/",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.imperial.ac.uk/study/courses/undergraduate/medicine/, read 2026-10-05 via page-excerpts run 37354226577, sha256 3cd39b92e2595b77",
+  "quote": "Start date ⏎ October 2027 ⏎ UCAS course code ⏎ A100 ... Minimum entry standard ⏎ A*AA including Chemistry and Biology, with A* in one of these subjects (A-levels) ⏎ 38 points (International Baccalaureate)"
+ },
+ "university:kings-college-london:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Medicine MBBS (September 2027 start): King's English language band B. Nationals of Majority English Speaking Countries (as defined by UKVI) who have successfully completed high school in that country are not required to take an English language test.",
+  "new_source_url": "https://www.kcl.ac.uk/study/undergraduate/courses/medicine-mbbs/requirements",
+  "note": "Medicine-specific statement. The page gives the band only; the test scores for band B are on King's English language requirements page (not read in this run).",
+  "page": "https://www.kcl.ac.uk/study/undergraduate/courses/medicine-mbbs/requirements, read 2026-10-05 via page-excerpts run 37354226577, sha256 e4012443e4658d18",
+  "quote": "English language requirements ⏎ English language band: B ⏎ Please note that nationals of Majority English Speaking Countries (as defined by UKVI) who have successfully completed high school in the respective country, are not required to complete an English language test. ... Start date: ⏎ September 2027"
+ },
+ "course:kings-college-london/a100:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS (UCAS code A100); application deadline 15 October 2026 for the September 2027 start",
+  "new_source_url": "https://www.kcl.ac.uk/study/undergraduate/courses/medicine-mbbs/requirements",
+  "note": "Medicine-specific statement. Replaces a third-party source with the King's Medicine MBBS requirements page.",
+  "page": "https://www.kcl.ac.uk/study/undergraduate/courses/medicine-mbbs/requirements, read 2026-10-05 via page-excerpts run 37354226577, sha256 e4012443e4658d18",
+  "quote": "UCAS Choices ⏎ A maximum of four choices on the UCAS form may be made for programmes which lead to a professional qualification in medicine. ... Key Information ⏎ UCAS code: ⏎ A100 ... Application status: ⏎ Open ⏎ Start date: ⏎ September 2027 ⏎ Application deadline: ⏎ 15 October 2026"
+ },
+ "course:aston/a100:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.aston.ac.uk/study/courses/medicine-mbchb",
+  "page": "https://www.aston.ac.uk/study/courses/medicine-mbchb, read 2026-10-05 via page-excerpts run 37354226577, sha256 83fcd524fffd68bd",
+  "quote": "Fees and scholarships ⏎ Course fees ⏎ UK students ⏎ (2027/28) ⏎ Annual tuition fee: £10,050* ⏎ International students ⏎ (2027/28) ⏎ Annual tuition fee: £47,000**",
+  "note": "International (overseas) annual tuition fee for Medicine MBChB A100. The stored ref is for 2026/27, so it was not verified.",
+  "verified_value": "47000"
+ },
+ "university:hull-york:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.hyms.ac.uk/medicine/entry-requirements/entry-requirements-medicine",
+  "page": "https://www.hyms.ac.uk/medicine/entry-requirements/entry-requirements-medicine, read 2026-10-05 via page-excerpts run 37354226577, sha256 5460f8c531061b65",
+  "quote": "Entry requirements for Medicine ⏎ 2027 ENTRY ⏎ A LEVELS: 3 A LEVELS ... Nigeria ⏎ West African Senior School Certificate Examination ⏎ This qualification is not enough for you to make a competitive entry. You will need to supplement it with GCE A-levels or an equivalent qualification.",
+  "note": "Medicine-specific statement. Hull York has no waec_neco_statement ref in Current facts, so this is proposed as a dataset fact.",
+  "verified_value": "MB BS Medicine (2027 entry), Nigeria: the West African Senior School Certificate Examination is not enough to make a competitive entry; it must be supplemented with GCE A-levels or an equivalent qualification."
+ }
+}

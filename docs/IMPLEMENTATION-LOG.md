@@ -600,6 +600,45 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
     - Student visa work hours: the GOV.UK work page redirects to the overview.
     - Wolverhampton MBChB English: course-specific requirements apply.
 
+## Stage 60: the 55-school assessment (cycle 54)
+
+- **Method:** three automated rounds on the GitHub runner (`page-excerpts.yml`, now with link discovery).
+  - Rounds 1–3 read 143, 119 and 26 official pages.
+  - Each round's reviews were checked by `ops/verification/check-quotes.py`, so every quotation is on the page it cites (the guard also caught one provenance gap in batch 5, now fixed).
+  - Every medschools.ac.uk page, and pages at Dundee, UEA, Oxford, UCL, Leicester (two), Edge Hill, Greater Manchester (two) and Manchester Metropolitan, returned bot challenges. They are listed in `data/medical-schools/blocked-pages-2026-10-05.json` for human verification.
+  - The session's web-search allowance ran out during URL discovery, so later rounds found pages by following links.
+- **Results:** 423 decisions in `decisions-2026-10-05.csv`, plus dataset updates:
+  - 2027/28 fees for Aston, Bristol, Cambridge, Imperial, KCL, Queen's Belfast (pre-clinical), Sheffield, St Andrews, Surrey, Swansea, Wolverhampton and Worcester, and the January 2028 Buckingham fee;
+  - international, route, test, interview and English facts;
+  - Nigeria statements for BSMS, Keele, Hertfordshire, Hull York, Cambridge, Edge Hill and others.
+- **Outcome** (`docs/seo/UNIVERSITY-ASSESSMENT.md`, generated):
+  - 6 published (Aberdeen, Brighton and Sussex, Buckingham, Cardiff, Edinburgh, Manchester);
+  - 16 with every core fact verified but no Nigerian demand evidence (noindex until Search Console or a Nigeria-specific SERP names them);
+  - 25 with core facts incomplete;
+  - 6 home-only;
+  - 2 records that are not medical schools (Manchester Metropolitan: Adult Nursing; Northumbria: Midwifery).
+- **Published:** BSMS (D12, named in the q4 SERP snippet) and Buckingham (D13, its PreMed PDF ranks for q9).
+  - `/working-in-the-uk` passed its fact gate (Student visa work hours from UKCISA and GOV.UK; F1 visa route from the UKFPO) and is indexable.
+  - Its prose was limited to what the sources say.
+- **Fixes:**
+  - A "not through UCAS" route is now direct.
+  - Numeric facts (published place counts) count as published in the school guidance.
+  - The register test replays the committed decisions, as the deploy does.
+- **Platform checks this cycle:**
+  - Local funnel:
+    - student journey, staff journey to submission tracking;
+    - payment journeys on phone and desktop;
+    - the Stripe e2e for T1–T3 against the stand-in, with the page price equal to the charge and declined cards handled.
+  - Audits:
+    - axe: 0 violations;
+    - viewport: 144 checks across public, portal and admin pages;
+    - CSP: 0 violations;
+    - crawl: 0 broken links.
+  - Live Lighthouse: 96–100 performance and 100 accessibility, best practice and SEO.
+  - The daily backup's restore test passed.
+  - CI now runs `composer audit` and `npm audit` (0 advisories).
+- **Checks:** 219 tests; Google-readiness audit (production mode) 82 passed, 0 failed over 35 URLs.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

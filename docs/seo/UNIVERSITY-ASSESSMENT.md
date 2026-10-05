@@ -6,9 +6,9 @@ marked *verified* was read on the official page with the quotation recorded in `
 
 ## Summary
 
-- Noindex: core facts incomplete: 28
+- Noindex: core facts incomplete: 25
 - Noindex: home students only: 6
-- Noindex: verified, no Nigerian demand evidence: 13
+- Noindex: verified, no Nigerian demand evidence: 16
 - Not a medical school: 2
 - PUBLISHED (indexable, in sitemap): 6
 
@@ -17,18 +17,18 @@ marked *verified* was read on the official page with the quotation recorded in `
 | University | Policy | International | Nigeria / WAEC | English | Fee (year) | Route | Decision | Reason / next action |
 |---|---|---|---|---|---|---|---|---|
 | Anglia Ruskin University | home_only | not verified | no record | no record | not verified | not verified | **Noindex: home students only** | The university publishes that it does not admit international (overseas fee) applicants to this course; listed in the directory so a Nigerian applicant does not waste a choice. |
-| Aston University | accepts | verified | verified | verified | not verified | verified | **Noindex: core facts incomplete** | Missing: International fee with year. |
+| Aston University | accepts | verified | verified | verified | verified (2027/28) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
 | Bangor University | home_only | verified | no record | no record | no record | no record | **Noindex: home students only** | The university publishes that it does not admit international (overseas fee) applicants to this course; listed in the directory so a Nigerian applicant does not waste a choice. |
 | Brighton and Sussex Medical School | accepts | verified | verified | verified | verified (2026/27) | verified | **PUBLISHED (indexable, in sitemap)** | Register D12: threshold met with Nigerian SERP evidence (02 §A q4). |
-| Brunel University of London | accepts | verified | verified | not verified | verified (2026/27) | verified | **Noindex: core facts incomplete** | Missing: English requirement. |
+| Brunel University of London | accepts | verified | verified | verified | verified (2026/27) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
 | Cardiff University | accepts | verified | verified | verified | verified (2026/27) | verified | **PUBLISHED (indexable, in sitemap)** | Register D08: threshold met with Nigerian SERP evidence (02 §A q5). |
 | City St George's, University of London | not_published | no record | no record | no record | no record | no record | **Noindex: core facts incomplete** | Missing: International applicants, Nigeria / WAEC statement, English requirement, International fee with year, Application route. |
 | Edge Hill University | home_only | not verified | verified | no record | no record | not verified | **Noindex: home students only** | The university publishes that it does not admit international (overseas fee) applicants to this course; listed in the directory so a Nigerian applicant does not waste a choice. Human verification needed (pages blocked to automated reading): https://www.edgehill.ac.uk/wp-content/uploads/documents/Medical-School-Admissions-Policy.pdf; https://www.edgehill.ac.uk/departments/support/international. |
-| Hull York Medical School | accepts | verified | no record | verified | verified (2026/27) | verified | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement. |
+| Hull York Medical School | accepts | verified | verified | verified | verified (2026/27) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
 | Imperial College London | accepts | verified | not verified | not verified | verified (2027/28) | verified | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement. |
 | Keele University | accepts | verified | verified | verified | not verified | verified | **Noindex: core facts incomplete** | Missing: International fee with year. |
 | Kent and Medway Medical School | accepts | verified | verified | verified | verified (2026/27) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
-| King's College London | accepts | verified | not verified | not verified | verified (2027/28) | not verified | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement, Application route. |
+| King's College London | accepts | verified | not verified | verified | verified (2027/28) | verified | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement. |
 | Lancaster University | accepts | verified | no record | verified | verified (2026/27) | no record | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, Application route. |
 | Manchester Metropolitan University | not_published | no record | no record | no record | no record | no record | **Not a medical school** | Recorded only for another subject (BSc Adult Nursing); no UK primary medical degree; never listed as a medical school. Human verification needed (pages blocked to automated reading): https://www.mmu.ac.uk/study/undergraduate/course/bsc-adult-nursing/september-2026/. |
 | Newcastle University | accepts | verified | not verified | not verified | verified (2027/28) | verified | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement. |

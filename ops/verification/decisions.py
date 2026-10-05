@@ -13,7 +13,7 @@ for f in sorted(glob.glob(f'ops/verification/reviews/{date}-*.json')):
         r['decision'] = d['decision']
         r['verified_value'] = d.get('verified_value', '')
         r['new_source_url'] = d.get('new_source_url', '')
-        note = f"AI-assisted review of the official page ({d.get('page', '')}); quote: \"{d['quote']}\""
+        note = (d['note'] + ' ' if d.get('note') else '') + f"AI-assisted review of the official page ({d.get('page', '')}); quote: \"{d['quote']}\""
         r['reviewer_note'] = note[:900]
         r['verified_on'] = date
         rows.append(r)

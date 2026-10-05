@@ -1,0 +1,51 @@
+{
+ "university:birmingham:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.birmingham.ac.uk/about/college-of-medicine-and-health/birmingham-medical-school/applying-to-medicine/entry-requirements-medicine-and-surgery-five-year, read 2026-10-05 via page-excerpts run 37264283845, sha256 970bd943a2d45901",
+  "note": "Medicine-specific statement.",
+  "verified_value": "Medicine and Surgery (five-year) entry requirements: West Africa Examinations Council Senior School Certificate with a minimum of B2 in Science, English and Maths; A-levels or the IB must also be offered. Foundation programmes are not considered",
+  "quote": "West Africa Examinations Council: Senior School Certificate – Min of B2 in Science, English and Maths. A Levels or the IB must also be offered … BTEC, Access Courses and Foundation Programmes ⏎ We do not consider any of these qualifications."
+ },
+ "university:manchester:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/entry-requirements/, read 2026-10-05 via page-excerpts run 37264283845, sha256 c055a718392d6240",
+  "verified_value": "General undergraduate statement (not Medicine-specific): applicants who have completed the WASSCE need to complete a University-recognised foundation programme before joining an undergraduate course. A high WAEC English grade (B3 or B2, depending on the course, taken within seven years) can usually be accepted for English",
+  "quote": "Due to differences in the Nigerian and UK education systems, applicants who have completed the WASSCE will need to successfully complete a University-recognised foundation programme before joining an undergraduate course. … we can usually accept a high score in English in WAEC exams (if taken within the last seven years). The minimum grade requirement is B3 or B2 depending on the requirement of the course."
+ },
+ "university:liverpool:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.liverpool.ac.uk/international/countries/nigeria.php, read 2026-10-05 via page-excerpts run 37264283845, sha256 8262e2b026a9dd9c",
+  "verified_value": "General statement (not Medicine-specific): for English, West Africa Examinations Council (WAEC) English at Credit (4–6) or above is accepted for undergraduate degrees. The Nigeria page states no academic entry route for the WAEC certificate",
+  "quote": "English language requirements for your country ⏎ Level Qualification Requirements ⏎ Undergraduate degrees West Africa Examinations Council (WAEC) Credit (4-6) or above. [the Senior Secondary School Certificate / Foundation Certificate wording in our earlier record is no longer on this page]"
+ },
+ "university:nottingham:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.nottingham.ac.uk/studywithus/international-applicants/country-info/countryinformation/nigeria.aspx, read 2026-10-05 via page-excerpts run 37264283845, sha256 77733e5e2cda53a7",
+  "verified_value": "General undergraduate statement (not Medicine-specific): applicants with the standard year 12 examinations (SSC/WAEC) must complete a foundation course for entry to undergraduate programmes; foundation certificates from selected providers in the UK and Nigeria are accepted",
+  "quote": "If you have completed the standard year 12 examinations (SSC/WAEC) you must complete a foundation course for entry to our undergraduate programmes. We also accept foundation certificates from selected providers in the UK and Nigeria. [the WAEC grade profile in our earlier record is not on this page]"
+ },
+ "university:plymouth:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria, read 2026-10-05 via page-excerpts run 37264283845, sha256 049d654a1b7e5fa7",
+  "verified_value": "General undergraduate statement (not Medicine-specific): applicants from Nigeria should have a good Senior Secondary School Certificate (SSSC) or West African Senior School Certificate (WASSC) and an acceptable International Foundation Year or equivalent",
+  "quote": "To apply for a place on an undergraduate course from Nigeria, you should have obtained a good Senior Secondary School Certificate (SSSC) or a West African Senior School Certificate (WASSC) and an acceptable International Foundation Year or equivalent."
+ },
+ "university:edinburgh:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.ed.ac.uk/studying/international/country/africa/nigeria, read 2026-10-05 via page-excerpts run 37264283845, sha256 c0ce950b995837b4",
+  "verified_value": "General undergraduate statement (not Medicine-specific): applicants with the WAEC or NECO Senior School Certificate will usually be required to complete a foundation year; Edinburgh does not accept these for direct entry. Nigerian students are admitted with GCE A Levels, the IB or standardised tests (SAT, ACT or AP)",
+  "quote": "Students from Nigeria are admitted to the University of Edinburgh with a range of qualifications: GCE A Levels, the IB, Standardised Tests (SAT, ACT or AP) and other recognised regional systems. ⏎ Applicants with either the West African Examinations Council (WAEC) or the Nigerian Examinations Council (NECO) Senior School Certificate will usually be required to complete a foundation year. … The University of Edinburgh does not currently accept the above national qualification for direct entry to undergraduate study."
+ },
+ "university:queens-belfast:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.qub.ac.uk/Study/international-students/your-country/nigeria/, read 2026-10-05 via page-excerpts run 37264283845, sha256 c66c61b60dea6565",
+  "verified_value": "General undergraduate statement (not Medicine-specific): the WAEC or NECO Senior School Certificate plus a recognised Foundation programme with good grades, the first year of a Nigerian bachelor's degree, the IB (30–36 points) or West African GCE / UK A Levels are considered for direct entry; grades vary by programme",
+  "quote": "The following qualifications will be considered for direct entry to our undergraduate programmes: ⏎ West African Examinations Council (WAEC) or the Nigerian Examinations Council (NECO) Senior School Certificate plus successful completion of a recognised Foundation programme with good grades. ⏎ Applicants who have successfully completed the first year of a Nigerian University Bachelor Degree will be considered for admission. ⏎ Between 30 and 36 points in the International Baccalaureate Diploma (IB). … West African GCE A Levels or UK A Levels. ⏎ The grades required will vary according to your chosen programme."
+ },
+ "university:sheffield:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://sheffield.ac.uk/international/entry-requirements/nigeria, read 2026-10-05 via page-excerpts run 37264283845, sha256 3c82f616ad766181",
+  "verified_value": "General statement (not Medicine-specific): WAEC West African Senior School Certificate (WASSCE) English at grade C or above can be accepted in place of IELTS. No Medicine-specific WASSCE rule is published on the Nigeria page",
+  "quote": "The WAEC West African Senior School Certificate (WASSCE), English Grade C or above can be accepted in place of IELTS or equivalent."
+ }
+}

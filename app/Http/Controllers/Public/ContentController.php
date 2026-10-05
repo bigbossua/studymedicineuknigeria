@@ -89,8 +89,11 @@ class ContentController extends Controller
         $st = $this->statements('waec_neco_statement');
         $eng = $this->statements('english_requirement')->filter(fn ($f) => preg_match('/WAEC|WASSCE|NECO/i', $f->value_text ?? ''));
 
+        // a statement whose verified wording says it is a general undergraduate rule is listed as general, whatever the research note said
+        $medicineSpecific = fn ($f) => str_contains((string) $f->notes, 'Medicine-specific') && ! preg_match('/^\s*General\b/i', (string) $f->value_text);
+
         return view('content.requirements.waec', ['seo' => $this->seo('WAEC (WASSCE) and UK Medicine: what schools publish', 'Can you study Medicine in the UK with WAEC? School by school, what UK medical schools publish about WASSCE, where WAEC English counts, and which routes are open.', 'requirements.waec', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'WAEC']]),
-            'specific' => $st->filter(fn ($f) => str_contains((string) $f->notes, 'Medicine-specific')), 'general' => $st->reject(fn ($f) => str_contains((string) $f->notes, 'Medicine-specific')), 'english' => $eng, 'qualification' => 'WAEC']);
+            'specific' => $st->filter($medicineSpecific), 'general' => $st->reject($medicineSpecific), 'english' => $eng, 'qualification' => 'WAEC']);
     }
 
     public function neco()

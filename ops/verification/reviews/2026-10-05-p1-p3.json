@@ -1,0 +1,71 @@
+{
+ "topic:ucas-2027:deadline_medicine:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-05 via page-excerpts run 37255776790, sha256 a34a454826afa8ee",
+  "quote": "15 OCT (18:00 UK time) Equal consideration date for applications to the universities of Oxford and Cambridge, and for most courses in medicine, dentistry, and veterinary medicine/science [2027-entry block, followed by 2027 13 JAN]"
+ },
+ "topic:ucat-2026:registration_window:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/",
+  "page": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/, read 2026-10-05 via page-excerpts run 37255776790, sha256 2c93858ab4f4ca9a",
+  "quote": "20 May 2026 (14:00 UK Time) UCAT Registration opens … 16 September 2026 (15:00 UK Time) Booking deadline UCAT Registration closes"
+ },
+ "topic:ucat-2026:booking_opens:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/",
+  "page": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/, read 2026-10-05 via page-excerpts run 37255776790, sha256 2c93858ab4f4ca9a",
+  "quote": "23 June 2026 (14:00 UK Time) Booking opens"
+ },
+ "topic:ucat-2026:booking_deadline:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/",
+  "page": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/, read 2026-10-05 via page-excerpts run 37255776790, sha256 2c93858ab4f4ca9a",
+  "quote": "16 September 2026 (15:00 UK Time) Booking deadline UCAT Registration closes … We do not make any exceptions to this deadline."
+ },
+ "topic:ucat-2026:access_arrangements_deadline:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/",
+  "page": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/, read 2026-10-05 via page-excerpts run 37255776790, sha256 2c93858ab4f4ca9a",
+  "quote": "10 September 2026 (15:00 UK Time) Access Arrangement application deadline"
+ },
+ "topic:ucat-2026:testing_window:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/",
+  "page": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/, read 2026-10-05 via page-excerpts run 37255776790, sha256 2c93858ab4f4ca9a",
+  "quote": "13 July 2026 Testing starts … 24 September 2026 Last test day"
+ },
+ "topic:ucat-2026:results_to_universities:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/",
+  "page": "https://www.ucat.ac.uk/about-ucat/ucat-test-dates/, read 2026-10-05 via page-excerpts run 37255776790, sha256 2c93858ab4f4ca9a",
+  "quote": "Early November Results delivered to universities [UCAT 2026 Test Dates]"
+ },
+ "topic:ucat-2026:structure:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/test-format-and-scoring/",
+  "page": "https://www.ucat.ac.uk/about-ucat/test-format-and-scoring/, read 2026-10-05 via page-excerpts run 37255776790, sha256 634cae42af9bd1b8",
+  "verified_value": "Four separately timed multiple-choice subtests: Verbal Reasoning, Decision Making, Quantitative Reasoning and Situational Judgement. The three cognitive subtests give a total score of 900–2700; Situational Judgement is reported as a band",
+  "quote": "The test consists of four separately timed subtests in multiple-choice format: Verbal Reasoning … Decision Making … Quantitative Reasoning … Situational Judgement … You will receive a total score of 900-2700 and a Situational Judgement Band. [Abstract Reasoning is not mentioned; the earlier wording about its removal is not on the page]"
+ },
+ "topic:ucat-2026:subtests:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/test-format-and-scoring/",
+  "page": "https://www.ucat.ac.uk/about-ucat/test-format-and-scoring/, read 2026-10-05 via page-excerpts run 37255776790, sha256 634cae42af9bd1b8",
+  "verified_value": "Verbal Reasoning 44 questions / 22 minutes; Decision Making 35 / 37; Quantitative Reasoning 36 / 26; Situational Judgement 69 / 26. Each cognitive subtest scaled 300–900; Situational Judgement reported in Bands 1–4. The standard test is just under 2 hours",
+  "quote": "Verbal Reasoning 44 1 minute 30 seconds 22 minutes 300 - 900 Decision Making 35 1 minute 30 seconds 37 minutes 300 - 900 Quantitative Reasoning 36 2 minutes 26 minutes 300 - 900 Situational Judgement 69 1 minute 30 seconds 26 minutes Bands 1 - 4 … The standard test is just under 2 hours."
+ },
+ "topic:gmc-registration:mla:2027": {
+  "decision": "verified",
+  "page": "https://www.gmc-uk.org/education/medical-licensing-assessment, read 2026-10-05 via page-excerpts run 37255776790, sha256 1c0bcb9cc2205037",
+  "verified_value": "All medical students graduating from UK universities need to pass the Medical Licensing Assessment (MLA) as part of their degree before joining the medical register. The MLA has an applied knowledge test (AKT) and a clinical and professional skills assessment (CPSA)",
+  "quote": "All medical students graduating from UK universities need to pass the MLA as part of their degree before joining the medical register. … Clinical and professional skills assessment (CPSA) Applied knowledge test (AKT) [the 2024/25 start year is not stated on this page]"
+ },
+ "topic:gmc-registration:provisional_registration:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.gmc-uk.org/registration-and-licensing/join-our-registers/provisional-registration",
+  "page": "https://www.gmc-uk.org/registration-and-licensing/join-our-registers/provisional-registration, read 2026-10-05 via page-excerpts run 37255776790, sha256 9b3d180f2e943a4a",
+  "verified_value": "Provisional registration with a licence to practise allows doctors to take part in an approved Foundation Year 1 (F1) programme in the UK",
+  "quote": "Provisional registration with a licence to practise allows doctors to take part in an approved Foundation Year 1 (F1) Programme in the UK."
+ }
+}

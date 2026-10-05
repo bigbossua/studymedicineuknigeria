@@ -55,7 +55,9 @@ class VerificationAdminTest extends TestCase
     public function test_a_changed_source_is_never_bulk_verified_and_pages_follow_the_priority_order(): void
     {
         $this->seed(TopicFactsSeeder::class);
-        $changed = ReferenceFact::where('verification_status', ReferenceFact::SOURCE_CHANGED)->firstOrFail(); // the visa maintenance figures
+        // a fact whose official page changed (the visa maintenance figures were one until 2026-10-05)
+        $changed = ReferenceFact::where('key', 'maintenance_london_monthly_gbp')->firstOrFail();
+        $changed->forceFill(['verification_status' => ReferenceFact::SOURCE_CHANGED])->save();
         $this->admin()->post('/admin/verification/bulk', ['decision' => 'verify', 'fact_ids' => [$changed->id]])->assertSessionHas('status');
         $this->assertSame(ReferenceFact::SOURCE_CHANGED, $changed->fresh()->verification_status, 'the old value must be confirmed alone with the current wording');
 

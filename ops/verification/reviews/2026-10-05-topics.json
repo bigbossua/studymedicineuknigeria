@@ -1,0 +1,96 @@
+{
+ "topic:ucas-2027:applications_open:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-05 via page-excerpts run 37263106637, sha256 a34a454826afa8ee",
+  "quote": "2027 entry application deadlines ⏎ 2026 ⏎ … 12 MAY ⏎ UCAS applications open for 2027 entry ⏎ You can register and start your application in your UCAS Hub."
+ },
+ "topic:ucas-2027:submission_opens:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-05 via page-excerpts run 37263106637, sha256 a34a454826afa8ee",
+  "quote": "[2027 entry] 01 SEP ⏎ Completed applications can be submitted to UCAS ⏎ You will need a reference before you can send your application."
+ },
+ "topic:ucas-2027:extra_opens:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-05 via page-excerpts run 37256882227, sha256 a34a454826afa8ee",
+  "quote": "[2027 entry] 2027 ⏎ 13 JAN ⏎ (18:00 UK time) Equal consideration date for applications for most undergraduate courses ⏎ 25 FEB ⏎ Extra opens"
+ },
+ "topic:ucas-2027:clearing_opens:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-05 via page-excerpts run 37263106637, sha256 a34a454826afa8ee",
+  "quote": "[2027 entry] 02 JUL ⏎ Clearing opens ⏎ Clearing opens for eligible applicants … 22 JUL ⏎ (18:00 UK time) Last day for UG reply swaps ⏎ 23 SEP ⏎ (18:00 UK time) Final date for 2027 entry applications"
+ },
+ "topic:ucas-2027:final_date:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-05 via page-excerpts run 37263106637, sha256 a34a454826afa8ee",
+  "verified_value": "23 September 2027, 18:00 (UK time)",
+  "quote": "23 SEP ⏎ (18:00 UK time) Final date for 2027 entry applications ⏎ UCAS applications must be with us by 18:00 (UK time) today to meet the final deadline for 2027 entry courses."
+ },
+ "topic:ucas-2027:application_fee_gbp:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/faqs/what-is-the-application-fee-for-the-2027-cycle",
+  "page": "https://www.ucas.com/faqs/what-is-the-application-fee-for-the-2027-cycle, read 2026-10-05 via page-excerpts run 37263106637, sha256 bbf2bc17d4921998",
+  "quote": "For the 2027 cycle, the undergraduate and conservatoires application fee is £34.50. This single fee allows students to add up to five university and college choices to their application"
+ },
+ "topic:ucas-2027:max_medicine_choices:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/filling-in-your-ucas-application",
+  "page": "https://www.ucas.com/applying/applying-to-university/filling-in-your-ucas-application, read 2026-10-05 via page-excerpts run 37263106637, sha256 141797528565be8c",
+  "verified_value": "Up to 4 of your 5 choices can be medicine; the fifth must be a different course",
+  "quote": "Applying for medicine, dentistry, veterinary medicine or veterinary science? ⏎ For these subjects you can only apply to a maximum of four courses in any one of medicine, dentistry, veterinary medicine or veterinary science. … you can only have five choices in total."
+ },
+ "topic:ucas-2027:personal_statement_format:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/writing-your-personal-statement/how-to-write-your-personal-statement-for-2026-entry-onwards",
+  "page": "https://www.ucas.com/applying/applying-to-university/writing-your-personal-statement/how-to-write-your-personal-statement-for-2026-entry-onwards, read 2026-10-05 via page-excerpts run 37263106637, sha256 d227d42dd2b56f5a",
+  "verified_value": "Three separate questions with a 4,000-character overall limit (including spaces) and a minimum of 350 characters for each answer (2026 entry onwards)",
+  "quote": "the personal statement has changed recently from one longer piece of text to three separate questions. … Each answer will have a minimum character count of 350 characters … The 4,000 overall character limit (including spaces) remains the same"
+ },
+ "topic:student-visa:application_fee_gbp:2026": {
+  "decision": "verified",
+  "page": "https://www.gov.uk/student-visa, read 2026-10-05 via page-excerpts run 37263106637, sha256 efb00d7a1b676829",
+  "verified_value": "558",
+  "quote": "Fees ⏎ It costs: ⏎ £558 to apply for a Student visa from outside the UK ⏎ £558 to extend or switch to a Student visa from inside the UK"
+ },
+ "topic:student-visa:maintenance_london_monthly_gbp:2026": {
+  "decision": "verified",
+  "page": "https://www.gov.uk/student-visa/money, read 2026-10-05 via page-excerpts run 37263106637, sha256 c33acf40947cffa7",
+  "verified_value": "1529",
+  "quote": "£1,529 per month (for up to 9 months) for courses in London ⏎ £1,171 per month (for up to 9 months) for courses outside London"
+ },
+ "topic:student-visa:maintenance_outside_london_monthly_gbp:2026": {
+  "decision": "verified",
+  "page": "https://www.gov.uk/student-visa/money, read 2026-10-05 via page-excerpts run 37263106637, sha256 c33acf40947cffa7",
+  "verified_value": "1171",
+  "quote": "£1,171 per month (for up to 9 months) for courses outside London"
+ },
+ "topic:student-visa:ihs_per_year_gbp:2026": {
+  "decision": "verified",
+  "page": "https://www.gov.uk/healthcare-immigration-application/how-much-pay, read 2026-10-05 via page-excerpts run 37263106637, sha256 e1b6fb036b834050",
+  "verified_value": "776",
+  "quote": "Cost for a year ⏎ You’ll have to pay: ⏎ £776 per year for students, their dependants, and those on a Youth Mobility Scheme visa, for example £1,552 for a 2-year visa … £1,035 per year for all other visa and immigration applications [our earlier £1,035 was the non-student rate]"
+ },
+ "topic:student-visa:dependants:2026": {
+  "decision": "verified",
+  "new_source_url": "https://www.gov.uk/student-visa/family-members",
+  "page": "https://www.gov.uk/student-visa/family-members, read 2026-10-05 via page-excerpts run 37263106637, sha256 f93229b73b7ef2ce",
+  "verified_value": "Partners and children can apply only if you are a government-sponsored student on a course longer than 6 months, or a full-time postgraduate student (RQF level 7 or above) on a course of 9 months or longer (further postgraduate conditions apply). Self-funded undergraduates cannot bring dependants",
+  "quote": "Your partner and children (‘dependants’) may be able to apply … You must be one of the following: ⏎ a government-sponsored student starting a course that lasts longer than 6 months ⏎ a full-time student on a postgraduate level course (RQF level 7 or above) that lasts 9 months or longer"
+ },
+ "topic:graduate-visa:length:2027": {
+  "decision": "verified",
+  "page": "https://www.gov.uk/graduate-visa, read 2026-10-05 via page-excerpts run 37263106637, sha256 9733bfc94022fdec",
+  "verified_value": "2 years if you apply on or before 31 December 2026; 18 months if you apply on or after 1 January 2027 (3 years for a PhD or other doctoral qualification)",
+  "quote": "A Graduate visa lasts for: ⏎ 2 years if you apply on or before 31 December 2026 ⏎ 18 months if you apply on or after 1 January 2027 ⏎ If you have a PhD or other doctoral qualification, it will last for 3 years."
+ },
+ "topic:graduate-visa:fee_gbp:2027": {
+  "decision": "verified",
+  "page": "https://www.gov.uk/graduate-visa, read 2026-10-05 via page-excerpts run 37263106637, sha256 9733bfc94022fdec",
+  "verified_value": "937",
+  "quote": "When you apply for a Graduate visa, you’ll need to: ⏎ pay the £937 application fee ⏎ pay the healthcare surcharge - this is usually £1,035 for each year you’ll be in the UK"
+ }
+}

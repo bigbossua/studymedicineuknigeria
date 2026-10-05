@@ -19,9 +19,9 @@
                 <dl class="card mt-4">
                     <x-fact-row :fact="$visa?->fact('work_term_time')" label="Paid work allowed" />
                     <x-fact-row :fact="$visa?->fact('dependants')" label="Dependants" />
-                    <x-fact-row :fact="$visa?->fact('maintenance_outside_london_monthly_gbp')" label="Maintenance funds to show (outside London, per month)" suffix=" GBP" />
-                    <x-fact-row :fact="$visa?->fact('maintenance_london_monthly_gbp')" label="Maintenance funds to show (London, per month)" suffix=" GBP" />
-                    <x-fact-row :fact="$visa?->fact('ihs_per_year_gbp')" label="Immigration Health Surcharge (per year of visa)" suffix=" GBP" />
+                    <x-fact-row :fact="$visa?->fact('maintenance_outside_london_monthly_gbp')" label="Maintenance funds to show (outside London, per month)"  />
+                    <x-fact-row :fact="$visa?->fact('maintenance_london_monthly_gbp')" label="Maintenance funds to show (London, per month)"  />
+                    <x-fact-row :fact="$visa?->fact('ihs_per_year_gbp')" label="Immigration Health Surcharge (per year of visa)"  />
                 </dl>
                 <div class="prose-site mt-5">
                     <p>Not allowed on a Student visa: self-employment or freelance work, work as a professional sportsperson or entertainer, and filling a permanent full-time vacancy. Paid work and volunteering hours count together towards the weekly cap. Healthcare-assistant bank shifts in vacations are employment, not self-employment, but confirm with your university’s immigration team before you start.</p>
@@ -50,8 +50,8 @@
                 <p class="text-ink-700 mt-2">Most UK medical graduates who need sponsorship move straight from the Student visa to the Health and Care Worker visa for Foundation training. The Graduate visa matters if no post is allocated or a gap must be bridged. It allows work at any skill level and does not count towards settlement.</p>
                 <dl class="card mt-4">
                     <x-fact-row :fact="$grad?->fact('length')" label="Length of the Graduate visa" />
-                    <x-fact-row :fact="$grad?->fact('fee_gbp')" label="Application fee" suffix=" GBP" />
-                    <x-fact-row :fact="$visa?->fact('ihs_per_year_gbp')" label="Immigration Health Surcharge (per year)" suffix=" GBP" />
+                    <x-fact-row :fact="$grad?->fact('fee_gbp')" label="Application fee"  />
+                    <x-fact-row :fact="$visa?->fact('ihs_per_year_gbp')" label="Immigration Health Surcharge (per year)"  />
                 </dl>
                 <p class="text-[0.9375rem] text-ink-700 mt-4">The length is set by the date of the Graduate visa application, not the course start date. A 2027 entrant finishing in 2032 or 2033 applies under whatever rule is then in force.</p>
             </section>

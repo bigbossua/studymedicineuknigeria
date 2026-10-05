@@ -83,7 +83,7 @@ class ReferenceFact extends Model
         }
         if ($this->value_number !== null) {
             return str_ends_with($this->key, '_gbp')
-                ? '£'.number_format((float) $this->value_number, 0)
+                ? '£'.number_format((float) $this->value_number, fmod((float) $this->value_number, 1.0) == 0.0 ? 0 : 2)
                 : rtrim(rtrim(number_format((float) $this->value_number, 2, '.', ','), '0'), '.');
         }
         if ($this->value_bool !== null) {

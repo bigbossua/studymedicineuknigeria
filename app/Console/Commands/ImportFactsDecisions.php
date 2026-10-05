@@ -139,7 +139,9 @@ class ImportFactsDecisions extends Command
 
     private function setValue(ReferenceFact $fact, string $value): void
     {
-        if ($fact->value_number !== null && $fact->value_text === null && is_numeric(str_replace([',', '£'], '', $value))) {
+        // a pound amount is stored as a number (shown as £1,234 or £34.50), including on a fact recorded without a value
+        $amount = ($fact->value_number !== null || str_ends_with($fact->key, '_gbp')) && $fact->value_text === null;
+        if ($amount && is_numeric(str_replace([',', '£'], '', $value))) {
             $fact->value_number = (float) str_replace([',', '£'], '', $value);
         } elseif ($fact->value_bool !== null && $fact->value_text === null && in_array(strtolower($value), ['yes', 'no', 'true', 'false'], true)) {
             $fact->value_bool = in_array(strtolower($value), ['yes', 'true'], true);

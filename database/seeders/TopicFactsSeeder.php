@@ -60,10 +60,10 @@ class TopicFactsSeeder extends Seeder
             ['student-visa', 'UK Student visa (Nigeria → UK)', '2026', [
                 ['work_term_time', 'text', 'Up to 20 hours per week during term time for degree-level students; full-time in vacations; no self-employment', $gov, $V, null],
                 ['dependants', 'text', 'Undergraduate students cannot bring dependants (rule in force since January 2024)', $gov, $V, null],
-                ['maintenance_london_monthly_gbp', 'number', 1483, $govMoney, ReferenceFact::SOURCE_CHANGED, 'From January 2025. 2026-10-04: a search snippet of the GOV.UK money page showed £1,529 a month (London); the page appears to have changed. Read the page and record the current figure before verifying.'],
-                ['maintenance_outside_london_monthly_gbp', 'number', 1136, $govMoney, ReferenceFact::SOURCE_CHANGED, 'From January 2025. 2026-10-04: a search snippet of the GOV.UK money page showed £1,171 a month (outside London); the page appears to have changed. Read the page and record the current figure before verifying.'],
+                ['maintenance_london_monthly_gbp', 'number', 1529, $govMoney, $V, 'Read on GOV.UK 2026-10-05: £1,529 per month (for up to 9 months) for courses in London (was £1,483).'],
+                ['maintenance_outside_london_monthly_gbp', 'number', 1171, $govMoney, $V, 'Read on GOV.UK 2026-10-05: £1,171 per month (for up to 9 months) outside London (was £1,136).'],
                 ['application_fee_gbp', 'number', null, $gov, $NF, 'Not reached in research; confirm on GOV.UK.'],
-                ['ihs_per_year_gbp', 'number', 1035, $ihs, $V, null],
+                ['ihs_per_year_gbp', 'number', 776, $ihs, $V, 'Student rate. GOV.UK 2026-10-05: £776 per year for students and their dependants; £1,035 is the rate for other visas.'],
                 ['tb_test', 'text', 'Applicants from Nigeria must take a tuberculosis test at an approved clinic before applying', 'https://www.gov.uk/tb-test-visa', $V, 'Clinic fee set by the clinic.'],
             ]],
             ['graduate-visa', 'Graduate visa (post-study work)', '2027', [

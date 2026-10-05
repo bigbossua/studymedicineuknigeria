@@ -136,7 +136,7 @@ The 55 school pages are crawlable from the directory but answer `noindex` and st
 moves to indexable only when **all** of the following hold; the admin marks it published (Admin → Universities) and the
 sitemap, canonical and JSON-LD follow automatically.
 
-1. **Verified core facts** (Admin → Verification, by a person reading the official page): international applicants
+1. **Verified core facts** (Admin → Verification, or a committed `decisions-*.csv`, each read on the official page with the quotation recorded in the review note): international applicants
    accepted (tier 4), the published statement on WAEC/NECO or Nigerian qualifications and the English requirement
    (tier 5), the international fee with its academic year (tier 6), and the application route (tier 9). A fact the
    university does not publish is recorded `NOT_PUBLISHED`, never inferred from another university.

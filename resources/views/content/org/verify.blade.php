@@ -14,7 +14,7 @@
             <section id="statuses"><h2>What the labels mean</h2>
                 <dl class="not-prose card divide-y divide-ink-100">
                     @foreach([
-                        ['VERIFIED', 'A member of our team opened the official source, read the value on the page and recorded the date. Only facts with this label show figures in production.'],
+                        ['VERIFIED', 'The official source was opened and the value read on the page; the record keeps the page\'s own wording and the date it was read. Some checks are AI-assisted, which is why the quotation is kept: every verified value can be audited against its source. Only facts with this label show figures in production.'],
                         ['VERIFY-ON-PAGE', 'Located on an official page during research but not yet re-read line by line. Hidden from the public site until verified.'],
                         ['REVIEW_DUE', 'Verified earlier, but the review date has passed (six months for fees and deadlines, twelve for everything else). Hidden until re-checked.'],
                         ['SOURCE_CHANGED', 'The official page has changed since we verified it. Hidden until re-verified.'],

@@ -27,6 +27,22 @@ deployed; this worksheet does the same job **now**, from any browser, without de
 
 Rules: a fact is `verified` only when you read it on the official page named in `source_url` (or `new_source_url`);
 never from a consultancy, agent or forum page. Never type a value you did not see. `verified` without a date is refused.
+Put the page's own words in `reviewer_note` (`quote: "…"`): it stays staff-only and makes every decision auditable.
+
+### AI-assisted review (since 2026-10-05)
+
+The drafting container cannot reach official sites, so the *Official page excerpts* workflow (`page-excerpts.yml`,
+`ops/verification/page-excerpts.cjs`) opens each page in Chrome on a GitHub runner (PDF statements as text) and prints
+the exact text around the terms in a spec (`data/verification/excerpt-specs/`, built by
+`ops/verification/excerpt-spec.py`). The reviewer reads those excerpts, never a summary, and records the decision with
+the quotation, the final URL and the page fingerprint (`sha256` from the run). Rules on top of the ones above:
+
+- `verified` only when the excerpt states the value for the same course, entry year and student group; wording that
+  differs is recorded as the page's wording (`verified` with `verified_value`), never adjusted to match ours.
+- A value inferred from another university, a general page, a search snippet or an older year is never verified.
+- Silence is `not_published` only when the page that should state it (the course's own entry-requirements or fees
+  page) was read in full; otherwise the row stays pending.
+- Anything ambiguous stays pending with a note for a person.
 
 ## What keeps a verified value honest
 

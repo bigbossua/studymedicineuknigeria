@@ -194,7 +194,8 @@ class DatasetImporter
             // The dataset's ucas_code field sometimes carries notes ("A100 (also A104 with Health Foundation Year)");
             // the full text stays in the ucas_code fact, the course row keeps the bare code (column is 16 characters).
             $code = is_string($ucas) && preg_match('/\b([A-Z]\d{3})\b/', $ucas, $m) ? $m[1] : null;
-            $slug = $code ? Str::lower($code) : 'medicine';
+            // a school whose UCAS code changes between cycles keeps its course record (and reviewed facts) through a pinned slug
+            $slug = (is_string($row['course_slug'] ?? null) ? $row['course_slug'] : null) ?: ($code ? Str::lower($code) : 'medicine');
             if ($ucas && Str::lower($ucas) !== $slug) {
                 Course::where('university_id', $u->id)->where('slug', Str::lower($ucas))->update(['slug' => $slug]);
             }

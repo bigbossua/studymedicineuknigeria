@@ -2865,10 +2865,10 @@
         "source_type": "official"
       },
       "ucas_code": {
-        "value": "A100",
-        "source": "https://www.theukcatpeople.co.uk/guide/medical-school/medicine/university-of-manchester",
+        "value": "A106",
+        "source": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/",
         "status": "VERIFY-ON-PAGE",
-        "source_type": "lead (non-authoritative)"
+        "source_type": "official"
       },
       "course_length_years": {
         "value": null,
@@ -2940,7 +2940,8 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "notes": [],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "a100"
     },
     {
       "university": {
@@ -5353,9 +5354,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -5379,9 +5381,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS",
+        "source": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -5394,9 +5397,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_only_or_home_only": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "neither (home and international)",
+        "source": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "english_language_requirement": {
         "value": null,

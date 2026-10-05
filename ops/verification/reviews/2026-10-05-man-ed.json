@@ -1,0 +1,71 @@
+{
+ "university:manchester:international_accepted": {
+  "decision": "verified",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-05 via page-excerpts run 37264563529, sha256 029d4906d46b5f41",
+  "quote": "International students: ⏎ For students starting in September 2026 on the Pre-Clinical part of the programme (Years 1-2), the fee for 2026/27 will be £39,900 per year. … International students are currently considered in the same way as UK nationals in the allocation of Foundation Training posts."
+ },
+ "university:manchester:international_places_open:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-05 via page-excerpts run 37264563529, sha256 029d4906d46b5f41",
+  "verified_value": "Yes",
+  "quote": "MBChB Medicine (2027 entry) … International students ⏎ Tuition fees for international students on the Pre-Clinical part of the programme (Years 1-2) will be £39,900 for the 2026/2027 academic year."
+ },
+ "course:manchester/a100:application_route": {
+  "decision": "verified",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-05 via page-excerpts run 37264563529, sha256 029d4906d46b5f41",
+  "verified_value": "UCAS (UCAS course code A106, institution code M20)",
+  "quote": "Apply through UCAS ⏎ UCAS course code ⏎ A106 ⏎ UCAS institution code ⏎ M20 … How to apply ⏎ Apply through UCAS ."
+ },
+ "course:manchester/a100:ucas_code": {
+  "decision": "verified",
+  "new_source_url": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-05 via page-excerpts run 37264563529, sha256 029d4906d46b5f41",
+  "verified_value": "A106 (2027 entry; institution code M20)",
+  "quote": "Year of entry: 2027 ⏎ UCAS course code: A106 / Institution code M20 [our earlier A100 came from a secondary source]"
+ },
+ "course:manchester/a100:admissions_test": {
+  "decision": "verified",
+  "new_source_url": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-05 via page-excerpts run 37264563529, sha256 029d4906d46b5f41",
+  "quote": "All applicants, including dental applicants, must sit the UCAT and offer Maths at minimum …"
+ },
+ "university:manchester:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-05 via page-excerpts run 37264563529, sha256 029d4906d46b5f41",
+  "verified_value": "Medicine (MBChB): IELTS 7.0 average with no component below 6.5 at the same sitting; PTE Academic 65 with 65 in each skill; Cambridge C1 Advanced or C2 Proficiency 185 with 185 in each element; IGCSE English first language at grade B",
+  "quote": "Applicants from outside the UK (including non-native speakers) need to meet specific English language requirements to study at Manchester. We accept: ⏎ IGCSE English first language at grade B; ⏎ International English Language Testing Service (IELTS): A minimum average score of 7.0 and with not less than 6.5 in any one component taken at the same sitting; ⏎ Pearson Test of English (PTE) Academic: An overall score of 65 with no less than 65 in each of the communicative skills domains taken at the same sitting; ⏎ Cambridge English: Advanced (CAE), or Cambridge English: Proficiency (CPE): An overall score of 185 with no less than 185 in each …"
+ },
+ "university:edinburgh:international_accepted": {
+  "decision": "verified",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme, read 2026-10-05 via page-excerpts run 37264563529, sha256 ad5dd9209b7640ea",
+  "quote": "Applying as an international student ⏎ As an international student, you apply for this degree programme through UCAS. … As there are limited places for international students on our MBChB programme, you are required to pay a fee deposit equal to one-third of the first year's fees … For 2026 entry, the deposit was £18,217."
+ },
+ "university:edinburgh:international_places_open:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme, read 2026-10-05 via page-excerpts run 37264563529, sha256 ad5dd9209b7640ea",
+  "verified_value": "Yes, limited: international offer-holders who make Edinburgh their Firm choice pay a deposit of one-third of the first year's fees (£18,217 for 2026 entry)",
+  "quote": "As there are limited places for international students on our MBChB programme, you are required to pay a fee deposit equal to one-third of the first year's fees if: you are an international student who receives an offer ⏎ you make us your Firm choice ⏎ For 2026 entry, the deposit was £18,217."
+ },
+ "course:edinburgh/medicine:application_route": {
+  "decision": "verified",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme, read 2026-10-05 via page-excerpts run 37264563529, sha256 ad5dd9209b7640ea",
+  "verified_value": "UCAS (UCAS code A100); 2027 entry deadline 15 October 2026, 18:00 for UK, EU and international applicants",
+  "quote": "UCAS Code ⏎ A100 … 2027 entry UCAS deadline: 15 October 2026 (6:00pm GMT) ⏎ This is the deadline for all UK, EU and international applicants. … As an international student, you apply for this degree programme through UCAS."
+ },
+ "course:edinburgh/medicine:admissions_test": {
+  "decision": "verified",
+  "new_source_url": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme/entry-requirements",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme/entry-requirements, read 2026-10-05 via page-excerpts run 37264563529, sha256 30b1407481602fd3",
+  "quote": "You must sit the University Clinical Aptitude Test (UCAT) within the same year of submitting a UCAS application. We require that you meet a minimum UCAT score as part of our entry requirements unless you are a Plus Flag widening access applicant."
+ },
+ "university:edinburgh:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme/entry-requirements",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme/entry-requirements, read 2026-10-05 via page-excerpts run 37264563529, sha256 30b1407481602fd3",
+  "verified_value": "IELTS Academic 7.5 overall with at least 7.5 in each component (One Skill Retake not accepted; no more than two years old at the programme start); TOEFL iBT before 21 January 2026: 110 with at least 25 in each component",
+  "quote": "IELTS Academic: total 7.5 with at least 7.5 in each component. We do not accept IELTS One Skill Retake to meet our English language requirements. ⏎ TOEFL-iBT (including Home Edition) before 21 January 2026: total 110 with at least 25 in each component. … Qualifications from the following English language tests must be no more than two years old from the start date of this programme … IELTS Academic"
+ }
+}

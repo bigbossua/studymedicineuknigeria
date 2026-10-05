@@ -897,5 +897,41 @@
     ],
     "waec_neco_statement": "MBBS international entry requirements: WAEC / WASSCE / NECO with a pass in English at grade C5 is listed among accepted English qualifications; the academic entry listed for Nigeria is a pass in the National Diploma or Higher National Diploma in a subject relevant to medicine with a minimum grade of distinction.",
     "waec_statement_is_medicine_specific": true
+  },
+  {
+    "university": "Swansea University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch"
+    ],
+    "english_requirement": "For applicants from majority non-English speaking countries: IELTS 7.0 with no less than 7.0 in speaking and 6.5 in listening, reading and writing; overseas English-medium schooling, a previous English-medium degree or professional work in English are not accepted as evidence for this programme"
+  },
+  {
+    "university": "University of Cambridge",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.undergraduate.study.cam.ac.uk/apply/before/entry-requirements"
+    ],
+    "english_requirement": "General undergraduate requirement (not Medicine-specific): IELTS Academic normally a minimum overall grade of 7.5, usually with 7.0 or above in each element; for interview, IELTS Academic 6.5 overall with no element below 6.0 is recommended at the point of application."
+  },
+  {
+    "university": "Lancaster University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026"
+    ],
+    "english_requirement": "Medicine and Surgery MBChB (A100): IELTS 7.0 overall with at least 7.0 in each component"
+  },
+  {
+    "university": "Keele University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements"
+    ],
+    "foundation_route": "International applicants are not eligible for the 6-year MBChB with Health Foundation Year for Medicine (A104)."
   }
 ]

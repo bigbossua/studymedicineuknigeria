@@ -2283,14 +2283,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -2298,9 +2300,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -2319,9 +2322,10 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple mini interview (MMI); no applicant is offered a place without being interviewed",
+        "source": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": null,
@@ -2351,7 +2355,8 @@
       "notes": [
         "Search budget exhausted before this school was researched; all course fields NOT FOUND IN THIS SESSION."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -3259,14 +3264,16 @@
         "source_type": "official"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -3331,7 +3338,8 @@
       "notes": [
         "Search budget exhausted before international-places/interview research."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -3509,9 +3517,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -3530,9 +3539,10 @@
         "source_type": "official"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple Mini Interviews (MMIs)",
+        "source": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS (UCAS course code A100, institution code P60)",
@@ -4246,9 +4256,10 @@
         "source_type": "lead (non-authoritative)"
       },
       "interview_format": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Multiple Mini Interviews (MMI); no offer is made without an interview; usually held at the Preston Campus between December and April; international students may be interviewed in other locations",
+        "source": "https://www.lancashire.ac.uk/undergraduate/how-to-apply/mbbs",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "application_route": {
         "value": "UCAS or direct application portal (international applicants may apply direct after the UCAS deadline subject to places)",
@@ -4343,9 +4354,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://warwick.ac.uk/services/finance/studentfinance/fees/overseasfees",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -5978,14 +5990,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A101",
+        "source": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 4,
+        "source": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -5993,9 +6007,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -6018,9 +6033,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS only, before 6pm (British Summer Time) on the stated closing date; the deadline applies to UK, EU and international applicants and late or direct applications are not accepted",
+        "source": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -6045,7 +6061,8 @@
       "notes": [
         "Not researched in this session (search budget exhausted). Widely described as graduate-entry; NOT confirmed here."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {

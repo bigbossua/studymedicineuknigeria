@@ -1,0 +1,479 @@
+{
+ "university:chester:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ba49455363bb86ab",
+  "quote": "Our Graduate Entry Medicine (MBChB) degree is open for applications from international students who hold an undergraduate degree. You can apply through UCAS."
+ },
+ "course:chester/a101:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS (international applicants can apply through UCAS)",
+  "new_source_url": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/",
+  "note": "Medicine-specific statement. The course page also shows separate \"Apply as Home Student via UCAS\" and \"Apply as International Student\" buttons; a human may wish to confirm whether a direct international route also exists.",
+  "page": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ba49455363bb86ab",
+  "quote": "Our Graduate Entry Medicine (MBChB) degree is open for applications from international students who hold an undergraduate degree. You can apply through UCAS."
+ },
+ "university:chester:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Graduate Entry Medicine (MBChB): IELTS 7.0 (or equivalent) with a maximum of two component scores at 6.0 or 6.5",
+  "new_source_url": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ba49455363bb86ab",
+  "quote": "5. Language test for international students ⏎ International applicants will be required to submit an English Language test certificate confirming a score of (or equivalent to) IELTS 7.0 with a maximum of two component scores at 6.0 or 6.5."
+ },
+ "course:chester/a101:admissions_test": {
+  "decision": "verified",
+  "verified_value": "UCAT, GAMSAT or MCAT: all applicants must meet the minimum threshold mark in one of these tests; thresholds are set annually above the national mean",
+  "new_source_url": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/",
+  "page": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ba49455363bb86ab",
+  "quote": "2. UCAT/GAMSAT/MCAT ⏎ All applicants must meet the minimum threshold mark in either UCAT, GAMSAT or MCAT. ⏎ The minimum threshold scores fluctuate annually and will be set above the national mean."
+ },
+ "course:chester/a101:ucas_code": {
+  "decision": "verified",
+  "new_source_url": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/",
+  "page": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/, read 2026-10-05 via page-excerpts run 37352011255, sha256 100956ca91f1aef7",
+  "quote": "UCAS Code ⏎ A101 ⏎ calendar_today ⏎ Start Date(s) ⏎ September 2026, September 2027 ⏎ timer ⏎ Duration ⏎ 4 years"
+ },
+ "course:chester/a101:course_length_years": {
+  "decision": "verified",
+  "new_source_url": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/",
+  "page": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/, read 2026-10-05 via page-excerpts run 37352011255, sha256 100956ca91f1aef7",
+  "quote": "UCAS Code ⏎ A101 ⏎ calendar_today ⏎ Start Date(s) ⏎ September 2026, September 2027 ⏎ timer ⏎ Duration ⏎ 4 years ... The University of Chester's medical degree is an accelerated four-year, graduate entry MBChB programme"
+ },
+ "course:chester/a101:graduate_entry_course": {
+  "decision": "verified",
+  "new_source_url": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/",
+  "page": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/, read 2026-10-05 via page-excerpts run 37352011255, sha256 100956ca91f1aef7",
+  "quote": "The University of Chester's medical degree is an accelerated four-year, graduate entry MBChB programme, open to applicants with a previous degree in any discipline."
+ },
+ "university:chester:a_level_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Not applicable: Graduate Entry Medicine (MBChB) requires an undergraduate degree (minimum 2:1, or overseas equivalent, in any subject); applicants without a degree are not currently eligible to apply",
+  "new_source_url": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ba49455363bb86ab",
+  "quote": "If you do not have a degree, you are not currently eligible to apply. Our admission criteria are as follows: ⏎ 1. Academic Qualifications ⏎ A minimum of an upper second class honours (2:1) degree (or overseas equivalent) in any subject."
+ },
+ "university:chester:gem_international:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Yes: Graduate Entry Medicine (MBChB) is open to international students who hold an undergraduate degree. Requirements: at least a 2:1 degree (or overseas equivalent) in any subject, or a lower second class degree with a Masters or Doctoral qualification; the minimum threshold mark in UCAT, GAMSAT or MCAT; 70 hours of prior work experience; IELTS 7.0 (or equivalent) with a maximum of two component scores at 6.0 or 6.5; a multiple mini interview (MMI); application through UCAS",
+  "new_source_url": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/",
+  "note": "Medicine-specific statement. The page does not name an entry year; the course page lists start dates of September 2026 and September 2027.",
+  "page": "https://www.chester.ac.uk/international/how-to-apply/applying-for-graduate-entry-medicine/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ba49455363bb86ab",
+  "quote": "Our Graduate Entry Medicine (MBChB) degree is open for applications from international students who hold an undergraduate degree. You can apply through UCAS. ... A minimum of an upper second class honours (2:1) degree (or overseas equivalent) in any subject. ⏎ Candidates with a lower second class degree should hold either a Masters or a Doctoral qualification to be considered. ... All applicants must meet the minimum threshold mark in either UCAT, GAMSAT or MCAT. ... 3. Work experience ⏎ All applicants must complete 70 hours (the equivalent of around ten days) of prior work ... International applicants will be required to submit an English Language test certificate confirming a score of (or equivalent to) IELTS 7.0 with a maximum of two component scores at 6.0 or 6.5. ... No place will be offered without an interview. Interviews will be of the \"multi-mini-interview\" (MMI) style"
+ },
+ "university:chester:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "General undergraduate statement (not Medicine-specific): the Nigeria page lists the West African School Certificate (WAEC) or Senior School Certificate with grades 1-8 in 4 relevant subjects for Foundation Year entry; for undergraduate study it lists qualifications such as an International Foundation Programme from GEC Academy with 55% or above, or a Diploma/National Diploma with a GPA of 2.5 out of 5 or 2.0 out of 4. WAEC and NECO are accepted as English language qualifications at C or C6 or above for undergraduate study",
+  "new_source_url": "https://www.chester.ac.uk/international/countries/nigeria/",
+  "note": "General Nigeria country page. Chester's Medicine course is graduate entry only (an undergraduate degree is required), so this school-leaver statement does not on its own give entry to Medicine.",
+  "page": "https://www.chester.ac.uk/international/countries/nigeria/, read 2026-10-05 via page-excerpts run 37352011255, sha256 25d81100717f4424",
+  "quote": "Foundation Year ⏎ Successful completion of West African School Certificate (WAEC) or Senior School Certificate with grades 1-8 in 4 relevant subjects. ⏎ Undergraduate Study ⏎ International Foundation Programme from GEC Academy with 55% or above ⏎ Diploma/National Diploma from a recognised institution with GPA 2.5 out of 5 or 2.0 out of 4 ... We accept the following English Language qualifications: ⏎ WAEC, Neco: ⏎ Undergraduate: C or C6 or above"
+ },
+ "university:queen-mary-london:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Medicine (MBBS): GCSE/IGCSE English Language grade 6/B, or IELTS 7.0 overall with 6.0 in all components, taken within two years of starting the course",
+  "new_source_url": "https://www.qmul.ac.uk/fmd/study/undergraduate/courses/a100/entry-requirements/",
+  "note": "Medicine-specific statement (MBBS A100 entry requirements page).",
+  "page": "https://www.qmul.ac.uk/fmd/study/undergraduate/courses/a100/entry-requirements/, read 2026-10-05 via page-excerpts run 37352011255, sha256 bffdeecf5de31436",
+  "quote": "English Language Requirements ⏎ GCSE/IGCSE English Language grade 6/B ⏎ or  ⏎ IELTS score of 7.0 overall with 6.0 in in all components. This must be taken within two years of starting the course."
+ },
+ "university:lincoln:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Medicine programme requirement for international applicants: minimum grade B (6) in GCSE English Language; if English is not your first language, accepted alternatives include IELTS 7.5 overall with no less than 7.0 in any element, or IGCSE First Language grade 6 (B).",
+  "new_source_url": "https://www.lincoln.ac.uk/studywithus/internationalstudents/englishlanguagerequirements/",
+  "note": "Medicine-specific statement. The page is not dated by entry year; it is the requirement published on 2026-10-05. The list of alternatives is cut off in the excerpt after the IGCSE line, hence 'include'. The MBChB is not open to international applications for 2027-28 (existing verified fact).",
+  "page": "https://www.lincoln.ac.uk/studywithus/internationalstudents/englishlanguagerequirements/, read 2026-10-05 via page-excerpts run 37352011255, sha256 fbeaac4535a728b3",
+  "quote": "Medicine Programme Requirements ⏎ English Language Qualifications ⏎ International applicants: ⏎ Minimum of grade B (6) GCSE English Language ⏎ If English is not your first language, one of the following is accepted: ⏎ IELTS Overall 7.5 (no less than 7.0 in any element) ⏎ IGCSE First Language Grade 6 (B)"
+ },
+ "university:lincoln:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "General undergraduate statement (not Medicine-specific): Lincoln's Nigeria page says students from Nigeria need one of the following for entry into year one of a Bachelor's degree: the WASSCE plus an international foundation year, a recognised International Foundation programme, the International Baccalaureate with 27 to 34 points, or three A Levels; entry requirements may vary by programme. NECO or WAEC Senior School Certificate English Language at C6 (grade 6) is accepted as an alternative to IELTS for programmes that require IELTS 6.0.",
+  "new_source_url": "https://www.lincoln.ac.uk/studywithus/internationalstudents/entryrequirementsandyourcountry/nigeria/",
+  "note": "General undergraduate statement on the Nigeria country page; it does not name Medicine. The MBChB is not open to international applications for 2027-28 (existing verified fact).",
+  "page": "https://www.lincoln.ac.uk/studywithus/internationalstudents/entryrequirementsandyourcountry/nigeria/, read 2026-10-05 via page-excerpts run 37352011255, sha256 86d7fe7b4f57f417",
+  "quote": "Students from Nigeria require one of the following qualifications for entry into year one of a Bachelor’s degree: ⏎ West African Senior School Certificate (WASSCE) plus an international foundation year  ⏎ Successful completion of a recognised International Foundation programme ⏎ Successful completion of the International Baccalaureate (IB) with between 27 and 34 points ⏎ Successful completion of three A Levels ⏎ Entry requirements may vary depending on the programme ... As an alternative to IELTS, we also accept: ⏎ NECO Senior School Certificate English Language at grades C6, for programmes requiring an IELTS of 6.0. Scratch card PIN required for verification ⏎ WAEC West African Senior School Certificate English Language at grades 6, for programmes that require an IELTS of 6.0."
+ },
+ "university:hull-york:english_language_requirement": {
+  "decision": "verified",
+  "verified_value": "MB BS Medicine (2027 entry): IELTS 7.5 with a minimum of 7.0 in every component, or Pearson Test of English (Academic) total 73 with a minimum of 65 in every component, obtained within the last two years",
+  "new_source_url": "https://www.hyms.ac.uk/medicine/entry-requirements/entry-requirements-medicine",
+  "note": "Medicine-specific statement. TOEFL and Cambridge C1 Advanced figures in the stored value were not in the excerpt and are dropped.",
+  "page": "https://www.hyms.ac.uk/medicine/entry-requirements/entry-requirements-medicine, read 2026-10-05 via page-excerpts run 37352011255, sha256 5460f8c531061b65",
+  "quote": "ENTRY REQUIREMENTS FOR MEDICINE ⏎ Find out our entry requirements which applicants need to meet to be considered for admission onto our MB BS Medicine programme. ⏎ Home » Medicine » Entry requirements » Entry requirements for Medicine ⏎ 2027 ENTRY ... IELTS score of 7.5 with a minimum of 7.0 in every component, obtained within the last two years ⏎ Pearson Test of English (Academic): Total score of 73 with a minimum of 65 in every component obtained in the last two years"
+ },
+ "course:hull-york/a100:admissions_test": {
+  "decision": "verified",
+  "verified_value": "UCAT: points for the total UCAT decile (up to 35) and the Situational Judgement Test band (up to 15) are used to rank applicants for interview; SJT Band 4 is not accepted",
+  "new_source_url": "https://www.hyms.ac.uk/medicine/applying/selection-procedure",
+  "page": "https://www.hyms.ac.uk/medicine/applying/selection-procedure, read 2026-10-05 via page-excerpts run 37352011255, sha256 2b08d334fbbca27f",
+  "quote": "in numerical order and invite the top scoring applicants to interview. ... UCAT score (35 points) - We award a number of points based upon your total UCAT decile, up to a maximum of 35 points. We do this once UCAT results are released to universities in November. ... UCAT Situational Judgement Test (15 points) - Points are allocated depending on the SJT Band achieved, up to a maximum of 15 points. We do not accept Band 4."
+ },
+ "course:hull-york/a100:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS (October UCAS application deadline)",
+  "new_source_url": "https://www.hyms.ac.uk/medicine/applying/selection-procedure",
+  "page": "https://www.hyms.ac.uk/medicine/applying/selection-procedure, read 2026-10-05 via page-excerpts run 37352011255, sha256 2b08d334fbbca27f",
+  "quote": "We carefully examine all the information submitted on the UCAS form when making decisions about candidates who are borderline at the selection for interview or selection for offer stage. ... Applicants will be asked to confirm eligibility for interview fast track via an online form sent shortly after the October UCAS application deadline."
+ },
+ "course:hull-york/a100:interview_format": {
+  "decision": "verified",
+  "verified_value": "Station-based interview. Home/EU candidates: in person (group exercise, two mini interviews, a scenario station and a student station). Overseas fee status candidates: online (three mini interviews, a student station and an individual scenario station); online interviews are only available for international applicants",
+  "new_source_url": "https://www.hyms.ac.uk/medicine/applying/selection-procedure",
+  "note": "Stored value mentioned Zoom and December; neither is in the excerpt, so the value is replaced.",
+  "page": "https://www.hyms.ac.uk/medicine/applying/selection-procedure, read 2026-10-05 via page-excerpts run 37352011255, sha256 2b08d334fbbca27f",
+  "quote": "INTERVIEWS SCORING (HOME/EU CANDIDATES) ⏎ In-person interviews are scored as follows: ⏎ Group exercise - up to 22 points ⏎ Mini interview 1 - up to 17 points ⏎ Mini interview 2 - up to 17 points ⏎ Scenario station - up to 17 points ⏎ Student station - up to 17 points ... ONLINE INTERVIEWS SCORING (OVERSEAS FEE STATUS CANDIDATES) ⏎ Online interviews are only available for international applicants and therefore, do not include contextual data points. ⏎ Online interviews are scored as follows: ⏎ Mini interview 1 - up to 15 points ⏎ Mini interview 2 - up to 15 points ⏎ Mini interview 3 - up to 15 points ⏎ Student station - up to 15 points ⏎ Individual scenario station"
+ },
+ "course:worcester/a101:admissions_test": {
+  "decision": "verified",
+  "verified_value": "UCAT, GAMSAT or MCAT accepted (no hard cut-off score); CASPer is taken only by shortlisted applicants",
+  "new_source_url": "https://www.worcester.ac.uk/about/academic-schools/medical-school/medical-school-admissions/mbchb-application-faqs.aspx",
+  "page": "https://www.worcester.ac.uk/about/academic-schools/medical-school/medical-school-admissions/mbchb-application-faqs.aspx, read 2026-10-05 via page-excerpts run 37352011255, sha256 d97cdf69f266649d",
+  "quote": "4. Which aptitude tests do you accept? ⏎ UCAT (University Clinical Aptitude Test), GAMSAT (Graduate Medical Schools Admission Test) or MCAT (Medical College Admission Test). ⏎ 4. What score do I need on the aptitude test? ⏎ We don’t have hard cut off score, it depends on the shape of the curve of all applicants. ... CASPer is only for shortlisted applicants."
+ },
+ "course:liverpool/a100:admissions_test": {
+  "decision": "verified",
+  "verified_value": "UCAT for non-graduate applicants (score from the same year as the UCAS application); graduate applicants to A100 sit GAMSAT",
+  "new_source_url": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/",
+  "page": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/, read 2026-10-05 via page-excerpts run 37352011255, sha256 4705492b906f0e1d",
+  "quote": "All non-graduate applicants applying to the A100 programme are required to sit the United Kingdom Clinical Aptitude Test (UCAT). ⏎ Graduate applicants applying to A100 or to A101 will need to sit the Graduate Medical School Admissions Test (GAMSAT). ... All non-graduates applicants must offer UCAT score from the same year as their submitted UCAS application."
+ },
+ "course:liverpool/a100:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS (closing date for UCAS applications to A100: 15 October 2026)",
+  "new_source_url": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/",
+  "page": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/, read 2026-10-05 via page-excerpts run 37352011255, sha256 4705492b906f0e1d",
+  "quote": "The closing date for UCAS applications to A100 and A101 is 15th October 2026."
+ },
+ "course:liverpool/a100:ucas_code": {
+  "decision": "verified",
+  "new_source_url": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/",
+  "page": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/, read 2026-10-05 via page-excerpts run 37352011255, sha256 4705492b906f0e1d",
+  "quote": "The School offers two medicine programmes, the standard A100 (5 year) programme and the A101 (4-year) graduate-entry programme. ⏎ The closing date for UCAS applications to A100 and A101 is 15th October 2026."
+ },
+ "course:liverpool/a100:course_length_years": {
+  "decision": "verified",
+  "new_source_url": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/",
+  "page": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/, read 2026-10-05 via page-excerpts run 37352011255, sha256 4705492b906f0e1d",
+  "quote": "The School offers two medicine programmes, the standard A100 (5 year) programme and the A101 (4-year) graduate-entry programme."
+ },
+ "university:liverpool:international_places_open:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Yes",
+  "new_source_url": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/",
+  "page": "https://www.liverpool.ac.uk/medicine/study-with-us/undergraduate/admissions-information/, read 2026-10-05 via page-excerpts run 37352011255, sha256 4705492b906f0e1d",
+  "quote": "Please note that the School of Medicine policy on the consideration of contextual data can be found here: Contextual Data Entry 2027(PDF) ⏎ The A100 programme accepts applications from both home and international students"
+ },
+ "university:nottingham:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Medicine BMBS (2027 entry): IELTS 7.5 with no less than 7.0 in any element; or Pearson Test of English (Academic) 79 (minimum 76); or Cambridge Proficiency/Advanced 191 with no element below 185",
+  "new_source_url": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html, read 2026-10-05 via page-excerpts run 37352011255, sha256 13f029c981283e18",
+  "quote": "The entrance requirements listed apply to 2027 entry. ... IELTS/English requirements ⏎ IELTS and equivalencies ⏎ You’ll need to have proof of your fluency in English with one of the following: ⏎ IELTS 7.5 (no less than 7.0 in any element) ⏎ Pearson Test of English (Academic) 79 (minimum 76) ⏎ Cambridge Proficiency/Advanced test ... (minimum 76) ⏎ Cambridge Proficiency/Advanced test (from January 2015) 191 with no element below 185"
+ },
+ "course:nottingham/medicine:interview_format": {
+  "decision": "verified",
+  "verified_value": "Interview required before an offer; home applicants are interviewed in person and international applicants online via Microsoft Teams; interviews scheduled between 15 December 2026 and 29 January 2027 (subject to change)",
+  "new_source_url": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html",
+  "note": "Page now shows a different value from the stored one ('likely' online; 'usually December to February'): format is stated firmly and dates are given for this cycle.",
+  "page": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html, read 2026-10-05 via page-excerpts run 37352011255, sha256 13f029c981283e18",
+  "quote": "All applicants are required to attend an interview during the year in which they apply before an offer can be made for the course. ⏎ The interview format is determined on the applicant’s fee status: ⏎ Home applicants will be invited to attend an interview in person ⏎ International ... International applicants will be invited to attend an interview online via Microsoft Teams ⏎ Interviews are scheduled to take place between 15 December 2026 and 29 January 2027."
+ },
+ "course:lancashire/medicine:application_route": {
+  "decision": "verified",
+  "verified_value": "International applicants: through UCAS or the University of Lancashire application portal (direct applications accepted throughout the year); UK applicants: through UCAS, by October the year before entry",
+  "new_source_url": "https://www.lancashire.ac.uk/undergraduate/how-to-apply/mbbs",
+  "note": "Page shows a different value from the stored 'UCAS (UCAS code A100)': international applicants may also apply directly through the university's portal.",
+  "page": "https://www.lancashire.ac.uk/undergraduate/how-to-apply/mbbs, read 2026-10-05 via page-excerpts run 37352011255, sha256 4aa7e033dd1227a7",
+  "quote": "UK applications are made through UCAS. UK medical school applications need to be submitted by October the year before entry. ⏎ International applications can be made through UCAS or our application portal. We accept direct applications throughout the year."
+ },
+ "topic:ucas-2027:document_upload:2027": {
+  "decision": "verified",
+  "verified_value": "UCAS is introducing a document upload service for all students applying for 2027 entry (and for applicants applying directly to Clearing for 2026 entry); it allows applicants to upload documents such as English language certificates",
+  "new_source_url": "https://www.ucas.com/international/international-students/faqs-for-international-students",
+  "note": "File limits (30 files, 5 MB) in the stored value are not in the excerpt and are dropped.",
+  "page": "https://www.ucas.com/international/international-students/faqs-for-international-students, read 2026-10-05 via page-excerpts run 37352011255, sha256 2910cf8c98ad245b",
+  "quote": "Uploading documents to your application ⏎ UCAS is introducing a document upload service for applicants applying directly to Clearing for 2026 entry, or all students for 2027 entry. ⏎ Designed to support inclusive admissions, it allows you to upload documents such as English Language certificates"
+ },
+ "topic:ucas-2027:agent_statement:2027": {
+  "decision": "verified",
+  "verified_value": "UCAS states that it is the applicant's choice whether to use an adviser (sometimes called an education agent or counsellor) and that applicants who do not use one are not disadvantaged in any way; advisers registered as UCAS centres can oversee an application through UCAS's online system; some agents may charge for their services",
+  "new_source_url": "https://www.ucas.com/international/international-students/support-for-international-students/tips-for-international-applications",
+  "note": "The stored clause about a UK university reference being required is not in the excerpt and is dropped.",
+  "page": "https://www.ucas.com/international/international-students/support-for-international-students/tips-for-international-applications, read 2026-10-05 via page-excerpts run 37352011255, sha256 2052cd6c5b4e2b39",
+  "quote": "Sometimes advisers are referred to as education agents or counsellors. ⏎ They can sometimes help you with your UCAS application or visa application. ⏎ It’s your choice whether you use an adviser or not – they can offer valuable support, but if you don’t use an adviser you’ll not be disadvantaged in any way. ⏎ If the adviser is registered as a UCAS cen ... as a UCAS centre they'll have access to the best advice and can oversee your application through UCAS’ online system. ... Please note, some advisers may charge for their services if they're agents."
+ },
+ "course:cambridge/a100:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS",
+  "new_source_url": "https://www.undergraduate.study.cam.ac.uk/international-students/international-applications",
+  "note": "General statement on the University of Cambridge international applications page (applies to all applicants; not Medicine-specific).",
+  "page": "https://www.undergraduate.study.cam.ac.uk/international-students/international-applications, read 2026-10-05 via page-excerpts run 37352011255, sha256 0fd71f0b43b4a180",
+  "quote": "The application process is the same for all applicants to the University of Cambridge. ... All applications to UK universities are made through the Universities and Colleges Admissions Service (UCAS), which operates on a pre-qualification basis where offers are made in advance of applicants achieving their final grades."
+ },
+ "university:exeter:international_places": {
+  "decision": "verified",
+  "verified_value": "10",
+  "new_source_url": "https://www.exeter.ac.uk/undergraduate-degrees/bmbs-medicine/faqs/",
+  "note": "Medicine-specific statement (BMBS Medicine FAQs). The FAQ page does not name the entry year; it also says approximately 30 international applicants will be invited to interview.",
+  "page": "https://www.exeter.ac.uk/undergraduate-degrees/bmbs-medicine/faqs/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6ec6d763edba7535",
+  "quote": "Due to only having 10 places available for international students approximately 30 international applicants will be invited to interview."
+ },
+ "university:exeter:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "General undergraduate statement (not Medicine-specific): under English language Profile G, the West African Examinations Council (WAEC) SSCE or the National Examinations Council (NECO) SSCE in English at first sitting, grade B2 or above, is accepted as English language evidence (valid without restriction). This page is about English language only and does not say whether WAEC or NECO meets the academic entry requirements for Medicine.",
+  "new_source_url": "https://www.exeter.ac.uk/study/englishlanguagerequirements/profile-g",
+  "note": "English-language evidence only. Profile G is the profile given by the already verified english_requirement fact for BMBS Medicine. Academic acceptance of WAEC/NECO for Medicine is not published on the pages read.",
+  "page": "https://www.exeter.ac.uk/study/englishlanguagerequirements/profile-g, read 2026-10-05 via page-excerpts run 37352011255, sha256 9710484e623d0975",
+  "quote": "English Language Requirements ⏎ Profile G ⏎ ... These tests are valid without restriction ⏎ Test name Required score ⏎ West African Examinations Council (WAEC) SSCE in English at first sitting Grade B2 or above ⏎ Nigeria National Examinations Council (NECO) SSCE in English at first sitting Grade B2 or above"
+ },
+ "course:lancaster/medicine:admissions_test": {
+  "decision": "verified",
+  "verified_value": "UCAT (all applicants)",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/, read 2026-10-05 via page-excerpts run 37352011255, sha256 fe1f3a60047a342d",
+  "quote": "All applicants must take the University Clinical Aptitude Test (UCAT) to be eligible for consideration at Lancaster Medical School."
+ },
+ "course:manchester/a100:graduate_entry_course": {
+  "decision": "verified",
+  "verified_value": "1",
+  "new_source_url": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/21177/mbchb-medicine-graduate-entry/",
+  "note": "Medicine-specific statement: MBChB Medicine (Graduate Entry), UCAS A101, 4 years, 2027 entry.",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/21177/mbchb-medicine-graduate-entry/, read 2026-10-05 via page-excerpts run 37352011255, sha256 e69399f0c016c7b3",
+  "quote": "MBChB Medicine (Graduate Entry) ⏎ Train at the UK's largest medical school and the biggest provider of healthcare graduates to the NHS in north-west England. ⏎ Duration: 4 years ⏎ Year of entry: 2027 ⏎ UCAS course code: A101 / Institution code: M20 ... Pursue a career in medicine through this course, if you have already achieved a life science or health undergraduate degree."
+ },
+ "university:manchester:gem_international:2027 entry": {
+  "decision": "verified",
+  "verified_value": "MBChB Medicine (Graduate Entry, A101, 2027 entry) welcomes applications from overseas students; the University says its country-specific information is general only, as specific entry requirements may be different for Graduate Entry Medicine, and asks applicants to contact ug.medicine@manchester.ac.uk to check.",
+  "new_source_url": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/21177/mbchb-medicine-graduate-entry/",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/21177/mbchb-medicine-graduate-entry/, read 2026-10-05 via page-excerpts run 37352011255, sha256 e69399f0c016c7b3",
+  "quote": "Country-specific entry requirements ⏎ We welcome applications from overseas students. Country-specific information can be found on the University website .However, this is for general information only, as specific entry requirements may be different for the Graduate Entry Medicine course. Please contact us at ug.medicine@manchester.ac.uk to check specific requirements for"
+ },
+ "course:brighton-sussex/a100:interview_format": {
+  "decision": "verified",
+  "verified_value": "UK applicants: multiple mini interviews (MMIs) from December 2026 to February 2027, in person (early December or early January) or via Zoom (late January or early February). International applicants: in-person interview, or online via Zoom for those unable to attend due to mitigating circumstances.",
+  "new_source_url": "https://www.bsms.ac.uk/undergraduate/applying-to-bsms/admissions-process.aspx",
+  "note": "Medicine-specific statement. The international steps (7-step section for non-UK/EU entrants) say Zoom is only for those unable to attend due to mitigating circumstances; the free in-person/Zoom choice and the MMI wording appear in the UK section.",
+  "page": "https://www.bsms.ac.uk/undergraduate/applying-to-bsms/admissions-process.aspx, read 2026-10-05 via page-excerpts run 37352011255, sha256 9994fd30de436872",
+  "quote": "Step 4 ⏎ Admission interviews will take place from December 2026 through to February 2027. ⏎ Applicants may choose whether to attend their interview in person (early December or early January) or virtually via Zoom (late January or early February). ⏎ You can see an example of an MMI discussion (held in-person) by watching the video below. ⏎ To prepare for the MMIs ... INTERNATIONAL STUDENTS ⏎ We expect to have 10 places for new international (non-UK/EU) entrants, in September 2027. ... Step 4 ⏎ Interviews will be conducted as either an in-person interview or online via Zoom for those unable to attend due to mitigating circumstances."
+ },
+ "university:cardiff:foundation_route:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Cardiff University International Study Centre International Foundation Year lists Medicine as a progression degree aim: students must successfully complete the pathway programme and achieve the required grades; Academic IELTS for UKVI 6.0 (minimum 6.0 in writing, no skill below 5.5) is required to confirm an offer; students must be 18 at the start of the degree; Medicine applicants must make an enquiry to be advised on entry and progression requirements (the country-specific entry requirements do not apply to Medicine).",
+  "new_source_url": "https://isc.cardiff.ac.uk/how-to-apply/entry-requirements",
+  "note": "Medicine-specific statement on the International Study Centre (pathway) page; no entry year stated on the page; progression is conditional, not guaranteed.",
+  "page": "https://isc.cardiff.ac.uk/how-to-apply/entry-requirements, read 2026-10-05 via page-excerpts run 37352011255, sha256 948283a33219947d",
+  "quote": "To progress to your undergraduate or postgraduate degree, you will be required to successfully complete your pathway programme and achieve the required grades. ⏎ International Foundation Year ⏎ A one-year programme to prepare international students for their undergraduate degree. ... Academic IELTS for UKVI 6.0 (minimum 6.0 in writing, no skill below 5.5) is required for students aiming to progress to Medicine*, Dental Surgery*, Pharmacy and Medical Pharmacology*, Optometry, Journalism and Communications; Journalism, Communications and Politics; Media and Communications, or Media, Journalism and Culture. ⏎ *Please note: IELTS is required to confirm an offer for these progression degrees. ... Please note that students aiming for Medicine, Pharmacy or Dental Surgery must be 18 years at the start of the degree. ... Please note: country specific entry requirements are for all programmes except for students wishing to apply for Medicine or Dental Surgery. For these degree aims, students must make an enquiry to be advised on entry and progression requirements."
+ },
+ "university:keele:international_places": {
+  "decision": "verified",
+  "new_source_url": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicinehowtoapply/",
+  "note": "Places available for 2026 entry (A100: 171 = 161 Home + 10 Overseas); the page does not yet state 2027 entry places.",
+  "page": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicinehowtoapply/, read 2026-10-05 via page-excerpts run 37352011255, sha256 5893eeb9f680e044",
+  "quote": "This table shows a summary of the places available and applications received for 2026 entry. ⏎ Applications 2026 entry ⏎ Places available 2026 ⏎ Total applications ⏎ Home applications ⏎ Overseas applications ⏎ A100 ⏎ 171 ⏎ (161 Home + ⏎ 10 Overseas)",
+  "verified_value": "10 overseas places for 2026 entry"
+ },
+ "course:keele/a100:admissions_test": {
+  "decision": "verified",
+  "verified_value": "UCAT, taken in the year of application. International applicants (international fee status): total UCAT score of at least 1,950 and SJT band 1–3 to be considered (below 1,950 or SJT band 4 rejected automatically); ranked on total UCAT score.",
+  "new_source_url": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements/",
+  "note": "Medicine-specific statement.",
+  "page": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ccc2db4a0cd6adba",
+  "quote": "All applicants must take the University Clinical Aptitude Test (UCAT) in the year of application ... International applicants (i.e. students with international fees status) are ranked on total UCAT scores (see How to Apply for Medicine A100). International applicants must have a total UCAT score of at least 1,950 and a situational judgement test (SJT) result in bands 1–3 to be considered. ... International applicants for the 5-year medicine programme (A100) with a total score below 1,950 or an SJT result in band 4 will be rejected automatically."
+ },
+ "course:leeds/a100:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS; the UCAT must be taken before applying, in the same year of application",
+  "new_source_url": "https://medicinehealth.leeds.ac.uk/homepage/248/understanding-ucat",
+  "note": "Medicine-specific statement (Medicine and Surgery MBChB) on the Leeds School of Medicine and Health site.",
+  "page": "https://medicinehealth.leeds.ac.uk/homepage/248/understanding-ucat, read 2026-10-05 via page-excerpts run 37352011255, sha256 6f3f36b3050e2f5d",
+  "quote": "If you’re applying for the Gateway Year to Medicine MBChB, Medicine and Surgery MBChB or Dental Surgery BChD at Leeds, you’ll need to take the University Clinical Aptitude Test (UCAT) exam as part of your application, before you apply to UCAS. ... You need to take the test before you apply through UCAS. It must be completed within the same year of application. ... After you’ve successfully completed and passed the UCAT, you’ll need to apply for your course through UCAS."
+ },
+ "university:plymouth:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Medicine (BMBS): IELTS 7.5 or above with at least 7.0 in each of Speaking and Listening, taken within 12 months of entry at an approved test centre (IELTS Indicator online test not accepted), for students whose first language is not English.",
+  "new_source_url": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements",
+  "note": "Medicine-specific statement. The page does not state an entry year. Its widening-access section also gives IELTS 7.0 overall with 6.5 in every element as an example; the statement quoted here applies to students whose first language is not English, next to the international applicant section.",
+  "page": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements, read 2026-10-05 via page-excerpts run 37352011255, sha256 d5fac3f6c2395327",
+  "quote": "Students whose first language is not English must demonstrate proficiency in the English language by achieving one of the following qualifications: ⏎ IELTS band 7.5 or above with at least 7.0 in each of the Speaking and Listening sections (taken within 12 months of entry). The University will no longer accept the IELTS indicator (online test). All applicants will have to take the IELTS test at an approved centre."
+ },
+ "university:plymouth:international_places_open:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Yes",
+  "new_source_url": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements",
+  "note": "Medicine-specific statement: the BMBS entry requirements page sets admission criteria for international applicants; it does not state an entry year or a number of international places.",
+  "page": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements, read 2026-10-05 via page-excerpts run 37352011255, sha256 d5fac3f6c2395327",
+  "quote": "If you are an international applicant, you need to meet the equivalent admissions criteria described for home students, including the UCAT. Applicants applying with overseas qualifications should contact the Admissions Team at admissions@plymouth.ac.uk prior to submitting an application through UCAS."
+ },
+ "university:plymouth:a_level_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Typical offer A*AA–AAB at GCE A level, including grade A in Biology and grade A in a second science from Chemistry, Physics, Maths or Psychology (for AAB offers the page refers to its Widening Access section); International Baccalaureate 36–38 points with Higher Level 6 in Biology and Higher Level 6 in one further science from Chemistry, Physics, Maths or Psychology. International applicants must meet the equivalent admissions criteria described for home students, including the UCAT.",
+  "new_source_url": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements",
+  "note": "Medicine-specific statement. The page does not state an entry year.",
+  "page": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements, read 2026-10-05 via page-excerpts run 37352011255, sha256 d5fac3f6c2395327",
+  "quote": "The typical offer is A*AA – AAB at GCE A level which must include the following: ⏎ Grade A in Biology ⏎ Grade A in a second science from Chemistry, Physics, Maths or Psychology ⏎ Your third A level can be from any subject area and does not need to be science based. ... For AAB offers please refer to the Widening Access section. ... International Baccalaureate ⏎ 36–38 points overall to include the following: ⏎ Higher Level 6 in Biology ⏎ Higher Level 6 in one further science from Chemistry, Physics, Maths or Psychology ... If you are an international applicant, you need to meet the equivalent admissions criteria described for home students, including the UCAT. Applicants applying with overseas qualifications should contact the Admissions Team at admissions@plymouth.ac.uk prior to submitting an application through UCAS."
+ },
+ "university:warwick:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://warwick.ac.uk/services/finance/studentfinance/fees/overseasfees",
+  "page": "https://warwick.ac.uk/services/finance/studentfinance/fees/overseasfees/, read 2026-10-05 via page-excerpts run 37352011255, sha256 420830409a4a93aa",
+  "quote": "MBChB (Graduate Entry Medicine) (Year 1) A101 MBChB £30,670 £32,510 TBA ⏎ MBChB (Graduate Entry Medicine) (Years 2-4) A101 MBChB £53,460 £56,660 TBA",
+  "note": "UG Overseas Fees page lists an overseas tuition fee for A101 MBChB (Graduate Entry Medicine): Year 1 £32,510 and Years 2-4 £56,660 in 2026-27; 2027-28 TBA. Warwick has no international_accepted fact yet.",
+  "verified_value": "1"
+ },
+ "course:queens-belfast/medicine:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.qub.ac.uk/Study/international-students/tuition-fees",
+  "page": "https://www.qub.ac.uk/Study/international-students/tuition-fees/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ac957db90df4cab7",
+  "quote": "Students first enrolling in 2027/28*. Tuition fees relate to one year of study ... Fee Rate 3 (pre-clinical)  ⏎ 39,990** ⏎  53,524 ⏎ Fee Rate 4 (clinical) ⏎ TBC ⏎  TBC ... The levy payable for 2027/28 is TBC.",
+  "note": "Pre-clinical rate (Fee Rate 3, 'Pre-Clinical elements of medical courses') for students first enrolling in 2027/28; the clinical rate and the 2027/28 clinical placement levy are TBC. Table names medical courses generally, not MB A100.",
+  "verified_value": "39990"
+ },
+ "university:swansea:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "Our Graduate Entry Medicine (GEM) programme is unique in Wales and one of just a handful of similar programmes of medical study in the UK open to graduates of any discipline from the UK, EU and overseas. ... This deadline applies to UK, EU and International applicants.",
+  "note": "Graduate-entry only (applicants need a degree, minimum 2:1); no school-leaver Medicine course was read for Swansea. No international_accepted ref exists for Swansea.",
+  "verified_value": "1"
+ },
+ "course:swansea/medicine:application_route": {
+  "decision": "verified",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "How to Apply ⏎ All applications must be submitted via UCAS before 6pm (British Summer Time) on the stated closing date. This deadline applies to UK, EU and International applicants. There is no facility to accept late or direct applications.",
+  "verified_value": "UCAS only, before 6pm (British Summer Time) on the stated closing date; the deadline applies to UK, EU and international applicants and late or direct applications are not accepted"
+ },
+ "university:swansea:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "For applicants from majority non-English speaking countries, IELTS 7.0 with no less than 7.0 in speaking and 6.5 in listening, reading and writing is accepted as equivalent. ⏎ Details of approved tests of English proficiency can be found here. For this programme, the following are not acceptable as evidence of English proficiency if you are from a majority non-Eng ... speaking country: ⏎ Overseas secondary education in an English-medium school or education system ⏎ Previous degree at a British or English-medium overseas university ⏎ Working in a professional capacity in an English language environment",
+  "note": "Medicine-specific statement (graduate-entry MB BCh course page).",
+  "verified_value": "For applicants from majority non-English speaking countries: IELTS 7.0 with no less than 7.0 in speaking and 6.5 in listening, reading and writing; overseas English-medium schooling, a previous English-medium degree or professional work in English are not accepted as evidence for this programme"
+ },
+ "course:swansea/medicine:ucas_code": {
+  "decision": "verified",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "MB BCh 4 Year Full Time ⏎ UCAS Code ⏎ A101",
+  "verified_value": "A101"
+ },
+ "course:swansea/medicine:course_length_years": {
+  "decision": "verified",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "MB BCh 4 Year Full Time ⏎ UCAS Code ⏎ A101",
+  "verified_value": "4"
+ },
+ "course:lancashire/medicine:interview_format": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancashire.ac.uk/undergraduate/how-to-apply/mbbs",
+  "page": "https://www.lancashire.ac.uk/undergraduate/how-to-apply/mbbs, read 2026-10-05 via page-excerpts run 37352011255, sha256 4aa7e033dd1227a7",
+  "quote": "If you're invited for interview, you'll take part in our Multiple Mini Interviews (MMI). You will not be made an offer without an interview. The interviews are usually held at our Preston Campus between December and April. For international students, we may interview in other locations across the world.",
+  "verified_value": "Multiple Mini Interviews (MMI); no offer is made without an interview; usually held at the Preston Campus between December and April; international students may be interviewed in other locations"
+ },
+ "course:nottingham/medicine:ucas_code": {
+  "decision": "verified",
+  "new_source_url": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html",
+  "page": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html, read 2026-10-05 via page-excerpts run 37352011255, sha256 13f029c981283e18",
+  "quote": "Medicine ⏎ - U6UBMBSC3 ⏎ BMBS Hons ⏎ UCAS Code A100",
+  "verified_value": "A100"
+ },
+ "course:nottingham/medicine:course_length_years": {
+  "decision": "verified",
+  "new_source_url": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html",
+  "page": "https://www.nottingham.ac.uk/studywithus/ugstudy/courses/UG/Medicine-BMBS.html, read 2026-10-05 via page-excerpts run 37352011255, sha256 13f029c981283e18",
+  "quote": "Duration ⏎ 5 years full-time ⏎ Location ⏎ Queen's Medical Centre ⏎ Select start date ⏎ September 2027",
+  "verified_value": "5"
+ },
+ "course:cambridge/a100:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.undergraduate.study.cam.ac.uk/international-students/international-fees-and-costs",
+  "page": "https://www.undergraduate.study.cam.ac.uk/international-students/international-fees-and-costs, read 2026-10-05 via page-excerpts run 37352011255, sha256 a45c31a7d8011339",
+  "quote": "International tuition fees for 2027 entry ⏎ The fees below are for 2027 entry. ... Group ⏎ 5  ⏎ Courses ⏎ Medical and Veterinary Science (including for this purpose the Second M.B. and Second Vet.M.B. Examinations)  ⏎ Tuition Fee ⏎ £70,554",
+  "note": "2027 entry, so not used for the 2026/27 ref (already VERIFIED at 70554). The page also says the Year 3 fee for international Medicine students corresponds to the course taken that year, and international students normally pay an annual College fee in addition.",
+  "verified_value": "70554"
+ },
+ "university:cambridge:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.undergraduate.study.cam.ac.uk/apply/before/entry-requirements",
+  "page": "https://www.undergraduate.study.cam.ac.uk/apply/before/entry-requirements, read 2026-10-05 via page-excerpts run 37352011255, sha256 6c9993f3d27f26c9",
+  "quote": "To take part in an interview, we recommend that, at the point of application, your English language ability is equivalent to at least IELTS Academic 6.5 overall, with no element below 6.0. ... Minimum English language requirements ⏎ IELTS Academic – normally a minimum overall grade of 7.5, usually with 7.0 or above in each element",
+  "note": "Cambridge has no english_requirement fact yet.",
+  "verified_value": "General undergraduate requirement (not Medicine-specific): IELTS Academic normally a minimum overall grade of 7.5, usually with 7.0 or above in each element; for interview, IELTS Academic 6.5 overall with no element below 6.0 is recommended at the point of application."
+ },
+ "university:lancaster:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/, read 2026-10-05 via page-excerpts run 37352011255, sha256 fe1f3a60047a342d",
+  "quote": "Our Undergraduate Tuition Fees for 2026/27 are: ⏎ Home International ⏎ £9,790 £48,620",
+  "note": "International fee published on the Medicine and Surgery MBChB (A100) course page. Lancaster has no international_accepted fact yet.",
+  "verified_value": "1"
+ },
+ "university:lancaster:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/, read 2026-10-05 via page-excerpts run 37352011255, sha256 fe1f3a60047a342d",
+  "quote": "English language requirements ⏎ We require an IELTS score of 7.0 overall with at least 7.0 in each component for this programme.",
+  "note": "Medicine-specific statement.",
+  "verified_value": "Medicine and Surgery MBChB (A100): IELTS 7.0 overall with at least 7.0 in each component"
+ },
+ "course:lancaster/medicine:ucas_code": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/, read 2026-10-05 via page-excerpts run 37352011255, sha256 fe1f3a60047a342d",
+  "quote": "Medicine and Surgery ⏎ MBChB ⏎ UCAS code ⏎ A100 ⏎ Entry year ⏎ 2026 or 2027",
+  "verified_value": "A100"
+ },
+ "course:lancaster/medicine:course_length_years": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/, read 2026-10-05 via page-excerpts run 37352011255, sha256 fe1f3a60047a342d",
+  "quote": "Duration ⏎ Full time 5 years",
+  "verified_value": "5"
+ },
+ "course:lancaster/medicine:interview_format": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/, read 2026-10-05 via page-excerpts run 37352011255, sha256 fe1f3a60047a342d",
+  "quote": "No applicant will be offered a place without being interviewed. Lancaster Medical School uses the multiple mini interview format for their admissions interviews.",
+  "verified_value": "Multiple mini interview (MMI); no applicant is offered a place without being interviewed"
+ },
+ "university:plymouth:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements",
+  "page": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements, read 2026-10-05 via page-excerpts run 37352011255, sha256 d5fac3f6c2395327",
+  "quote": "If you are an international applicant, you need to meet the equivalent admissions criteria described for home students, including the UCAT. Applicants applying with overseas qualifications should contact the Admissions Team at admissions@plymouth.ac.uk prior to submitting an application through UCAS.",
+  "note": "No international_accepted fact exists for Plymouth; explicit statement for international applicants on the BMBS entry requirements page (no entry year stated).",
+  "verified_value": "1"
+ },
+ "course:plymouth/medicine:interview_format": {
+  "decision": "verified",
+  "new_source_url": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements",
+  "page": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery/entry-requirements, read 2026-10-05 via page-excerpts run 37352011255, sha256 d5fac3f6c2395327",
+  "quote": "2. Interview – Successful applicants are invited to attend an interview process. We use Multiple Mini Interviews (MMIs) as the format for our interviews.",
+  "note": "No interview_format fact exists for Plymouth BMBS.",
+  "verified_value": "Multiple Mini Interviews (MMIs)"
+ },
+ "university:keele:foundation_route:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements",
+  "page": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements/, read 2026-10-05 via page-excerpts run 37352011255, sha256 ccc2db4a0cd6adba; https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicinehowtoapply/, read 2026-10-05 via page-excerpts run 37352011255, sha256 5893eeb9f680e044",
+  "quote": "International applicants are not eligible for the health foundation year for medicine (A104). ... International applicants are not eligible for A104.",
+  "note": "No foundation_route fact exists for Keele.",
+  "verified_value": "International applicants are not eligible for the 6-year MBChB with Health Foundation Year for Medicine (A104)."
+ },
+ "course:swansea/graduate-entry:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "Tuition Fees ⏎ Start Date UK International ⏎ September 2027 £ 9,790 £ 50,750 ⏎ Fees for full time undergraduate UK students may increase in subsequent years of study in line with the maximum regulated fee level set by the Welsh Government ⏎ Fees for full time Undergraduate International students will increase by 3% for each subsequent year of study.",
+  "note": "Graduate-entry course (course:swansea/graduate-entry), September 2027 start, first-year international fee; rises 3% a year. Not a fee for a school-leaver Medicine course.",
+  "verified_value": "50750"
+ }
+}

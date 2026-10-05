@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\ReferenceFact;
+use App\Models\University;
 use App\Support\PublishGate;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +52,11 @@ class SeoController extends Controller
                 'lastmod' => $meta['lastmod'] ?? null,
                 'changefreq' => $meta['changefreq'] ?? 'monthly',
             ];
+        }
+        // University pages are listed once staff (or the publication list) have published them: the same rule that makes them indexable
+        foreach (University::medicalSchools()->where('published', true)->orderBy('name')->get() as $u) {
+            $verified = $u->facts()->where('verification_status', ReferenceFact::VERIFIED)->max('verified_at');
+            $urls[] = ['loc' => route('schools.show', $u), 'lastmod' => $verified ? substr((string) $verified, 0, 10) : null, 'changefreq' => 'monthly'];
         }
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($urls as $u) {

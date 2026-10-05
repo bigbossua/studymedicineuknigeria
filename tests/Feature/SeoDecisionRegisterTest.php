@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\User;
 use App\Support\Totp;
+use Database\Seeders\ReferenceDataSeeder;
+use Database\Seeders\UniversityPublicationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -65,6 +67,7 @@ class SeoDecisionRegisterTest extends TestCase
 
     public function test_live_rows_point_at_indexable_pages_and_drafts_stay_noindex(): void
     {
+        $this->seed([ReferenceDataSeeder::class, UniversityPublicationSeeder::class]); // live university rows need their schools
         foreach ($this->rows() as $r) {
             $path = strtok($r['current_url'], '#');
             if ($path === '—' || $path === '' || str_contains($path, '{') || str_contains($path, '?')) {
@@ -96,6 +99,7 @@ class SeoDecisionRegisterTest extends TestCase
     {
         // Search-to-action chain (DECISION-ENGINE.md rule 6): trust and legal pages (cluster T) and the apply pages themselves are exempt.
         $targets = [route('apply.eligibility'), route('apply.index'), route('register')];
+        $this->seed([ReferenceDataSeeder::class, UniversityPublicationSeeder::class]);
         foreach ($this->rows() as $r) {
             $path = strtok($r['current_url'], '#');
             if (! in_array($r['status'], self::LIVE, true) || $r['cluster'] === 'T' || $r['cluster'] === 'A' || str_contains($path, '{') || str_contains($path, '?') || $path === '—') {

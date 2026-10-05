@@ -560,6 +560,23 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - "£776 GBP" double units removed.
 - **Totals:** 98 decisions in `decisions-2026-10-05.csv`; 215 tests; Google-readiness audit (production mode) 75 passed, 0 failed.
 
+## Stage 58: first university pages indexable (cycle 52)
+
+- **Publication from the repository:** `data/medical-schools/publication.json` lists the schools that met the §8 threshold: Aberdeen (D07), Cardiff (D08), Manchester (D10) and Edinburgh (D11).
+  - `UniversityPublicationSeeder` runs in `smukn:reference-sync` and publishes them on the next deploy.
+  - A publish or unpublish in Admin → Universities on or after the list's decision date always wins.
+  - Register rows are now PUBLISHED with their URLs. The other 51 schools stay noindex.
+- **Sitemap:** published university pages are listed, with lastmod set to the latest official-page verification. The production-mode sitemap has 32 URLs (28 + 4).
+- **Google-readiness audit findings, fixed before publication:**
+  - descriptions were 209–215 characters; they are now 141–163 for every school;
+  - the Course JSON-LD no longer carries an `Offer` for the university's fee (we do not sell the course; the fee stays in the visible text; architecture 18.3 updated);
+  - unverified facts are left out of school pages in production instead of showing placeholder cards;
+  - "Last reviewed" is the latest verification date, not a fixed date.
+- **Checks:**
+  - Google-readiness audit (production mode): 79 passed, 0 failed.
+  - No horizontal overflow at 320, 390, 768 or 1366 px on all 32 sitemap URLs.
+  - 219 tests.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

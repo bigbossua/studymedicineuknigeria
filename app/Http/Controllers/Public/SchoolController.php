@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\Topic;
 use App\Models\University;
@@ -82,18 +83,26 @@ class SchoolController extends Controller
         return response($png, 200, ['Content-Type' => 'image/png', 'Cache-Control' => 'public, max-age=86400']);
     }
 
+    /** The latest official-page verification among the facts this page shows (its "last reviewed" date). */
+    private function lastVerified(University $university, ?Course $course): ?string
+    {
+        $dates = $university->facts->merge($course?->facts ?? [])->where('verification_status', ReferenceFact::VERIFIED)->pluck('verified_at')->filter();
+
+        return $dates->isEmpty() ? null : $dates->max()->toDateString();
+    }
+
     public function show(University $university): View
     {
         abort_unless($university->isMedicalSchool(), 404); // a provider recorded only for another subject has no page here
         $university->load(['courses' => fn ($c) => $c->medicine()->with('facts'), 'facts']);
         $course = $university->primaryCourse();
         $seo = Seo::make(($university->short_name ?: $university->name).' Medicine: international entry',
-            "What {$university->name} publishes for international and Nigerian applicants to Medicine: eligibility, entry requirements, admissions test, fees, application route, with official sources and verification dates.")
+            "{$university->name} Medicine for Nigerian and international applicants: entry requirements, English, fees and how to apply, from official pages.")
             ->canonical(route('schools.show', $university))
             ->image(route('schools.og', $university))
             ->article()
             ->breadcrumbs([['label' => 'Medical Schools', 'url' => route('schools.index')], ['label' => $university->name]])
-            ->reviewed('2026-10-03', '2027')
+            ->reviewed($this->lastVerified($university, $course) ?? '2026-10-03', '2027')
             ->jsonLd(['@type' => 'CollegeOrUniversity', 'name' => $university->name, 'url' => $university->website_url ?? $course?->official_url, 'address' => ['@type' => 'PostalAddress', 'addressLocality' => $university->city, 'addressCountry' => 'GB']]);
 
         if ($course) {
@@ -101,11 +110,7 @@ class SchoolController extends Controller
             if ($course->shortUcasCode()) {
                 $courseLd['courseCode'] = $course->shortUcasCode();
             }
-            // An Offer is emitted only for a fee the university publishes and we have verified on its page (architecture 18.3).
-            $fee = $course->internationalFee();
-            if ($fee && $fee->verification_status === ReferenceFact::VERIFIED && $fee->value_number) {
-                $courseLd['offers'] = ['@type' => 'Offer', 'category' => 'International tuition fee per year', 'price' => (string) $fee->value_number, 'priceCurrency' => 'GBP'];
-            }
+            // No Offer: we do not sell the course, so the university's fee stays in the visible text only (architecture 18.3)
             $seo->jsonLd($courseLd);
         }
 

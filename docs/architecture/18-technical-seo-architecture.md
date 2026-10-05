@@ -48,8 +48,8 @@ Rules: **no trailing slash** is canonical (decided 2026-10-03: Laravel strips tr
 | All pages | `Organization` (site-wide, with `sameAs` only for real profiles), `BreadcrumbList`, `WebSite` with `SearchAction` (directory search) |
 | Guide / requirements / fees | `Article` (with `dateModified` = last reviewed) + `FAQPage` only where the FAQs are visible on the page |
 | University record | `CollegeOrUniversity` (name, url = official site, address city) — we describe, we do not claim affiliation |
-| Course record | `Course` + `CourseInstance` (courseMode onsite, startDate intake) + `Offer` **only** for the university's published fee with `priceCurrency=GBP` and `validThrough` = fee year end; omit if fee `NOT_PUBLISHED` |
-| Service tiers | `Service` + `Offer` with our prices once set |
+| Course record | `Course` (name, provider, official url, UCAS code). No `Offer`: we do not sell the course, so the university's fee appears only in the visible text, with its year and verification (changed 2026-10-05, Google-readiness audit) |
+| Service tiers | No schema: service fees are never public (owner decision 2026-10-04) |
 | FAQ hub | `FAQPage` |
 
 No `AggregateRating`, no `Review` (no fake social proof — brief 114). No `EducationalOccupationalCredential` claims we cannot source.

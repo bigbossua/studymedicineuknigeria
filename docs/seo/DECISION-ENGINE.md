@@ -133,8 +133,10 @@ The master taxonomy in `data/healthcare/subjects.json` (seeded into the `profess
 ## 8. University pages: publication threshold (2026-10-04)
 
 The 55 school pages are crawlable from the directory but answer `noindex` and stay out of the sitemap. A school page
-moves to indexable only when **all** of the following hold; the admin marks it published (Admin → Universities) and the
-sitemap, canonical and JSON-LD follow automatically.
+moves to indexable only when **all** of the following hold. It is then listed in `data/medical-schools/publication.json`
+with its register row (`smukn:reference-sync` publishes it on the next deploy, once; a publish or unpublish decision in
+Admin → Universities always wins), and the robots meta, sitemap entry (lastmod = latest verification), canonical and
+JSON-LD follow automatically. First batch, 2026-10-05: Aberdeen (D07), Cardiff (D08), Manchester (D10), Edinburgh (D11).
 
 1. **Verified core facts** (Admin → Verification, or a committed `decisions-*.csv`, each read on the official page with the quotation recorded in the review note): international applicants
    accepted (tier 4), the published statement on WAEC/NECO or Nigerian qualifications and the English requirement

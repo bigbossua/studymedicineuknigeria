@@ -54,21 +54,16 @@ class SchoolPagesTest extends TestCase
         $this->assertStringNotContainsString('WASSCE holders complete', $html);
     }
 
-    public function test_course_schema_carries_an_offer_only_when_the_fee_is_verified(): void
+    public function test_course_schema_never_marks_up_the_university_fee_as_an_offer(): void
     {
         $u = $this->university('accepts');
-        $course = $u->courses()->first();
-        $fee = $course->facts()->create(['key' => 'international_fee_gbp', 'value_number' => 45000, 'academic_year' => '2026/27', 'verification_status' => 'VERIFY-ON-PAGE', 'source_type' => 'official']);
+        $u->courses()->first()->facts()->create(['key' => 'international_fee_gbp', 'value_number' => 45000, 'academic_year' => '2026/27', 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now(), 'source_type' => 'official']);
         $html = $this->get('/medical-schools/'.$u->slug)->assertOk()->getContent();
         $this->assertStringContainsString('"@type":"Course"', $html);
         $this->assertStringContainsString('"courseCode":"A100"', $html);
-        $this->assertStringNotContainsString('"@type":"Offer"', $html, 'an unverified fee must not become a schema Offer');
-
-        $fee->update(['verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now()]);
-        $html = $this->get('/medical-schools/'.$u->slug)->assertOk()->getContent();
-        $this->assertStringContainsString('"@type":"Offer"', $html);
-        $this->assertStringContainsString('"price":"45000"', $html);
-        $this->assertStringContainsString('"priceCurrency":"GBP"', $html);
+        $this->assertStringContainsString('£45,000', $html, 'the verified fee is shown to the reader');
+        $this->assertStringNotContainsString('"@type":"Offer"', $html, 'we do not sell the course: no Offer markup for a third-party fee');
+        $this->assertStringNotContainsString('"price"', $html);
     }
 
     public function test_in_production_unverified_facts_are_hidden_and_the_guidance_does_not_refer_to_them(): void
@@ -82,7 +77,8 @@ class SchoolPagesTest extends TestCase
         $html = $this->get('/medical-schools/'.$u->slug)->assertOk()->getContent();
         $this->assertStringNotContainsString('WASSCE holders complete a recognised foundation programme first.', $html, 'unverified wording must not render in production');
         $this->assertStringNotContainsString('45,000', $html);
-        $this->assertStringContainsString('This detail is being verified against the official source', $html);
+        $this->assertStringNotContainsString('This detail is being verified', $html, 'a school page leaves unverified facts out instead of showing placeholder cards');
+        $this->assertStringContainsString('Statement being checked', $html);
         $this->assertStringContainsString('no Nigeria-specific statement located', $html, 'the computed guidance must not claim a statement the reader cannot see');
         $fees = $this->get('/fees')->assertOk()->getContent();
         $this->assertStringContainsString('Being verified', $fees);

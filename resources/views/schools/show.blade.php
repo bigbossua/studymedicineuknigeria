@@ -51,7 +51,7 @@
                 <section aria-labelledby="h-course">
                     <h2 id="h-course">Course facts</h2>
                     <div class="mt-5 grid sm:grid-cols-2 gap-3">
-                        @forelse($sorted(($course?->facts ?? collect())->reject(fn ($f) => $f->verification_status === 'NOT_FOUND')) as $f)
+                        @forelse($sorted(($course?->facts ?? collect())->reject(fn ($f) => $f->verification_status === 'NOT_FOUND')->filter($publishable)) as $f)
                             <x-fact :status="$f->verification_status" :source="$f->source_url" :verified-at="$f->verified_at?->format('j M Y')">
                                 <p class="text-[0.8125rem] text-ink-500">{{ $labels[$f->key] ?? Str::headline($f->key) }}@if($f->academic_year) · {{ $f->academic_year }}@endif</p>
                                 <p class="font-medium text-lg">{{ $f->displayValue() ?? '—' }}@if($f->key==='international_fee_gbp' && $f->value_number)<span class="text-ink-500 font-normal text-base"> per year</span>@endif</p>
@@ -64,8 +64,10 @@
 
                 <section aria-labelledby="h-nigeria">
                     <h2 id="h-nigeria">For Nigerian applicants: what the university publishes</h2>
-                    @php $nig = $sorted($facts->whereIn('key', ['waec_neco_statement','a_level_requirement','english_requirement','english_language_requirement','foundation_route','gem_international','international_places_open'])); @endphp
-                    @if($nig->isEmpty())
+                    @php $nigAll = $facts->whereIn('key', ['waec_neco_statement','a_level_requirement','english_requirement','english_language_requirement','foundation_route','gem_international','international_places_open']); $nig = $sorted($nigAll->filter($publishable)); @endphp
+                    @if($nig->isEmpty() && $nigAll->isNotEmpty())
+                        <x-alert type="info" class="mt-4" title="Statement being checked">We have recorded what this university publishes for applicants like you and are checking it against the official page; it appears here once verified. Until then, confirm directly with the admissions team.</x-alert>
+                    @elseif($nig->isEmpty())
                         <x-alert type="info" class="mt-4" title="No Nigeria-specific statement located">We did not find a published statement about WAEC, NECO or Nigerian qualifications for Medicine at this university. Treat this as <em>not published</em> and confirm directly with the admissions team.</x-alert>
                     @else
                         <div class="mt-4 space-y-3">
@@ -115,7 +117,7 @@
                 <section aria-labelledby="h-other">
                     <h2 id="h-other">Other recorded facts</h2>
                     <div class="mt-4 space-y-3">
-                        @foreach($sorted($facts->whereIn('key', ['international_accepted','international_places','msc_member'])) as $f)
+                        @foreach($sorted($facts->whereIn('key', ['international_accepted','international_places','msc_member'])->filter($publishable)) as $f)
                             <x-fact :status="$f->verification_status" :source="$f->source_url" :verified-at="$f->verified_at?->format('j M Y')">
                                 <p class="text-[0.8125rem] text-ink-500">{{ $labels[$f->key] ?? Str::headline($f->key) }}</p>
                                 <p class="font-medium">{{ $f->displayValue() ?? '—' }}</p>

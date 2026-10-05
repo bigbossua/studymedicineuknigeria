@@ -8,6 +8,7 @@ use Database\Seeders\PlatformSeeder;
 use Database\Seeders\ProfessionSeeder;
 use Database\Seeders\ReferenceDataSeeder;
 use Database\Seeders\TopicFactsSeeder;
+use Database\Seeders\UniversityPublicationSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +26,7 @@ class SyncReferenceData extends Command
 
     protected $description = 'Create or refresh reference data from the repository without touching reviewed facts or owner prices';
 
-    public const SEEDERS = [ReferenceDataSeeder::class, PlatformSeeder::class, TopicFactsSeeder::class, ProfessionSeeder::class, HealthcareCoursesSeeder::class, LegacyRedirectsSeeder::class];
+    public const SEEDERS = [ReferenceDataSeeder::class, PlatformSeeder::class, TopicFactsSeeder::class, ProfessionSeeder::class, HealthcareCoursesSeeder::class, LegacyRedirectsSeeder::class, UniversityPublicationSeeder::class];
 
     public function handle(): int
     {

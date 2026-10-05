@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
       - run: npm ci && npm run build
+      - name: Dependency security advisories (PHP and production JavaScript)
+        run: composer audit --no-interaction --locked && npm audit --omit=dev --audit-level=high
       - run: vendor/bin/pint --test
       - run: php artisan test
       - name: Workflows and ops scripts parse

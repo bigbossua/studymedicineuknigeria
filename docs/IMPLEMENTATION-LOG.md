@@ -506,6 +506,34 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - **Performance:** `performance-check.yml` runs Lighthouse weekly (mobile lab) on ten landing pages. Live, 2026-10-04: performance 94–100, accessibility 100, best practices 100, SEO 100 (home 92 until the vague "Start" link text was fixed), LCP 1.8–2.9 s, CLS ≤ 0.014 (one earlier run measured 0.103 on /medical-schools and did not repeat), TBT ≤ 69 ms.
 - **Search Console:** the baseline and owner routine are in `docs/ops/SEARCH-CONSOLE-AND-GA4.md`. Sitemap status: Success, 28 discovered. The indexed count is not yet established.
 
+## Stage 56: evidence verification and the first university pages (cycle 50)
+
+- **Official pages read from a runner.** The drafting container cannot reach official sites. The *Official page excerpts* workflow (`page-excerpts.yml`, `ops/verification/page-excerpts.cjs`) opens each page in Chrome (PDFs as text, collapsed accordions expanded) and prints the exact text around requested terms. Specs live in `data/verification/excerpt-specs/`.
+- **Policy made honest.** *How we verify* now says checks can be AI-assisted and that every verified record keeps the page's own wording. `data/verification/README.md` sets the rules:
+  - quote the page;
+  - never infer from another university or year;
+  - `not_published` only after reading the page that should state it;
+  - anything ambiguous stays pending.
+- **46 decisions** (`data/verification/decisions-2026-10-05.csv`, generated from `ops/verification/reviews/*.json` by `ops/verification/decisions.py`):
+  - **UCAS:** 2027 deadlines.
+  - **UCAT 2026:** all dates, format and subtests, fees (£70 UK, £115 outside the UK) and results timing. The UCAT site moved; sources updated.
+  - **GMC:** MLA and provisional registration.
+  - **Foundation Programme:** the 2027 nomination route.
+  - **The Medical Training (Prioritisation) Act 2026:** its definition of a "UK medical graduate".
+  - **Universities:** core facts for Aberdeen, Cardiff, Lancashire, Brunel, Aston and Leicester.
+  - **Dropped:** values the pages no longer state (the 2024/25 MLA start, PTE 68 at Leicester, visa sponsorship in the Foundation fact, Aston's and Cardiff's former Medicine-specific WAEC wording).
+- **Publication threshold (DECISION-ENGINE §8) met by Aberdeen (D07) and Cardiff (D08).** Both are in REVIEW: ready, still `noindex`, and published by the owner in Admin → Universities after the deploy.
+  - **Aberdeen:** the WAEC Senior School Certificate "cannot be considered for Medicine" (A-levels, Highers or IB instead); MBChB IELTS 7.0 with Speaking 7.0; £50,100 for 2026/27; UCAS A100.
+  - **Cardiff:** the general Nigeria undergraduate rule, labelled as general; WAEC or IGCSE English in lieu of IELTS (general); £47,450 for every year; UCAS A100.
+  - **Lancashire (D09):** core facts verified, but it stays RESEARCH until Nigerian search demand is evidenced.
+  - **Leicester:** Cloudflare blocks its course and fee pages; a person must check them by hand.
+- **Recruitment-agent research** (`docs/research/15-recruitment-agent-opportunities.md`):
+  - Edinburgh's agent guidance states MBChB is ineligible for commission (official read).
+  - Brunel, Aberdeen and Cardiff pay contracted agents commission but say nothing about Medicine.
+  - No university publishes a commission rate.
+  - Taking commission would make the *Our status* line "we receive none" untrue and trigger the National Code's dual-fee disclosure duty.
+- **Not available:** Semrush has no API units, and Search Console has no API access here. Both are owner actions.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

@@ -209,3 +209,25 @@ Also: *Our status* currently says "we receive none" (commission). If any commiss
 ## Sources consulted (all `lead-not-read` unless marked)
 
 Official university pages and documents: every URL in the §1 and §2 tables. Sector: https://www.britishcouncil.org/education/agents-counsellors/uk-quality-agent-framework ; https://www.buila.ac.uk/aqf ; https://www.britishcouncil.org/education/education-agents/training-agents ; https://www.britishcouncil.org.ng/study-uk/uk-education-agents-online-course ; National Code PDFs in §3.1 ; https://www.britishcouncil.org/sites/default/files/student_and_parent_guide_to_choosing_an_education_agent.pdf ; https://www.ucas.com/media/225421/download . FOI: https://www.uea.ac.uk/about/university-information/statutory-legal-policies/freedom-of-information/disclosure-log/foi_25-270-education-agent-commission-clauses (general commission clauses; no Medicine content surfaced). `secondary`: ICEF Monitor, Doyle Clayton, HEPI, Times Higher Education, GuildHE repository, ccoex.com (third-party host of the July 2025 National Code).
+
+---
+
+## Addendum: official pages read on 2026-10-05 (page-excerpts run 37258127553)
+
+The *Official page excerpts* workflow opened these pages in Chrome on a GitHub runner; the wording below is the page's own.
+These rows supersede the corresponding "lead-not-read" cells above.
+
+| University / body | What the page says | Evidence status |
+|---|---|---|
+| **Edinburgh** — student-recruitment.ed.ac.uk/agent-guidance/commission-and-contracts (sha256 4c0a3c7f07dfe61a) | "As per our agreement, the following programmes are ineligible for commission: Distance learning programmes; Pre-sessional English language programmes; **MBChB (Undergraduate Medicine)**; All Master of Clinical Dentistry programmes; All programmes delivered in collaboration with other institutions; Courses for short-term visitors." | **official-read** |
+| **Brunel** — /international/Applying-to-Brunel-University-of-London-through-an-Agent (73f5e9d9d66eb3f6) | "Agents representing Brunel are paid commission for their services" (except the US/US federal loans and sanctioned countries); listed representatives must complete British Council or Brunel agent training. **Medicine is not mentioned on this page.** The "Agent slides Medicine 2024" PDF could not be parsed (not read). | official-read (general); Medicine not stated |
+| **Birmingham** — /study/international/working-with-our-representatives (1945510598172903) | Representatives "are officially contracted partners of the University, and we engage with them on a commercial basis". **No mention of Medicine or MBChB**: the earlier MBChB-exclusion lead is not on this page and stays unconfirmed. | official-read (general); Medicine not stated |
+| **Aberdeen** — /study/international/working-recruitment-partners/ (31943249672e93d4) | Committed to the Agent Quality Framework; encourages partners to follow the National Code of Ethical Practice for UK Education Agents (2021); "contracted recruitment partners, educational advisors, and agents receive a commission-based payment for each student they successfully support and recruit". Medicine not mentioned. | official-read (general); Medicine not stated |
+| **Cardiff** — /study/international/educational-advisors/for-students (63bac21dfaa05a6c) | "Our educational advisors are contracted partners of Cardiff University and are paid a commission/fee following the successful enrolment of a student who has utilised the services of an approved agent"; points students to the British Council database of trained agents who have signed the National Code. Medicine not mentioned. | official-read (general); Medicine not stated |
+| **Aston** — /international/education-agents | Page read; no Medicine/MBChB or commission wording in the text captured. | official-read; not stated |
+| **British Council** — UK Agent Quality Framework page (22c49f4a6154544b) | Page exists and describes the AQF; the excerpt did not capture a commitment or National Code passage. | official-read; detail not captured |
+| BUILA National Code PDF | Could not be parsed by the reader. | not read |
+
+**What changes:** Edinburgh's Medicine commission exclusion is now an official statement. Every other university's position on
+Medicine remains **unstated**; the only way to learn it is to ask each regional manager in writing. No commission rate was
+published on any page read.

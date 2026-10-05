@@ -107,10 +107,10 @@
  },
  "university:aberdeen:waec_neco_statement:2027 entry": {
   "decision": "verified",
-  "new_source_url": "https://www.abdn.ac.uk/study/international/country-territory/nigeria/entry/",
-  "page": "https://www.abdn.ac.uk/study/international/country-territory/nigeria/entry/, read 2026-10-05 via page-excerpts run 37256882227, sha256 81d765d943bec6c4",
-  "verified_value": "Applicants with at least one A and two Bs in the West African Senior Secondary School Certificate can apply for direct entry to Year 1 for all programmes except Medicine. For Medicine, GCE A-levels, the International Baccalaureate or Scottish Highers are required",
-  "quote": "Students who have achieved at least one \"A\" and two \"Bs\" in the West African Senior Secondary School Certificate can apply for direct entry to Year 1 for all programmes except Medicine. … Medicine: GCE A-levels, International Baccalaureate or Scottish Highers required."
+  "new_source_url": "https://www.abdn.ac.uk/smmsn/undergraduate/medicine/entrance-requirements/academic-requirements/international-requirements/",
+  "page": "https://www.abdn.ac.uk/smmsn/undergraduate/medicine/entrance-requirements/academic-requirements/international-requirements/, read 2026-10-05 via page-excerpts run 37257512388, sha256 87740b34acdbf27d",
+  "verified_value": "Nigeria (School of Medicine international requirements): the WAEC Senior School Certificate cannot be considered for Medicine. Suitable alternative qualifications are GCE A-Levels, Scottish Highers or the International Baccalaureate",
+  "quote": "Nigeria ⏎ Unfortunately the WAEC Senior School Certificate cannot be considered for Medicine. ⏎ Suitable alternative qualifications would be: ⏎ GCE A-Level ⏎ Scottish Higher ⏎ International Baccalaureate ⏎ If you have sat A-levels or IB then please refer to this page for information on entry requirements. [the university-wide Nigeria page also says WASSCE gives direct Year 1 entry to all programmes except Medicine]"
  },
  "course:aberdeen/medicine:international_fee_gbp:2026/27": {
   "decision": "verified",

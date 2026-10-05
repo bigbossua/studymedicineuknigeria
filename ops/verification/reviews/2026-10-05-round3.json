@@ -1,0 +1,21 @@
+{
+ "university:cardiff:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.cardiff.ac.uk/study/international/your-country/africa/nigeria/entry-requirements",
+  "page": "https://www.cardiff.ac.uk/study/international/your-country/africa/nigeria/entry-requirements, read 2026-10-05 via page-excerpts run 37257512388, sha256 f0d06481d4637f96",
+  "verified_value": "General undergraduate statement for Nigeria (not Medicine-specific): the Senior School Certificate combined with a successfully completed International Foundation Programme from a reputable institution; alternatively the IB Diploma, West African GCE A-levels or British A-levels, a completed OND or HND, or the first year of a Nigerian bachelor's degree may be considered for first-year entry. Cardiff's Medicine pages publish no Nigeria-specific rule",
+  "quote": "Undergraduate courses ⏎ You will be required to have the Senior School Certificate combined with a successfully completed International Foundation Programme from a reputable institution to be considered for admission on to our bachelor's degree courses. ⏎ Alternatively, if you hold the International Baccalaureate (IB) Diploma, West African GCE A-levels or British A-levels or you have successfully completed an OND or HND or you have successfully completed the first year of a Nigerian bachelor's degree, you may be considered for admission to the first year of our undergraduate courses. [the Medicine-specific WAEC grade wording previously recorded is no longer on this page]"
+ },
+ "topic:ucat-2026:fee_international_gbp:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/faqs/",
+  "page": "https://www.ucat.ac.uk/faqs/, read 2026-10-05 via page-excerpts run 37257512388, sha256 66c6870ef8b46915",
+  "quote": "How much does the UCAT cost … The test fee is payable at the time of booking by major debit/credit card* ⏎ Tests taken in the UK: £70 ⏎ Tests taken outside the UK: £115"
+ },
+ "topic:ucat-2026:fee_uk_gbp:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/faqs/",
+  "page": "https://www.ucat.ac.uk/faqs/, read 2026-10-05 via page-excerpts run 37257512388, sha256 66c6870ef8b46915",
+  "quote": "Tests taken in the UK: £70 ⏎ Tests taken outside the UK: £115 ⏎ *Our UCAT Bursary is available to UK candidates who meet the bursary criteria."
+ }
+}

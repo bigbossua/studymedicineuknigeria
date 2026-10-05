@@ -577,6 +577,29 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - No horizontal overflow at 320, 390, 768 or 1366 px on all 32 sitemap URLs.
   - 219 tests.
 
+## Stage 59: university pages live and verification batch 5 (cycle 53)
+
+- **Live:** release `2026-10-05T12-54-19` (commit ccbb4d6), approved by the owner.
+  - Sitemap probe: 32 URLs, each 200, indexable and self-canonical as Googlebot.
+  - Live verification: audit 79 passed, 0 failed. The four university pages pass with CollegeOrUniversity and Course JSON-LD, two or more in-body links each, and are reachable from the home page.
+  - Stripe live catalogue unchanged, webhook self-test passed, scheduler running, no failed jobs.
+- **Search Console:** indexing request list (12 URLs in priority order) and the inspection log format added to `docs/ops/SEARCH-CONSOLE-AND-GA4.md`.
+- **Verification batch 5** (`ops/verification/reviews/2026-10-05-batch5.json`; 106 decisions in total):
+  - **Fees:**
+    - Newcastle is £48,600 (Year 1, 2027/28) and Exeter £49,300 (autumn 2027). `data/medical-schools/fees.json` now carries the 2027/28 rows.
+    - Liverpool's £50,000 (2026/27) is confirmed.
+  - **WAEC:**
+    - Aston: MBChB needs WASSCE English C4; the general undergraduate rule requires a foundation programme.
+    - Wolverhampton: general undergraduate statement only; the MBChB page publishes no Nigeria rule.
+  - **Visa:**
+    - TB test: Nigeria is on the GOV.UK list.
+    - Foundation Year 1 visa: corrected. Per the UK Foundation Programme office, a Skilled Worker visa is sponsored after allocation by the national sponsorship teams, or a Graduate visa is used. The earlier prose ("Health and Care Worker visa with the employing trust as sponsor") was replaced on /working-in-the-uk and in FAQ 33.
+  - **Not resolved:**
+    - UCAT test centres in Nigeria: the official centre page now 404s; the OnVUE page gives no country list.
+    - UCAS agent statement: the page 404s.
+    - Student visa work hours: the GOV.UK work page redirects to the overview.
+    - Wolverhampton MBChB English: course-specific requirements apply.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

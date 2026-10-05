@@ -1,0 +1,61 @@
+{
+ "course:newcastle/a100:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "verified_value": "48600",
+  "new_source_url": "https://www.ncl.ac.uk/undergraduate/degrees/a100/",
+  "note": "Year 1 fee as published.",
+  "page": "https://www.ncl.ac.uk/undergraduate/degrees/a100/, read 2026-10-05 via page-excerpts run 37313413454, sha256 ec5e4e3bd3682d1a",
+  "quote": "Tuition fees for academic year 2027-2028 ⏎ Qualification: MB BS Full time ⏎ ... International students ⏎ Full time: 5 years ⏎ Tuition fees (Year 1) ⏎ £48,600"
+ },
+ "course:exeter/a100:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "verified_value": "49300",
+  "new_source_url": "https://www.exeter.ac.uk/undergraduate-degrees/fees/",
+  "page": "https://www.exeter.ac.uk/undergraduate-degrees/fees/, read 2026-10-05 via page-excerpts run 37313413454, sha256 283f7f9273763b88",
+  "quote": "2027 fees for International students ⏎ The tuition fees for international students starting their course in autumn 2027 are: ⏎ Subject area Fee per year ⏎ BMBS Medicine ⏎ £49,300"
+ },
+ "course:liverpool/a100:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "verified_value": "50000",
+  "new_source_url": "https://www.liverpool.ac.uk/courses/medicine-and-surgery-mbchb",
+  "page": "https://www.liverpool.ac.uk/courses/medicine-and-surgery-mbchb, read 2026-10-05 via page-excerpts run 37313413454, sha256 eee6690f727bac97",
+  "quote": "International fees ⏎ Full-time place, per year - £50,000 ⏎ ... The international fees shown are for the academic year 2026/27 and will be subject for change for the academic year 2027/28."
+ },
+ "university:aston:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.aston.ac.uk/international/aston-in-your-country/africa/nigeria",
+  "verified_value": "Nigeria page: for entry onto the MBChB a minimum grade of C4 in English Language in the West African Secondary School Certificate in Education is required. For undergraduate entry generally, students with the WASSCE are required to complete a recognised foundation programme",
+  "note": "Medicine-specific statement (English); the academic rule quoted is Aston's general undergraduate one.",
+  "page": "https://www.aston.ac.uk/international/aston-in-your-country/africa/nigeria, read 2026-10-05 via page-excerpts run 37313413454, sha256 c30543b3dd9ea5a9",
+  "quote": "For entry onto the MBChB a minimum grade of C4 in English Language in the West African Secondary School Certificate in Education is required. ⏎ ... Undergraduate ⏎ Students who have the West African Senior Secondary Certificate of Education (WASSCE) will be required to complete a recognised foundation programme."
+ },
+ "university:aston:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.aston.ac.uk/international/aston-in-your-country/africa/nigeria",
+  "verified_value": "MBChB: a minimum grade of C4 in English Language in the West African Secondary School Certificate in Education (Aston's Nigeria page)",
+  "page": "https://www.aston.ac.uk/international/aston-in-your-country/africa/nigeria, read 2026-10-05 via page-excerpts run 37313413454, sha256 c30543b3dd9ea5a9",
+  "quote": "For entry onto an undergraduate or postgraduate taught degree a grade of C6 or higher is generally accepted from English Language in the West African Secondary School Certificate in Education. ⏎ For entry onto the MBChB a minimum grade of C4 in English Language in the West African Secondary School Certificate in Education is required."
+ },
+ "university:wolverhampton:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.wlv.ac.uk/international/your-country/nigeria/",
+  "verified_value": "General undergraduate statement (not Medicine-specific): the University considers a WAEC or NECO Grade B profile, or WAEC/NECO plus a recognised foundation programme or year one at a Nigerian university. The MBChB course page publishes no Nigeria-specific rule",
+  "page": "https://www.wlv.ac.uk/international/your-country/nigeria/, read 2026-10-05 via page-excerpts run 37313413454, sha256 1710ae2c02ffc82f; course page https://www.wlv.ac.uk/courses/mbchb-medicine/ sha256 2077293c6b532e1d has no WAEC or Nigeria mention",
+  "quote": "Academic Entry Requirements ⏎ Undergraduate ⏎ The University considers students for undergraduate study who have successful completed a WAEC or NECO Grade B profile ⏎ WAEC/NECO plus successful completion of recognised foundation programme or year one at Nigerian university"
+ },
+ "topic:student-visa:tb_test:2026": {
+  "decision": "verified",
+  "new_source_url": "https://www.gov.uk/tb-test-visa/countries-where-you-need-a-tb-test-to-enter-the-uk",
+  "verified_value": "Nigeria is on the GOV.UK list of countries where you need a TB test: if you are coming to the UK for 6 months or more and have lived in Nigeria for 6 months or more (within the last 6 months), you need a TB test (a chest x-ray); the certificate is valid for 6 months from the x-ray and goes with your visa application",
+  "page": "https://www.gov.uk/tb-test-visa/countries-where-you-need-a-tb-test-to-enter-the-uk, read 2026-10-05 via page-excerpts run 37313413454, sha256 ee9c0afab2d598fc; https://www.gov.uk/tb-test-visa sha256 c7150f96ca766c28",
+  "quote": "[country list] ... Niger (get tested in another country) ⏎ Nigeria ⏎ North Korea ... [tb-test-visa] You'll need to have a tuberculosis (TB) test if all of the following are true: ⏎ you're coming to the UK for 6 months or more ⏎ you've lived in any of these listed countries for 6 months or more ⏎ you were living there (or another listed country) within the last 6 months ... You'll be given a chest x-ray to test for TB ... a certificate which is valid for 6 months from the date of your x-ray. Include this certificate with your UK visa application."
+ },
+ "topic:gmc-registration:f1_visa_route:2027": {
+  "decision": "verified",
+  "new_source_url": "https://foundationprogramme.nhs.uk/resources/right-to-work-visas/",
+  "verified_value": "Foundation doctors who need a visa can be sponsored for a Skilled Worker visa after allocation to a programme (a Certificate of Sponsorship is arranged by the national sponsorship teams, not the UKFPO); a Graduate visa needs no sponsorship. Right to work does not have to be shown when applying",
+  "note": "Corrects the earlier wording (Health and Care Worker visa sponsored by the employing trust).",
+  "page": "https://foundationprogramme.nhs.uk/resources/right-to-work-visas/, read 2026-10-05 via page-excerpts run 37313413454, sha256 13258636b32539ea; eligibility page sha256 67f6a83ca5fa29b5",
+  "quote": "Graduate visa route ⏎ Applicants considering applying for a Graduate visa will not require sponsorship ... The UKFPO do not arrange Skilled Worker visa sponsorship, this is arranged by the national sponsorship teams ... [eligibility page] Evidence of right to work is not required at the point of application and sponsorship can be arranged for applicants upon successful allocation to a foundation programme."
+ }
+}

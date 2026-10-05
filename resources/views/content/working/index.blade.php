@@ -35,7 +35,7 @@
                     <li><strong>Apply to the UK Foundation Programme in the autumn of final year</strong> through your medical school, on the same basis as home graduates. You indicate on the application that you will need sponsorship.</li>
                     <li><strong>Allocation</strong> to a foundation school follows a national process. After allocation, those who need a work visa are contacted about a Certificate of Sponsorship.</li>
                     <li><strong>Apply to the GMC for provisional registration with a licence to practise</strong> after graduating, with a fitness-to-practise declaration.</li>
-                    <li><strong>Switch from the Student visa to the Health and Care Worker visa</strong> with the employing trust as sponsor, before Foundation Year 1 starts in early August.</li>
+                    <li><strong>Apply for a Skilled Worker visa with that Certificate of Sponsorship</strong> (arranged by the national sponsorship team, not the Foundation Programme office), before Foundation Year 1 starts in early August. A Graduate visa needs no sponsorship.</li>
                     <li><strong>Full GMC registration</strong> follows satisfactory completion of Foundation Year 1.</li>
                 </ol>
                 <dl class="card mt-6">
@@ -47,7 +47,7 @@
             </section>
 
             <section id="graduate-visa"><h2>The Graduate visa: a fallback, not the main route</h2>
-                <p class="text-ink-700 mt-2">Most UK medical graduates who need sponsorship move straight from the Student visa to the Health and Care Worker visa for Foundation training. The Graduate visa matters if no post is allocated or a gap must be bridged. It allows work at any skill level and does not count towards settlement.</p>
+                <p class="text-ink-700 mt-2">The Foundation Programme office describes two routes for graduates who need a visa: a Skilled Worker visa sponsored after allocation, or a Graduate visa, which needs no sponsorship. The Graduate visa also matters if no post is allocated or a gap must be bridged. It allows work at any skill level and does not count towards settlement.</p>
                 <dl class="card mt-4">
                     <x-fact-row :fact="$grad?->fact('length')" label="Length of the Graduate visa" />
                     <x-fact-row :fact="$grad?->fact('fee_gbp')" label="Application fee"  />
@@ -72,7 +72,7 @@
             <section id="check" class="prose-site"><h2>Where to check for yourself</h2>
                 <p>Every figure on this page will change at least once before a 2027 entrant graduates. Learn where the rules live rather than memorising numbers:</p>
                 <ul>
-                    <li>GOV.UK: <a href="https://www.gov.uk/student-visa" rel="noopener" target="_blank">Student visa</a>, <a href="https://www.gov.uk/graduate-visa" rel="noopener" target="_blank">Graduate visa</a>, <a href="https://www.gov.uk/health-care-worker-visa" rel="noopener" target="_blank">Health and Care Worker visa</a>.</li>
+                    <li>GOV.UK: <a href="https://www.gov.uk/student-visa" rel="noopener" target="_blank">Student visa</a>, <a href="https://www.gov.uk/graduate-visa" rel="noopener" target="_blank">Graduate visa</a>, <a href="https://www.gov.uk/skilled-worker-visa" rel="noopener" target="_blank">Skilled Worker visa</a>; UK Foundation Programme: <a href="https://foundationprogramme.nhs.uk/resources/right-to-work-visas/" rel="noopener" target="_blank">right to work and visas</a>.</li>
                     <li>General Medical Council: <a href="https://www.gmc-uk.org/education/medical-licensing-assessment" rel="noopener" target="_blank">Medical Licensing Assessment</a> and <a href="https://www.gmc-uk.org/registration-and-licensing/join-the-register/provisional-registration" rel="noopener" target="_blank">provisional registration</a>.</li>
                     <li>UK Foundation Programme Office: <a href="https://foundationprogramme.nhs.uk/" rel="noopener" target="_blank">eligibility and right-to-work guidance</a>.</li>
                     <li>NHS England: <a href="https://www.england.nhs.uk/long-read/medical-training-prioritisation-bill-information-for-applicants-to-medical-training/" rel="noopener" target="_blank">medical training prioritisation, information for applicants</a>; the legislation itself: <a href="https://www.legislation.gov.uk/ukpga/2026/7" rel="noopener" target="_blank">Medical Training (Prioritisation) Act 2026</a>.</li>

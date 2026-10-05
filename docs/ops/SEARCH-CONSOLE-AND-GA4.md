@@ -46,6 +46,38 @@ The 28 URLs: `/`, `/study-medicine-in-the-uk`, `/study-medicine-in-the-uk/from-n
 `/apply-online/eligibility`, `/about`, `/our-status`, `/how-we-verify`, `/contact`, `/privacy`, `/terms`, `/application-terms`,
 `/refund-policy`.
 
+### Update 2026-10-05: 32 URLs, first four university pages
+
+Release `2026-10-05T12-54-19` added the first four university pages (DECISION-ENGINE §8 threshold, register rows D07, D08, D10, D11). Live checks from that day:
+- `sitemap-probe.yml`: 32 URLs, each 200, indexable and self-canonical when fetched as Googlebot.
+- `live-verify.yml`: Google-readiness audit 79 passed, 0 failed. Every sitemap page is reachable from the home page and has at least two in-body links.
+
+The other 51 schools stay `noindex` and out of the sitemap. Their pages remain crawlable from the directory, so the *Excluded by noindex* count in the Pages report is expected.
+
+**Indexing request list.** Owner, in Search Console:
+- Use URL inspection → *Test live URL*, then *Request indexing*, one URL at a time, in this order.
+- Record the result for each URL in `data/gsc/inspection-YYYY-MM-DD.csv` (columns `date,url,coverage,last_crawl,canonical`). The result is *URL is on Google*, *URL is not on Google* or *Discovered/Crawled – currently not indexed*.
+- Search Console limits manual requests per day. If it refuses, continue the next day; do not re-request a URL already requested.
+
+| # | URL | Why it is first |
+|---|---|---|
+| 1 | `https://studymedicineuknigeria.com/` | Brand and hub; links to every cluster |
+| 2 | `https://studymedicineuknigeria.com/study-medicine-in-the-uk` | Medicine in the UK hub (cluster A) |
+| 3 | `https://studymedicineuknigeria.com/requirements` | Requirements hub |
+| 4 | `https://studymedicineuknigeria.com/requirements/waec` | WAEC, the core Nigerian intent; 20+ school statements |
+| 5 | `https://studymedicineuknigeria.com/requirements/neco` | NECO intent |
+| 6 | `https://studymedicineuknigeria.com/medical-schools` | Directory; links to the four university pages |
+| 7 | `https://studymedicineuknigeria.com/fees` | International fees with fee years |
+| 8 | `https://studymedicineuknigeria.com/apply-online/eligibility` | Conversion entry point |
+| 9 | `https://studymedicineuknigeria.com/medical-schools/aberdeen` | D07: Medicine-specific WAEC exclusion |
+| 10 | `https://studymedicineuknigeria.com/medical-schools/cardiff` | D08 |
+| 11 | `https://studymedicineuknigeria.com/medical-schools/manchester` | D10 |
+| 12 | `https://studymedicineuknigeria.com/medical-schools/edinburgh` | D11 |
+
+After the requests:
+- Sitemaps → open `sitemap.xml` and confirm *Discovered pages* reads 32. Resubmit only if it still reads 28 after a week.
+- Indexing → Pages: record the counts as in the routine below. Submitted or discovered is **not** indexed. A URL counts as indexed only when URL inspection says *URL is on Google*.
+
 ### Owner routine (about 10 minutes, Search Console has no free API access configured here)
 
 - **Week 1:** URL inspection → *Request indexing* for the five priority pages: `/`, `/study-medicine-in-the-uk/from-nigeria`,

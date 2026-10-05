@@ -534,6 +534,32 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - Taking commission would make the *Our status* line "we receive none" untrue and trigger the National Code's dual-fee disclosure duty.
 - **Not available:** Semrush has no API units, and Search Console has no API access here. Both are owner actions.
 
+## Stage 57: core-business verification batches (cycle 51)
+
+- **Roadmap:** recruitment-agent and commission work archived by owner decision; research 15 stays as a reference document only.
+- **Cost pages corrected from GOV.UK:**
+  - **Immigration Health Surcharge:** students pay £776 a year (we held the £1,035 general rate);
+  - **maintenance funds:** £1,529 a month in London and £1,171 outside (were £1,483 and £1,136);
+  - **visa fees:** Student visa £558; Graduate visa £937, lasting 18 months for applications from 1 January 2027;
+  - **dependants:** the rule as GOV.UK states it.
+  The seeder carries the new figures.
+- **UCAS 2027:** application opening, submission, Extra, Clearing and final dates; the £34.50 fee; the four-Medicine-choice rule; the three-question personal statement.
+- **Fees (/fees):** 18 international fees verified from official pages.
+  - Kent and Medway, Cambridge, Manchester (Years 1-2; clinical £60,900), Leeds (2027/28), Nottingham, Leicester (Years 1-2; clinical £48,900), Southampton, Lancaster, Hull York, Warwick, Swansea, Edinburgh, Glasgow, St Andrews and Ulster.
+  - Pending: Newcastle and Exeter (the page shows a different figure without a year), Liverpool (year not stated), and pages that block automated reads (UCL, Dundee, Oxford).
+- **WAEC (/requirements/waec):**
+  - Birmingham's Medicine page sets a Medicine-specific rule: B2 in Science, English and Maths, plus A-levels or the IB; no foundation programmes.
+  - Manchester, Nottingham, Plymouth, Edinburgh, Queen's Belfast, Liverpool and Sheffield publish general undergraduate rules, recorded as such.
+  - A statement whose verified wording is labelled general is no longer listed as Medicine-specific.
+- **University pages at the §8 threshold, all in REVIEW** for the owner to publish after the deploy: Aberdeen (D07), Cardiff (D08), Manchester (D10) and Edinburgh (D11).
+  - Manchester's 2027 UCAS code is A106. A pinned `course_slug` in the dataset keeps the course record and its reviewed facts.
+- **Fixes:**
+  - the fee table's clinical-years column printed unverified answers in production; it is now gated, with a test;
+  - pound amounts keep their pence (£34.50);
+  - verified amounts are stored as numbers;
+  - "£776 GBP" double units removed.
+- **Totals:** 98 decisions in `decisions-2026-10-05.csv`; 215 tests; Google-readiness audit (production mode) 75 passed, 0 failed.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

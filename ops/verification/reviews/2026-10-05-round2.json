@@ -1,0 +1,47 @@
+{
+ "topic:ucat-2026:results_to_candidates:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucat.ac.uk/about-ucat/ucat-essentials/",
+  "page": "https://www.ucat.ac.uk/about-ucat/ucat-essentials/, read 2026-10-05 via page-excerpts run 37257334724, sha256 ca124eb78bf8f19d",
+  "verified_value": "UCAT results are issued on the day of your test (or shortly after if testing online)",
+  "quote": "UCAT results are issued on the day of your test (or shortly after if testing online)."
+ },
+ "course:aberdeen/medicine:admissions_test": {
+  "decision": "verified",
+  "new_source_url": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/",
+  "page": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/, read 2026-10-05 via page-excerpts run 37257334724, sha256 adcf4d8104ce14d8",
+  "quote": "In addition, all applicants must take the University Clinical Aptitude Test (UCAT)."
+ },
+ "university:aberdeen:international_places_open:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/",
+  "page": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/, read 2026-10-05 via page-excerpts run 37257334724, sha256 adcf4d8104ce14d8",
+  "verified_value": "Yes",
+  "quote": "International Applicants ⏎ See our international entry requirements page … EU / International students ⏎ Tuition Fees for 2026/27 Academic Year ⏎ £50,100 ⏎ This includes the mandatory national levy to cover the cost of tuition in the NHS. [UCAS Code A100]"
+ },
+ "course:cardiff/a100:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "new_source_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/medicine-mbbch",
+  "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/medicine-mbbch, read 2026-10-05 via page-excerpts run 37257334724, sha256 d2879197716b4203",
+  "quote": "Tuition fees for 2026 entry … Fees for overseas status ⏎ Year Tuition fee Deposit ⏎ Year one £47,450 None ⏎ Year two £47,450 None ⏎ Year three £47,450 None ⏎ Year four £47,450 None ⏎ Year five £47,450 None"
+ },
+ "course:cardiff/a100:clinical_years_fee_differs:2026/27": {
+  "decision": "verified",
+  "new_source_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/medicine-mbbch",
+  "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/medicine-mbbch, read 2026-10-05 via page-excerpts run 37257334724, sha256 d2879197716b4203",
+  "quote": "Fees for overseas status … Year one £47,450 … Year three £47,450 … Year five £47,450 [the same fee in every year of the course]"
+ },
+ "university:cardiff:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/medicine-mbbch",
+  "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/2026/medicine-mbbch, read 2026-10-05 via page-excerpts run 37257334724, sha256 d2879197716b4203",
+  "quote": "Your fee status could be home, island or overseas. … Fees for overseas status … Year one £47,450 [overseas-status applicants are admitted to A100 and charged the overseas fee]"
+ },
+ "university:cardiff:international_places_open:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/medicine-mbbch",
+  "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/medicine-mbbch, read 2026-10-05 via page-excerpts run 37256882227, sha256 bad7d3dc86fdeee0",
+  "verified_value": "Yes",
+  "quote": "We accept a combination of A-levels and other qualifications, as well as acceptable alternative international qualifications subject to entry requirements. … Next intake: September 2027"
+ }
+}

@@ -28,7 +28,14 @@ const { chromium } = require('playwright');
       const r = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
       await page.waitForTimeout(2500);
       // cookie banners and accordions hide text from innerText; open every <details> and read textContent of the main region
-      await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { d.open = true; }));
+      // accordions and tabs hide text from innerText: open <details> and unhide collapsed blocks inside the main region
+      await page.evaluate(() => {
+        document.querySelectorAll('details').forEach((d) => { d.open = true; });
+        const root = document.querySelector('main') || document.body;
+        root.querySelectorAll('*').forEach((el) => {
+          if (el.textContent.trim() && getComputedStyle(el).display === 'none' && !['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(el.tagName)) el.style.setProperty('display', 'block', 'important');
+        });
+      });
       status = r ? r.status() : 0; finalUrl = page.url(); title = await page.title();
       text = await page.evaluate(() => {
         const root = document.querySelector('main') || document.body;

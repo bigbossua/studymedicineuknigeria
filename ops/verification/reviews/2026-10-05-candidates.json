@@ -1,0 +1,137 @@
+{
+ "topic:ucas-2027:deadline_main:2027": {
+  "decision": "verified",
+  "new_source_url": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-05 via page-excerpts run 37256882227, sha256 a34a454826afa8ee",
+  "quote": "2027 entry application deadlines … 2027 13 JAN (18:00 UK time) Equal consideration date for applications for most undergraduate courses"
+ },
+ "topic:gmc-registration:prioritisation_act:2027": {
+  "decision": "verified",
+  "page": "https://www.legislation.gov.uk/ukpga/2026/7, read 2026-10-05 via page-excerpts run 37255990516, sha256 9a696419942027eb",
+  "verified_value": "The Medical Training (Prioritisation) Act 2026 (2026 c. 7) defines a \"UK medical graduate\" as a person who holds a primary United Kingdom qualification within the meaning of the Medical Act 1983, but not a person who spent all or a majority of their time training for that qualification outside the British Islands",
+  "quote": "4 (1) In this Act, \"UK medical graduate\" means a person who holds a primary United Kingdom qualification within the meaning of the Medical Act 1983 (see section 4(3) of that Act), but does not include a person who spent all or a majority of their time training for that qualification outside the British Islands. [5th March 2026; S. 1 in force at 6.3.2026 by S.I. 2026/221]"
+ },
+ "topic:gmc-registration:foundation_eligibility:2027": {
+  "decision": "verified",
+  "new_source_url": "https://foundationprogramme.nhs.uk/programmes/2-year-foundation-programme/ukfp/application-process/nomination-and-eligibility/",
+  "page": "https://foundationprogramme.nhs.uk/programmes/2-year-foundation-programme/ukfp/application-process/nomination-and-eligibility/, read 2026-10-05 via page-excerpts run 37255990516, sha256 5466c551ebae3488",
+  "verified_value": "Final-year students at UK medical schools are nominated by their medical school to apply for the 2027 Foundation Programme if they are expected to qualify by 3 August 2027. Applicants studying at or qualified from a non-UK medical school, or a UK medical school campus outside the UK, apply through the Eligibility application process first",
+  "quote": "UK final year students will be nominated by their medical school to apply for the 2027 Foundation Programme if they are expected to qualify by 03 August 2027. … Applicants are required to apply via the Eligibility application process … if … The applicant is studying at or has qualified from a non-UK medical school; OR … has qualified from a UK medical school on or prior to 03 August 2025 OR … a UK medical school campus outside of the UK [right-to-work and visa sponsorship are not stated on this page; removed]"
+ },
+ "university:lancashire:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancashire.ac.uk/undergraduate/courses/medicine-mbbs",
+  "page": "https://www.lancashire.ac.uk/undergraduate/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 750122b6f7cfe66f",
+  "quote": "This course is open to international (non-UK) students and UK students."
+ },
+ "university:lancashire:international_places_open:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancashire.ac.uk/undergraduate/courses/medicine-mbbs",
+  "page": "https://www.lancashire.ac.uk/undergraduate/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 750122b6f7cfe66f",
+  "verified_value": "Yes",
+  "quote": "This course is open to international (non-UK) students and UK students."
+ },
+ "university:lancashire:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.lancashire.ac.uk/undergraduate/how-to-apply/mbbs/international-requirements, read 2026-10-05 via page-excerpts run 37256882227, sha256 6c0257b491914534",
+  "verified_value": "Nigeria (MBBS international entry requirements): successful completion of a recognised international foundation programme. English: IELTS 7.0 (with 7.0 in each component) or equivalent, or WAEC/NECO B3",
+  "quote": "Nigeria ⏎ Successful completion of a recognised international foundation programme. ⏎ IELTS 7.0 (with 7.0 in each component) or equivalent. ⏎ OR ⏎ WAEC/NECO B3 acceptable"
+ },
+ "university:lancashire:english_requirement:2027 entry": {
+  "decision": "verified",
+  "page": "https://www.lancashire.ac.uk/undergraduate/how-to-apply/mbbs/international-requirements, read 2026-10-05 via page-excerpts run 37256882227, sha256 6c0257b491914534",
+  "verified_value": "IELTS 7.0 (with 7.0 in each component) or equivalent; for Nigeria, WAEC/NECO English at B3 is acceptable",
+  "quote": "Nigeria … IELTS 7.0 (with 7.0 in each component) or equivalent. ⏎ OR ⏎ WAEC/NECO B3 acceptable"
+ },
+ "course:lancashire/medicine:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancashire.ac.uk/undergraduate/courses/medicine-mbbs",
+  "page": "https://www.lancashire.ac.uk/undergraduate/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 750122b6f7cfe66f",
+  "quote": "Fees and funding … 2026/27 … International ⏎ Full-time ⏎ £49,950 per year"
+ },
+ "course:lancashire/medicine:application_route": {
+  "decision": "verified",
+  "page": "https://www.lancashire.ac.uk/undergraduate/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 750122b6f7cfe66f",
+  "verified_value": "UCAS (UCAS code A100)",
+  "quote": "START September 2027 ⏎ UCAS CODE ⏎ A100 [a direct-application route is not stated in the excerpts read; recorded as UCAS only]"
+ },
+ "university:brunel:international_accepted": {
+  "decision": "verified",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 294ae74df04447b6",
+  "quote": "International fee status: Please apply either through UCAS or directly to Brunel by 30 June 2027. … If you're an international fee-paying student, you can also apply directly to Brunel."
+ },
+ "university:brunel:a_level_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.brunel.ac.uk/study/courses/medicine-mbbs",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 294ae74df04447b6",
+  "verified_value": "2027/8 entry: AAA (A-level); 36 (IB); BTEC not accepted",
+  "quote": "Entry requirements ⏎ 2027/8 ⏎ AAA (A-level) ⏎ Not accepted (BTEC) ⏎ 36 (IB) [the subject criteria in the older 2025/6 PDF are not re-verified]"
+ },
+ "university:aston:international_places": {
+  "decision": "verified",
+  "new_source_url": "https://www.aston.ac.uk/study/courses/medicine-mbchb",
+  "page": "https://www.aston.ac.uk/study/courses/medicine-mbchb, read 2026-10-05 via page-excerpts run 37256882227, sha256 91f05efa3618c6b3",
+  "quote": "We have 110 places for Home UK students and 30 places for international students. For entry to University in 2026, EU students are classified as international fee payer students and any applications will be considered as part of the 30 places available for international students."
+ },
+ "course:aston/a100:application_route": {
+  "decision": "verified",
+  "new_source_url": "https://www.aston.ac.uk/study/courses/medicine-mbchb",
+  "page": "https://www.aston.ac.uk/study/courses/medicine-mbchb, read 2026-10-05 via page-excerpts run 37256882227, sha256 91f05efa3618c6b3",
+  "verified_value": "UCAS (UCAS code A100)",
+  "quote": "UCAS code(s) ⏎ A100 ⏎ Start date ⏎ September 2027 … Deferred entry and gap years are permitted when applying via UCAS."
+ },
+ "university:cardiff:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.cardiff.ac.uk/study/international/your-country/africa/nigeria/entry-requirements",
+  "page": "https://www.cardiff.ac.uk/study/international/your-country/africa/nigeria/entry-requirements, read 2026-10-05 via page-excerpts run 37256882227, sha256 f0d06481d4637f96",
+  "verified_value": "For entry to undergraduate programmes (general statement, not Medicine-specific), WAEC or IGCSE English can be considered at the appropriate grade in lieu of IELTS; Foundation Course applicants are asked to sit IELTS",
+  "quote": "For entry to our undergraduate programmes, the WAEC or IGCSE can be considered at the appropriate grade, in lieu of IELTS. However, due to recent changes, if you are applying for a Foundation Course, you will be asked to sit an IELTS qualification, in order to qualify for your visa to study in the UK."
+ },
+ "course:cardiff/a100:application_route": {
+  "decision": "verified",
+  "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/medicine-mbbch, read 2026-10-05 via page-excerpts run 37256882227, sha256 bad7d3dc86fdeee0",
+  "verified_value": "UCAS (UCAS code A100)",
+  "quote": "Medicine (MBBCh) ⏎ Subject area: Medicine ⏎ UCAS code: A100 ⏎ Next intake: September 2027"
+ },
+ "university:leicester:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "page": "https://le.ac.uk/study/medicine/entry-requirements/international, read 2026-10-05 via page-excerpts run 37256882227, sha256 ad595c81bafc0125",
+  "verified_value": "Nigeria: West African Senior School Certificate Examination (WASSCE) or Senior School Certificate Education (SSCE) is not sufficient. To apply to Leicester Medical School, you would first need to take additional qualifications such as A-levels or the International Baccalaureate",
+  "quote": "Nigeria ⏎ West African Senior School Certificate Examination (WASSCE) or Senior School Certificate Education (SSCE) is not sufficient. To apply to Leicester Medical School, you would first need to take additional qualifications such as A-levels or the International Baccalaureate."
+ },
+ "university:leicester:english_requirement:2027 entry": {
+  "decision": "verified",
+  "page": "https://le.ac.uk/study/medicine/entry-requirements/international, read 2026-10-05 via page-excerpts run 37256882227, sha256 ad595c81bafc0125",
+  "verified_value": "IELTS 7.5 overall, with no component below 7.0; TOEFL (internet-based) 110 overall, minimum 24 in each component",
+  "quote": "Our current requirements are: ⏎ IELTS: 7.5 overall, with no component below 7.0 ⏎ TOEFL (internet-based test): Overall score of 110 (minimum of 24 in each component) [PTE 68 is not on this page; removed]"
+ },
+ "university:aberdeen:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.abdn.ac.uk/study/international/country-territory/nigeria/entry/",
+  "page": "https://www.abdn.ac.uk/study/international/country-territory/nigeria/entry/, read 2026-10-05 via page-excerpts run 37256882227, sha256 81d765d943bec6c4",
+  "verified_value": "Applicants with at least one A and two Bs in the West African Senior Secondary School Certificate can apply for direct entry to Year 1 for all programmes except Medicine. For Medicine, GCE A-levels, the International Baccalaureate or Scottish Highers are required",
+  "quote": "Students who have achieved at least one \"A\" and two \"Bs\" in the West African Senior Secondary School Certificate can apply for direct entry to Year 1 for all programmes except Medicine. … Medicine: GCE A-levels, International Baccalaureate or Scottish Highers required."
+ },
+ "course:aberdeen/medicine:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "page": "https://www.abdn.ac.uk/media/site/students/documents/UG--Full-time-Tuition-Fees-2026-27.pdf, read 2026-10-05 via page-excerpts run 37256882227, sha256 b43c8107975e8e99",
+  "quote": "MEDICINE (MBCHB) … PROGRAMME / AREA OF STUDY / HOME STUDENTS / REST OF UK (RUK) / EU STUDENTS / INTERNATIONAL STUDENTS … £50,100 - the confirmed rate will include the mandatory national levy to cover the cost of tuition in the NHS. [2026-27 undergraduate tuition fee table]"
+ },
+ "university:aston:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.aston.ac.uk/study/courses/medicine-mbchb",
+  "page": "https://www.aston.ac.uk/study/courses/medicine-mbchb, read 2026-10-05 via page-excerpts run 37256882227, sha256 91f05efa3618c6b3",
+  "quote": "We have 110 places for Home UK students and 30 places for international students."
+ },
+ "course:brunel/a100:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 294ae74df04447b6",
+  "quote": "Fees and funding ⏎ 2026/7 entry ⏎ International ⏎ £49,395 full-time … Fees quoted are per year and may be subject to an annual increase."
+ },
+ "course:brunel/a100:application_route": {
+  "decision": "verified",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-05 via page-excerpts run 37256882227, sha256 294ae74df04447b6",
+  "verified_value": "UCAS, or directly to Brunel for international fee status applicants, by 30 June 2027 (the direct deadline may close earlier, subject to vacancies)",
+  "quote": "International fee status: Please apply either through UCAS or directly to Brunel by 30 June 2027. Please note, the direct application deadline may close earlier, subject to course vacancies, so we recommend you apply early."
+ }
+}

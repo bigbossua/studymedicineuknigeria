@@ -4,13 +4,12 @@ Decisions live in ops/verification/reviews/<date>-*.json: {ref: {decision, verif
 import csv, glob, json, sys, os
 date = sys.argv[1]
 ws = {r['ref']: r for r in csv.DictReader(open('data/verification/worksheet-2026-10-04.csv'))}
-from importlib import import_module
 header = list(next(iter(ws.values())).keys())
 out = f'data/verification/decisions-{date}.csv'
 rows = []
 for f in sorted(glob.glob(f'ops/verification/reviews/{date}-*.json')):
     for ref, d in json.load(open(f)).items():
-        r = dict(ws[ref])
+        r = dict(ws[ref]) if ref in ws else {**{h: '' for h in header}, 'ref': ref}
         r['decision'] = d['decision']
         r['verified_value'] = d.get('verified_value', '')
         r['new_source_url'] = d.get('new_source_url', '')

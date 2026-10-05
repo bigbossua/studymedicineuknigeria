@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\Topic;
+use App\Models\University;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -32,5 +34,20 @@ class FactAmountsTest extends TestCase
         $this->assertSame(ReferenceFact::VERIFIED, $fact->verification_status);
         $this->assertNull($fact->value_text);
         $this->assertSame('£558', $fact->displayValue());
+    }
+
+    public function test_the_fee_table_hides_an_unverified_clinical_years_answer_in_production(): void
+    {
+        $u = University::create(['slug' => 'testville', 'name' => 'University of Testville', 'nation' => 'England', 'international_policy' => 'accepts']);
+        $c = Course::create(['university_id' => $u->id, 'slug' => 'a100', 'title' => 'Medicine MBBS', 'entry_type' => 'standard']);
+        $c->facts()->create(['key' => 'international_fee_gbp', 'value_number' => 48000, 'academic_year' => '2026/27', 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now(), 'source_url' => 'https://example.ac.uk/fees', 'source_type' => 'official']);
+        $clinical = $c->facts()->create(['key' => 'clinical_years_fee_differs', 'value_bool' => false, 'academic_year' => '2026/27', 'verification_status' => ReferenceFact::VERIFY_ON_PAGE, 'source_url' => 'https://example.ac.uk/fees', 'source_type' => 'official']);
+        $this->app['env'] = 'production';
+        config(['site.publish_unverified' => false]);
+        $row = fn () => preg_match('#Testville.*?</tr>#s', $this->get('/fees')->assertOk()->getContent(), $m) ? $m[0] : '';
+        $this->assertStringContainsString('£48,000', $row());
+        $this->assertStringNotContainsString('>No<', $row(), 'an unverified clinical-years answer must not be shown');
+        $clinical->update(['verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now()]);
+        $this->assertStringContainsString('>No<', $row());
     }
 }

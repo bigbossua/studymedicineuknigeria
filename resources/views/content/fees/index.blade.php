@@ -24,7 +24,7 @@
                     <td data-label="Course">{{ $c->title }}{{ $c->shortUcasCode() ? ' · '.$c->shortUcasCode() : '' }}</td>
                     <td data-label="Fee">@if($f->isPublishable() && $f->value_number)<span class="font-semibold">{{ $f->displayValue() }}</span>@elseif($f->verification_status==='NOT_PUBLISHED')<span class="text-ink-500">Not published / not open</span>@else<span class="text-ink-500">Being verified</span>@endif</td>
                     <td data-label="Fee year">{{ $f->academic_year ?? '—' }}</td>
-                    <td data-label="Clinical years">{{ $cl ? ($cl->value_bool ? 'Yes' : 'No') : '—' }}</td>
+                    <td data-label="Clinical years">{{ $cl && $cl->isPublishable() && $cl->value_bool !== null ? ($cl->value_bool ? 'Yes' : 'No') : '—' }}</td>
                     <td data-label="Status"><x-verified-badge :status="$f->verification_status" :date="$f->verified_at?->format('j M Y')" /> @if($f->source_url)<a href="{{ $f->source_url }}" rel="noopener nofollow" target="_blank" class="text-[0.8125rem]">source ↗</a>@endif</td>
                 </tr>
             @endforeach

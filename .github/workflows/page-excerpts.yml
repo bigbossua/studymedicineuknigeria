@@ -11,6 +11,10 @@ on:
         description: 'Characters of context either side of each term'
         required: false
         default: '280'
+      mode:
+        description: 'excerpts (one page per line) or crawl (one university per line: slug | start urls | terms || follow: words)'
+        required: false
+        default: excerpts
 
 permissions:
   contents: read
@@ -27,9 +31,10 @@ jobs:
         env:
           SPEC: ${{ inputs.spec }}
           CONTEXT: ${{ inputs.context }}
+          MODE: ${{ inputs.mode }}
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: |
           npm i --no-save playwright@1 pdf-parse@1 >/dev/null 2>&1
           if [ -f "$SPEC" ]; then cp "$SPEC" spec.txt; else printf '%s\n' "$SPEC" > spec.txt; fi
-          node ops/verification/page-excerpts.cjs spec.txt "${CONTEXT:-280}" | tee excerpts.txt
+          if [ "$MODE" = crawl ]; then node ops/verification/crawl-excerpts.cjs spec.txt "${CONTEXT:-300}" 14 | tee excerpts.txt; else node ops/verification/page-excerpts.cjs spec.txt "${CONTEXT:-280}" | tee excerpts.txt; fi
           { echo '### Official page excerpts'; echo '```'; head -c 60000 excerpts.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

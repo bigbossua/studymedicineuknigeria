@@ -1,0 +1,27 @@
+name: Search signals (Google autocomplete, Nigeria, read-only)
+# Reads public Google autocomplete suggestions for the Nigeria locale (gl=ng) for a list of queries: demand evidence for
+# DECISION-ENGINE §8.3 and query research. No secret is used; nothing is written anywhere except the job log and summary.
+on:
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: 'Path to a query file in the repository (one query per line; end a line with " *" for a-z expansion)'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  autocomplete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Read suggestions
+        env:
+          SPEC: ${{ inputs.spec }}
+        run: |
+          node ops/seo/autocomplete.cjs "$SPEC" | tee suggestions.jsonl
+          { echo '### Autocomplete (gl=ng)'; echo '```'; head -c 60000 suggestions.jsonl; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

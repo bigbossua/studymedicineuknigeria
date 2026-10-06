@@ -779,6 +779,22 @@ The remaining 16 were either already correct on re-reading, or need the owner (l
 - public, student and staff journeys pass;
 - PHPUnit 248/248.
 
+**Live after release `2026-10-06T14-01-16`** (commit `1412b52`, deploy run 37433696310, Live Verification run 37476513161):
+- Google-readiness audit 83 passed, 0 failed (36 sitemap URLs, 85 internal URLs);
+- all 65 old-site URLs answer 301 to their page;
+- no service fee on any public page;
+- every header present;
+- the searcher's journey passes on phone and desktop;
+- server state:
+  - 0 pending migrations, debug off, Secure and HttpOnly session cookie;
+  - live Stripe with charges enabled, webhook self-test passed, unsigned POST refused (400);
+  - 0 failed jobs, scheduler current;
+  - PHP GD present (`image_reencode_gd: true`);
+  - 0 open deletion requests;
+  - retention not yet run: it is weekly, Sunday 04:10.
+- The Sitemap/Robots probe (run 37476042962) passed: all 36 URLs answer 200 to Googlebot, are indexable and self-canonical.
+- One earlier Live Verification run (37476038923) hit Hostinger's CDN browser challenge (HTTP 403) and an SSH timeout from that runner's IP. The probe passed from another runner at the same minute, and the re-run passed. It was a per-IP block at the host, not the release.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

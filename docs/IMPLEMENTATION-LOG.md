@@ -705,6 +705,58 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - axe: 0 violations on the changed pages at 390 and 1366 px.
   - Viewport checks pass at 320, 390, 768 and 1366 px.
 
+## Stage 63: final completion pass, part 1 (cycle 57)
+
+**Production after stage 62:** release `2026-10-06T07-21-36`.
+- Live verification: Google-readiness audit 83/0 over 36 URLs; 65 old-site redirects; no service fee on any public page; security headers present.
+- Server and payments: live Stripe and the webhook self-test work; the scheduler is current; 0 failed jobs.
+- Sitemap/robots probe: passed, 36 URLs, each 200, indexable and self-canonical as Googlebot.
+- Lighthouse on live (mobile): performance 92–99; accessibility, best practices and SEO 100 on all 13 pages.
+- Mail diagnosis: SMTP sign-in OK; schedule:run and the queue worker start every minute; no mail errors in 3 days.
+
+**Fact sweep:** all 24 official sources behind verified topic facts were re-read and every value is still present (`data/verification/sweep-2026-10-06.md`).
+
+**Funnel, run locally end to end:**
+- public journey;
+- student journey (register, application, upload, export);
+- staff journey to submitted with a reference, with the student's approval recorded first;
+- payment journeys on phone and desktop: page price equals charge, cancel and retry, signed webhook marks it paid.
+
+**Security** (18 tests in `FinalSecurityAuditTest`):
+- truncated or garbage PDFs are refused;
+- the framework's signed file route no longer serves the document folder;
+- the session cookie is Secure by default in production;
+- a partially refunded or disputed fee cannot be charged again;
+- every document is encrypted at rest;
+- images are refused if they cannot be re-encoded.
+
+**Privacy** (10 tests in `PrivacyRetentionTest`):
+- 24-month anonymisation now covers every free-text field and the approved snapshot (fingerprint kept);
+- 6-year purge of payment and approval records;
+- 24-month deletion of leads and analytics events;
+- inactive pre-submission applications close after 24 months;
+- Stripe events stored without customer details;
+- HMAC application hash and masked page paths in analytics (migration re-keys old rows);
+- recorded deletion requests and `smukn:erase-account`;
+- eligibility checks included in the data export;
+- failed sign-ins and two-step failures logged;
+- a *Cookie settings* link that clears GA cookies;
+- 30-day expiry for every backup artifact;
+- privacy notice 0.9.3 describes exactly this behaviour.
+
+**Data:**
+- The admissions-test parser no longer reads "no UCAT" as UCAT (Buckingham, Brunel). Lancashire still shows UCAT because its verified wording says UK applicants must sit it.
+- "UCAS only" now parses as UCAS.
+- Directory columns follow the verified wording after every import.
+- Chester, Worcester, Pears Cumbria and Surrey are marked graduate entry without creating a second course.
+- School pages link and mark up only university and regulator pages.
+
+**SEO:**
+- Every school record has its own decision-register row (47 generated, next to 13 written rows).
+- The assessment carries the full per-field checklist with V / NP / p / - status.
+- The Search Console list is tiered P0/P1/P2 and matches the 36-URL sitemap exactly.
+- The live £125 payment and refund procedure is in `docs/ops/LIVE-PAYMENT-REHEARSAL.md`.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

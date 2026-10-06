@@ -80,7 +80,7 @@ class TopicFactsSeeder extends Seeder
             ]],
             ['costs-2026', 'Other costs of studying Medicine in the UK', '2026/27', [
                 ['living_costs_note', 'text', 'University cost-of-living pages and UKCISA guidance were not reached in research', 'https://www.ukcisa.org.uk/', $NF, 'Gap list, research 08 §4.'],
-                ['funding_note', 'text', 'Funding for international medicine students is limited: a few universities publish small partial scholarships (for example 5% of fees); most exclude Medicine from international fee discounts', 'https://www.hyms.ac.uk/', $V, 'Examples: HYMS International Excellence Scholarship (5%, 2025 entry). Confirm each year.'],
+                ['funding_note', 'text', "University-wide international scholarships can exclude Medicine: the University of Birmingham's High Fliers Undergraduate Scholarships for Africa (£5,000, 2026/27) are not open to applicants for MBChB Medicine and Surgery, and the University of Nottingham's International Undergraduate Excellence Scholarship excludes Medicine. Check each medical school's own funding page before counting on a scholarship.", 'https://www.birmingham.ac.uk/study/scholarships-funding/africa-high-fliers-undergraduate-scholarships', $V, 'Examples: HYMS International Excellence Scholarship (5%, 2025 entry). Confirm each year.'],
             ]],
         ];
 

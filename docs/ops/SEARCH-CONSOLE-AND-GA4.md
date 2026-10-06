@@ -20,7 +20,12 @@ The first-party funnel (Admin → Funnel) already measures every step without co
 2. Data stream → Web → `https://studymedicineuknigeria.com`. Copy the **Measurement ID** (`G-…`). Turn **Enhanced measurement** off except Page views (we send our own events).
 3. Data settings → Data retention → 14 months. Data collection → do **not** enable Google signals (the site passes `allow_google_signals: false` anyway).
 4. Put the Measurement ID in the server `.env` as `SITE_GA4_ID=G-…` (via the bootstrap workflow variable, or edit `~/apps/smukn-production/shared/.env` and run `php artisan config:cache` in `current/`). Nothing loads until the visitor accepts the banner.
-5. Events the site sends after consent: `course_viewed`, `apply_viewed`, `apply_click` (with `location`), `eligibility_started`, `lead_created`, `account_created`. Mark `lead_created` and `account_created` as key events in GA4 → Admin → Events.
+5. Events the site sends after consent.
+   - From the browser on public pages: `course_viewed`, `apply_viewed`, `apply_click` (`location`, `page`), `eligibility_started`, `lead_created`, `account_created`, `directory_filter`, `official_source_click` (`domain`), `whatsapp_click`, `contact_click`.
+   - From the server, only when the student acts in their own browser (never a staff action or a webhook): `application_started`, `step_completed` (`step`), `document_uploaded`, `service_chosen`, `student_approved`, `submitted`, `payment_started`.
+   - Parameters are limited to an allow-list (qualification, intake year, tier, route, school, step); no name, email, application number, document or free text ever travels. The first-party funnel (Admin → Funnel) records `payment_completed` from the Stripe webhook; GA4 does not, because a webhook has no visitor.
+   - Mark `lead_created`, `account_created`, `whatsapp_click` and `application_started` as key events in GA4 → Admin → Events.
+   - For server events also create an **API secret** (Data stream → Measurement Protocol API secrets) and set `SITE_GA4_API_SECRET` next to `SITE_GA4_ID`; then set `SITE_ANALYTICS_DECISION=ga4`.
 6. Link Search Console to GA4 (Admin → Product links) for query data inside GA4.
 
 Leave `SITE_GA4_ID` blank to run without any third-party analytics; the site is complete without it.

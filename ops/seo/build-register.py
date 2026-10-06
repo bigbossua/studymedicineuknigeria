@@ -204,6 +204,28 @@ add("E","US-curriculum applicants (SAT, AP) for UK medicine","study medicine in 
 add("E","where to take A-levels in Nigeria / predicted grades from Nigerian schools","study medicine in uk with cambridge a level from nigerian school","local / informational","MEDIUM","Nigerian school directories and news","nigeriaprivateschools.com; abbeycolleges.co.uk","—","none","/requirements/a-levels",0,_M+" q36","REJECTED","A directory of Nigerian schools is unverifiable and not our service; the A-levels page covers what UK schools require.")
 add("I","January intake and private UK medical schools","uk medical school january intake international students","informational","LOW","Buckingham FAQ; stale 2014–15 fee news","buckingham.ac.uk; mddus.com","/medical-schools","/medical-schools (the school's record)","/admissions/ucas-deadlines-2027",1,_M+" q23","RESEARCH","FAQ-level inside the school's directory record; stale fees in the SERP must never be repeated.")
 
+# Every remaining school record gets its own decision (generated from docs/seo/UNIVERSITY-ASSESSMENT.md, which is built
+# from a database with every committed decision applied): one page per school, never indexable before DECISION-ENGINE §8.
+import os, re as _re
+_named = {r["query_family"].split(" Medicine for Nigerian")[0] for r in rows if r["cluster"] == "D"}
+if os.path.exists("docs/seo/UNIVERSITY-ASSESSMENT.md"):
+    _txt = open("docs/seo/UNIVERSITY-ASSESSMENT.md").read().split("## Extended record")[0]
+    for _line in _txt.splitlines():
+        _c = [x.strip() for x in _line.strip("|").split("|")]
+        if len(_c) < 9 or _c[0] in ("University", "---") or _c[0].startswith("-"):
+            continue
+        _name, _decision, _reason = _c[0], _c[7].strip("*"), _c[8]
+        if _name in _named or _decision.startswith("PUBLISHED"):
+            continue
+        _slug = _re.sub(r"[^a-z0-9]+", "-", _name.lower()).strip("-")
+        _status = "REJECTED" if _decision.startswith(("Not a medical school", "Noindex: home")) else "RESEARCH"
+        _why = {"Noindex: home students only": "Home students only: the university does not admit international applicants to Medicine, so a page would not help a Nigerian applicant; the directory lists the school with that statement.",
+                "Not a medical school": "Not a medical school (record held for another subject); no page.",
+                "Noindex: verified, no Nigerian demand evidence": "Core facts verified, but no Nigerian demand evidence (Search Console, Semrush ng or a Nigeria-specific SERP); stays noindex (DECISION-ENGINE §8.3)."}.get(_decision, "Core facts incomplete; stays noindex until they are verified (DECISION-ENGINE §8.1).")
+        add("D", f"{_name} Medicine for Nigerian applicants", f"{_name.lower()} medicine nigeria; {_name.lower()} medicine international entry requirements", "informational", "UNKNOWN",
+            "no Nigerian demand evidence recorded (Semrush: no API units; not yet in Search Console)", "—", "—", "/medical-schools (directory record; page noindex)", "/requirements/waec; /fees", 1,
+            "docs/seo/UNIVERSITY-ASSESSMENT.md; decisions-*.csv", _status, _why + " Assessment: " + _reason[:300])
+
 # Trust / legal (navigational, required in the register because every sitemap URL needs a row)
 for path,name in [("/","Home"),("/about","About"),("/contact","Contact"),("/how-we-verify","How we verify (editorial and verification policy)"),("/privacy","Privacy notice"),("/terms","Terms of use"),("/application-terms","Application terms"),("/refund-policy","Refund policy")]:
     add("T",f"{name} (navigational / trust)",f"studymedicineuknigeria {name.lower()}","navigational","n/a: brand and trust page for every applicant, including Nigerian applicants checking who we are","n/a: not a search target","n/a",path,path,"/about; /our-status; /how-we-verify; /contact" if path!="/" else "/study-medicine-in-the-uk/from-nigeria; /requirements; /medical-schools; /fees; /apply-online",0 if path!="/" else 5,"register row 23 (row 1 for home)","PUBLISHED","Trust or navigational page; not a keyword target. Home is the journey entry and links to every hub and to the core landing page." if path=="/" else "Trust page required by the asset register (row 23); carries no keyword target and no FAQ schema.")

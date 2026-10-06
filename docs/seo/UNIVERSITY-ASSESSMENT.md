@@ -71,3 +71,64 @@ marked *verified* was read on the official page with the quotation recorded in `
 | University of Warwick | accepts | verified | no record | no record | verified (2026/27) | no record | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement, Application route. |
 | University of Wolverhampton | accepts | verified | verified | verified | verified (2027/28) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
 | University of Worcester | accepts | verified | verified | no record | verified (2027/28) | verified | **Noindex: core facts incomplete** | Missing: English requirement. |
+
+## Extended record (every field of the 55-school checklist)
+
+`V` verified on the official page · `NP` not published by the university · `p` recorded, awaiting verification (hidden in production) · `-` not recorded.
+The UCAS Medicine deadline (15 October 2026, 18:00 UK time) applies to every school whose route includes UCAS; it is a verified UCAS fact, shown on each school page.
+
+| University | City | Award · entry | Degree / UCAS code | Duration | Admissions test | Interview | A-level / IB | Foundation route | Graduate entry | International places | Official sources | Last verified | Nigerian demand evidence |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Anglia Ruskin University | Chelmsford | MBChB · standard | p | p | p | p | - | - | - | p | 0 | — | none recorded |
+| Aston University | Birmingham | MBChB · standard | V | V | V | V | p | V | p | V | 2 | 2026-10-05 | none recorded |
+| Bangor University | Bangor | — · standard | - | - | - | - | - | - | - | - | 1 | 2026-10-05 | none recorded |
+| Brighton and Sussex Medical School | Brighton | BM BS · standard | V | V | V | V | - | - | - | V | 5 | 2026-10-05 | 02 §A q4 |
+| Brunel University of London | London (Uxbridge) | MBBS · standard | V | - | V | V | V | p | p | V | 2 | 2026-10-05 | none recorded |
+| Cardiff University | Cardiff | MBBCh · standard | V | - | V | V | V | V | p | V | 4 | 2026-10-05 | 02 §A q5 |
+| City St George's, University of London | London | — · standard | V | V | V | - | - | - | - | - | 1 | 2026-10-06 | none recorded |
+| Edge Hill University | Ormskirk | MBChB · standard | p | p | p | p | - | - | - | p | 1 | 2026-10-05 | none recorded |
+| Hull York Medical School | Hull and York | MB BS · standard | p | - | V | V | - | - | - | p | 4 | 2026-10-05 | none recorded |
+| Imperial College London | London | MBBS · standard | V | V | V | V | V | V | p | V | 3 | 2026-10-06 | none recorded |
+| Keele University | Keele (Newcastle-under-Lyme) | MBChB · standard | V | V | V | p | - | V | - | V | 7 | 2026-10-06 | none recorded |
+| Kent and Medway Medical School | Canterbury and Medway | BM BS · standard | p | p | V | V | p | NP | p | V | 2 | 2026-10-05 | none recorded |
+| King's College London | London | MBBS · standard | V | - | V | p | V | V | p | V | 4 | 2026-10-05 | none recorded |
+| Lancaster University | Lancaster | — · standard | V | V | V | V | - | - | - | - | 4 | 2026-10-06 | none recorded |
+| Newcastle University | Newcastle upon Tyne | MB BS · standard | V | V | p | - | V | NP | p | V | 2 | 2026-10-05 | none recorded |
+| Pears Cumbria School of Medicine | Carlisle | MBBS · graduate | V | V | V | - | - | - | - | V | 1 | 2026-10-05 | none recorded |
+| Queen Mary University of London | London | MBBS · standard | V | V | V | p | V | p | V | V | 3 | 2026-10-06 | none recorded |
+| Queen's University Belfast | Belfast | — · standard | - | - | V | V | V | p | p | V | 4 | 2026-10-05 | none recorded |
+| ScotGEM (St Andrews and Dundee) | — | — · standard | - | - | - | - | - | - | - | - | 1 | 2026-10-06 | none recorded |
+| St Mary's University, Twickenham | London (Twickenham) | — · standard | - | - | - | - | - | - | - | - | 1 | 2026-10-06 | none recorded |
+| Swansea University | Swansea | MB BCh · graduate | V | V | - | - | - | - | - | - | 1 | 2026-10-06 | none recorded |
+| Ulster University | Derry/Londonderry | MBBS · graduate | - | - | - | - | - | - | - | - | 2 | 2026-10-06 | none recorded |
+| University College London | London | MBBS · standard | - | - | p | - | p | p | p | p | 0 | — | none recorded |
+| University of Aberdeen | Aberdeen | — · standard | - | - | V | - | p | p | p | V | 4 | 2026-10-05 | 02 §A q5 |
+| University of Birmingham | Birmingham | MBChB · standard | V | V | V | - | V | p | p | V | 2 | 2026-10-05 | none recorded |
+| University of Bristol | Bristol | MBChB · standard | V | V | V | V | - | - | - | p | 2 | 2026-10-05 | none recorded |
+| University of Buckingham | Buckingham | MBChB · standard | V | V | p | V | p | p | p | V | 3 | 2026-10-05 | 02 §A q9 |
+| University of Cambridge | Cambridge | MB BChir · standard | V | V | V | p | - | - | - | V | 5 | 2026-10-05 | none recorded |
+| University of Chester | Chester | MBChB · graduate | V | V | V | - | V | p | V | p | 4 | 2026-10-06 | none recorded |
+| University of Dundee | Dundee | — · standard | - | - | p | - | p | NP | p | p | 0 | — | none recorded |
+| University of East Anglia | Norwich | MBBS · standard | p | p | p | p | - | - | - | p | 0 | — | none recorded |
+| University of Edinburgh | Edinburgh | — · standard | - | - | V | V | p | p | p | V | 4 | 2026-10-05 | 02 §A q5 |
+| University of Exeter | Exeter | BMBS · standard | V | V | V | V | p | NP | p | V | 5 | 2026-10-05 | none recorded |
+| University of Glasgow | Glasgow | — · standard | V | V | V | - | V | p | p | V | 7 | 2026-10-05 | none recorded |
+| University of Greater Manchester | Bolton (Greater Manchester) | MBChB · standard | V | V | V | V | V | p | p | V | 2 | 2026-10-05 | none recorded |
+| University of Hertfordshire | Hatfield | MBBS · standard | V | V | V | V | - | - | - | - | 2 | 2026-10-05 | none recorded |
+| University of Lancashire | Preston | MBBS · standard | - | V | V | V | p | p | p | V | 3 | 2026-10-05 | none recorded |
+| University of Leeds | Leeds | MBChB · standard | p | - | V | V | p | NP | p | V | 3 | 2026-10-05 | none recorded |
+| University of Leicester | Leicester | MBChB · standard | V | - | V | - | p | NP | p | p | 3 | 2026-10-05 | none recorded |
+| University of Lincoln | Lincoln | — · standard | V | V | V | V | V | p | p | V | 4 | 2026-10-05 | none recorded |
+| University of Liverpool | Liverpool | MBChB · standard | V | V | V | - | p | p | p | V | 3 | 2026-10-05 | none recorded |
+| University of Manchester | Manchester | MBChB · standard | V | - | V | - | V | p | V | V | 3 | 2026-10-05 | 02 §A q5 |
+| University of Nottingham | Nottingham | BMBS · standard | V | V | V | V | p | p | p | V | 4 | 2026-10-06 | none recorded |
+| University of Oxford | Oxford | — · standard | - | - | p | - | - | - | - | - | 0 | — | none recorded |
+| University of Plymouth | Plymouth | — · standard | V | V | V | V | V | p | p | V | 3 | 2026-10-06 | none recorded |
+| University of Sheffield | Sheffield | — · standard | V | V | V | - | V | NP | p | V | 3 | 2026-10-05 | none recorded |
+| University of Southampton | Southampton | — · standard | V | V | V | - | V | - | - | - | 1 | 2026-10-05 | none recorded |
+| University of St Andrews | St Andrews | — · standard | V | V | V | - | - | - | - | - | 3 | 2026-10-06 | none recorded |
+| University of Sunderland | Sunderland | — · standard | V | V | V | V | V | p | p | V | 2 | 2026-10-05 | none recorded |
+| University of Surrey | Guildford | — · graduate | - | - | - | - | - | - | - | - | 1 | 2026-10-06 | none recorded |
+| University of Warwick | Coventry | MBChB · graduate | - | - | p | - | - | - | - | - | 2 | 2026-10-05 | none recorded |
+| University of Wolverhampton | Wolverhampton | — · standard | - | - | V | V | V | p | V | V | 3 | 2026-10-05 | none recorded |
+| University of Worcester | Worcester | MBChB · graduate | V | V | V | - | - | - | - | - | 2 | 2026-10-06 | none recorded |

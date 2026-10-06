@@ -55,5 +55,38 @@ out = ['# University assessment (generated)', '',
        '(DECISION-ENGINE §8). Do not edit by hand.', '', '## Summary', '']
 out += [f'- {k}: {v}' for k, v in sorted(counts.items())]
 out += ['', '## Every record', '', '| University | Policy | International | Nigeria / WAEC | English | Fee (year) | Route | Decision | Reason / next action |', '|---|---|---|---|---|---|---|---|---|'] + lines
+
+# Extended record: the remaining fields of the owner's 55-school checklist, each with its evidence status.
+# V = verified on the official page; NP = the university does not publish it (recorded NOT_PUBLISHED); p = recorded, not
+# yet verified (hidden in production); - = not recorded. "Last verified" is the newest verification date of the record.
+EXT = [('Degree / UCAS code', 'Course', ['ucas_code']), ('Duration', 'Course', ['course_length_years']), ('Admissions test', 'Course', ['admissions_test']),
+       ('Interview', 'Course', ['interview_format']), ('A-level / IB', 'University', ['a_level_requirement']), ('Foundation route', 'University', ['foundation_route']),
+       ('Graduate entry', 'University', ['gem_international']), ('International places', 'University', ['international_places', 'international_places_open'])]
+
+
+def mark(stype, sid, keys):
+    if sid is None:
+        return '-'
+    rows = [r[0] for r in db.execute(f"select verification_status from reference_facts where subject_type like ? and subject_id = ? and key in ({','.join('?' * len(keys))})", ('%' + stype, sid, *keys)).fetchall()]
+    return 'V' if 'VERIFIED' in rows else ('NP' if 'NOT_PUBLISHED' in rows else ('p' if rows else '-'))
+
+
+ext = []
+for uid, slug, name, city in db.execute('select id, slug, name, city from universities order by name').fetchall():
+    courses = db.execute("select id, title, award, entry_type from courses where university_id = ? order by entry_type = 'standard' desc, id", (uid,)).fetchall()
+    med = [c for c in courses if any(w in (c[1] or '').upper() for w in ('MEDICINE', 'MBBS', 'MBCHB', 'BMBS', 'MBBCH', 'MB BS', 'MB CHB', 'BM BS', 'MB BCH', 'MB, BCHIR', 'BM BCH'))]
+    if courses and not med:
+        continue
+    c = med[0] if med else (None, '', None, None)
+    last = db.execute("select max(substr(verified_at,1,10)) from reference_facts where verification_status='VERIFIED' and ((subject_type like '%University' and subject_id=?) or (subject_type like '%Course' and subject_id=?))", (uid, c[0] or -1)).fetchone()[0] or '—'
+    srcs = db.execute("select count(distinct source_url) from reference_facts where verification_status='VERIFIED' and ((subject_type like '%University' and subject_id=?) or (subject_type like '%Course' and subject_id=?))", (uid, c[0] or -1)).fetchone()[0]
+    marks = [mark(t, uid if t == 'University' else c[0], k) for _, t, k in EXT]
+    demand = evidence.get(slug, 'none recorded')
+    ext.append(f"| {name} | {city or '—'} | {(c[2] or '—')} · {c[3] or '—'} | " + ' | '.join(marks) + f" | {srcs} | {last} | {demand} |")
+out += ['', '## Extended record (every field of the 55-school checklist)', '',
+        '`V` verified on the official page · `NP` not published by the university · `p` recorded, awaiting verification (hidden in production) · `-` not recorded.',
+        'The UCAS Medicine deadline (15 October 2026, 18:00 UK time) applies to every school whose route includes UCAS; it is a verified UCAS fact, shown on each school page.',
+        '', '| University | City | Award · entry | ' + ' | '.join(e[0] for e in EXT) + ' | Official sources | Last verified | Nigerian demand evidence |',
+        '|' + '---|' * (len(EXT) + 6)] + ext
 open('docs/seo/UNIVERSITY-ASSESSMENT.md', 'w').write('\n'.join(out) + '\n')
 print(counts)

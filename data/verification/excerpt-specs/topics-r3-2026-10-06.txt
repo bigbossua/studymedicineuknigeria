@@ -1,0 +1,6 @@
+# Topic facts still open (2026-10-06): UCAT centres outside the UK, living costs, student funding
+https://www.ucat.ac.uk/ucat/registration-booking/test-centres/ | Nigeria; Pearson VUE; outside the UK; international; locator; online; OnVUE; Lagos; Abuja || links: test centre; centre; locator
+https://www.ucat.ac.uk/ucat/registration-booking/ | Nigeria; Pearson VUE; outside the UK; online; OnVUE; test centre || links: test centre; centre
+https://www.gov.uk/student-visa/money | £1,483; £1,136; 9 months; living costs; London
+https://www.ukcisa.org.uk/student-information/ | budget; cost of living; living costs; per month; money || links: budget; cost of living; money; finance
+https://www.ukcisa.org.uk/student-information/preparation-and-arrival/ | budget; cost of living; living costs; per month || links: budget; cost of living; money; finance

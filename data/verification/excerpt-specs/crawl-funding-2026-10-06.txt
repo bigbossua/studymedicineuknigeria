@@ -1,0 +1,7 @@
+# Scholarships open to international Medicine applicants, and exclusions of Medicine (2026-10-06)
+hull-york | https://www.hyms.ac.uk/medicine/international-students | scholarship; Scholarship; %; discount; Medicine; excluded; not eligible || follow: scholarship; funding; fees
+birmingham | https://www.birmingham.ac.uk/international/students/country/nigeria | scholarship; Scholarship; Medicine; MBChB; excluded; not eligible; Dentistry || follow: scholarship; funding
+leeds | https://www.leeds.ac.uk/undergraduate-fees/doc/scholarships | scholarship; Medicine; MBChB; excluded; not eligible; international || follow: scholarship; international
+nottingham | https://www.nottingham.ac.uk/international/fundingyourstudies/ | scholarship; Medicine; BMBS; excluded; not eligible; Nigeria || follow: scholarship; undergraduate; nigeria
+aberdeen | https://www.abdn.ac.uk/study/funding/ | scholarship; Medicine; MBChB; excluded; not eligible; international; Nigeria || follow: scholarship; international; undergraduate
+sheffield | https://www.sheffield.ac.uk/international/fees-and-funding/scholarships | scholarship; Medicine; MBChB; excluded; not eligible; international || follow: scholarship; undergraduate

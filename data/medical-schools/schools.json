@@ -4341,9 +4341,10 @@
         "source_type": "regulator"
       },
       "main_ug_course_name": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A101 Medicine MB ChB Graduate Entry (4 years)",
+        "source": "https://warwick.ac.uk/services/finance/studentfinance/fees/overseasfees/",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "ucas_code": {
         "value": null,
@@ -4415,7 +4416,9 @@
       "notes": [
         "Warwick is widely described as graduate-entry only, but this was not confirmed in this session: graduate_entry_course NOT FOUND."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "graduate-entry",
+      "entry_type": "graduate"
     },
     {
       "university": {
@@ -5995,9 +5998,10 @@
         "source_type": "regulator"
       },
       "main_ug_course_name": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A101 Medicine (Graduate Entry) MB BCh (4 years)",
+        "source": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "ucas_code": {
         "value": "A101",
@@ -6072,7 +6076,8 @@
         "Not researched in this session (search budget exhausted). Widely described as graduate-entry; NOT confirmed here."
       ],
       "last_researched": "2026-10-03",
-      "course_slug": "medicine"
+      "course_slug": "graduate-entry",
+      "entry_type": "graduate"
     },
     {
       "university": {
@@ -6347,9 +6352,10 @@
         "source_type": "regulator"
       },
       "main_ug_course_name": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "Medicine MBBS (Graduate Entry, 4 years)",
+        "source": "https://www.ulster.ac.uk/student/fees/tuition-fees/international/tuition-fees-202627-international-and-eu-excluding-roi",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "ucas_code": {
         "value": null,
@@ -6420,7 +6426,9 @@
       "notes": [
         "Not researched in this session (search budget exhausted). Widely described as graduate-entry; NOT confirmed here."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "graduate-entry",
+      "entry_type": "graduate"
     }
   ]
 }

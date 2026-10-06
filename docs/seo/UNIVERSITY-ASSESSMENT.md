@@ -6,9 +6,9 @@ marked *verified* was read on the official page with the quotation recorded in `
 
 ## Summary
 
-- Noindex: core facts incomplete: 19
+- Noindex: core facts incomplete: 18
 - Noindex: home students only: 7
-- Noindex: verified, no Nigerian demand evidence: 21
+- Noindex: verified, no Nigerian demand evidence: 22
 - Not a medical school: 2
 - PUBLISHED (indexable, in sitemap): 6
 
@@ -38,8 +38,8 @@ marked *verified* was read on the official page with the quotation recorded in `
 | Queen's University Belfast | accepts | verified | verified | verified | verified (2027/28) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
 | ScotGEM (St Andrews and Dundee) | home_only | verified | no record | no record | no record | no record | **Noindex: home students only** | The university publishes that it does not admit international (overseas fee) applicants to this course; listed in the directory so a Nigerian applicant does not waste a choice. |
 | St Mary's University, Twickenham | accepts | verified | no record | no record | no record | no record | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement, International fee with year, Application route. |
-| Swansea University | accepts | verified | verified | verified | no record | verified | **Noindex: core facts incomplete** | Missing: International fee with year. |
-| Ulster University | accepts | verified | no record | no record | no record | no record | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement, International fee with year, Application route. |
+| Swansea University | accepts | verified | verified | verified | verified (2027/28) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
+| Ulster University | accepts | verified | no record | no record | verified (2026/27) | no record | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement, Application route. |
 | University College London | not_published | not verified | not verified | not verified | not verified | not verified | **Noindex: core facts incomplete** | Missing: International applicants, Nigeria / WAEC statement, English requirement, International fee with year, Application route. Human verification needed (pages blocked to automated reading): https://www.ucl.ac.uk/medical-sciences/divisions/medical-school/study/undergraduate/mbbs-admissions/entry-requirements/2027-entry; https://www.ucl.ac.uk/prospective-students/undergraduate/degrees/medicine-mbbs-bsc-2026; https://www.ucl.ac.uk/languages-international-education/sites/languages-international-education/files/Applying_to_UCL_Medicine_MBBS_BSc_from_UPCSE.pdf. |
 | University of Aberdeen | accepts | verified | verified | verified | verified (2026/27) | verified | **PUBLISHED (indexable, in sitemap)** | Register D07: threshold met with Nigerian SERP evidence (02 §A q5). |
 | University of Birmingham | accepts | verified | verified | verified | not verified | verified | **Noindex: core facts incomplete** | Missing: International fee with year. Human verification needed (pages blocked to automated reading): https://www.birmingham.ac.uk/study/undergraduate/apply/entry-requirements/international-entry-requirements. |
@@ -68,6 +68,6 @@ marked *verified* was read on the official page with the quotation recorded in `
 | University of St Andrews | accepts | verified | no record | no record | verified (2027/28) | verified | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement. |
 | University of Sunderland | home_only | verified | verified | not verified | not verified | verified | **Noindex: home students only** | The university publishes that it does not admit international (overseas fee) applicants to this course; listed in the directory so a Nigerian applicant does not waste a choice. |
 | University of Surrey | accepts | verified | verified | verified | verified (2027/28) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
-| University of Warwick | accepts | verified | no record | no record | no record | no record | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement, International fee with year, Application route. |
+| University of Warwick | accepts | verified | no record | no record | verified (2026/27) | no record | **Noindex: core facts incomplete** | Missing: Nigeria / WAEC statement, English requirement, Application route. |
 | University of Wolverhampton | accepts | verified | verified | verified | verified (2027/28) | verified | **Noindex: verified, no Nigerian demand evidence** | All five core facts verified; no Nigerian SERP, Search Console or Semrush evidence recorded for this school yet (DECISION-ENGINE §8.3). Publish when Search Console shows impressions for its name or a Nigeria-specific SERP names it. |
 | University of Worcester | accepts | verified | verified | no record | verified (2027/28) | verified | **Noindex: core facts incomplete** | Missing: English requirement. |

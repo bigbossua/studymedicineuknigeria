@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\ReferenceFact;
 use App\Models\University;
 use App\Support\FactSeeding;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -199,11 +200,17 @@ class DatasetImporter
             if ($ucas && Str::lower($ucas) !== $slug) {
                 Course::where('university_id', $u->id)->where('slug', Str::lower($ucas))->update(['slug' => $slug]);
             }
+            // a school whose only Medicine course is graduate entry: the row describes that course, so an earlier
+            // 'standard' placeholder record hands its facts (and their review status) to it and is removed
+            $entryType = ($row['entry_type'] ?? null) === 'graduate' ? 'graduate' : 'standard';
+            if ($entryType === 'graduate') {
+                $this->absorbPlaceholder($u, $slug, $title);
+            }
             $course = Course::updateOrCreate(['university_id' => $u->id, 'slug' => $slug], [
                 'title' => $title,
                 'award' => $this->awardFrom($title),
                 'ucas_code' => $code,
-                'entry_type' => 'standard',
+                'entry_type' => $entryType,
                 'length_years' => is_numeric($len) ? (int) $len : null,
                 'application_route' => $this->routeFrom($route),
                 'admissions_test' => $this->testFrom($test),
@@ -219,6 +226,29 @@ class DatasetImporter
                 $this->fact($course, $key, $v, $src, $st, $type, $extra);
             }
             $this->log[] = "school: {$u->name} ({$slug}) policy={$policy}";
+        }
+    }
+
+    private function absorbPlaceholder(University $u, string $slug, string $title): void
+    {
+        $placeholder = Course::where('university_id', $u->id)->where('slug', 'medicine')->where('entry_type', 'standard')->where('slug', '!=', $slug)->first();
+        if (! $placeholder) {
+            return;
+        }
+        $target = Course::firstOrCreate(['university_id' => $u->id, 'slug' => $slug], ['title' => $title, 'award' => $this->awardFrom($title), 'entry_type' => 'graduate']);
+        foreach ($placeholder->facts()->get() as $fact) {
+            $same = $target->facts()->where('key', $fact->key)->where('academic_year', $fact->academic_year)->where('qualification_code', $fact->qualification_code)->first();
+            if ($same && ($same->verification_status === ReferenceFact::VERIFIED || $fact->verification_status !== ReferenceFact::VERIFIED)) {
+                $fact->delete();
+
+                continue;
+            }
+            $same?->delete();
+            $fact->forceFill(['subject_id' => $target->id])->save();
+        }
+        if (! DB::table('submissions')->where('course_id', $placeholder->id)->exists() && ! DB::table('submission_choices')->where('course_id', $placeholder->id)->exists()) {
+            $placeholder->delete();
+            $this->log[] = "school: {$u->name} placeholder course merged into {$slug}";
         }
     }
 

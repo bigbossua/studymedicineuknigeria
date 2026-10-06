@@ -1,0 +1,26 @@
+{
+ "course:swansea/graduate-entry:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS only, before 6pm (British Summer Time) on the stated closing date; the deadline applies to UK, EU and international applicants and late or direct applications are not accepted",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "note": "Same evidence as course:swansea/medicine:application_route (2026-10-05); the placeholder course record was merged into the graduate-entry course.",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "How to Apply ⏎ All applications must be submitted via UCAS before 6pm (British Summer Time) on the stated closing date. This deadline applies to UK, EU and International applicants. There is no facility to accept late or direct applications."
+ },
+ "course:swansea/graduate-entry:ucas_code": {
+  "decision": "verified",
+  "verified_value": "A101",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "note": "Same evidence as course:swansea/medicine:ucas_code (2026-10-05); the placeholder course record was merged into the graduate-entry course.",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "MB BCh 4 Year Full Time ⏎ UCAS Code ⏎ A101"
+ },
+ "course:swansea/graduate-entry:course_length_years": {
+  "decision": "verified",
+  "verified_value": "4",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "note": "Same evidence as course:swansea/medicine:course_length_years (2026-10-05); the placeholder course record was merged into the graduate-entry course.",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-05 via page-excerpts run 37352011255, sha256 6574093400454177",
+  "quote": "MB BCh 4 Year Full Time ⏎ UCAS Code ⏎ A101"
+ }
+}

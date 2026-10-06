@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\ChecklistRule;
+use App\Models\Course;
 use App\Models\Profession;
 use App\Models\ReferenceFact;
 use App\Models\ServiceTier;
@@ -46,6 +47,26 @@ class FactIntegrityTest extends TestCase
         $this->assertSame(ReferenceFact::VERIFIED, $deadline->fresh()->verification_status);
         $this->assertSame(ReferenceFact::ARCHIVED, $archived->fresh()->verification_status, 'a reviewer decision is never reversed by a sync');
         $this->assertSame(45000, $price->fresh()->amount_minor);
+    }
+
+    public function test_a_graduate_entry_only_school_keeps_one_course_and_its_reviewed_facts(): void
+    {
+        $this->artisan('smukn:reference-sync')->assertSuccessful();
+        $swansea = University::where('slug', 'swansea')->firstOrFail();
+        $this->assertSame(['graduate-entry'], $swansea->courses()->medicine()->pluck('slug')->all(), 'the schools row and the fee row describe the same A101 course');
+        $this->assertSame('graduate', $swansea->primaryCourse()->entry_type);
+
+        // a database from before the merge: a 'standard' placeholder holding a reviewed fact
+        $placeholder = $swansea->courses()->create(['slug' => 'medicine', 'title' => 'Medicine', 'entry_type' => 'standard']);
+        $route = $swansea->courses()->where('slug', 'graduate-entry')->firstOrFail()->facts()->where('key', 'application_route')->firstOrFail();
+        $route->forceFill(['subject_id' => $placeholder->id, 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now(), 'reviewed_at' => now()])->save();
+
+        $this->artisan('smukn:reference-sync')->assertSuccessful();
+
+        $this->assertNull($placeholder->fresh(), 'the placeholder is merged away');
+        $moved = $route->fresh();
+        $this->assertSame(ReferenceFact::VERIFIED, $moved->verification_status, 'a reviewed fact keeps its status when it moves');
+        $this->assertSame('graduate-entry', Course::find($moved->subject_id)->slug);
     }
 
     public function test_reviewer_decisions_mark_the_fact_reviewed(): void

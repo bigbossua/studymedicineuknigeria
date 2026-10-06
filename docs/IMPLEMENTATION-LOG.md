@@ -757,6 +757,28 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
 - The Search Console list is tiered P0/P1/P2 and matches the 36-URL sitemap exactly.
 - The live £125 payment and refund procedure is in `docs/ops/LIVE-PAYMENT-REHEARSAL.md`.
 
+## Stage 64: content audit and final local checks (cycle 57, part 2)
+
+**Content audit:** 95 findings across the public pages; 79 fixed in `97e51ca`. Prose now says only what an official source or the directory shows:
+- no invented ranges (places, IELTS, months);
+- counts are computed from the directory;
+- verified UCAS facts render in the FAQ and the requirements page;
+- the total-cost illustration is a labelled floor with its caveats and no upper total;
+- no "Most popular" badge.
+
+The remaining 16 were either already correct on re-reading, or need the owner (legal identity, the solicitor review) or a source that cannot be read automatically. They stay as they are.
+
+**Data:** a decisions file written before the graduate-entry merge still applies to the merged course. Swansea's verified route, UCAS code and length now survive a fresh build. `FactIntegrityTest` covers it.
+
+**Final local checks, production mode** (fresh database, decisions applied):
+- Google-readiness audit 83 passed, 0 failed (36 sitemap URLs);
+- crawl of 87 pages, all 200, no orphans;
+- axe 0 violations on every sitemap page at 390 and 1366 px;
+- no overflow at 320/390/768/1366 px, including portal and admin (144 checks);
+- CSP sweep clean;
+- public, student and staff journeys pass;
+- PHPUnit 248/248.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

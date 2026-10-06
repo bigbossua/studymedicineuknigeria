@@ -67,6 +67,14 @@ class FactIntegrityTest extends TestCase
         $moved = $route->fresh();
         $this->assertSame(ReferenceFact::VERIFIED, $moved->verification_status, 'a reviewed fact keeps its status when it moves');
         $this->assertSame('graduate-entry', Course::find($moved->subject_id)->slug);
+
+        // a decisions file written before the merge still names the placeholder course
+        $csv = 'storage/framework/testing-decisions.csv';
+        file_put_contents(base_path($csv), "ref,decision,verified_value,verified_on\ncourse:swansea/medicine:course_length_years,verified,4,2026-10-05\n");
+        $this->artisan('smukn:facts-import', ['file' => $csv])->expectsOutputToContain('1 fact(s) updated, 0 skipped, 0 unknown')->assertSuccessful();
+        $length = Course::where('university_id', $swansea->id)->where('slug', 'graduate-entry')->firstOrFail()->facts()->where('key', 'course_length_years')->firstOrFail();
+        $this->assertSame(ReferenceFact::VERIFIED, $length->verification_status);
+        @unlink(base_path($csv));
     }
 
     public function test_reviewer_decisions_mark_the_fact_reviewed(): void

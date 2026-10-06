@@ -162,6 +162,16 @@ class ImportFactsDecisions extends Command
             }
             $out[ExportFactsWorksheet::ref($f)] = $f;
         }
+        // A school whose only course is graduate entry had its 'medicine' placeholder merged into that course
+        // (DatasetImporter::absorbPlaceholder); decisions recorded against the placeholder still apply to it.
+        foreach ($out as $ref => $f) {
+            if ($f->subject instanceof Course && $f->subject->entry_type === 'graduate' && $f->subject->slug !== 'medicine'
+                && ! Course::where('university_id', $f->subject->university_id)->where('entry_type', 'standard')->exists()
+                && Course::where('university_id', $f->subject->university_id)->where('entry_type', 'graduate')->count() === 1) {
+                $alias = preg_replace('#^(course:[^/]+/)'.preg_quote($f->subject->slug, '#').':#', '$1medicine:', $ref);
+                $out[$alias] ??= $f;
+            }
+        }
 
         return $out;
     }

@@ -943,5 +943,44 @@
     ],
     "waec_neco_statement": "MB BS Medicine (2027 entry), Nigeria: the West African Senior School Certificate Examination is not enough to make a competitive entry; it must be supplemented with GCE A-levels or an equivalent qualification.",
     "waec_statement_is_medicine_specific": true
+  },
+  {
+    "university": "Lancaster University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.lancaster.ac.uk/study/entry-requirements/undergraduate-qualifications"
+    ],
+    "waec_neco_statement": "General undergraduate statement (not Medicine-specific): The West African Senior School Certificate Examination is not sufficient for entry; applicants must complete an additional qualification such as the Foundation Year at Lancaster University.",
+    "waec_statement_is_medicine_specific": false
+  },
+  {
+    "university": "City St George's, University of London",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine"
+    ],
+    "english_requirement": "Medicine MBBS: IELTS 7.0 overall with 7.0 in Writing and 6.5 in all other components"
+  },
+  {
+    "university": "University of Surrey",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry"
+    ],
+    "waec_neco_statement": "Not applicable: this Medicine course is graduate entry and requires a degree",
+    "waec_statement_is_medicine_specific": true
+  },
+  {
+    "university": "University of Worcester",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.worcester.ac.uk/courses/medicine-graduate-entry-mbchb"
+    ],
+    "waec_neco_statement": "Not applicable: this Medicine course is graduate entry and requires a degree",
+    "waec_statement_is_medicine_specific": true
   }
 ]

@@ -1,0 +1,20 @@
+# Round 5: pages the round-4 reviewers named for core facts still missing (2026-10-06)
+https://www.nottingham.ac.uk/fees/tuitionfees/202728/undergraduate.aspx | A100; A101; International fee; 2027/28
+https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/ | £; international; International; 2027; 2026; per year; fee || click: International
+https://www.dundee.ac.uk/undergraduate/medicine/fees-and-funding | £; international; overseas; 2027; 2026
+https://www.herts.ac.uk/courses/undergraduate-courses/medicine/mbbs-int-ent-req | £; fee; 2027; 2026; UCAS; apply; Nigeria; WAEC
+https://www.imperial.ac.uk/study/courses/undergraduate/medicine/ | IELTS; English language; higher requirement; standard requirement || click: Entry requirements
+https://www.imperial.ac.uk/study/apply/undergraduate/entry-requirements/accepted-qualifications/ | Nigeria; WAEC; WASSCE; West African; NECO
+https://www.imperial.ac.uk/study/apply/english-language/ | Medicine; higher requirement; IELTS; 7.0; 7.5
+https://www.kcl.ac.uk/study/undergraduate/courses/medicine-mbbs/requirements | Nigeria; WAEC; WASSCE; West African; international qualifications; not accepted
+https://www.kcl.ac.uk/study/international/region/africa | Nigeria; WAEC; WASSCE; West African; NECO; Medicine; foundation
+https://www.ncl.ac.uk/international/language/ | Medicine; MBBS; IELTS; 7.5; 7.0
+https://www.ncl.ac.uk/international/country/nigeria/ | WAEC; WASSCE; NECO; Senior School; undergraduate; foundation; Medicine
+https://www.medsci.ox.ac.uk/study/medicine/fees-and-funding | £; overseas; international; 2027; 2026; clinical
+https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery | International; £; 2027; 2026 || click: International; International students
+https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch | degree; 2:1; international; IELTS; £; 2027
+https://www.worcester.ac.uk/about/academic-schools/medical-school/medical-school-admissions/mbchb-application-faqs.aspx | IELTS; English; international; 7.0; 7.5
+https://www.ulster.ac.uk/student/fees/tuition-fees/international/tuition-fees-202627-international-and-eu-excluding-roi | MBBS; Medicine; 2026/27; £
+https://www.st-andrews.ac.uk/subjects/entry-requirements/medicine/ | IELTS; English; Nigeria; WAEC; WASSCE; international
+https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine | Nigeria; Senior School; WASSCE; West African; MBBS; except MBBS
+https://www.stmarys.ac.uk/medicine/ | IELTS; £; fee; UCAS; apply; international; Nigeria; WAEC; 2027

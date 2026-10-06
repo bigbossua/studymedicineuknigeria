@@ -1,0 +1,142 @@
+{
+ "course:keele/a100:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "verified_value": "46700",
+  "new_source_url": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/",
+  "note": "Medicine course page fee panel shows a 2027/28 / 2026/27 toggle; the international figure £46,700 is the 2026/27 fee, as the page states international fees for 2027/28 entry have not yet been confirmed. Matches the stored value.",
+  "page": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/, read 2026-10-06 via page-excerpts run 37408563047, sha256 f08cfef1f02b5737",
+  "quote": "Tuition fees for 2027/28 ⏎ 2026/27 ⏎ academic year ⏎ The tuition fee for UK Home students starting in 2027/28 ⏎ 2026/27 ⏎ is set by the UK Government and will be £10,050 ⏎ £9,790 ⏎ . ⏎ International: ⏎ £46,700 ⏎ International fees for 2027/28 entry have not yet been confirmed."
+ },
+ "university:queen-mary-london:gem_international:2027 entry": {
+  "decision": "verified",
+  "verified_value": "No: the Medicine Graduate Entry Programme MBBS (A101, 4 years) is only open to those who qualify for home fees",
+  "new_source_url": "https://www.qmul.ac.uk/fmd/study/undergraduate/courses/a101/",
+  "note": "Medicine-specific statement. The page does not print an entry year; it was read on 2026-10-06 during the 2027-entry UCAS cycle (UCAS application deadline 15 October).",
+  "page": "https://www.qmul.ac.uk/fmd/study/undergraduate/courses/a101/, read 2026-10-06 via page-excerpts run 37408563047, sha256 1851c84a14c9e70f",
+  "quote": "Medicine Graduate Entry Programme (A101) ⏎ Key Facts ⏎ Medicine | Graduate Entry Programme MBBS (GEP) (4 Years), Full time (only open to those who qualify for home fees) ⏎ UCAS Code: A101, Institution Code: Q50, Campus Code: W ⏎ UCAS application deadline: 15 October"
+ },
+ "course:lancaster/medicine:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2027",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2027/, read 2026-10-06 via page-excerpts run 37408563047, sha256 8a349604743725a0",
+  "quote": "Our Undergraduate Tuition Fees for 2027/28 are: ⏎ Home International ⏎ £10,050 £50,100",
+  "verified_value": "50100"
+ },
+ "university:lancaster:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/entry-requirements/undergraduate-qualifications",
+  "page": "https://www.lancaster.ac.uk/study/entry-requirements/undergraduate-qualifications/, read 2026-10-06 via page-excerpts run 37408563047, sha256 4a240bf87e046954",
+  "quote": "Nigeria  ⏎ West African Senior School Certificate Examination ⏎ The West African Senior School Certificate Examination is not sufficient for entry; applicants must complete an additional qualification such as the Foundation Year at Lancaster University. ... This information relates primarily to 2026 entry. ... Medicine and Surgery has specific admissions requirements that are detailed on the Lancaster Medical S",
+  "note": "The same page says the information relates primarily to 2026 entry and that Medicine and Surgery has specific admissions requirements detailed on the Lancaster Medical School pages.",
+  "verified_value": "General undergraduate statement (not Medicine-specific): The West African Senior School Certificate Examination is not sufficient for entry; applicants must complete an additional qualification such as the Foundation Year at Lancaster University."
+ },
+ "course:lancaster/medicine:application_route": {
+  "decision": "verified",
+  "new_source_url": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2027",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2027/, read 2026-10-06 via page-excerpts run 37408563047, sha256 8a349604743725a0",
+  "quote": "Medicine and Surgery ⏎ MBChB ⏎ UCAS code ⏎ A100 ⏎ Entry year ⏎ 2027 or 2026",
+  "verified_value": "UCAS (UCAS code A100)"
+ },
+ "university:scotgem:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.st-andrews.ac.uk/subjects/medicine/scotgem-mbchb",
+  "page": "https://www.st-andrews.ac.uk/subjects/medicine/scotgem-mbchb/, read 2026-10-06 via page-excerpts run 37408563047, sha256 4e7fc78521181fa3",
+  "quote": "This programme is only open to applicants who are classed as Home or RUK (rest of UK) for fee purposes. Those who are classed as overseas for fee purposes are not eligible to apply for this course.",
+  "note": "Medicine-specific statement (ScotGEM MBChB, 2027 entry page). Overseas fee-status applicants are not eligible.",
+  "verified_value": "0"
+ },
+ "course:st-andrews/a100:application_route": {
+  "decision": "verified",
+  "new_source_url": "https://www.st-andrews.ac.uk/subjects/medicine/selection",
+  "page": "https://www.st-andrews.ac.uk/subjects/medicine/selection/, read 2026-10-06 via page-excerpts run 37408565193, sha256 9d76296c0ba070b3",
+  "quote": "You will be notified of our decision through UCAS. ... The full name and date of birth on your identity document should match the name and date of birth you provided on your application through UCAS.",
+  "note": "Medicine-specific statement (School of Medicine 'How students are selected' page).",
+  "verified_value": "UCAS (Medicine decisions are notified through UCAS)"
+ },
+ "university:st-georges-london:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+  "page": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 4f812d52b6531b3b",
+  "quote": "As we have graduate and overseas number caps on our Medicine MBBS (5-year) course, the below groups are ranked separately, and may be required to achieve different UCAT scores: ⏎ Home non-graduates ⏎ Overseas non-graduates ... Fees for year 2027 / 28 ⏎ Home/UK ⏎ £10,050 ⏎ International ⏎ £47,380",
+  "note": "Medicine-specific statement: Medicine MBBS (5-year, A100) ranks overseas applicants separately and publishes an International fee for 2027/28.",
+  "verified_value": "1"
+ },
+ "course:st-georges-london/medicine:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+  "page": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 4f812d52b6531b3b",
+  "quote": "Medicine MBBS ⏎ Undergraduate degree ⏎ 2027/28 entry ... Fees for year 2027 / 28 ⏎ Home/UK ⏎ £10,050 ⏎ International ⏎ £47,380",
+  "note": "International tuition fee for Medicine MBBS (5-year, A100), 2027/28 entry page, 'Fees for year 2027 / 28'. No fact ref exists for this school.",
+  "verified_value": "47380"
+ },
+ "university:st-georges-london:english_requirement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+  "page": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 4f812d52b6531b3b",
+  "quote": "English language requirements ⏎ If your first language is not English, we will require evidence of English language proficiency. Minimum requirements are: ⏎ IELTS: ⏎ 7.0 overall with 7.0 in Writing and 6.5 in all other components",
+  "note": "Medicine-specific statement.",
+  "verified_value": "Medicine MBBS: IELTS 7.0 overall with 7.0 in Writing and 6.5 in all other components"
+ },
+ "course:st-georges-london/medicine:application_route": {
+  "decision": "verified",
+  "new_source_url": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+  "page": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 4f812d52b6531b3b",
+  "quote": "Start date ⏎ September 2027 ⏎ UCAS codes ⏎ A100 ... UCAS application deadline: 15 October 2026",
+  "note": "Medicine-specific statement.",
+  "verified_value": "UCAS (UCAS code A100); UCAS application deadline 15 October 2026 for the September 2027 start"
+ },
+ "course:st-georges-london/medicine:ucas_code": {
+  "decision": "verified",
+  "new_source_url": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+  "page": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 4f812d52b6531b3b",
+  "quote": "Start date ⏎ September 2027 ⏎ UCAS codes ⏎ A100",
+  "verified_value": "A100"
+ },
+ "course:st-georges-london/medicine:course_length_years": {
+  "decision": "verified",
+  "new_source_url": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+  "page": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 4f812d52b6531b3b",
+  "quote": "Duration ⏎ 5 years full-time ⏎ 6 years with placement year",
+  "note": "5 years full-time; 6 years with a placement year.",
+  "verified_value": "5"
+ },
+ "course:st-georges-london/medicine:admissions_test": {
+  "decision": "verified",
+  "new_source_url": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+  "page": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 4f812d52b6531b3b",
+  "quote": "Each applicant that meets our entry criteria (see below) is ranked by their UCAT score.",
+  "verified_value": "UCAT"
+ },
+ "university:st-marys-twickenham:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.stmarys.ac.uk/school-of-medicine",
+  "page": "https://www.stmarys.ac.uk/school-of-medicine, read 2026-10-06 via page-excerpts run 37408563047, sha256 c78d44177a47d0be",
+  "quote": "Apply now to study medicine starting September 2027. Initially, we can only accept applications from international students.",
+  "note": "Medicine-specific statement (St Mary's has no international_accepted fact yet). For September 2027 start the school says it can initially only accept applications from international students.",
+  "verified_value": "1"
+ },
+ "university:surrey:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry",
+  "page": "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry, read 2026-10-06 via page-excerpts run 37408565193, sha256 d277bcd5bdb95f14",
+  "quote": "Course options ⏎ BMBS ⏎ BMBS ⏎ Typical offer ⏎ 2:1 UK honours degree (or equivalent) ⏎ Start date ⏎ September 2027",
+  "note": "Surrey's only Medicine course is Medicine (Graduate Entry) BMBS, A101 (the subject page lists only this and the Medical Sciences (Gateway to Graduate Medicine) BSc, which is not a Medicine degree).",
+  "verified_value": "Not applicable: this Medicine course is graduate entry and requires a degree"
+ },
+ "university:worcester:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.worcester.ac.uk/courses/medicine-graduate-entry-mbchb",
+  "page": "https://www.worcester.ac.uk/courses/medicine-graduate-entry-mbchb, read 2026-10-06 via page-excerpts run 37408565193, sha256 9c5464630528bcb6",
+  "quote": "The MBChB course at Worcester is a graduate-entry programme. To be considered you will: ⏎ hold, or be expected to achieve in the year of application, a 1st or 2:1 undergraduate honours degree in any subject (or 2:2 plus Masters or Doctoral degree)",
+  "note": "Worcester's only Medicine course is Medicine (Graduate Entry) MBChB, A101.",
+  "verified_value": "Not applicable: this Medicine course is graduate entry and requires a degree"
+ },
+ "university:ulster:international_accepted": {
+  "decision": "verified",
+  "new_source_url": "https://www.ulster.ac.uk/global/apply/fees-and-finance",
+  "page": "https://www.ulster.ac.uk/global/apply/fees-and-finance, read 2026-10-06 via page-excerpts run 37408563047, sha256 3429e8353baedc05",
+  "quote": "The following tuition fees apply to international and EU (excluding Republic of Ireland) students. ... ine - MBBS 39,630",
+  "note": "Ulster has no international_accepted fact yet. The international (and EU excluding RoI) fee table lists an MBBS fee of 39,630 (row label truncated in the excerpt; no academic year shown in the excerpt). Ulster's only Medicine course is the graduate-entry MBBS.",
+  "verified_value": "1"
+ }
+}

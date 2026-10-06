@@ -3,6 +3,8 @@
 // Spec, one page per line:   https://official.page/path | term one; term two; ...
 // Optional link discovery:   https://official.page/path | terms || links: nigeria; tuition fees
 //   prints every link on the page whose text or address contains a link term (finds the country, fee and entry pages)
+// Optional tab opening:      https://official.page/path | terms || click: International
+//   clicks each tab or button whose visible text is exactly one of the click words before reading (fee tabs)
 //   node ops/verification/page-excerpts.cjs spec.txt [context-chars]
 const fs = require('fs');
 const crypto = require('crypto');
@@ -14,10 +16,12 @@ const { chromium } = require('playwright');
   const ctx = await browser.newContext({ locale: 'en-GB', userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36' });
   const checked = new Date().toISOString().slice(0, 10);
   for (const line of spec) {
-    const [main, linkPart = ''] = line.split('||').map((s) => s.trim());
+    const [main, ...opts] = line.split('||').map((s) => s.trim());
     const [url, termList = ''] = main.split('|').map((s) => s.trim());
     const terms = termList.split(';').map((t) => t.trim()).filter(Boolean);
-    const linkTerms = linkPart.replace(/^links:\s*/i, '').split(';').map((t) => t.trim().toLowerCase()).filter(Boolean);
+    const opt = (name) => (opts.find((o) => o.toLowerCase().startsWith(name + ':')) || '').slice(name.length + 1).split(';').map((t) => t.trim()).filter(Boolean);
+    const linkTerms = opt('links').map((t) => t.toLowerCase());
+    const clickWords = opt('click').map((t) => t.toLowerCase());
     let links = [];
     const page = await ctx.newPage();
     let status = 0; let text = ''; let finalUrl = url; let title = '';
@@ -32,6 +36,15 @@ const { chromium } = require('playwright');
       }
       const r = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
       await page.waitForTimeout(2500);
+      for (const w of clickWords) {
+        const n = await page.evaluate((word) => {
+          const els = [...document.querySelectorAll('button, [role=tab], a[href^="#"], label')].filter((e) => (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase() === word);
+          els.forEach((e) => e.click());
+          return els.length;
+        }, w);
+        if (n) await page.waitForTimeout(1200);
+        console.log(`(clicked ${n} element(s) labelled "${w}")`);
+      }
       // cookie banners and accordions hide text from innerText; open every <details> and read textContent of the main region
       // accordions and tabs hide text from innerText: open <details> and unhide collapsed blocks inside the main region
       await page.evaluate(() => {

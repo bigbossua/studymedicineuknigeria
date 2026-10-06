@@ -2328,9 +2328,10 @@
         "source_type": "official"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (UCAS code A100)",
+        "source": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2027",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -3863,14 +3864,16 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "ucas_code": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "A100",
+        "source": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "course_length_years": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": 5,
+        "source": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "graduate_entry_course": {
         "value": null,
@@ -3878,9 +3881,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -3893,9 +3897,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "admissions_test": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAT",
+        "source": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "interview_format": {
         "value": null,
@@ -3903,9 +3908,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (UCAS code A100); UCAS application deadline 15 October 2026 for the September 2027 start",
+        "source": "https://www.citystgeorges.ac.uk/prospective-students/courses/undergraduate/medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -3930,7 +3936,8 @@
       "notes": [
         "Not researched in this session (search budget exhausted)."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "course_slug": "medicine"
     },
     {
       "university": {
@@ -4954,9 +4961,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.stmarys.ac.uk/school-of-medicine",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -5684,9 +5692,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "application_route": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": "UCAS (Medicine decisions are notified through UCAS)",
+        "source": "https://www.st-andrews.ac.uk/subjects/medicine/selection",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "intake_month": {
         "value": null,
@@ -5771,9 +5780,10 @@
         "source_type": "regulator"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": false,
+        "source": "https://www.st-andrews.ac.uk/subjects/medicine/scotgem-mbchb",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,
@@ -6357,9 +6367,10 @@
         "status": "NOT FOUND IN THIS SESSION"
       },
       "international_accepted": {
-        "value": null,
-        "source": null,
-        "status": "NOT FOUND IN THIS SESSION"
+        "value": true,
+        "source": "https://www.ulster.ac.uk/global/apply/fees-and-finance",
+        "status": "VERIFY-ON-PAGE",
+        "source_type": "official"
       },
       "international_places": {
         "value": null,

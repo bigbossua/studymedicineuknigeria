@@ -55,7 +55,7 @@ class FunnelTest extends TestCase
 
         $e = FunnelEvent::where('name', 'application_started')->first();
         $this->assertNotNull($e);
-        $this->assertSame(\App\Support\Funnel::applicationHash($a), $e->application_hash, 'keyed (HMAC), so the sequential number cannot be recovered');
+        $this->assertSame(Funnel::applicationHash($a), $e->application_hash, 'keyed (HMAC), so the sequential number cannot be recovered');
         $this->assertNotSame(hash('sha256', $a->application_number), $e->application_hash);
         $this->assertNull($e->tier, 'no service is chosen until the profile has been reviewed');
         $this->assertSame(2028, $e->intake_year);

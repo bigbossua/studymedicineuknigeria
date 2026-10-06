@@ -76,6 +76,9 @@ The other 51 schools stay `noindex` and out of the sitemap. Their pages remain c
 | 13 | `https://studymedicineuknigeria.com/working-in-the-uk` | R01: fact gate passed 2026-10-05 (all visa, GMC and Foundation facts verified) |
 | 14 | `https://studymedicineuknigeria.com/medical-schools/brighton-sussex` | D12: BSMS's own Nigeria rule; named in a Nigeria-specific SERP |
 | 15 | `https://studymedicineuknigeria.com/medical-schools/buckingham` | D13: January start, 4.5 years; its PreMed PDF ranks for 'A-level medicine UK Nigeria' |
+| 16 | `https://studymedicineuknigeria.com/medical-schools/cambridge` | D14: Nigerian autocomplete 'waec/neco requirements for medicine in uk cambridge'; WASSCE alone not enough |
+| 17 | `https://studymedicineuknigeria.com/medical-schools/glasgow` | D15: Nigerian autocomplete 'waec requirements for medicine in uk glasgow'; WAEC grade rule for Medicine |
+| 18 | `https://studymedicineuknigeria.com/medical-schools/nottingham` | D16: Nigerian autocomplete 'waec/neco requirements … nottingham'; foundation rule for WAEC holders |
 
 After the requests:
 - Sitemaps → open `sitemap.xml` and confirm *Discovered pages* reads 35 once the release with rows 13–15 is live (32 before it). Resubmit only if the count is still behind after a week.

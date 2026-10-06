@@ -33,6 +33,21 @@
       "slug": "buckingham",
       "register": "D13",
       "decided_on": "2026-10-05"
+    },
+    {
+      "slug": "cambridge",
+      "register": "D14",
+      "decided_on": "2026-10-06"
+    },
+    {
+      "slug": "glasgow",
+      "register": "D15",
+      "decided_on": "2026-10-06"
+    },
+    {
+      "slug": "nottingham",
+      "register": "D16",
+      "decided_on": "2026-10-06"
     }
   ]
 }

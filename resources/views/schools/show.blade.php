@@ -55,6 +55,7 @@
                             <x-fact :status="$f->verification_status" :source="$f->source_url" :verified-at="$f->verified_at?->format('j M Y')">
                                 <p class="text-[0.8125rem] text-ink-500">{{ $labels[$f->key] ?? Str::headline($f->key) }}@if($f->academic_year) · {{ $f->academic_year }}@endif</p>
                                 <p class="font-medium text-lg">{{ $f->displayValue() ?? '—' }}@if($f->key==='international_fee_gbp' && $f->value_number)<span class="text-ink-500 font-normal text-base"> per year</span>@endif</p>
+                                @if($f->key==='international_fee_gbp' && $f->value_number)<p class="mt-1 text-[0.8125rem] text-ink-500">The rate the official source publishes for this year. Clinical years, later years and any college fee can be charged differently: check the source.</p>@endif
                             </x-fact>
                         @empty
                             <p class="text-ink-500">No course facts recorded yet.</p>

@@ -9,7 +9,7 @@ db = sqlite3.connect(sys.argv[1])
 blocked = json.load(open(sys.argv[2])) if len(sys.argv) > 2 else {}
 published = {e['slug']: e['register'] for e in json.load(open('data/medical-schools/publication.json'))['published']}
 register = {r['id']: r for r in csv.DictReader(open('data/seo/decision-register.csv'))}
-evidence = {'brighton-sussex': '02 §A q4', 'buckingham': '02 §A q9', 'aberdeen': '02 §A q5', 'cardiff': '02 §A q5', 'manchester': '02 §A q5', 'edinburgh': '02 §A q5'}
+evidence = {'brighton-sussex': '02 §A q4', 'buckingham': '02 §A q9', 'aberdeen': '02 §A q5', 'cardiff': '02 §A q5', 'manchester': '02 §A q5', 'edinburgh': '02 §A q5', 'cambridge': 'autocomplete gl=ng 2026-10-06', 'glasgow': 'autocomplete gl=ng 2026-10-06', 'nottingham': 'autocomplete gl=ng 2026-10-06'}
 CORE = [('International applicants', 'University', ['international_accepted', 'international_places_open']),
         ('Nigeria / WAEC statement', 'University', ['waec_neco_statement']),
         ('English requirement', 'University', ['english_requirement', 'english_language_requirement']),

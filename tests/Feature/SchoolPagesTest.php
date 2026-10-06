@@ -62,6 +62,7 @@ class SchoolPagesTest extends TestCase
         $this->assertStringContainsString('"@type":"Course"', $html);
         $this->assertStringContainsString('"courseCode":"A100"', $html);
         $this->assertStringContainsString('£45,000', $html, 'the verified fee is shown to the reader');
+        $this->assertStringContainsString('Clinical years, later years and any college fee can be charged differently', $html, 'a per-year rate is never read as the whole-course cost');
         $this->assertStringNotContainsString('"@type":"Offer"', $html, 'we do not sell the course: no Offer markup for a third-party fee');
         $this->assertStringNotContainsString('"price"', $html);
     }

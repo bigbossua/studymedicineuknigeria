@@ -1,0 +1,25 @@
+# Final fact sweep (2026-10-06): every verified topic fact source, with the value it should still show
+https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications | 12 May 2026; 1 September 2026; 15 October 2026; 13 January 2027; 25 February 2027; 2 July 2027; 23 September 2027
+https://www.ucas.com/applying/applying-to-university/filling-in-your-ucas-application | four; medicine; choices
+https://www.ucas.com/applying/applying-to-university/writing-your-personal-statement/how-to-write-your-personal-statement-for-2026-entry-onwards | 4,000; 350; three
+https://www.ucas.com/international/international-students/faqs-for-international-students | document upload; 2027
+https://www.ucas.com/faqs/what-is-the-application-fee-for-the-2027-cycle | £34.50
+https://www.ucas.com/international/international-students/support-for-international-students/tips-for-international-applications | agent; adviser
+https://www.ucat.ac.uk/about-ucat/ucat-test-dates/ | 16 September 2026; 23 June 2026; 24 September 2026; 2026; 10 September 2026
+https://www.ucat.ac.uk/about-ucat/ucat-essentials/ | results; day of your test
+https://www.ucat.ac.uk/about-ucat/test-format-and-scoring/ | 44; 22 minutes; 2,700; Situational Judgement
+https://www.ucat.ac.uk/faqs/ | £70; £115; many countries; OnVUE
+https://www.ukcisa.org.uk/student-advice/working/student-work/ | 20 hours; term time
+https://www.gov.uk/student-visa/family-members | government-sponsored; dependants
+https://www.gov.uk/student-visa/money | £1,529; £1,171
+https://www.gov.uk/student-visa | £558
+https://www.gov.uk/healthcare-immigration-application/how-much-pay | £776
+https://www.gov.uk/tb-test-visa/countries-where-you-need-a-tb-test-to-enter-the-uk | Nigeria; TB test
+https://www.gov.uk/graduate-visa | 31 December 2026; 1 January 2027; £937
+https://www.gmc-uk.org/education/medical-licensing-assessment | Medical Licensing Assessment; MLA
+https://www.gmc-uk.org/registration-and-licensing/join-our-registers/provisional-registration | provisional registration; Foundation
+https://foundationprogramme.nhs.uk/programmes/2-year-foundation-programme/ukfp/application-process/nomination-and-eligibility/ | 3 August 2027
+https://foundationprogramme.nhs.uk/resources/right-to-work-visas/ | Skilled Worker; Graduate visa; sponsor
+https://www.legislation.gov.uk/ukpga/2026/7 | UK medical graduate; prioritisation
+https://www.leeds.ac.uk/international-fees-costs/doc/living-expenses | £198; £36; £59; 2026/27
+https://www.birmingham.ac.uk/study/scholarships-funding/africa-high-fliers-undergraduate-scholarships | £5,000; MBChB; 2026/2027

@@ -680,6 +680,31 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - Swansea has a placeholder 'medicine' course next to its graduate-entry A101 record.
 - **Checks:** 219 tests; Google-readiness audit (production mode) 82 passed, 0 failed.
 
+## Stage 62: live verification, graduate-entry records, the total-cost page and UCAT centre wording (cycle 56)
+
+- **Production:**
+  - Release `2026-10-06T04-16-56` (commit d7f274b) was deployed with the owner's approval.
+  - Live verification passed: Google-readiness 82/0, 65 old-site redirects, no service fee on any public page, security headers.
+  - Server: 851 facts, 0 pending migrations, 0 failed jobs; the scheduler is current; live Stripe and the webhook self-test pass.
+  - The sitemap/robots probe passed: 35 URLs, each 200, indexable and self-canonical as Googlebot.
+- **Graduate-entry-only schools:**
+  - Swansea, Ulster and Warwick each had a 'standard' placeholder course beside the graduate-entry record.
+  - A schools row can now declare `entry_type: graduate`. The importer moves the placeholder's facts, keeping their review status, and removes it.
+  - Swansea's reviewed course facts carry over with the same quotations, so it has all five core facts. A regression test covers the upgrade path.
+- **Topic facts:**
+  - `living_costs_note`: the University of Leeds 2026/27 living-costs guide, quoted as one example.
+  - `funding_note`: the unsourced summary was replaced by two official exclusions of Medicine: Birmingham's High Fliers Undergraduate Scholarships for Africa and Nottingham's International Undergraduate Excellence Scholarship.
+  - `test_centres_nigeria`: from the UCAT FAQ. Centres are available in many countries via the Pearson VUE locator, and OnVUE online testing is offered where distance makes travel difficult. The FAQ names no Nigerian centre.
+- **Total-cost page:** with those three facts verified, the fact gate passed, so `/fees/cost-of-studying-medicine-in-the-uk` is indexable and in the sitemap (36 URLs).
+  - Register rows K02 and K04 are now PUBLISHED.
+  - Its 'Page in verification' alert now shows only while the gate is closed.
+- **Unsourced prose removed:** 'Lagos and Abuja are the practical centres' and 'slots go within days' were removed from the UCAT page, the UCAS timeline and FAQs 18–19. They now say what the UCAT Consortium publishes.
+- **Checks:**
+  - 220 tests pass.
+  - Google-readiness audit (production mode): 83 passed, 0 failed over 36 URLs.
+  - axe: 0 violations on the changed pages at 390 and 1366 px.
+  - Viewport checks pass at 320, 390, 768 and 1366 px.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

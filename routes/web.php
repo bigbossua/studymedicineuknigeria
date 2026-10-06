@@ -59,7 +59,7 @@ Route::get('requirements/english-language', [ContentController::class, 'english'
 
 // Fees
 Route::get('fees', [ContentController::class, 'fees'])->name('fees.index')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly']);
-Route::get('fees/cost-of-studying-medicine-in-the-uk', [ContentController::class, 'totalCost'])->name('fees.total')->defaults('sitemap', ['lastmod' => '2026-10-03', 'changefreq' => 'monthly', 'gate' => 'topics-verified:student-visa,costs-2026,ucat-2026,ucas-2027']);
+Route::get('fees/cost-of-studying-medicine-in-the-uk', [ContentController::class, 'totalCost'])->name('fees.total')->defaults('sitemap', ['lastmod' => '2026-10-06', 'changefreq' => 'monthly', 'gate' => 'topics-verified:student-visa,costs-2026,ucat-2026,ucas-2027']);
 Route::get('working-in-the-uk', [ContentController::class, 'working'])->name('working.index')->defaults('sitemap', ['lastmod' => '2026-10-05', 'changefreq' => 'monthly', 'gate' => 'topics-verified:student-visa,graduate-visa,gmc-registration']);
 
 // Admissions

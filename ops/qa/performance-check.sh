@@ -4,7 +4,7 @@
 #   ops/qa/performance-check.sh https://studymedicineuknigeria.com
 set -uo pipefail
 BASE="${1:?base url}"
-PAGES=(/ /study-medicine-in-the-uk/from-nigeria /study-medicine-in-the-uk /medical-schools /requirements /requirements/waec /fees /admissions/ucat /apply-online /apply-online/eligibility /medical-schools/aberdeen /working-in-the-uk)
+PAGES=(/ /study-medicine-in-the-uk/from-nigeria /study-medicine-in-the-uk /medical-schools /requirements /requirements/waec /fees /admissions/ucat /apply-online /apply-online/eligibility /medical-schools/aberdeen /working-in-the-uk /fees/cost-of-studying-medicine-in-the-uk)
 dir=$(mktemp -d); fail=0
 echo '| Page | Perf | A11y | Best practice | SEO | LCP | CLS | TBT |'
 echo '|---|---:|---:|---:|---:|---:|---:|---:|'

@@ -33,7 +33,7 @@
                 <h2>3. Your document timeline alongside the dates</h2>
                 <ol>
                     <li><strong>Before UCAS opens (spring):</strong> confirm your route on the <a href="{{ route('requirements.index') }}">requirements hub</a>; book an <a href="{{ route('requirements.english') }}">English test</a> if your shortlist needs one, allowing for a second sitting.</li>
-                    <li><strong>May to June:</strong> register for the <a href="{{ route('admissions.ucat') }}">UCAT</a> the day registration opens and book a Lagos or Abuja slot the day booking opens.</li>
+                    <li><strong>May to June:</strong> register for the <a href="{{ route('admissions.ucat') }}">UCAT</a> the day registration opens and book a test centre slot (the official Pearson VUE locator lists centres) the day booking opens.</li>
                     <li><strong>July to September:</strong> sit the UCAT early in the window; agree your referee; gather certificates, transcripts and translations for upload.</li>
                     <li><strong>September to mid-October:</strong> finalise four medicine choices against each school's published UCAT use, write the three statement answers, submit with the fee, and allow your referee time (<a href="{{ route('admissions.howto') }}">how to apply</a>).</li>
                 </ol>
@@ -52,7 +52,7 @@
 
             <section class="prose-site">
                 <h2>5. Planning 2028 entry from Nigeria</h2>
-                <ul><li><strong>Now:</strong> confirm your qualification route, shortlist <a href="{{ route('schools.index') }}?international=accepts">schools that accept international applicants</a>, book an English test if needed, and start work experience or shadowing you can reflect on.</li><li><strong>May–June 2027:</strong> UCAT registration opens; register on day one and book a Lagos or Abuja slot as soon as booking opens.</li><li><strong>July–September 2027:</strong> sit the UCAT early in the window.</li><li><strong>September to mid-October 2027:</strong> submit UCAS with up to four medicine choices.</li><li><strong>If the UCAS route is closed to you for 2027:</strong> the <a href="{{ route('admissions.howto') }}">direct-application schools</a> run their own calendars; check each school's page.</li></ul>
+                <ul><li><strong>Now:</strong> confirm your qualification route, shortlist <a href="{{ route('schools.index') }}?international=accepts">schools that accept international applicants</a>, book an English test if needed, and start work experience or shadowing you can reflect on.</li><li><strong>May–June 2027:</strong> UCAT registration opens; register on day one and book the nearest test centre slot as soon as booking opens.</li><li><strong>July–September 2027:</strong> sit the UCAT early in the window.</li><li><strong>September to mid-October 2027:</strong> submit UCAS with up to four medicine choices.</li><li><strong>If the UCAS route is closed to you for 2027:</strong> the <a href="{{ route('admissions.howto') }}">direct-application schools</a> run their own calendars; check each school's page.</li></ul>
                 <p class="text-[0.9375rem] text-ink-500">2028-cycle dates are published by UCAS and the UCAT Consortium in spring 2027; we will add them with sources when they appear, and this page's address will roll over with a redirect.</p>
             </section>
 

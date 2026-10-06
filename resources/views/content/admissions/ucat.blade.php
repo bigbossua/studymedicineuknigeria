@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Admissions · UCAT', 'title' => 'UCAT for Nigerian students: dates, structure, fees and sitting the test in Nigeria', 'lede' => 'The UCAT is required by most UK medical schools and is sat in the summer before you apply, at Pearson VUE centres. From Nigeria the practical centres are Lagos and Abuja, and capacity is limited. Here are the facts for the 2026 cycle (2027 entry), each with its source and verification status, how to book from Nigeria, how schools use the score, and what to do if you missed it.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Admissions · UCAT', 'title' => 'UCAT for Nigerian students: dates, structure, fees and sitting the test in Nigeria', 'lede' => 'The UCAT is required by most UK medical schools and is sat in the summer before you apply, at Pearson VUE test centres; the UCAT Consortium says centres are available in many countries and points candidates to its test centre locator. Here are the facts for the 2026 cycle (2027 entry), each with its source and verification status, how to book from Nigeria, how schools use the score, and what to do if you missed it.', 'seo' => $seo])
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 space-y-12">
             <section><h2>1. UCAT 2026 cycle (for 2027 entry): every date that matters</h2>
@@ -35,7 +35,7 @@
                 <ol>
                     <li><strong>Register on the UCAT Consortium site the day registration opens.</strong> Use your name exactly as it appears on your international passport; the centre will refuse admission if the two differ.</li>
                     <li><strong>Create the Pearson VUE account the Consortium directs you to</strong> and, when booking opens, search centres by city. Not every Pearson VUE centre in Nigeria delivers the UCAT; the official centre search is the only reliable list.</li>
-                    <li><strong>Book on the day booking opens</strong>, early in the testing window, and keep a later date in mind as a fallback. Applicants and consultancies alike report Lagos and Abuja slots going within days.</li>
+                    <li><strong>Book on the day booking opens</strong>, early in the testing window, and keep a later date in mind as a fallback. The UCAT Consortium does not publish centre capacity, so an early booking is the only safeguard.</li>
                     <li><strong>Pay the international fee by card.</strong> If your Nigerian card is declined for foreign-currency transactions, arrange a dollar or pound card, or a relative's card, before booking opens. Bursaries exist for UK candidates; eligibility for candidates outside the UK is not confirmed on the official page in our records.</li>
                     <li><strong>Apply for access arrangements first if you need them</strong> (extra time or adjustments), because they must be approved before you book and have their own earlier deadline.</li>
                     <li><strong>Sit the test early in the window</strong> so a centre problem leaves time to rebook, and travel with the passport you registered with.</li>
@@ -60,7 +60,7 @@
 
             <section class="prose-site">
                 <h2>6. If you have no UCAT result today</h2>
-                <p>For <strong>2027 entry</strong> the UCAT 2026 testing window has closed (dates above) and the UCAS medicine deadline falls in mid-October 2026. Schools that require the UCAT cannot consider you for 2027. Two honest options remain: apply for 2027 only to the <a href="{{ route('schools.index') }}?test=NONE">schools that do not use the UCAT for international applicants</a>, several of which take <a href="{{ route('admissions.howto') }}">direct applications</a> on their own calendars, or plan for <strong>2028 entry</strong>: register for the UCAT when registration opens in 2027, book a Lagos or Abuja slot the day booking opens, and apply through UCAS by mid-October 2027. Our <a href="{{ route('admissions.ucas2027') }}">timeline</a> lays out both.</p>
+                <p>For <strong>2027 entry</strong> the UCAT 2026 testing window has closed (dates above) and the UCAS medicine deadline falls in mid-October 2026. Schools that require the UCAT cannot consider you for 2027. Two honest options remain: apply for 2027 only to the <a href="{{ route('schools.index') }}?test=NONE">schools that do not use the UCAT for international applicants</a>, several of which take <a href="{{ route('admissions.howto') }}">direct applications</a> on their own calendars, or plan for <strong>2028 entry</strong>: register for the UCAT when registration opens in 2027, book the nearest test centre slot the day booking opens, and apply through UCAS by mid-October 2027. Our <a href="{{ route('admissions.ucas2027') }}">timeline</a> lays out both.</p>
             </section>
 
             <section class="prose-site">

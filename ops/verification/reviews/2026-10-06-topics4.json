@@ -1,0 +1,18 @@
+{
+ "topic:ucat-2026:test_centres_nigeria:2027": {
+  "decision": "verified",
+  "verified_value": "The UCAT Consortium does not list centres by country: it says test centres are available in many countries and asks candidates to find their nearest one with the Pearson VUE test centre locator. If travel to a centre is difficult because of distance, it points to online proctored testing (OnVUE UCAT).",
+  "new_source_url": "https://www.ucat.ac.uk/faqs/",
+  "note": "Replaces an unsourced claim that Lagos and Abuja are the practical centres; the official page names no Nigerian centre.",
+  "page": "https://www.ucat.ac.uk/faqs/, read 2026-10-06 via page-excerpts run 37413898924, sha256 66c6870ef8b46915",
+  "quote": "Can I sit the test overseas? ⏎ Yes, test centres are available in many countries. Use the test centre locator to find your nearest centre. ⏎ If travel to a test centre is difficult because of distance, pandemic, war, civil unrest or natural disaster, please refer to the information on online proctored testing (OnVUE UCAT) before booking your test."
+ },
+ "topic:costs-2026:living_costs_note:2026/27": {
+  "decision": "verified",
+  "verified_value": "Each university publishes its own estimate. Example: the University of Leeds guide (2026/27) gives a mean of £198 a week for self-catered University accommodation, plus about £36 a week for groceries, £17 for household bills if they are not in the rent, and £59 for personal costs, and calls the figures a guideline, not a quote. Leeds also advises international students who have met the visa financial requirement to work out a personal budget separately.",
+  "new_source_url": "https://www.leeds.ac.uk/international-fees-costs/doc/living-expenses",
+  "note": "One official example.",
+  "page": "https://www.leeds.ac.uk/international-fees-costs/doc/living-expenses, read 2026-10-06 via page-excerpts run 37413898924, sha256 8ca415e2dc684828",
+  "quote": "These figures are a guideline, not a quote. Always work out your own budget. ⏎ If you are an international student and have met the financial requirements for your visa, still work out a personal budget separately. ... University accommodation, self-catered ⏎ Accommodation type ⏎ mean average £198 (£122 to £273) ... Groceries: food, toiletries and cleaning products ⏎ Cost ⏎ mean average £36 (£32 to £40) ⏎ Household bills: gas and electricity, water and internet, if not included in your rent ⏎ Cost ⏎ mean average £17 (£15 to £18) ⏎ Personal costs: transport, socialising, eating out, clothes and phone ⏎ Cost ⏎ mean average £59 (£46 to £71) ... adjusted for inflation for 2026/27 where necessary."
+ }
+}

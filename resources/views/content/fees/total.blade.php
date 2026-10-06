@@ -1,7 +1,7 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
     @include('content._page-head', ['eyebrow' => 'Fees · planning', 'title' => 'Total cost of studying Medicine in the UK from Nigeria', 'lede' => 'Tuition is only part of the bill. This page adds the visa, the Immigration Health Surcharge, the maintenance funds you must show and living costs to the fee range, and shows the arithmetic. Every input is a sourced fact; where the official figure has not yet been confirmed, the line says so instead of guessing.', 'seo' => $seo])
-    <x-alert type="info" class="mt-6 max-w-3xl" title="Page in verification">Several inputs below (visa fee, living costs) have not yet been confirmed on their official pages. This page is not indexed until they are.</x-alert>
+    @if($gated)<x-alert type="info" class="mt-6 max-w-3xl" title="Page in verification">Some inputs below have not yet been confirmed on their official pages. This page is not indexed until they are.</x-alert>@endif
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 space-y-10">
             <section><h2>Inputs</h2>

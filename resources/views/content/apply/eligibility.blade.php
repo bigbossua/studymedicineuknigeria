@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo" hide-floating-cta="apply">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Apply Online · eligibility', 'title' => 'Check your eligibility for UK Medicine', 'lede' => 'Seven questions, no account needed. You will see which routes appear open on published requirements and what to read next. This is a route map from published rules, not an admissions decision; a qualified reviewer confirms your position if you proceed.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Apply Online · eligibility', 'title' => 'Check your eligibility for UK Medicine', 'lede' => 'Five questions about your route, then your name and email; no account needed. You will see which routes appear open on published requirements and what to read next. This is a route map from published rules, not an admissions decision; if you proceed, our team reviews your profile against published requirements.', 'seo' => $seo])
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-7">
             @if($result)

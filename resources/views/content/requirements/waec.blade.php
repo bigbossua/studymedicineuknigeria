@@ -10,7 +10,7 @@
             <section><h2>Medicine-specific statements ({{ $specific->count() }})</h2>@include('content._statement-list', ['items' => $specific, 'empty' => 'No medicine-specific WAEC statement has been recorded yet.'])</section>
             <section><h2>General university statements about WASSCE ({{ $general->count() }})</h2>@include('content._statement-list', ['items' => $general])</section>
             <section><h2>Where WAEC or NECO English is accepted as English-language evidence ({{ $english->count() }})</h2>
-                <p class="text-ink-700 mt-2">A few schools publish that a good grade in WAEC/NECO English Language satisfies their English requirement, sometimes for Medicine specifically and sometimes as a general rule whose application to Medicine must be confirmed. Everyone else asks for IELTS or an equivalent test; Medicine typically requires 7.0–7.5.</p>
+                <p class="text-ink-700 mt-2">A few schools publish that a good grade in WAEC/NECO English Language satisfies their English requirement, sometimes for Medicine specifically and sometimes as a general rule whose application to Medicine must be confirmed. Other schools ask for IELTS or an equivalent test, at the band each publishes (<a href="{{ route('requirements.english') }}">English requirements</a>).</p>
                 @include('content._statement-list', ['items' => $english, 'empty' => 'No WAEC/NECO English acceptance statements recorded yet.'])</section>
             <section class="prose-site">
                 <h2>What this means for you</h2>
@@ -21,7 +21,7 @@
                     <li><strong>WAEC plus a Nigerian degree:</strong> graduate entry where open to internationals, or standard entry as a graduate. <a href="{{ route('requirements.gem') }}">Graduate entry page</a>.</li>
                 </ul>
             </section>
-            <x-cta-band title="Not sure whether your Nigerian qualifications meet the requirements?" :href="route('apply.eligibility')" label="Check your eligibility">Seven questions, no account needed. You will see which routes appear open and what to read next.</x-cta-band>
+            <x-cta-band title="Not sure whether your Nigerian qualifications meet the requirements?" :href="route('apply.eligibility')" label="Check your eligibility">Five questions about your route, then your name and email; no account needed. You will see which routes appear open and what to read next.</x-cta-band>
         </div>
         <aside class="lg:col-span-4 space-y-5">
             <div class="card"><p class="eyebrow mb-3">Related</p><ul class="space-y-2 text-[0.9375rem]"><li><a href="{{ route('requirements.neco') }}">NECO and UK Medicine</a></li><li><a href="{{ route('requirements.english') }}">English language requirements</a></li><li><a href="{{ route('requirements.alevels') }}">A-levels for UK Medicine</a></li><li><a href="{{ route('schools.index') }}">Directory</a></li></ul></div>

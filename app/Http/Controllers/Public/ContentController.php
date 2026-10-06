@@ -39,6 +39,21 @@ class ContentController extends Controller
             ->sortBy(fn ($f) => $f->subject?->name)->values();
     }
 
+    /** Only the statements this environment may show: unverified records are left out of public lists (and their counts) in production. */
+    private function visible(Collection $facts): Collection
+    {
+        return $facts->filter(fn ($f) => $f->isPublishable())->values();
+    }
+
+    /** The clauses of a statement that name NECO, without those that only say NECO is not mentioned or that no NECO rule exists. */
+    private function necoClauses(?string $text): Collection
+    {
+        return collect(preg_split('/(?<=[.;])\s+/', (string) $text))
+            ->filter(fn ($c) => preg_match('/\bNECO\b/i', $c))
+            ->reject(fn ($c) => preg_match('/\bnot\s+(?:mentioned|named|listed)\b|^\s*No\b|\bdoes\s+not\s+(?:name|mention|list)\b/i', $c))
+            ->values();
+    }
+
     // ---------------- Medicine pillar ----------------
     public function medicine()
     {
@@ -56,8 +71,9 @@ class ContentController extends Controller
         $seo = $this->seo('Study Medicine in the UK from Nigeria: 2027 and 2028 entry', 'What a Nigerian student with WAEC, NECO, A-levels or a degree must know before applying to UK medicine: open routes, what schools publish, costs and key dates.', 'medicine.nigeria', [['label' => 'Medicine', 'url' => route('medicine.index')], ['label' => 'From Nigeria']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.medicine.nigeria', ['seo' => $seo, 'waec' => $this->statements('waec_neco_statement'), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'fees' => $this->feeRows(), 'faqs' => $faqs,
-            'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count(), 'homeOnly' => University::medicalSchools()->where('international_policy', 'home_only')->count()]);
+        return view('content.medicine.nigeria', ['seo' => $seo, 'waec' => $this->visible($this->statements('waec_neco_statement')), 'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'fees' => $this->feeRows(), 'faqs' => $faqs,
+            'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count(), 'homeOnly' => University::medicalSchools()->where('international_policy', 'home_only')->count(),
+            'internationalOnly' => University::medicalSchools()->where('international_policy', 'international_only')->count()]);
     }
 
     public function foundation()
@@ -68,7 +84,7 @@ class ContentController extends Controller
         $routes = $this->statements('foundation_route');
 
         return view('content.medicine.foundation', ['seo' => $seo, 'faqs' => $faqs,
-            'published' => $routes->where('verification_status', '!=', ReferenceFact::NOT_PUBLISHED)->values(),
+            'published' => $this->visible($routes->where('verification_status', '!=', ReferenceFact::NOT_PUBLISHED)),
             'notPublished' => $routes->where('verification_status', ReferenceFact::NOT_PUBLISHED)->values(),
             'foundationCourses' => Course::medicine()->with('university')->where('entry_type', 'foundation')->get()]);
     }
@@ -77,17 +93,17 @@ class ContentController extends Controller
     public function requirements()
     {
         $faqs = collect($this->faqItems())->whereIn('id', [1, 2, 6, 21])->values();
-        $seo = $this->seo('UK medical school entry requirements for Nigerians', 'What every UK medical school looks at: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants specifically must check.', 'requirements.index', [['label' => 'Requirements']]);
+        $seo = $this->seo('UK medical school entry requirements for Nigerians', 'What to check before applying to UK Medicine: qualifications, admissions tests, English, references and deadlines, and what Nigerian applicants must check.', 'requirements.index', [['label' => 'Requirements']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.requirements.index', ['seo' => $seo, 'faqs' => $faqs, 'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count(),
-            'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'english' => $this->statements('english_requirement')->count()]);
+            'ucas' => Topic::bySlug('ucas-2027'), 'ucat' => Topic::bySlug('ucat-2026'), 'english' => $this->visible($this->statements('english_requirement'))->count()]);
     }
 
     public function waec()
     {
-        $st = $this->statements('waec_neco_statement');
-        $eng = $this->statements('english_requirement')->filter(fn ($f) => preg_match('/WAEC|WASSCE|NECO/i', $f->value_text ?? ''));
+        $st = $this->visible($this->statements('waec_neco_statement'));
+        $eng = $this->visible($this->statements('english_requirement'))->filter(fn ($f) => preg_match('/WAEC|WASSCE|NECO/i', $f->value_text ?? ''));
 
         // a statement whose verified wording says it is a general undergraduate rule is listed as general, whatever the research note said
         $medicineSpecific = fn ($f) => str_contains((string) $f->notes, 'Medicine-specific') && ! preg_match('/^\s*General\b/i', (string) $f->value_text);
@@ -98,24 +114,31 @@ class ContentController extends Controller
 
     public function neco()
     {
-        $st = $this->statements('waec_neco_statement');
+        $st = $this->visible($this->statements('waec_neco_statement'));
         $faqs = collect($this->faqItems())->whereIn('id', [3, 1, 21])->values();
         $seo = $this->seo('NECO and UK Medicine: what medical schools say', 'Whether UK medical schools accept NECO for Medicine, how NECO is treated compared with WASSCE, where NECO English counts, and what route a NECO holder can take.', 'requirements.neco', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'NECO']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
+        // "Names NECO" means a clause that names it as something a school considers, not "NECO is not mentioned".
+        $mentionsNeco = $st->filter(fn ($f) => $this->necoClauses($f->value_text)->isNotEmpty())->values();
+        // NECO English: course English requirements that name NECO, plus WAEC/NECO statements whose NECO clause is about English.
+        $necoEnglish = $this->visible($this->statements('english_requirement'))->filter(fn ($f) => $this->necoClauses($f->value_text)->isNotEmpty())
+            ->concat($mentionsNeco->filter(fn ($f) => $this->necoClauses($f->value_text)->contains(fn ($c) => preg_match('/\bEnglish\b/i', $c))))
+            ->unique('subject_id')->values();
+
         return view('content.requirements.neco', ['seo' => $seo, 'faqs' => $faqs,
-            'mentionsNeco' => $st->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false), 'all' => $st,
-            'english' => $this->statements('english_requirement')->filter(fn ($f) => stripos($f->value_text ?? '', 'NECO') !== false),
+            'mentionsNeco' => $mentionsNeco, 'others' => $st->count() - $mentionsNeco->count(),
+            'english' => $necoEnglish,
             'accepting' => University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count()]);
     }
 
     public function alevels()
     {
         $faqs = collect($this->faqItems())->whereIn('id', [9, 17])->values();
-        $seo = $this->seo('A-levels for UK Medicine from Nigeria: grades and subjects', 'Typical A-level and IB requirements for UK medicine (A100), the compulsory subjects, and how Cambridge International A-levels taken in Nigeria are treated.', 'requirements.alevels', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'A-levels']]);
+        $seo = $this->seo('A-levels for UK Medicine from Nigeria: grades and subjects', 'Published A-level and IB requirements for UK medicine (A100), the subjects each school names, and what to check about Cambridge International A-levels.', 'requirements.alevels', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'A-levels']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
-        return view('content.requirements.alevels', ['seo' => $seo, 'faqs' => $faqs, 'reqs' => $this->statements('a_level_requirement'), 'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027')]);
+        return view('content.requirements.alevels', ['seo' => $seo, 'faqs' => $faqs, 'reqs' => $this->visible($this->statements('a_level_requirement')), 'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027')]);
     }
 
     public function gem()
@@ -125,7 +148,7 @@ class ContentController extends Controller
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         // Published statements about international eligibility for graduate entry ("n/a" rows are schools with no GEM programme).
-        $gem = $this->statements('gem_international')->reject(fn ($f) => in_array(trim((string) $f->value_text), ['n/a', ''], true));
+        $gem = $this->visible($this->statements('gem_international'))->reject(fn ($f) => in_array(trim((string) $f->value_text), ['n/a', ''], true));
         // Schools whose A101/A102/A109 programme was located but whose international eligibility was not: listed as such, never as "yes".
         $unknown = ReferenceFact::with('subject')->where('subject_type', University::class)->whereIn('subject_id', University::medicalSchools()->select('id'))->where('key', 'gem_international')
             ->where('verification_status', ReferenceFact::NOT_FOUND)->get()
@@ -139,15 +162,15 @@ class ContentController extends Controller
 
     public function english()
     {
-        $all = $this->statements('english_requirement');
+        $all = $this->visible($this->statements('english_requirement'));
         $faqs = collect($this->faqItems())->whereIn('id', [21, 2])->values();
-        $seo = $this->seo('English requirements for UK Medicine: IELTS and WAEC English', 'English evidence UK medical schools publish for international applicants: typical IELTS bands for Medicine, where WAEC or NECO English counts, and the visa rule.', 'requirements.english', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'English language']]);
+        $seo = $this->seo('English requirements for UK Medicine: IELTS and WAEC English', 'English evidence UK medical schools publish for international applicants: each school\'s IELTS band, where WAEC or NECO English counts, and the visa layer.', 'requirements.english', [['label' => 'Requirements', 'url' => route('requirements.index')], ['label' => 'English language']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.requirements.english', ['seo' => $seo, 'faqs' => $faqs,
             'bands' => $all->filter(fn ($f) => preg_match('/IELTS|TOEFL|PTE/i', $f->value_text ?? '')),
             'waecEnglish' => $all->filter(fn ($f) => preg_match('/WAEC|WASSCE|NECO/i', $f->value_text ?? '')),
-            'courseLevel' => $this->statements('english_language_requirement')]);
+            'courseLevel' => $this->visible($this->statements('english_language_requirement'))]);
     }
 
     // ---------------- Fees ----------------
@@ -169,16 +192,20 @@ class ContentController extends Controller
             $rows = $rows->sortBy(fn ($f) => ($f->isPublishable() && $f->value_number) ? $f->value_number : PHP_INT_MAX)->values();
         }
 
-        return view('content.fees.index', ['seo' => $this->seo('UK medical school fees for international students', 'International tuition fees for Medicine at every UK medical school, with fee year, clinical-year differences and an official source for each figure.', 'fees.index', [['label' => 'Fees']]),
-            'rows' => $rows, 'sort' => $sort, 'min' => $pub->min('value_number'), 'max' => $pub->max('value_number'), 'count' => $pub->count(), 'visa' => Topic::bySlug('student-visa')]);
+        return view('content.fees.index', ['seo' => $this->seo('UK medical school fees for international students', 'Published international tuition fees for Medicine at UK medical schools, with fee year, clinical-year differences and an official source for each figure.', 'fees.index', [['label' => 'Fees']]),
+            'rows' => $rows, 'sort' => $sort, 'min' => $pub->min('value_number'), 'max' => $pub->max('value_number'), 'count' => $pub->pluck('subject.university_id')->unique()->count(), 'visa' => Topic::bySlug('student-visa')]);
     }
 
     public function totalCost()
     {
         $gate = 'topics-verified:student-visa,costs-2026,ucat-2026,ucas-2027';
+        $fees = $this->feeRows()->filter(fn ($f) => $f->isPublishable() && $f->value_number)->values();
+        // The five-year illustration uses standard-entry rates only: graduate-entry courses are four years and priced separately.
+        $standard = $fees->reject(fn ($f) => $f->subject->entry_type === 'graduate' || in_array($f->subject->ucas_code, ['A101', 'A102', 'A109'], true))->values();
 
         return view('content.fees.total', ['gated' => ! PublishGate::passes($gate), 'seo' => $this->seo('Total cost of studying Medicine in the UK from Nigeria', 'Tuition, visa, Immigration Health Surcharge, maintenance funds, tests and living costs added up for a five- or six-year UK medical degree, with every figure sourced.', 'fees.total', [['label' => 'Fees', 'url' => route('fees.index')], ['label' => 'Total cost']])->reviewed('2026-10-06', '2027')->noindex(! PublishGate::passes($gate)),
-            'visa' => Topic::bySlug('student-visa'), 'costs' => Topic::bySlug('costs-2026'), 'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027'), 'fees' => $this->feeRows()->filter(fn ($f) => $f->isPublishable() && $f->value_number)]);
+            'visa' => Topic::bySlug('student-visa'), 'costs' => Topic::bySlug('costs-2026'), 'ucat' => Topic::bySlug('ucat-2026'), 'ucas' => Topic::bySlug('ucas-2027'), 'fees' => $fees, 'schoolCount' => $fees->pluck('subject.university_id')->unique()->count(),
+            'lowest' => $standard->sortBy('value_number')->first()]);
     }
 
     // ---------------- Working in the UK ----------------
@@ -206,7 +233,7 @@ class ContentController extends Controller
         $courses = Course::medicine()->with('university')->whereHas('university', fn ($q) => $q->whereIn('international_policy', ['accepts', 'international_only']))->get();
 
         $faqs = collect($this->faqItems())->whereIn('id', [18, 19, 20])->values();
-        $seo = $this->seo('UCAT for Nigerian students: dates, fees and test centres', 'The UCAT for applicants in Nigeria: 2026 cycle dates, the three-section structure scored out of 2700, fees, Pearson VUE centres in Nigeria and who requires it.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]);
+        $seo = $this->seo('UCAT for Nigerian students: dates, fees and test centres', 'The UCAT for applicants in Nigeria: 2026 cycle dates, the three-section structure scored out of 2700, fees, finding a Pearson VUE centre and who requires it.', 'admissions.ucat', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAT']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.admissions.ucat', ['seo' => $seo, 'faqs' => $faqs,
@@ -216,7 +243,7 @@ class ContentController extends Controller
     public function ucas2027()
     {
         $faqs = collect($this->faqItems())->whereIn('id', [12, 19])->values();
-        $seo = $this->seo('UCAS deadlines for Medicine, 2027 entry (and 2028 planning)', 'Every UCAS date that matters for medicine for 2027 entry, the UCAT window before it, the interview and offer season, and the steps to visa and arrival.', 'admissions.ucas2027', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAS 2027']]);
+        $seo = $this->seo('UCAS deadlines for Medicine, 2027 entry (and 2028 planning)', 'Every UCAS date that matters for medicine for 2027 entry, the UCAT window before it, interviews and offers, and the steps to visa and arrival.', 'admissions.ucas2027', [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'UCAS 2027']]);
         $seo->jsonLd(['@type' => 'FAQPage', 'mainEntity' => $faqs->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f['a'])]])->all()]);
 
         return view('content.admissions.ucas2027', ['seo' => $seo, 'faqs' => $faqs,
@@ -249,7 +276,7 @@ class ContentController extends Controller
     {
         $tier = ServiceTier::where('active', true)->where('code', strtoupper($code))->firstOrFail(); // URLs are lowercase site-wide
         $request->session()->put('intended_service', $tier->code);
-        Funnel::track('service_chosen', ['tier' => $tier->code]);
+        Funnel::track('service_interest', ['tier' => $tier->code]);
 
         return redirect()->route(auth()->check() ? 'portal.dashboard' : 'register');
     }
@@ -269,7 +296,7 @@ class ContentController extends Controller
 
     public function eligibility()
     {
-        return view('content.apply.eligibility', ['seo' => $this->seo('UK Medicine eligibility checker for Nigerian students', 'Seven questions, no account needed. See which routes to UK medicine appear open on published requirements for your qualifications, and what to read next.', 'apply.eligibility', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Eligibility']], false), 'result' => session('eligibility_result')]);
+        return view('content.apply.eligibility', ['seo' => $this->seo('UK Medicine eligibility checker for Nigerian students', 'Five questions about your route, no account needed. See which routes to UK medicine appear open on published requirements, and what to read next.', 'apply.eligibility', [['label' => 'Apply Online', 'url' => route('apply.index')], ['label' => 'Eligibility']], false), 'result' => session('eligibility_result')]);
     }
 
     public function eligibilitySubmit(Request $request)
@@ -298,12 +325,12 @@ class ContentController extends Controller
         switch ($d['qualification']) {
             case 'waec_only':
                 $routes[] = ['Standard-entry Medicine (A100) directly on WASSCE/NECO', 'closed', 'None of the UK medical schools we reviewed publishes direct entry on WASSCE or NECO alone; universities that address Nigeria route applicants through A-levels, the IB or a recognised foundation year.'];
-                $routes[] = ['Foundation year leading to Medicine', 'possible', 'A small number of foundation programmes publish Medicine as a destination and are open to international students. Progression is competitive and conditional.'];
-                $routes[] = ['A-levels or IB first, then standard entry', 'possible', 'The most common route; typical offers are AAA to A*AA including Chemistry and Biology, plus UCAT.'];
+                $routes[] = ['Foundation year leading to Medicine', 'possible', 'Some foundation programmes publish Medicine as a destination and are open to international students. Progression is competitive and conditional.'];
+                $routes[] = ['A-levels or IB first, then standard entry', 'possible', 'Each school publishes its own grades, required sciences and admissions test; see the A-level records.'];
                 $reads = ['requirements.waec', 'medicine.foundation', 'requirements.alevels'];
                 break;
             case 'alevels_ib':
-                $routes[] = ['Standard-entry Medicine (A100)', $d['sciences'] === 'yes' ? 'open' : 'conditional', $d['sciences'] === 'yes' ? 'Appears open subject to grades (typically AAA to A*AA including Chemistry and Biology), the UCAT and English evidence.' : 'Most schools require Chemistry and Biology (or another science) at A-level; check the subject rules of each school.'];
+                $routes[] = ['Standard-entry Medicine (A100)', $d['sciences'] === 'yes' ? 'open' : 'conditional', $d['sciences'] === 'yes' ? 'Appears open subject to each school\'s published grades and subjects, its admissions test and English evidence.' : 'Schools name the sciences they require at A-level (Chemistry, Biology or both, sometimes another science); check the subject rules of each school.'];
                 $reads = ['requirements.alevels', 'admissions.ucat', 'schools.index'];
                 $tier = 'T2';
                 break;
@@ -312,8 +339,8 @@ class ContentController extends Controller
                 $reads = ['medicine.foundation', 'schools.index'];
                 break;
             case 'nigerian_degree':
-                $routes[] = ['Graduate Entry Medicine (A101/A102)', 'conditional', 'Only some graduate-entry programmes accept international applicants; our research confirmed few. Degree class and GAMSAT or UCAT requirements apply.'];
-                $routes[] = ['Standard-entry Medicine as a graduate', 'possible', 'Many schools accept graduates onto the five-year course, often on degree class plus UCAT.'];
+                $routes[] = ['Graduate Entry Medicine (A101/A102)', 'conditional', 'Each graduate-entry programme publishes whether it accepts international applicants; degree class and GAMSAT or UCAT requirements apply.'];
+                $routes[] = ['Standard-entry Medicine as a graduate', 'possible', 'Some schools consider graduates for the five-year course; check each school\'s page.'];
                 $reads = ['requirements.gem', 'admissions.ucat', 'schools.index'];
                 break;
             default:
@@ -321,7 +348,7 @@ class ContentController extends Controller
                 $reads = ['requirements.index'];
         }
         if ($d['english'] !== 'ielts') {
-            $routes[] = ['English language evidence', 'conditional', $d['english'] === 'waec_english' ? 'A few medical schools publish acceptance of WAEC/NECO English for Medicine; most ask for IELTS 7.0–7.5. Check the school.' : 'You will need recognised English evidence; Medicine typically requires IELTS 7.0–7.5 overall.'];
+            $routes[] = ['English language evidence', 'conditional', $d['english'] === 'waec_english' ? 'A few medical schools publish acceptance of WAEC/NECO English for Medicine; others ask for IELTS or an equivalent test at the band they publish. Check the school.' : 'You will need recognised English evidence; each school publishes the IELTS band (or equivalent) it requires.'];
         }
         if ($d['ucat'] !== 'taken' && (int) $d['intake_year'] === 2027) {
             // Dates come from the verified topic facts when publishable; otherwise the sentence stays generic rather than quoting an unverified date.
@@ -329,17 +356,17 @@ class ContentController extends Controller
             $deadline = Topic::bySlug('ucas-2027')?->fact('deadline_medicine');
             $dates = ($window?->isPublishable() && $deadline?->isPublishable())
                 ? "The UCAT 2026 testing window ran {$window->displayValue()} and the UCAS medicine deadline is {$deadline->displayValue()}."
-                : 'The UCAT for 2027 entry is sat in the summer of 2026 and the UCAS medicine deadline falls in mid-October 2026.';
-            $routes[] = ['2027 entry via UCAT schools', 'closed', $dates.' Without a UCAT result, only schools that do not require the UCAT remain realistic for 2027; most applicants in your position plan for 2028.'];
+                : 'The UCAT for 2027 entry was sat in 2026, before the UCAS medicine deadline.';
+            $routes[] = ['2027 entry via UCAT schools', 'closed', $dates.' Without a UCAT result, only schools that publish no UCAT requirement remain open for 2027; otherwise plan for 2028.'];
         }
         if ($d['ucat'] === 'none' && (int) $d['intake_year'] >= 2028) {
-            $routes[] = ['UCAT', 'conditional', 'Most medical schools require the UCAT, sat in July–September of the year before entry. Plan to register in May/June '.((int) $d['intake_year'] - 1).'.'];
+            $routes[] = ['UCAT', 'conditional', 'Schools that use the UCAT require it to be sat in its testing window the year before entry. Register as soon as registration opens in '.((int) $d['intake_year'] - 1).' (the UCAT page has the current dates).'];
         }
         $open = collect($routes)->pluck(1);
         // The headline must describe the applicant's own qualification, not a generic route list.
         $summary = match ($d['qualification']) {
             'waec_only' => 'Standard entry is not open directly on WAEC or NECO; a foundation year that leads to Medicine, or A-levels/IB first, appear possible.',
-            'alevels_ib' => $open->contains('open') ? 'Standard entry appears open subject to grades, the UCAT and English evidence.' : 'Standard entry depends on your subjects: Chemistry and Biology (or another science) are required almost everywhere.',
+            'alevels_ib' => $open->contains('open') ? 'Standard entry appears open subject to grades, the UCAT and English evidence.' : 'Standard entry depends on your subjects: check each school\'s published science requirements.',
             'foundation' => 'Progression to Medicine depends entirely on your provider\'s published agreement with named medical schools.',
             'nigerian_degree' => 'Graduate entry is conditional on each programme\'s international policy; standard entry as a graduate appears possible.',
             default => 'Routes depend on conditions we need to check with you.',
@@ -352,37 +379,43 @@ class ContentController extends Controller
     public function faqItems(): array
     {
         $r = fn ($n) => route($n);
+        // Dated values come from the verified topic fact; without it the answer names the deadline without a date.
+        $deadline = Topic::bySlug('ucas-2027')?->fact('deadline_medicine');
+        $byDeadline = ($deadline && $deadline->isPublishable() && $deadline->displayValue()) ? 'by the medicine deadline (for 2027 entry, '.str_replace(['(', ')'], '', $deadline->displayValue()).')' : 'by the medicine deadline';
+        $total = University::medicalSchools()->count();
+        $open = University::medicalSchools()->whereIn('international_policy', ['accepts', 'international_only'])->count();
+        $homeOnly = University::medicalSchools()->where('international_policy', 'home_only')->count();
 
         return [
             ['id' => 1, 'q' => 'Can I study Medicine in the UK with WAEC?', 'a' => 'Not directly onto the standard five-year degree at any medical school we reviewed. UK universities that publish a Nigeria page treat WASSCE as the equivalent of GCSEs and ask for A-levels, the IB or a recognised foundation year before Medicine. See what each school says on our <a href="'.$r('requirements.waec').'">WAEC page</a>.'],
-            ['id' => 2, 'q' => 'Is WAEC accepted as a GCSE equivalent?', 'a' => 'Several universities publish exactly that: WASSCE with strong grades (often C6 or above, with B grades in English and Mathematics for some schools) covers the GCSE layer of a Medicine offer, while the main offer is made on A-levels or IB. Each school\'s wording is on our <a href="'.$r('requirements.waec').'">WAEC page</a>.'],
-            ['id' => 3, 'q' => 'Does NECO count the same as WAEC?', 'a' => 'Most UK medical school pages name WASSCE and are silent on NECO. Where NECO is mentioned it is treated like WASSCE. Where a school is silent, confirm directly. Details on our <a href="'.$r('requirements.neco').'">NECO page</a>.'],
-            ['id' => 6, 'q' => 'Do JAMB, JUPEB, IJMB, OND or HND count for UK Medicine?', 'a' => 'No UK medical school we reviewed lists JAMB/UTME as an entry qualification, and we have not found one that publishes JUPEB, IJMB, OND or HND as an entry qualification for Medicine. They are routes into Nigerian universities. UK schools assess A-levels, the IB or a foundation programme they name, plus the UCAT, your statement and reference; a completed degree matters only for graduate entry, where the school sets its own rules (see <a href="'.$r('requirements.gem').'">graduate entry with a Nigerian degree</a>). Be cautious of anyone who says an OND or HND gives direct entry to Medicine; ask them for the school\'s published statement.'],
+            ['id' => 2, 'q' => 'Is WAEC accepted as a GCSE equivalent?', 'a' => 'Several universities publish that WASSCE covers the GCSE layer of a Medicine offer, while the main offer is made on A-levels or IB; the grades they ask for differ. Each school\'s wording is on our <a href="'.$r('requirements.waec').'">WAEC page</a>.'],
+            ['id' => 3, 'q' => 'Does NECO count the same as WAEC?', 'a' => 'Many university statements name WASSCE without NECO. Where a statement names NECO, it names it alongside WAEC. Where a school is silent, confirm directly. Details on our <a href="'.$r('requirements.neco').'">NECO page</a>.'],
+            ['id' => 6, 'q' => 'Do JAMB, JUPEB, IJMB, OND or HND count for UK Medicine?', 'a' => 'No UK medical school we reviewed lists JAMB/UTME, JUPEB or IJMB as an entry qualification for Medicine; they are routes into Nigerian universities. Only a few schools publish a route for National Diploma (OND) or HND holders, some only as a general undergraduate rule; check each school\'s statement on our <a href="'.$r('requirements.waec').'">WAEC page</a>. Otherwise UK schools assess A-levels, the IB or a foundation programme they name, plus the admissions test, your statement and reference; a completed degree is assessed under each school\'s own rules (see <a href="'.$r('requirements.gem').'">graduate entry with a Nigerian degree</a>). If anyone says an OND or HND gives entry to Medicine, ask them for the school\'s published statement.'],
             ['id' => 8, 'q' => 'Which foundation years actually lead to Medicine?', 'a' => 'Only a few foundation programmes publish Medicine as a destination for international students, and progression is competitive and conditional. We list the ones we found, with their published terms, on our <a href="'.$r('medicine.foundation').'">foundation routes page</a>. Treat any "guaranteed progression to medicine" claim with caution unless the provider publishes it.'],
-            ['id' => 9, 'q' => 'What is the difference between a UK foundation year and A-levels for Medicine?', 'a' => 'A-levels (or the IB) are the school-leaving qualifications almost every UK medical school names in its standard offer; they take two years and are examined externally. A foundation year is a one-year university programme that only leads to Medicine where the provider publishes that progression route, and places are competitive and conditional. For a WASSCE holder both are possible; A-levels keep every medical school open, a foundation year only the ones that publish Medicine as a destination. Compare on our <a href="'.$r('requirements.alevels').'">A-level page</a> and <a href="'.$r('medicine.foundation').'">foundation routes page</a>.'],
-            ['id' => 15, 'q' => 'What are the best medical schools in the UK?', 'a' => 'We do not rank medical schools and no official body does. Every UK medical school awards a primary medical qualification recognised by the GMC. The questions that matter for a Nigerian applicant are different: does the school admit international students, does it accept your qualifications, what does it cost, which test does it use, and how does it interview. The <a href="'.$r('schools.index').'">directory</a> answers those from each school\'s own pages.'],
-            ['id' => 17, 'q' => 'Can I switch from Arts to Medicine?', 'a' => 'Only by gaining the science qualifications medical schools require: published standard offers ask for Chemistry and usually Biology at A-level (or IB Higher Level), and most schools do not accept a foundation year unless it is one they name. An Arts background does not bar you, but the subjects have to be studied first. Start from the <a href="'.$r('requirements.index').'">requirements hub</a>.'],
+            ['id' => 9, 'q' => 'What is the difference between a UK foundation year and A-levels for Medicine?', 'a' => 'A-levels (or the IB) are the school-leaving qualifications UK medical schools name in their standard offers; they take two years and are examined externally. A foundation year is a one-year university programme that only leads to Medicine where the provider publishes that progression route, and places are competitive and conditional. For a WASSCE holder both are possible. A-levels are the qualification standard offers are built on, while a foundation year leads only to the schools that publish Medicine as a destination; whether a school is open to you also depends on its international policy. Compare on our <a href="'.$r('requirements.alevels').'">A-level page</a> and <a href="'.$r('medicine.foundation').'">foundation routes page</a>.'],
+            ['id' => 15, 'q' => 'What are the best medical schools in the UK?', 'a' => 'We do not rank medical schools and no official body does. The General Medical Council approves UK medical degrees; some newer schools are still under GMC review, and the directory shows each school\'s GMC status. The questions that matter for a Nigerian applicant are different: does the school admit international students, does it accept your qualifications, what does it cost, which test does it use, and how does it interview. The <a href="'.$r('schools.index').'">directory</a> answers those from each school\'s own pages.'],
+            ['id' => 17, 'q' => 'Can I switch from Arts to Medicine?', 'a' => 'Only by gaining the science qualifications medical schools require: published standard offers name the sciences required at A-level (or IB Higher Level), such as Chemistry, Biology or both, and a foundation year counts only where the school names it. An Arts background does not bar you, but the subjects have to be studied first. Start from the <a href="'.$r('requirements.index').'">requirements hub</a>.'],
             ['id' => 19, 'q' => 'How quickly do UCAT test slots in Nigeria run out?', 'a' => 'The UCAT Consortium does not publish how many places each centre has, so treat every slot as scarce. Register the day registration opens, book on the day booking opens, and keep a later date as a fallback. The dates and fees are on our <a href="'.$r('admissions.ucat').'">UCAT page</a>.'],
             ['id' => 23, 'q' => 'What does it cost in naira?', 'a' => 'We publish fees in pounds only, because the naira figure changes with the exchange rate between the day you read it and the day you pay. Convert the published pound fee at the rate your bank will actually apply, and remember that visa fees, the Immigration Health Surcharge and the maintenance funds you must show are also set in pounds. The <a href="'.$r('fees.total').'">total cost page</a> adds them up.'],
-            ['id' => 27, 'q' => 'What are the international acceptance rates at UK medical schools?', 'a' => 'Most schools do not publish them, and we do not estimate what is not published. What schools do publish is the number of international places (often 10 to 30) and, sometimes, applicant numbers; where we have that we show it on the school\'s page with its source and date. Treat any site quoting precise acceptance rates without a university source with caution.'],
+            ['id' => 27, 'q' => 'What are the international acceptance rates at UK medical schools?', 'a' => 'Most schools do not publish them, and we do not estimate what is not published. Some schools publish their number of international places and, sometimes, applicant numbers; where they do, we show it on the school\'s page with its source and date. Treat any site quoting precise acceptance rates without a university source with caution.'],
             ['id' => 34, 'q' => 'I am already a doctor in Nigeria. Can you help me with PLAB, the UKMLA or housemanship in the UK?', 'a' => 'No. We support students applying to study Medicine in the UK from the start. Registration routes for doctors who qualified outside the UK are set by the General Medical Council, and the British Medical Association publishes guidance for international doctors; both are the right sources for that question.'],
-            ['id' => 12, 'q' => 'How do I study Medicine in the UK, step by step?', 'a' => 'Get the right qualifications (A-levels/IB or an approved foundation), sit the UCAT in the summer before entry, apply through UCAS by 15 October with up to four medicine choices, interview between December and March, meet offer conditions, then pay the deposit, receive your CAS and apply for the Student visa. Our <a href="'.$r('admissions.ucas2027').'">timeline page</a> has the dates.'],
+            ['id' => 12, 'q' => 'How do I study Medicine in the UK, step by step?', 'a' => 'Get the right qualifications (A-levels/IB or an approved foundation), sit the admissions test your schools name (such as the UCAT) in its testing window before you apply, apply through UCAS '.$byDeadline.' with up to four medicine choices, attend any interview, meet offer conditions, then pay the deposit, receive your CAS and apply for the Student visa. Our <a href="'.$r('admissions.ucas2027').'">timeline page</a> has the dates.'],
             ['id' => 18, 'q' => 'Where can I sit the UCAT in Nigeria?', 'a' => 'The UCAT is delivered at Pearson VUE test centres. The UCAT Consortium says test centres are available in many countries and asks candidates to use its test centre locator to find the nearest one; if travel to a centre is difficult because of distance, it points to online proctored testing (OnVUE UCAT). Book as soon as booking opens. See our <a href="'.$r('admissions.ucat').'">UCAT page</a>.'],
-            ['id' => 20, 'q' => 'What UCAT score do I need?', 'a' => 'Since 2025 the cognitive total is out of 2700 (three sections) plus a Situational Judgement band. Thresholds vary by school and year; many schools rank international applicants separately. We do not publish cut-offs we cannot source.'],
-            ['id' => 21, 'q' => 'Do I need IELTS as a Nigerian applicant?', 'a' => 'For most medical schools, yes: published requirements are typically IELTS 7.0 to 7.5 overall. A few schools accept WAEC or NECO English for specific courses. Our <a href="'.$r('requirements.english').'">English page</a> lists what each school publishes, and the visa rule.'],
-            ['id' => 22, 'q' => 'How much does it cost to study Medicine in the UK as an international student?', 'a' => 'International Medicine fees vary widely by school and often rise in clinical years. Our <a href="'.$r('fees.index').'">fee guide</a> lists each school\'s published fee with its fee year and source, and shows the overall range separately.'],
+            ['id' => 20, 'q' => 'What UCAT score do I need?', 'a' => 'Since 2025 the cognitive total is out of 2700 (three sections) plus a Situational Judgement band. Thresholds vary by school and year; some schools publish that they rank international applicants separately. We do not publish cut-offs we cannot source.'],
+            ['id' => 21, 'q' => 'Do I need IELTS as a Nigerian applicant?', 'a' => 'Unless the school accepts other evidence, yes: each school publishes its own English requirement, as an IELTS band with component minimums or an equivalent test, and a few accept WAEC or NECO English for specific courses. Our <a href="'.$r('requirements.english').'">English page</a> lists what each school publishes, and the visa rule.'],
+            ['id' => 22, 'q' => 'How much does it cost to study Medicine in the UK as an international student?', 'a' => 'International Medicine fees vary by school, and some schools charge a higher rate in clinical years. Our <a href="'.$r('fees.index').'">fee guide</a> lists each school\'s published fee with its fee year and source, and shows the overall range separately.'],
             ['id' => 24, 'q' => 'Which is the cheapest UK medical school for international students?', 'a' => 'We do not rank schools. The <a href="'.$r('fees.index').'">fee guide</a> lets you sort by published fee, but check whether the school accepts international applicants, whether clinical years cost more, and whether NHS levies apply.'],
-            ['id' => 26, 'q' => 'Which UK medical schools accept international students?', 'a' => 'Most do, but places are capped and small (often 10 to 30 per school). A few are home-only and one or two are international-only. Use the <a href="'.$r('schools.index').'">directory</a> filter "International applicants: accepted".'],
-            ['id' => 28, 'q' => 'Is UK Medicine free for Nigerian students, or are there scholarships?', 'a' => 'It is not free: international students pay the international fee for every year of the course, and scholarships are very few. Most universities exclude Medicine from international scholarships; where awards exist they are small partial fee reductions. Plan on full self-funding and treat scholarship listicles with caution.'],
-            ['id' => 30, 'q' => 'Can I get medical work experience in Nigeria that UK schools accept?', 'a' => 'Yes. Medical schools value what you learned about care and about yourself, not the setting. Hospital, clinic, pharmacy, care-home, community and caring-for-family experience all count if you can reflect on it.'],
-            ['id' => 31, 'q' => 'Can I do Medicine as a second degree?', 'a' => 'Graduate-entry programmes exist, but only some accept international applicants. Many graduates apply to the standard five-year course instead. See our <a href="'.$r('requirements.gem').'">graduate entry page</a>.'],
+            ['id' => 26, 'q' => 'Which UK medical schools accept international students?', 'a' => 'Of the '.$total.' medical schools and programmes in our directory, '.$open.' publish that they admit international applicants and '.$homeOnly.' are home-only. International places are capped; where a school publishes its number of places, we show it on the school\'s page with the source. Use the <a href="'.$r('schools.index').'">directory</a> filter "International applicants: accepted".'],
+            ['id' => 28, 'q' => 'Is UK Medicine free for Nigerian students, or are there scholarships?', 'a' => 'It is not free: international students pay the international fee for every year of the course. Some university-wide international scholarships exclude Medicine (the <a href="'.$r('fees.total').'">total cost page</a> shows sourced examples), and we list no Medicine scholarship because none has been verified. Plan on full self-funding and treat scholarship listicles with caution.'],
+            ['id' => 30, 'q' => 'Can I get medical work experience in Nigeria that UK schools accept?', 'a' => 'Each medical school publishes its own work-experience guidance, so read it for every school on your list. Where the guidance does not limit the setting, describe experience gained in Nigeria (hospital, clinic, pharmacy, community or caring roles) in the same terms as any other experience, and be ready to reflect on what you learned.'],
+            ['id' => 31, 'q' => 'Can I do Medicine as a second degree?', 'a' => 'Graduate-entry programmes exist; each school publishes whether its programme admits international applicants. Graduates can also apply to the standard five-year course where the school allows it. See our <a href="'.$r('requirements.gem').'">graduate entry page</a>.'],
             ['id' => 33, 'q' => 'Can I work in the UK after studying Medicine?', 'a' => 'UK medical graduates, including international students, apply to the UK Foundation Programme on the same basis as home graduates and need the Medical Licensing Assessment and GMC provisional registration; graduates who need a visa can be sponsored for a Skilled Worker visa after allocation to a programme, or use a Graduate visa. Rules on post-study work and training prioritisation are changing; nothing is guaranteed. Our <a href="'.$r('working.index').'">Working in the UK page</a> sets out the steps and what is still proposed.'],
             ['id' => 32, 'q' => 'Will my UK degree be recognised if I return to Nigeria?', 'a' => 'Recognition for practice in Nigeria is decided by the Medical and Dental Council of Nigeria, not by us or by the UK university. Check the MDCN\'s current requirements before you choose a course.'],
-            ['id' => 41, 'q' => 'How many years is Medicine in the UK?', 'a' => 'Five years for the standard degree that most Nigerian applicants take (A100 at most schools), six where a school adds a foundation or gateway year, and four on graduate-entry courses for applicants who already hold a degree. Training continues after graduation; our <a href="'.$r('medicine.index').'">Medicine guide</a> explains each route and <a href="'.$r('working.index').'">working in the UK</a> covers what comes after the degree. Be wary of figures quoting four years for the standard degree: that is the graduate-entry length.'],
+            ['id' => 41, 'q' => 'How many years is Medicine in the UK?', 'a' => 'Five years for the standard degree (A100 at many schools), six where a school adds a foundation or gateway year, and four on graduate-entry courses for applicants who already hold a degree. Training continues after graduation; our <a href="'.$r('medicine.index').'">Medicine guide</a> explains each route and <a href="'.$r('working.index').'">working in the UK</a> covers what comes after the degree. Be wary of figures quoting four years for the standard degree: that is the graduate-entry length.'],
             ['id' => 40, 'q' => 'Are you an agent for UK universities?', 'a' => 'No. We are an independent application-support service. We are not an agent of, or affiliated with, any university, UCAS, the British Council or the GMC, and we receive no commission from universities. See <a href="'.$r('status').'">Our status</a>.'],
-            ['id' => 5, 'q' => 'Which UK universities accept NECO, and does NECO English replace IELTS?', 'a' => 'Only a handful of medical schools name NECO at all; those that do treat it exactly like WASSCE, as the GCSE layer, not as the entry qualification for Medicine. A few accept a NECO or WAEC English grade in place of IELTS for specific courses, and the grade they ask for differs by school. Both lists, with sources, are on our <a href="'.$r('requirements.neco').'">NECO page</a> and the <a href="'.$r('requirements.english').'">English requirements page</a>.'],
-            ['id' => 10, 'q' => 'Which A-level schools in Nigeria are best for UK medicine?', 'a' => 'We do not rank or recommend A-level providers and we have no arrangement with any. Medical schools assess Cambridge International A-levels exactly as UK A-levels, so what matters is the college\'s recent grade record in Chemistry and Biology, whether it can supply predicted grades and a reference, and whether it supports UCAT timing. The questions to ask are on our <a href="'.$r('requirements.alevels').'">A-levels page</a>.'],
-            ['id' => 13, 'q' => 'What is the step-by-step process to study in the UK from Nigeria?', 'a' => 'For Medicine: confirm your route on your qualifications, sit the UCAT in the summer before you apply, apply through UCAS (or directly, for a few schools) by mid-October, interview between December and March, meet offer conditions, pay the deposit, receive your CAS, then apply for the Student visa with maintenance evidence and a TB test. Each step is on <a href="'.$r('admissions.howto').'">how to apply</a> and the <a href="'.$r('admissions.ucas2027').'">timeline</a>.'],
+            ['id' => 5, 'q' => 'Which UK universities accept NECO, and does NECO English replace IELTS?', 'a' => 'Some of the university statements we hold name NECO; where they do, they name it alongside WAEC, and none we reviewed publishes it alone as the entry qualification for standard-entry Medicine. A few accept a NECO or WAEC English grade in place of IELTS for specific courses, and the grade they ask for differs by school. Both lists, with sources, are on our <a href="'.$r('requirements.neco').'">NECO page</a> and the <a href="'.$r('requirements.english').'">English requirements page</a>.'],
+            ['id' => 10, 'q' => 'Which A-level schools in Nigeria are best for UK medicine?', 'a' => 'We do not rank or recommend A-level providers and we have no arrangement with any. The school records we hold state A-level requirements without separate rules for Cambridge International; confirm with any school where it matters. Beyond that, what matters is the college\'s recent grade record in Chemistry and Biology, whether it can supply predicted grades and a reference, and whether it supports UCAT timing. The questions to ask are on our <a href="'.$r('requirements.alevels').'">A-levels page</a>.'],
+            ['id' => 13, 'q' => 'What is the step-by-step process to study in the UK from Nigeria?', 'a' => 'For Medicine: confirm your route on your qualifications, sit the admissions test in its testing window before you apply, apply through UCAS (or directly, for a few schools) '.$byDeadline.', attend any interview, meet offer conditions, pay the deposit, receive your CAS, then apply for the Student visa with maintenance evidence and a TB test. Each step is on <a href="'.$r('admissions.howto').'">how to apply</a> and the <a href="'.$r('admissions.ucas2027').'">timeline</a>.'],
             ['id' => 14, 'q' => 'Is Medicine the right course to study in the UK?', 'a' => 'We cannot answer that for you, and we do not try to. The honest inputs are whether a route is open on your qualifications, whether five to six years of international fees plus living costs is sustainable, whether you can meet the UCAT and English bars in your planned year, and what you intend to do after graduation. The <a href="'.$r('medicine.index').'">Medicine pillar</a> sets out each input with sourced facts.'],
         ];
     }

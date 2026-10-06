@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Apply Online', 'title' => 'Our services', 'lede' => 'Specialist, independent support for Nigerian students applying to study Medicine in the UK, at three levels of depth. Each lists exactly what you receive and what is not included.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Apply Online', 'title' => 'Our services', 'lede' => 'Independent support for Nigerian students applying to study Medicine in the UK, at three levels of depth. Each lists exactly what you receive and what is not included.', 'seo' => $seo])
     {{-- Service fees are deliberately not part of any public page: they are shown in the student portal once our team has reviewed the profile. --}}
     <div class="border-l-4 border-navy-700 bg-navy-50 rounded-md px-5 py-4 mt-8 max-w-4xl" role="note" aria-label="Service options and pricing">
         <p class="font-semibold text-ink-900">Service options and pricing are provided after your profile has been reviewed.</p>

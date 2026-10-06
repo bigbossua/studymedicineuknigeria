@@ -57,6 +57,6 @@
             <div class="card"><p class="eyebrow mb-2">Related</p><ul class="text-[0.9375rem] space-y-2"><li><a href="{{ route('about') }}">About us: who checks the sources</a></li><li><a href="{{ route('status') }}">Our status: independence and agreements</a></li><li><a href="{{ route('schools.index') }}">Medical school directory</a></li><li><a href="{{ route('legal.privacy') }}">Privacy notice</a></li></ul></div>
         </aside>
     </div>
-    <x-cta-band class="mt-12" title="Use the verified requirements on your own case" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">The eligibility check applies the published rules to your qualifications: seven questions, no account needed.</x-cta-band>
+    <x-cta-band class="mt-12" title="Use the verified requirements on your own case" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">The eligibility check applies the published rules to your qualifications: five questions about your route, then your name and email; no account needed.</x-cta-band>
 </article>
 </x-layouts.public>

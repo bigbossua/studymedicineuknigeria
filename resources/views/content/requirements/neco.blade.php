@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Requirements · Nigerian qualifications', 'title' => 'NECO and UK Medicine: what medical schools say about the NECO SSCE', 'lede' => 'Most UK medical school pages name WASSCE and are silent on NECO. Where NECO is mentioned, it is treated in the same way as WASSCE: as the GCSE layer, not as the entry qualification for Medicine. This page lists every statement we hold that names NECO, where NECO English counts as English-language evidence, and the route a NECO holder can take. If a school is silent, confirm with its admissions team before you rely on it.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Requirements · Nigerian qualifications', 'title' => 'NECO and UK Medicine: what medical schools say about the NECO SSCE', 'lede' => 'Many statements from UK universities name WASSCE without NECO. Where a statement names NECO, it names it alongside WAEC, and none we reviewed accepts NECO alone as the entry qualification for standard-entry Medicine. This page lists every statement we hold that names NECO, where NECO English counts as English-language evidence, and the route a NECO holder can take. If a school is silent, confirm with its admissions team before you rely on it.', 'seo' => $seo])
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 space-y-12">
             <section class="prose-site">
@@ -21,18 +21,18 @@
             </section>
 
             <section class="prose-site">
-                <h2>4. Statements that name WASSCE only ({{ $all->count() - $mentionsNeco->count() }})</h2>
-                <p>These statements refer to WASSCE. In practice UK universities that recognise WASSCE at GCSE level generally recognise the NECO SSCE on the same terms, but that is an inference, not a published rule: ask the school to confirm in writing and keep the reply. The full list, with sources, is on the <a href="{{ route('requirements.waec') }}">WAEC page</a>.</p>
+                <h2>4. Statements that do not name NECO ({{ $others }})</h2>
+                <p>These statements refer to WAEC or WASSCE without naming NECO. In practice UK universities that recognise WASSCE at GCSE level generally recognise the NECO SSCE on the same terms, but that is an inference, not a published rule: ask the school to confirm in writing and keep the reply. The full list, with sources, is on the <a href="{{ route('requirements.waec') }}">WAEC page</a>.</p>
             </section>
 
             <section class="prose-site">
                 <h2>5. NECO and WAEC side by side for a UK application</h2>
                 <ul>
-                    <li><strong>Level.</strong> Both are Senior School Certificate examinations and both are treated as the GCSE layer by every school that addresses them.</li>
+                    <li><strong>Level.</strong> Both are Senior School Certificate examinations. Read each statement in section 2 for how a school places them: some place them at GCSE level and ask for a foundation year, A-levels or the IB on top, and a few publish other routes, such as a National Diploma or HND.</li>
                     <li><strong>Wording.</strong> Schools write "WAEC", "WASSCE", "SSCE" or "WAEC/NECO". Only the schools in section 2 write "NECO".</li>
-                    <li><strong>English.</strong> Where NECO English is accepted, the grade asked for is published per school (section 3) and may not apply to Medicine. IELTS bands for Medicine are typically 7.0 to 7.5.</li>
+                    <li><strong>English.</strong> Where NECO English is accepted, the grade asked for is published per school (section 3) and may not apply to Medicine. The IELTS band each school asks for is on the English requirements page.</li>
                     <li><strong>Documents.</strong> You will upload the certificate or statement of result; universities may verify it with the examining body. Your name must match your passport exactly.</li>
-                    <li><strong>Mixed results.</strong> If you hold both WAEC and NECO, you may present either or both; a school that names WASSCE will read WASSCE first.</li>
+                    <li><strong>Mixed results.</strong> If you hold both, enter both as certificated; ask any school that names only WASSCE how it treats NECO.</li>
                 </ul>
             </section>
 

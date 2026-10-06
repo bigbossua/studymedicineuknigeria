@@ -70,7 +70,7 @@
             </section>
 
             <section id="check" class="prose-site"><h2>Where to check for yourself</h2>
-                <p>Every figure on this page will change at least once before a 2027 entrant graduates. Learn where the rules live rather than memorising numbers:</p>
+                <p>Figures on this page can change before a 2027 entrant graduates. Learn where the rules live rather than memorising numbers:</p>
                 <ul>
                     <li>GOV.UK: <a href="https://www.gov.uk/student-visa" rel="noopener" target="_blank">Student visa</a>, <a href="https://www.gov.uk/graduate-visa" rel="noopener" target="_blank">Graduate visa</a>, <a href="https://www.gov.uk/skilled-worker-visa" rel="noopener" target="_blank">Skilled Worker visa</a>; UK Foundation Programme: <a href="https://foundationprogramme.nhs.uk/resources/right-to-work-visas/" rel="noopener" target="_blank">right to work and visas</a>.</li>
                     <li>General Medical Council: <a href="https://www.gmc-uk.org/education/medical-licensing-assessment" rel="noopener" target="_blank">Medical Licensing Assessment</a> and <a href="https://www.gmc-uk.org/registration-and-licensing/join-the-register/provisional-registration" rel="noopener" target="_blank">provisional registration</a>.</li>
@@ -83,7 +83,7 @@
         <aside class="lg:col-span-4 space-y-6">
             <div class="card"><p class="eyebrow mb-2">Plain statement</p><p class="text-[0.9375rem] text-ink-700">A place at a UK medical school does not carry a right to practise, a guaranteed job or a guaranteed visa. We do not advise qualified doctors on PLAB or housemanship routes; the BMA and GMC publish that guidance.</p></div>
             <div class="card"><p class="eyebrow mb-2">Costs that depend on these rules</p><p class="text-[0.9375rem] text-ink-700">Maintenance funds, the health surcharge and visa fees are added up on the <a href="{{ route('fees.total') }}">total cost page</a>.</p></div>
-            <div class="card"><p class="eyebrow mb-2">Last reviewed</p><p class="text-[0.9375rem] text-ink-700">Research record 10, reviewed {{ \Carbon\Carbon::parse($seo->lastReviewed)->format('j F Y') }}. Rules on this page are re-checked at every GOV.UK Statement of Changes and before each UCAS cycle.</p></div>
+            <div class="card"><p class="eyebrow mb-2">Last reviewed</p><p class="text-[0.9375rem] text-ink-700">Reviewed {{ \Carbon\Carbon::parse($seo->lastReviewed)->format('j F Y') }}. Rules on this page are re-checked at every GOV.UK Statement of Changes and before each UCAS cycle.</p></div>
         </aside>
     </div>
 

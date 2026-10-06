@@ -1,4 +1,6 @@
 @props(['status' => 'VERIFY-ON-PAGE', 'source' => null, 'sourceTitle' => null, 'verifiedAt' => null])
+{{-- A statement that is not verified renders nothing where unverified facts are hidden (production): lists filter those
+     out before counting, so no placeholder card stands in for a hidden record. --}}
 @php $show = $status === 'VERIFIED' || \App\Models\ReferenceFact::showsUnverified(); @endphp
 @if($show)
 <div {{ $attributes->merge(['class' => 'card']) }}>
@@ -7,9 +9,5 @@
         <x-verified-badge :status="$status" :date="$verifiedAt" />
         @if($source)<a href="{{ $source }}" rel="noopener nofollow" target="_blank">{{ $sourceTitle ?? 'Official source' }} ↗</a>@endif
     </div>
-</div>
-@else
-<div {{ $attributes->merge(['class' => 'card border-dashed']) }}>
-    <p class="text-ink-500 text-[0.9375rem]">This detail is being verified against the official source and will appear once confirmed.</p>
 </div>
 @endif

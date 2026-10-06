@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Admissions · process', 'title' => 'How to apply to UK Medicine from Nigeria: UCAS and direct-application medical schools', 'lede' => 'Most UK medical schools are applied to through UCAS, in your own account, by the mid-October deadline. A few take direct applications. Either way the application is yours; we prepare and check everything with you and guide you through the official route. We are not a UCAS registered centre and not an agent of any university.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Admissions · process', 'title' => 'How to apply to UK Medicine from Nigeria: UCAS and direct-application medical schools', 'lede' => 'UK medical schools are applied to through UCAS, in your own account, by the medicine deadline, or directly at the schools that take direct applications. Either way the application is yours; we prepare and check everything with you and guide you through the official route. We are not a UCAS registered centre and not an agent of any university.', 'seo' => $seo])
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 space-y-12">
             <section class="prose-site">
@@ -49,7 +49,7 @@
 
             <section class="prose-site">
                 <h2>5. If you have missed the UCAS medicine deadline, or have no UCAT result</h2>
-                <p>UCAS does not reopen medicine for the cycle, and a UCAT-requiring school cannot consider you without a score from the current test year. The honest options are the direct-application schools above for the coming intake, each with its own deadline and selection method, or a planned application for the following year: UCAT in the summer, UCAS by mid-October. Our <a href="{{ route('admissions.ucas2027') }}">timeline page</a> sets out both calendars.</p>
+                <p>Applications after the UCAS medicine deadline may be considered only at a school's discretion, so do not plan on it, and a UCAT-requiring school cannot consider you without a score from the current test year. Check whether any direct-application school above publishes no UCAT requirement for international applicants, and its own deadline and selection method; otherwise plan for the following year: the UCAT in that cycle's testing window, then UCAS by its medicine deadline. Our <a href="{{ route('admissions.ucas2027') }}">timeline page</a> sets out both calendars.</p>
                 @if($ucat)
                 <dl class="card not-prose mt-4">
                     <x-fact-row :fact="$ucat->fact('testing_window')" label="UCAT testing window (2027 entry)" />
@@ -60,8 +60,8 @@
             <section class="prose-site">
                 <h2>6. After you submit</h2>
                 <ol>
-                    <li><strong>Interviews</strong> run from December to March, usually multiple mini-interviews and often online for applicants abroad. We record each school's published format in the directory.</li>
-                    <li><strong>Offers</strong> arrive between January and May and are usually conditional on final grades and English evidence.</li>
+                    <li><strong>Interviews</strong>: dates and formats (panel or multiple mini-interview, in person or online) are published by each school. We record each school's published format in the directory.</li>
+                    <li><strong>Offers</strong> may be conditional on final grades and English evidence.</li>
                     <li><strong>Firm and insurance choices</strong> are made in UCAS by its reply deadline.</li>
                     <li><strong>Deposit, CAS and visa.</strong> After you meet the conditions and pay the university's deposit, it issues the Confirmation of Acceptance for Studies; you then apply for the Student visa with the maintenance evidence the Home Office requires, book the TB test, and plan travel. Costs and timings are on the <a href="{{ route('fees.total') }}">total cost page</a>.</li>
                 </ol>

@@ -1,15 +1,15 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Requirements · graduate entry', 'title' => 'Graduate Entry Medicine in the UK with a Nigerian degree', 'lede' => 'Four-year graduate-entry programmes (UCAS codes A101, A102, A109) exist at many UK schools, but most are home-only and only some accept applicants who need a Student visa. Many Nigerian graduates instead apply to the standard five-year course, where graduates are assessed on degree class plus the admissions test. This page shows what schools publish, and marks plainly where nothing is published yet.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Requirements · graduate entry', 'title' => 'Graduate Entry Medicine in the UK with a Nigerian degree', 'lede' => 'Some UK schools run four-year graduate-entry programmes (UCAS codes A101, A102, A109); each publishes whether it admits international applicants, and the lists below show what we have verified. Graduates can also apply to the standard five-year course where the school allows it. This page shows what schools publish, and marks plainly where nothing is published yet.', 'seo' => $seo])
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 space-y-12">
             <section class="prose-site">
-                <h2>1. Two routes for a graduate, and why most Nigerian graduates take the second</h2>
+                <h2>1. Two routes for a graduate</h2>
                 <ul>
                     <li><strong>Graduate-entry medicine (GEM), four years.</strong> Designed for people who already hold a degree. Places are small, many programmes are funded for home students only, and each school publishes separately whether it admits international applicants. Where a school says nothing, treat the programme as not confirmed for you.</li>
-                    <li><strong>Standard entry (A100), five or six years, as a graduate.</strong> Open at most schools that admit international applicants. Your degree replaces or supplements A-level grades (for example, <a href="{{ route('schools.show', 'kent-medway') }}">Kent and Medway</a> publishes a UK 2:1-equivalent rule for graduate international applicants), and you sit the <a href="{{ route('admissions.ucat') }}">UCAT</a> like every other applicant. Fees are the standard international rate for five years.</li>
+                    <li><strong>Standard entry (A100), five or six years, as a graduate.</strong> Schools that admit international applicants may consider graduates for standard entry; check each school's page. Your degree may replace or supplement A-level grades (for example, <a href="{{ route('schools.show', 'kent-medway') }}">Kent and Medway</a> publishes a UK 2:1-equivalent rule for graduate international applicants), and you sit the admissions test the school names, such as the <a href="{{ route('admissions.ucat') }}">UCAT</a>. Fees are that school's international rate for each year.</li>
                 </ul>
-                <p>Because a GEM place is a smaller target, the practical plan for most applicants is to apply to GEM programmes that are confirmed open to international applicants <em>and</em> to standard-entry courses in the same UCAS cycle.</p>
+                <p>A practical plan is to apply to GEM programmes that are confirmed open to international applicants <em>and</em> to standard-entry courses in the same UCAS cycle.</p>
             </section>
 
             <section>
@@ -43,9 +43,10 @@
                 </ul>
             </section>
 
+            @php $n = 4; @endphp
             @if($unknown->isNotEmpty())
             <section>
-                <h2>4. Programmes located, international eligibility not yet established ({{ $unknown->count() }})</h2>
+                <h2>{{ $n++ }}. Programmes located, international eligibility not yet established ({{ $unknown->count() }})</h2>
                 <p class="mt-2 text-ink-700">These universities publish a graduate-entry programme page, but our research has not yet located a statement on whether applicants who need a Student visa are considered. We list them so you can ask the admissions team the one question that matters, rather than assume either answer.</p>
                 <ul class="mt-4 columns-2 gap-6 text-[0.9375rem]">
                     @foreach($unknown as $f)<li class="break-inside-avoid"><a href="{{ route('schools.show', $f->subject) }}">{{ $f->subject->name }}</a> <span class="text-ink-500">· {{ Str::before($f->value_text, ';') }}</span></li>@endforeach
@@ -54,7 +55,7 @@
             @endif
 
             <section class="prose-site">
-                <h2>5. How your Nigerian degree is compared</h2>
+                <h2>{{ $n++ }}. How your Nigerian degree is compared</h2>
                 <ul>
                     <li><strong>Comparability.</strong> UK universities compare overseas degrees using UK ENIC statements and their own country guidance. A Nigerian bachelor's degree at Second Class Upper is commonly treated as comparable to a UK 2:1 and Second Class Lower to a 2:2, but this is an inference from general practice, not a rule: each medical school decides, and some publish a minimum class or CGPA for your country. Ask the school in writing before you rely on it.</li>
                     <li><strong>Subject.</strong> Some graduate-entry programmes require a science or health-related first degree; others accept any discipline (Chester publishes "any subject"). Standard entry usually still expects science at school-leaving level (Chemistry and Biology or another science), so a non-science graduate may need those qualifications too.</li>
@@ -64,18 +65,19 @@
             </section>
 
             <section class="prose-site">
-                <h2>6. GAMSAT or UCAT: fixed windows either way</h2>
-                <p>Graduate programmes use the UCAT, the GAMSAT, or accept either; the directory records what each course publishes. Both tests have fixed sittings and registration deadlines months before the UCAS deadline. UCAT dates for the current cycle are recorded as facts on the <a href="{{ route('admissions.ucat') }}">UCAT page</a>; GAMSAT sittings are published by ACER and are not yet recorded as verified facts here, so check the official GAMSAT site before you plan. Pearson VUE centres in Nigeria for the UCAT fill quickly: book when registration opens.</p>
+                <h2>{{ $n++ }}. GAMSAT or UCAT: fixed windows either way</h2>
+                <p>Graduate programmes use the UCAT, the GAMSAT, or accept either; the directory records what each course publishes. Both tests have fixed sittings and registration deadlines before the UCAS deadline. UCAT dates for the current cycle are recorded as facts on the <a href="{{ route('admissions.ucat') }}">UCAT page</a>; GAMSAT sittings are published by ACER and are not yet recorded as verified facts here, so check the official GAMSAT site before you plan. The UCAT Consortium does not publish centre capacity: book when booking opens.</p>
                 @if($ucat)
                 <dl class="card not-prose mt-4">
                     <x-fact-row :fact="$ucat->fact('testing_window')" label="UCAT testing window (2027 entry)" />
+                    <x-fact-row :fact="$ucat->fact('booking_deadline')" label="UCAT booking deadline (2027 entry)" />
                     <x-fact-row :fact="$ucat->fact('test_centres_nigeria')" label="UCAT test centres in Nigeria" />
                 </dl>
                 @endif
             </section>
 
             <section class="prose-site">
-                <h2>7. Cost: four years at a graduate-entry fee, or five at the standard rate</h2>
+                <h2>{{ $n++ }}. Cost: four years at a graduate-entry fee, or five at the standard rate</h2>
                 <p>Graduate-entry fees are published per programme and sometimes differ between year one and the clinical years; the cards above show every published figure we hold with its fee year and verification status. Compare the four-year total with five years at a standard-entry international fee from the <a href="{{ route('fees.index') }}">fee guide</a>, then add visa, health surcharge and living costs on the <a href="{{ route('fees.total') }}">total cost page</a>. Scholarships for international graduate-entry medicine are rare; we list none because none has been verified.</p>
             </section>
 

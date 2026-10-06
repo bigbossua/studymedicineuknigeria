@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Admissions · timeline', 'title' => 'UCAS deadlines and timeline for Medicine, 2027 entry, and how to plan 2028', 'lede' => 'Every date that matters, in order, for an applicant in Nigeria. Medicine has the earliest UCAS deadline of any course and the UCAT must be sat before it, so the whole year hinges on two windows. Each date below shows its official source and whether we have verified it on the page.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Admissions · timeline', 'title' => 'UCAS deadlines and timeline for Medicine, 2027 entry, and how to plan 2028', 'lede' => 'Every date that matters, in order, for an applicant in Nigeria. Medicine has its own UCAS deadline, earlier than the main one, and the UCAT must be sat before it, so the whole year hinges on two windows. Each date below shows its official source and whether we have verified it on the page.', 'seo' => $seo])
     <div class="mt-10 grid lg:grid-cols-12 gap-10">
         <div class="lg:col-span-8 space-y-12">
             <section><h2>1. 2027 entry: the official dates</h2>
@@ -21,10 +21,10 @@
             <section class="prose-site">
                 <h2>2. What each deadline means for you</h2>
                 <ul>
-                    <li><strong>The medicine deadline is an equal-consideration deadline.</strong> Applications received by it must be considered; later applications may be considered only at a school's discretion, and in practice medicine courses fill their interview lists from on-time applicants. Treat it as absolute.</li>
-                    <li><strong>The UCAT must be complete before it.</strong> Results reach universities in early November, after the deadline, so you apply knowing your score but the schools receive it directly; you do not enter it in UCAS.</li>
+                    <li><strong>The medicine deadline is an equal-consideration deadline.</strong> Applications received by it must be considered; later applications may be considered only at a school's discretion. Treat it as absolute.</li>
+                    <li><strong>The UCAT must be complete before it.</strong> Results reach universities after the deadline (date above), so you apply knowing your score but the schools receive it directly; you do not enter it in UCAS.</li>
                     <li><strong>The January main deadline does not apply to medicine</strong>, except to your fifth, non-medicine choice if you add one.</li>
-                    <li><strong>Extra and Clearing rarely offer medicine places to international applicants.</strong> They exist; do not plan around them.</li>
+                    <li><strong>Extra and Clearing.</strong> They exist; do not plan around Extra or Clearing for Medicine.</li>
                     <li><strong>Deferred entry.</strong> Some schools allow a 2027 applicant to defer to 2028 with a 2026 UCAT score; each school's policy differs and is on its page where published.</li>
                 </ul>
             </section>
@@ -32,16 +32,16 @@
             <section class="prose-site">
                 <h2>3. Your document timeline alongside the dates</h2>
                 <ol>
-                    <li><strong>Before UCAS opens (spring):</strong> confirm your route on the <a href="{{ route('requirements.index') }}">requirements hub</a>; book an <a href="{{ route('requirements.english') }}">English test</a> if your shortlist needs one, allowing for a second sitting.</li>
-                    <li><strong>May to June:</strong> register for the <a href="{{ route('admissions.ucat') }}">UCAT</a> the day registration opens and book a test centre slot (the official Pearson VUE locator lists centres) the day booking opens.</li>
-                    <li><strong>July to September:</strong> sit the UCAT early in the window; agree your referee; gather certificates, transcripts and translations for upload.</li>
-                    <li><strong>September to mid-October:</strong> finalise four medicine choices against each school's published UCAT use, write the three statement answers, submit with the fee, and allow your referee time (<a href="{{ route('admissions.howto') }}">how to apply</a>).</li>
+                    <li><strong>Before UCAS applications open (date above):</strong> confirm your route on the <a href="{{ route('requirements.index') }}">requirements hub</a>; book an <a href="{{ route('requirements.english') }}">English test</a> if your shortlist needs one, allowing for a second sitting.</li>
+                    <li><strong>When UCAT registration opens:</strong> register for the <a href="{{ route('admissions.ucat') }}">UCAT</a> the day registration opens and book a test centre slot (the official Pearson VUE locator lists centres) the day booking opens.</li>
+                    <li><strong>In the UCAT testing window:</strong> sit the UCAT early in the window; agree your referee; gather certificates, transcripts and translations for upload.</li>
+                    <li><strong>Before the medicine deadline:</strong> finalise four medicine choices against each school's published UCAT use, write the three statement answers, submit with the fee, and allow your referee time (<a href="{{ route('admissions.howto') }}">how to apply</a>).</li>
                 </ol>
             </section>
 
             <section class="prose-site">
                 <h2>4. What happens after you apply</h2>
-                <ol><li><strong>December–March:</strong> interviews, mostly multiple mini-interviews, often online for international applicants.</li><li><strong>By May:</strong> most decisions; you reply to offers by the UCAS deadline for your decision date, choosing a firm and an insurance choice.</li><li><strong>June–August:</strong> meet conditions (final grades, English test), pay the university's international deposit, receive your Confirmation of Acceptance for Studies (CAS).</li><li><strong>From up to six months before the course:</strong> apply for the Student visa with CAS, maintenance evidence and a TB test certificate; attend biometrics; receive the decision; travel for the September start.</li></ol>
+                <ol><li><strong>Interviews:</strong> dates and formats are published by each school (some in person, some online).</li><li><strong>Decisions:</strong> you reply to offers by the UCAS deadline for your decision date, choosing a firm and an insurance choice.</li><li><strong>Before the course:</strong> meet conditions (final grades, English test), pay the university's international deposit, receive your Confirmation of Acceptance for Studies (CAS).</li><li><strong>When GOV.UK allows</strong> (see the official <a href="https://www.gov.uk/student-visa" rel="noopener" target="_blank">Student visa page</a>): apply for the Student visa with CAS, maintenance evidence and a TB test certificate; attend biometrics; receive the decision; travel for the September start.</li></ol>
                 <dl class="card not-prose mt-4">
                     <x-fact-row :fact="$visa?->fact('tb_test')" label="TB test" />
                     <x-fact-row :fact="$visa?->fact('maintenance_outside_london_monthly_gbp')" label="Maintenance funds to show (outside London, per month)" suffix=" per month" />
@@ -52,8 +52,8 @@
 
             <section class="prose-site">
                 <h2>5. Planning 2028 entry from Nigeria</h2>
-                <ul><li><strong>Now:</strong> confirm your qualification route, shortlist <a href="{{ route('schools.index') }}?international=accepts">schools that accept international applicants</a>, book an English test if needed, and start work experience or shadowing you can reflect on.</li><li><strong>May–June 2027:</strong> UCAT registration opens; register on day one and book the nearest test centre slot as soon as booking opens.</li><li><strong>July–September 2027:</strong> sit the UCAT early in the window.</li><li><strong>September to mid-October 2027:</strong> submit UCAS with up to four medicine choices.</li><li><strong>If the UCAS route is closed to you for 2027:</strong> the <a href="{{ route('admissions.howto') }}">direct-application schools</a> run their own calendars; check each school's page.</li></ul>
-                <p class="text-[0.9375rem] text-ink-500">2028-cycle dates are published by UCAS and the UCAT Consortium in spring 2027; we will add them with sources when they appear, and this page's address will roll over with a redirect.</p>
+                <ul><li><strong>Now:</strong> confirm your qualification route, shortlist <a href="{{ route('schools.index') }}?international=accepts">schools that accept international applicants</a>, book an English test if needed, and start work experience or shadowing you can reflect on.</li><li><strong>UCAT registration for 2028 entry:</strong> when the UCAT Consortium publishes the dates (we add them with sources), register on the first day and book a test centre slot as soon as booking opens.</li><li><strong>In that cycle's testing window:</strong> sit the UCAT early in the window.</li><li><strong>Before that cycle's medicine deadline:</strong> submit UCAS with up to four medicine choices.</li><li><strong>If the UCAS route is closed to you for 2027:</strong> the <a href="{{ route('admissions.howto') }}">direct-application schools</a> run their own calendars; check each school's page.</li></ul>
+                <p class="text-[0.9375rem] text-ink-500">Dates for 2028 entry are published by UCAS and the UCAT Consortium; we will add them with sources when they appear.</p>
             </section>
 
             <section>

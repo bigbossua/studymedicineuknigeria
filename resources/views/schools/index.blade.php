@@ -43,7 +43,7 @@
                     <option value="accepts" @selected($filters['international']==='accepts')>Accepted</option>
                     <option value="international_only" @selected($filters['international']==='international_only')>International only</option>
                     <option value="home_only" @selected($filters['international']==='home_only')>Home students only</option>
-                    <option value="not_published" @selected($filters['international']==='not_published')>Not yet established</option>
+                    <option value="not_published" @selected($filters['international']==='not_published')>Not yet verified</option>
                 </select>
             </div>
             <div class="field">
@@ -82,12 +82,14 @@
                             @case('accepts') <span class="chip chip-verified">International: yes</span> @break
                             @case('international_only') <span class="chip chip-info">International only</span> @break
                             @case('home_only') <span class="chip chip-danger">Home students only</span> @break
-                            @default <span class="chip chip-notpublished">International: not established</span>
+                            @default <span class="chip chip-notpublished">International: not yet verified</span>
                         @endswitch
                     </div>
                     <dl class="mt-5 pt-4 border-t border-ink-100 grid grid-cols-2 gap-x-4 gap-y-3 text-[0.875rem]">
                         <div><dt class="text-ink-500">Course</dt><dd class="font-medium">{{ $c?->title ?? 'Medicine' }}{{ $c?->shortUcasCode() ? ' · '.$c->shortUcasCode() : '' }}</dd></div>
-                        <div><dt class="text-ink-500">Admissions test</dt><dd class="font-medium">{{ match($c?->admissions_test) { 'UCAT' => 'UCAT', 'GAMSAT' => 'GAMSAT', 'UCAT/GAMSAT' => 'UCAT or GAMSAT', 'NONE' => 'None required', default => 'Not established' } }}</dd></div>
+                        @php $testFact = $c?->fact('admissions_test'); $test = $testFact && $testFact->isPublishable() ? $testFact->displayValue() : null; @endphp
+                        {{-- the test is the verified course fact in its own words; the unverified course column is never shown as a value --}}
+                        <div @class(['col-span-2' => $test && mb_strlen($test) > 24])><dt class="text-ink-500">Admissions test</dt><dd class="font-medium">{{ $test ?? 'Not established' }}</dd></div>
                         <div><dt class="text-ink-500">Application route</dt><dd class="font-medium">{{ match($c?->application_route) { 'UCAS' => 'UCAS', 'DIRECT' => 'Direct to university', 'BOTH' => 'UCAS or direct', default => 'Not established' } }}</dd></div>
                         <div>
                             <dt class="text-ink-500">International fee</dt>
@@ -117,7 +119,7 @@
         </ul>
 
         <x-alert type="info" class="mt-10 max-w-3xl" title="How to read this directory">
-            Values marked <em>Verification pending</em> were located on official pages during research but have not yet been re-read on the page itself. In production they are hidden until a reviewer confirms them. "Not published" means the university's pages did not state it; confirm directly with the university.
+            <em>Verification pending</em> means the figure has not yet been confirmed on the official page, so we do not show it. "Not published" means the university's pages do not state it; confirm directly with the university.
         </x-alert>
     </section>
     <section class="container-site pb-4">

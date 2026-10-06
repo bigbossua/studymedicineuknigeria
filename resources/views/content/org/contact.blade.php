@@ -23,12 +23,12 @@
                 <li>Portal messages alert our team immediately and are answered first; email within two working days (Lagos and UK working days).</li>
                 <li>We answer from what universities publish and tell you when something is not published or not yet verified, rather than guessing.</li>
                 <li>We do not predict admission outcomes, promise places, or contact any university on your behalf without your written approval in the portal.</li>
-                <li>Questions about other courses or countries are outside what we do; the <a href="{{ route('faq.index') }}">questions page</a> covers what we are asked most.</li>
+                <li>Questions about other courses or countries are outside what we do; the <a href="{{ route('faq.index') }}">questions page</a> covers common questions.</li>
             </ul>
             <h2>Universities, schools and media</h2>
             <p>If you represent a medical school and a statement on this site about your institution is out of date, email us with the current source URL and we will re-verify it and show a new last-verified date. See <a href="{{ route('status') }}">Our status</a> for how we work and what we are not.</p>
         </section>
     </div>
-    <x-cta-band class="mt-12" title="Before you write: check your route" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">Most first questions are answered by the eligibility check (seven questions, no account needed). Include its result when you contact us and we can answer faster.</x-cta-band>
+    <x-cta-band class="mt-12" title="Before you write: check your route" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">The eligibility check takes five questions about your route, then your name and email; no account needed. Include its result when you contact us and we can answer faster.</x-cta-band>
 </article>
 </x-layouts.public>

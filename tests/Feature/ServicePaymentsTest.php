@@ -78,7 +78,8 @@ class ServicePaymentsTest extends TestCase
         foreach (['Eligibility &amp; Course Assessment', 'Medical Application Preparation', 'Full Medical Application Support'] as $name) {
             $page->assertSee($name, false);
         }
-        $this->assertMatchesRegularExpression('#Most popular</p>\s*<p class="eyebrow mt-2">Core application preparation</p>\s*<h2 id="t-T2"#', $page->getContent());
+        $this->assertMatchesRegularExpression('#<p class="eyebrow ">Core application preparation</p>\s*<h2 id="t-T2"#', $page->getContent());
+        $page->assertDontSee('Most popular'); // no popularity claim without evidence
         $page->assertSee('href="'.route('apply.index').'" class="btn btn-primary btn-lg"', false);
         $page->assertSee('Our service fees are separate from university tuition, application fees and other third-party costs. We do not guarantee admission, a visa, a scholarship or an offer from any university.');
         $page->assertSee('UCAT or GAMSAT fees', false);
@@ -277,7 +278,7 @@ class ServicePaymentsTest extends TestCase
             $this->assertMatchesRegularExpression('#data-service-price="'.$code.'">'.preg_quote($fee).'<#', $page->getContent());
         }
         $this->assertSame(0, substr_count($page->getContent(), ' checked'), 'no service is preselected (T2 is marked, never forced)');
-        $page->assertSee('Most popular');
+        $page->assertDontSee('Most popular');
 
         $t3 = ServiceTier::where('code', 'T3')->first();
         $this->actingAs($student)->post("/portal/{$a->application_number}/payments/service", ['service_tier_id' => $t3->id])->assertRedirect(route('portal.payments.index', $a));

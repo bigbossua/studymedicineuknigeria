@@ -1,6 +1,6 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Questions', 'title' => 'Questions Nigerian applicants ask about UK Medicine', 'lede' => 'These are the questions people actually ask on forums and in search, answered straight and linked to the pages where the sourced detail lives. If your question is not here, ask us from your portal or by email.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Questions', 'title' => 'Questions Nigerian applicants ask about UK Medicine', 'lede' => 'Short answers to common questions from Nigerian applicants, linked to the pages where the sourced detail lives. If your question is not here, ask us from your portal or by email.', 'seo' => $seo])
     <nav class="mt-8 flex flex-wrap gap-2 text-[0.875rem]" aria-label="Question groups">@foreach($grouped as $group => $qs)<a href="#{{ Str::slug($group) }}" class="chip chip-pending no-underline hover:bg-navy-100">{{ $group }} ({{ $qs->count() }})</a>@endforeach</nav>
     <div class="mt-6 max-w-3xl space-y-10">
         @foreach($grouped as $group => $qs)

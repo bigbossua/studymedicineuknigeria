@@ -1,18 +1,18 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10">
-    @include('content._page-head', ['eyebrow' => 'Requirements hub', 'title' => 'What do I need to study Medicine in the UK?', 'lede' => 'Ten things every UK medical school looks at. Requirements vary by school, so each section links to what individual schools publish and to the directory where you can compare them.', 'seo' => $seo])
+    @include('content._page-head', ['eyebrow' => 'Requirements hub', 'title' => 'What do I need to study Medicine in the UK?', 'lede' => 'Ten things to check before you apply to UK Medicine. Requirements vary by school, so each section links to what individual schools publish and to the directory where you can compare them.', 'seo' => $seo])
     <ol class="mt-10 grid gap-4 md:grid-cols-2">
         @foreach([
             ['Academic qualifications', 'A-levels or IB for standard entry; a degree for graduate entry. WASSCE and NECO are treated as the GCSE layer, not the entry qualification.', route('requirements.alevels'), 'A-levels and IB'],
-            ['Subject requirements', 'Chemistry and Biology (or another science) in almost every offer; some schools add Mathematics or Physics rules.', route('requirements.alevels'), 'Subject rules by school'],
+            ['Subject requirements', 'Each school names its required sciences (Chemistry, Biology or both, sometimes another science or Mathematics); see the subject rules by school.', route('requirements.alevels'), 'Subject rules by school'],
             ['Nigerian school-leaving results', 'What each school says about WAEC and NECO, and the grades they ask for in English and Mathematics.', route('requirements.waec'), 'WAEC and NECO statements'],
-            ['English language', 'IELTS 7.0–7.5 overall is typical for Medicine; a few schools accept WAEC or NECO English for specific courses.', route('requirements.english'), 'English requirements'],
-            ['Admissions tests', 'The UCAT for most schools, GAMSAT for some graduate programmes, none at a small number of direct-application schools.', route('admissions.ucat'), 'UCAT from Nigeria'],
-            ['Personal statement and application', 'Three structured questions on UCAS (4,000 characters). Direct-application schools have their own forms.', route('admissions.howto'), 'How to apply'],
+            ['English language', 'Each school publishes an IELTS band (with component minimums) or an equivalent test it accepts; a few accept WAEC or NECO English for specific courses.', route('requirements.english'), 'English requirements'],
+            ['Admissions tests', 'Each school names its test: the UCAT, the GAMSAT at some graduate programmes, or none where a school publishes that it sets no test.', route('admissions.ucat'), 'UCAT from Nigeria'],
+            ['Personal statement and application', ($ps = $ucas?->fact('personal_statement_format')) && $ps->isPublishable() ? 'UCAS personal statement: '.rtrim($ps->displayValue(), '.').'. Direct-application schools have their own forms.' : 'The UCAS personal statement format is set out on the how-to-apply page. Direct-application schools have their own forms.', route('admissions.howto'), 'How to apply'],
             ['References', 'One academic reference from a teacher or lecturer who knows your recent study.', route('admissions.howto'), 'What UCAS asks'],
             ['Passport and identity', 'Your name must match your passport exactly across UCAS, the university and the visa.', route('apply.index'), 'Our document checklist'],
             ['Financial planning', 'Fees, visa, health surcharge, maintenance funds and living costs; universities and UKVI both check this.', route('fees.index'), 'Fee guide'],
-            ['Deadlines and timing', 'UCAS medicine deadline in mid-October; UCAT before that; interviews December–March.', route('admissions.ucas2027'), 'Timeline'],
+            ['Deadlines and timing', 'The UCAS medicine deadline (below), the UCAT before it, then interviews and offers over the winter and spring.', route('admissions.ucas2027'), 'Timeline'],
         ] as $i => [$h, $p, $u, $l])
             <li class="card flex flex-col"><span class="font-sans font-semibold tabular-nums text-[0.8125rem] text-ink-500">{{ sprintf('%02d', $i + 1) }}</span><h2 class="text-xl font-serif font-semibold mt-1">{{ $h }}</h2><p class="mt-2 text-[0.9375rem] text-ink-700 flex-1">{{ $p }}</p><a href="{{ $u }}" class="btn btn-tertiary mt-3 self-start">{{ $l }}</a></li>
         @endforeach
@@ -30,7 +30,7 @@
                 <tr><td data-label="You hold">Any of the above, without an IELTS result</td><td data-label="Route">Unchanged, but the offer will be conditional on English evidence</td><td data-label="Check">Whether the school accepts WAEC or NECO English for Medicine; IELTS component minimums; result validity</td><td data-label="Read"><a href="{{ route('requirements.english') }}">English requirements</a></td></tr>
             </tbody>
         </table>
-        <p class="mt-3 text-[0.9375rem] text-ink-700">Seven questions in the <a href="{{ route('apply.eligibility') }}">eligibility check</a> apply this table to your own results and show the routes that appear open.</p>
+        <p class="mt-3 text-[0.9375rem] text-ink-700">The five route questions in the <a href="{{ route('apply.eligibility') }}">eligibility check</a> apply this table to your own results and show the routes that appear open.</p>
     </section>
     <section class="mt-12 grid lg:grid-cols-12 gap-8">
         <div class="lg:col-span-8 prose-site">
@@ -42,7 +42,7 @@
                 <x-fact-row :fact="$ucat?->fact('structure')" label="UCAT structure" />
             </dl>
         </div>
-        <aside class="lg:col-span-4"><x-cta-band title="Not sure whether your Nigerian qualifications meet the requirements?" :href="route('apply.eligibility')" label="Check your eligibility" class="flex-col items-start">Seven questions, no account needed.</x-cta-band></aside>
+        <aside class="lg:col-span-4"><x-cta-band title="Not sure whether your Nigerian qualifications meet the requirements?" :href="route('apply.eligibility')" label="Check your eligibility" class="flex-col items-start">Five questions about your route, then your name and email; no account needed.</x-cta-band></aside>
     </section>
     <section class="mt-12 max-w-3xl">
         <h2>Questions about requirements</h2>

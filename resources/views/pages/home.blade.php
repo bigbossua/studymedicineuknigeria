@@ -70,9 +70,9 @@
             </div>
             <div class="lg:col-span-7 grid gap-4">
                 @foreach([
-                    ['graduation-cap', 'Standard entry', 'The five-year degree (UCAS code A100 at most schools) for school leavers with A-levels, the IB or equivalents. The route most Nigerian applicants take; almost every school requires the UCAT.', route('requirements.alevels'), 'A-levels and IB for Medicine'],
-                    ['layers', 'Foundation and gateway routes', 'A preparatory year before Medicine. Many are home-only widening-participation schemes, but a few international foundation programmes publish Medicine as a destination.', route('medicine.foundation'), 'Foundation routes into Medicine'],
-                    ['book-open', 'Graduate entry', 'A four-year accelerated course for people who already hold a degree. Most programmes are home-only and only some accept international applicants.', route('requirements.gem'), 'Graduate entry with a Nigerian degree'],
+                    ['graduation-cap', 'Standard entry', 'The five-year degree (UCAS code A100 at many schools) for school leavers with A-levels, the IB or equivalents. Each school names its admissions test; the directory shows which use the UCAT.', route('requirements.alevels'), 'A-levels and IB for Medicine'],
+                    ['layers', 'Foundation and gateway routes', 'A preparatory year before Medicine. Some are home-only widening-participation schemes; the foundation-routes page lists those that publish Medicine as a destination for international students.', route('medicine.foundation'), 'Foundation routes into Medicine'],
+                    ['book-open', 'Graduate entry', 'A four-year accelerated course for people who already hold a degree. Each school publishes whether its programme admits international applicants.', route('requirements.gem'), 'Graduate entry with a Nigerian degree'],
                 ] as [$icon, $title, $text, $href, $cta])
                     <article class="card card-hover flex gap-5">
                         <span class="icon-badge icon-badge-lg shrink-0"><x-icon :name="$icon" :size="26" /></span>
@@ -130,8 +130,8 @@
             <div class="mt-10 grid gap-5 lg:grid-cols-3">
                 @foreach([
                     ['graduation-cap', 'Your secondary-school results are usually the first layer, not the entry ticket', 'In our review of published UK medical school pages, none offered direct entry to the standard medicine degree on WASSCE or NECO alone. Universities that address Nigeria route applicants through A-levels, the IB, a recognised foundation year or part of a degree. The detail differs by school, which is why we show each school’s own statement.', route('requirements.waec'), 'What each medical school says about WAEC and NECO'],
-                    ['calendar-days', 'Medicine runs on a fixed calendar', 'Most UK medicine courses are applied for through UCAS by a mid-October deadline the year before entry, and most require the UCAT, which is sat in the summer before that. Missing one window usually means planning for the following year or looking at the small number of schools that use a different route.', route('admissions.ucas2027'), 'Deadlines and timeline for 2027 and 2028 entry'],
-                    ['pound-sterling', 'The cost is substantial and varies widely', 'International medicine fees differ by tens of thousands of pounds a year between schools, and clinical years often cost more than early years. Add visa, health surcharge and living costs before deciding. We publish each school’s fee with its fee year and source.', route('fees.index'), 'Fee guide for international students'],
+                    ['calendar-days', 'Medicine runs on a fixed calendar', 'UK medicine courses are applied for through UCAS by the medicine deadline the year before entry (the timeline page has the date), or directly at the schools that take direct applications, and schools that use the UCAT require it to be sat before that deadline. Missing one window usually means planning for the following year or looking at schools that use a different route.', route('admissions.ucas2027'), 'Deadlines and timeline for 2027 and 2028 entry'],
+                    ['pound-sterling', 'The cost is substantial and varies widely', 'International medicine fees differ between schools, and some schools charge a higher rate in clinical years. Add visa, health surcharge and living costs before deciding. We publish each school’s fee with its fee year and source.', route('fees.index'), 'Fee guide for international students'],
                 ] as [$icon, $title, $text, $href, $cta])
                     <article class="card card-hover flex flex-col">
                         <span class="icon-badge"><x-icon :name="$icon" :size="22" /></span>
@@ -203,7 +203,7 @@
 
     <section class="container-site">
         <x-cta-band title="Ready to check your own situation?" :href="route('apply.eligibility')" label="Check your eligibility" :secondary-href="route('apply.index')" secondary-label="Apply Online">
-            Seven questions, no account needed. You will see which routes appear open on published requirements and what to read next.
+            Five questions about your route, then your name and email; no account needed. You will see which routes appear open on published requirements and what to read next.
         </x-cta-band>
     </section>
 </x-layouts.public>

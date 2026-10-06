@@ -125,7 +125,7 @@ class PricingVisibilityTest extends TestCase
         $this->actingAs($student)->get('/portal')->assertSee('choose your service', false);
 
         $n = $a->application_number;
-        $page = $this->actingAs($student)->get("/portal/$n/services")->assertOk()->assertSee('Most popular');
+        $page = $this->actingAs($student)->get("/portal/$n/services")->assertOk()->assertDontSee('Most popular');
         foreach (['T1' => ['£125', 12500], 'T2' => ['£695', 69500], 'T3' => ['£1,295', 129500]] as $code => [$shown, $minor]) {
             $this->assertStringContainsString('data-service-price="'.$code.'">'.$shown.'<', $page->getContent());
             $tier = ServiceTier::where('code', $code)->first();

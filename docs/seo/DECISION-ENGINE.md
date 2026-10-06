@@ -137,8 +137,7 @@ moves to indexable only when **all** of the following hold. It is then listed in
 with its register row (`smukn:reference-sync` publishes it on the next deploy, once; a publish or unpublish decision in
 Admin → Universities always wins), and the robots meta, sitemap entry (lastmod = latest verification), canonical and
 JSON-LD follow automatically. First batch, 2026-10-05: Aberdeen (D07), Cardiff (D08), Manchester (D10), Edinburgh (D11);
-then Brighton and Sussex (D12) and Buckingham (D13) on 2026-10-05, and Cambridge (D14), Glasgow (D15) and Nottingham (D16)
-on 2026-10-06.
+then Brighton and Sussex (D12) and Buckingham (D13) on 2026-10-05.
 
 1. **Verified core facts** (Admin → Verification, or a committed `decisions-*.csv`, each read on the official page with the quotation recorded in the review note): international applicants
    accepted (tier 4), the published statement on WAEC/NECO or Nigerian qualifications and the English requirement
@@ -147,10 +146,10 @@ on 2026-10-06.
 2. **Unique value for a Nigerian applicant**: the page states something the directory card and the generic guides do
    not (its own WAEC/NECO wording, fee, route, interview format), so it is not a thin duplicate of the directory.
 3. **Search evidence**: a decision-register row for the school with intent and SERP notes (Semrush `ng` database when
-   available; Search Console queries once the school name appears in impressions). Google autocomplete with `gl=ng`
-   (`ops/seo/autocomplete.cjs`, committed as `data/seo/autocomplete-ng-*.jsonl`) counts only when a Nigeria-specific seed
-   that names no school (for example `waec requirements for medicine in uk n`) completes with the school's name; a
-   completion of a seed that already contains the school's name or the word Nigeria is an echo, not evidence.
+   available; Search Console queries once the school name appears in impressions). Google autocomplete (`gl=ng`,
+   `ops/seo/autocomplete.cjs`, `data/seo/autocomplete-ng-*.jsonl`) is a lead, never evidence on its own: on 2026-10-06
+   Nigeria-specific seeds such as `waec requirements for medicine in uk q` also completed with Queensland, Virginia,
+   Zurich and Kentucky, so a school's name in a completion shows Google composing a plausible tail, not Nigerian searches.
    Schools with no Nigerian demand stay
    noindex even when verified; they remain useful to signed-in students from the directory.
 4. **Checks after publishing**: 200, self-canonical, in the sitemap, Organization/WebPage/BreadcrumbList/Course JSON-LD,

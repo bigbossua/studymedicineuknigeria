@@ -1,0 +1,50 @@
+{
+ "university:imperial:english_requirement:2027 entry": {
+  "decision": "verified",
+  "verified_value": "Medicine MBBS/BSc: all applicants must meet Imperial's higher level English language requirement; for IELTS Academic this is 7.0 overall with a minimum of 6.5 in all elements, met in a single test sitting and taken within 2 years of the course start date",
+  "new_source_url": "https://www.imperial.ac.uk/study/apply/english-language/",
+  "note": "Medicine-specific statement: the Medicine course page says all applicants must meet the higher level requirement; the IELTS score for the higher level is on the college's English language requirements page (Standard / Higher columns).",
+  "page": "https://www.imperial.ac.uk/study/courses/undergraduate/medicine/, read 2026-10-06 via page-excerpts run 37409928867, sha256 3cd39b92e2595b77; https://www.imperial.ac.uk/study/apply/english-language/, read 2026-10-06 via page-excerpts run 37409928867, sha256 b56f052b0ee7caea",
+  "quote": "English language requirements ⏎ All applicants must meet our higher level English language requirement. ... IELTS – Academic (Test-Centre/UKVI SELT/Online) ⏎ Standard Higher ⏎ 6.5 overall (minimum 6.0 in all elements) 7.0 overall (minimum 6.5 in all elements) ... *IELTS single score re-takes are not accepted. Candidates must meet the IELTS requirements on a single test sitting. ⏎ *Test scores are only considered valid if taken within 2 years of the intended course start date."
+ },
+ "course:plymouth/medicine:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "verified_value": "41920",
+  "new_source_url": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery",
+  "note": "BMBS course page, international tab: fee per year for full-time international students starting in the 2026-2027 academic year.",
+  "page": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery, read 2026-10-06 via page-excerpts run 37409928867, sha256 0939710f56d2f9c7",
+  "quote": "Fees and funding ⏎ Tuition fees ⏎ UK International ⏎ Tuition fees for full-time international students starting in ⏎ 2026-2027 academic year. ⏎ Full-time study ⏎ £41,920 per year"
+ },
+ "course:nottingham/medicine:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.nottingham.ac.uk/fees/tuitionfees/202728/undergraduate.aspx",
+  "page": "https://www.nottingham.ac.uk/fees/tuitionfees/202728/undergraduate.aspx, read 2026-10-06 via page-excerpts run 37409928867, sha256 13fa921847c8bbe5",
+  "quote": "Undergraduate tuition fees 2027/28 ⏎ Code Qualification Title UK home fee ⏎ (see fees note) International fee ... A100 BMBS Medicine BMBS TBC £48,900",
+  "note": "International fee for A100 Medicine BMBS in the university's 2027/28 undergraduate fee table (UK home fee shown as TBC). The stored 2026/27 fee (47000) stays as it is.",
+  "verified_value": "48900"
+ },
+ "course:chester/a101:international_fee_gbp:2026/27": {
+  "decision": "verified",
+  "new_source_url": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb",
+  "page": "https://www.chester.ac.uk/study/course-search/graduate-entry-medicine-mbchb/, read 2026-10-06 via page-excerpts run 37409928867, sha256 100956ca91f1aef7",
+  "quote": "£46,000 ⏎ per year (2026/27) ⏎ The tuition fees for international students studying Graduate Entry Medicine in the 2026/27 academic year are £46,000.",
+  "note": "International tuition fee for Graduate Entry Medicine MBChB (A101); Chester has no international_fee_gbp fact yet. No 2027/28 international fee is shown on the page.",
+  "verified_value": "46000"
+ },
+ "course:plymouth/medicine:international_fee_gbp:2027/28": {
+  "decision": "verified",
+  "new_source_url": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery",
+  "page": "https://www.plymouth.ac.uk/courses/undergraduate/bmbs-bachelor-of-medicine-bachelor-of-surgery, read 2026-10-06 via page-excerpts run 37409928867, sha256 0939710f56d2f9c7",
+  "quote": "Tuition fees for full-time international students starting in ⏎  2027-2028 academic year. ⏎ Full-time study ⏎ £43,175 per year",
+  "note": "BMBS international fee per year for students starting in the 2027-2028 academic year (no 2027/28 fee fact exists yet).",
+  "verified_value": "43175"
+ },
+ "university:swansea:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "new_source_url": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch, read 2026-10-06 via page-excerpts run 37409928867, sha256 6574093400454177",
+  "quote": "AND achieved or predicted* to achieve a minimum of one of the following: ⏎ 2:1 (hons) undergraduate degree in any subject, or ⏎ Merit in an integrated master’s degree in any subject, or ⏎ 2:2 (hons) undergraduate degree AND a Pass in a postgraduate higher degree (Masters or PhD) in any subject",
+  "note": "Swansea's only Medicine course in Current facts is A101 Medicine (Graduate Entry) MB BCh; the course page requires a 2:1 degree (or the listed alternatives). The school has no waec_neco_statement fact yet.",
+  "verified_value": "Not applicable: this Medicine course is graduate entry and requires a degree"
+ }
+}

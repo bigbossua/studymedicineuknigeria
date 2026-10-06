@@ -639,6 +639,47 @@ The owner's directive is to cover the whole medical, healthcare and allied-healt
   - CI now runs `composer audit` and `npm audit` (0 advisories).
 - **Checks:** 219 tests; Google-readiness audit (production mode) 82 passed, 0 failed over 35 URLs.
 
+## Stage 61: rounds 4–5 of the school assessment and the demand-evidence check (cycle 55)
+
+- **Method:**
+  - A same-domain crawl (`page-excerpts.yml` mode `crawl`, `ops/verification/crawl-excerpts.cjs`) read 278 pages for the 25 schools whose core facts were incomplete (runs 37408563047 and 37408565193).
+  - Round 5 read the 19 pages the reviewers named (run 37409928867).
+  - The excerpt reader can open fee tabs (`|| click: International`).
+  - Every decision quotation passed `check-quotes.py` against the runner logs; dataset quotations were checked the same way.
+- **Results:** 24 decisions in `decisions-2026-10-06.csv`, including:
+  - fees: Keele 2026/27, Plymouth 2026/27 and 2027/28, Lancaster, Nottingham (£48,900) and St George's 2027/28, Chester (graduate entry) 2026/27;
+  - Imperial's Medicine English requirement (higher level, IELTS 7.0 with 6.5 in each element);
+  - Lancaster's Nigeria statement and route;
+  - St George's entry facts;
+  - St Mary's and Ulster international acceptance;
+  - ScotGEM home-only;
+  - graduate-entry 'not applicable' WAEC statements for Surrey, Worcester and Swansea.
+- **Rejected proposals** (not Medicine-specific, implied only, or ambiguous):
+  - Hertfordshire general route;
+  - Warwick 'not applicable';
+  - St George's WAEC line ('except MBBS');
+  - St George's historical place counts;
+  - Ulster WAEC English equivalence;
+  - St Mary's route (link text only).
+- **Nottingham fee:** the official 2026/27 and 2027/28 tables list one A100 international rate; the unsourced 'clinical rate £58,500' note was removed.
+  - School pages now say under the fee that clinical years, later years and college fees can be charged differently.
+- **Demand evidence:**
+  - Google autocomplete from Nigeria (`ops/seo/autocomplete.cjs`, `search-signals.yml`) was tested as a §8.3 signal. Cambridge, Glasgow and Nottingham were briefly marked for publication on it, before any deploy.
+  - The second probe showed the same school-free seeds completing with Queensland, Virginia, Zurich and Kentucky. The completions are composed by Google, not evidence of Nigerian searches.
+  - The three schools returned to RESEARCH, and §8.3 records autocomplete as a lead only. Semrush returned 'no API units'.
+- **Outcome** (`docs/seo/UNIVERSITY-ASSESSMENT.md`):
+  - 6 published;
+  - 21 with every core fact verified but no demand evidence (noindex until Search Console impressions or Semrush `ng` data name them);
+  - 19 incomplete;
+  - 7 home-only;
+  - 2 not medical schools.
+- **Human verification still needed:**
+  - Oxford, Dundee, UEA and UCL pages are bot-blocked;
+  - St Andrews' entry page returns 404;
+  - KCL's Nigeria row sits behind a country selector;
+  - Swansea has a placeholder 'medicine' course next to its graduate-entry A101 record.
+- **Checks:** 219 tests; Google-readiness audit (production mode) 82 passed, 0 failed.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

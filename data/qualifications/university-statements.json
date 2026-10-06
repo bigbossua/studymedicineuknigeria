@@ -982,5 +982,15 @@
     ],
     "waec_neco_statement": "Not applicable: this Medicine course is graduate entry and requires a degree",
     "waec_statement_is_medicine_specific": true
+  },
+  {
+    "university": "Swansea University",
+    "entry_cycle": "2027",
+    "status": "VERIFY-ON-PAGE",
+    "sources": [
+      "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch"
+    ],
+    "waec_neco_statement": "Not applicable: this Medicine course is graduate entry and requires a degree",
+    "waec_statement_is_medicine_specific": true
   }
 ]

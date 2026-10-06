@@ -1,0 +1,6 @@
+# Topic facts still open (2026-10-06, second read): UCAT centres outside the UK, living costs
+https://www.ucat.ac.uk/ | test centre; Pearson VUE; outside the UK; international || links: test centre; centres; book; booking; register; international; overseas
+https://www.ucat.ac.uk/faqs/ | test centre; Pearson VUE; outside the UK; Nigeria; online; remote; country || links: test centre; centres; booking
+https://www.leeds.ac.uk/international-fees-costs/doc/living-expenses | per month; per week; per year; £; living costs; accommodation; budget
+https://www.ukcisa.org.uk/student-advice/finances/ | living costs; cost of living; budget; per month; £ || links: budget; cost; living; money; working out
+https://www.ukcisa.org.uk/student-advice/finances/funding-your-studies/ | scholarship; Medicine; funding; international students; £

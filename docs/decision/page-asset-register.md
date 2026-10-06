@@ -81,8 +81,8 @@ Evidence keys: `02` = research/02 search demand · `05` = competitor research ·
 | 1–9, 11, 15–17, 19–23 | **Built and indexable**; in the sitemap (27 URLs). Row 23 now includes `/how-we-verify` (editorial and verification policy); a separate "document & data policy" is covered by the privacy notice and application terms. |
 | 2–9, 11, 15–17, 19 | **Upgraded 2026-10-03** (stages 26–29): every requirements and admissions page, the pillar, Apply Online, Our status and both hubs answer their intent in full (950–1,540 words) with visible FAQs and FAQPage schema; see `data/seo/decision-register.csv` for the per-row reasons. |
 | 12 | **Template deepened 2026-10-03** (stage 28): computed Nigerian-applicant guidance and how-to-apply block on every university record; pages stay `noindex` until staff publish them after verification. |
-| 10 (total cost), 25 (working in the UK) | **Built, gated**: `noindex` and out of the sitemap until their topic facts are verified (`PublishGate`); they become indexable automatically. |
-| 12 (university records) | **Built for all 53 schools**; each page `noindex` until staff mark the record published in Admin → Universities, so no thin or unverified school page can be indexed. |
+| 10 (total cost), 25 (working in the UK) | **Built and indexable** since their fact gates passed (`PublishGate`): row 25 on 2026-10-05, row 10 on 2026-10-06 (living costs, funding and UCAT centre facts verified). Either drops back to `noindex` automatically if a topic fact loses its verification. |
+| 12 (university records) | **Built for every school record**; each page stays `noindex` until it meets DECISION-ENGINE §8 (five verified core facts plus Nigerian demand evidence) and is listed in `data/medical-schools/publication.json`, or staff publish it in Admin → Universities. Six published on 2026-10-05; the full table is `docs/seo/UNIVERSITY-ASSESSMENT.md`. |
 | 14 (Greater Manchester) | Served by the university record page. |
 | 13 (course pages) | Not built: no school yet has two courses with distinct verified data. |
 | 18 (foundation routes) | **Built**, indexable; statements shown only when verified. |

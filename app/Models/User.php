@@ -20,7 +20,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected function casts(): array
     {
-        return ['email_verified_at' => 'datetime', 'password' => 'hashed', 'last_login_at' => 'datetime', 'two_factor_confirmed_at' => 'datetime', 'two_factor_secret' => 'encrypted', 'two_factor_recovery_codes' => 'encrypted:array'];
+        return ['email_verified_at' => 'datetime', 'password' => 'hashed', 'last_login_at' => 'datetime', 'two_factor_confirmed_at' => 'datetime', 'deletion_requested_at' => 'datetime', 'erased_at' => 'datetime', 'two_factor_secret' => 'encrypted', 'two_factor_recovery_codes' => 'encrypted:array'];
     }
 
     public function sendEmailVerificationNotification(): void

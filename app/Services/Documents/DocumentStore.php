@@ -20,6 +20,7 @@ use Symfony\Component\Process\Process;
  */
 class DocumentStore
 {
+    /** @deprecated every document is now encrypted at rest (2026-10-06): shared hosting gives no disk-level encryption to rely on. */
     public const ENCRYPTED_TYPES = ['PASSPORT', 'FINANCIAL'];
 
     public function store(Document $doc, UploadedFile $file, int $userId): DocumentVersion
@@ -52,7 +53,7 @@ class DocumentStore
         }
 
         $sha = hash('sha256', $bytes);
-        $encrypt = in_array($doc->code, self::ENCRYPTED_TYPES, true);
+        $encrypt = true; // every type; files stored before 2026-10-06 keep their own flag and stay readable
         $payload = $encrypt ? Crypt::encrypt($bytes, false) : $bytes;
         $version = ($doc->versions()->max('version') ?? 0) + 1;
         $path = sprintf('applications/%s/%s/v%d-%s.%s%s', $doc->application->application_number, $doc->code, $version, Str::uuid(), $ext, $encrypt ? '.enc' : '');
@@ -104,8 +105,10 @@ class DocumentStore
      */
     private function assertSafePdf(string $bytes): void
     {
-        if (! str_starts_with($bytes, '%PDF')) {
-            throw ValidationException::withMessages(['file' => 'This does not appear to be a valid PDF.']);
+        // A real PDF starts with %PDF, ends with %%EOF and carries a cross-reference (startxref or trailer); a cut-off
+        // or garbage file is refused before anyone has to open it.
+        if (! str_starts_with($bytes, '%PDF') || ! str_contains(substr($bytes, -1024), '%%EOF') || (! str_contains($bytes, 'startxref') && ! str_contains($bytes, 'trailer'))) {
+            throw ValidationException::withMessages(['file' => 'This does not appear to be a complete PDF. Please export it again (for example, "Print to PDF") and upload the new file.']);
         }
         $haystacks = [$bytes];
         // Inflate incrementally with caps so a small upload cannot expand to gigabytes (security audit 2026-10-04):
@@ -176,8 +179,9 @@ class DocumentStore
     private function reencodeImage(string $bytes, string $mime): string
     {
         if (! function_exists('imagecreatefromstring')) {
-            return $bytes;
-        } // GD unavailable: store as-is (flagged in DPIA)
+            // fail closed: an image that cannot be re-encoded (which strips anything hidden in it) is never stored
+            throw ValidationException::withMessages(['file' => 'Photos cannot be accepted at the moment. Please upload the document as a PDF.']);
+        }
         // Read the declared size before decoding: a small PNG can declare 20,000 × 20,000 pixels and exhaust memory.
         $size = @getimagesizefromstring($bytes);
         if (! $size || $size[0] * $size[1] > 40_000_000) {

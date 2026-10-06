@@ -60,7 +60,7 @@ class PaymentController extends Controller
         if ($application->isTerminal()) {
             return back()->with('error', 'This application is closed, so no payment can be taken for it.');
         }
-        if ($application->payments()->where('tier_price_id', $price->id)->whereIn('status', ['SUCCEEDED', 'MANUAL_REVIEW'])->exists()) {
+        if ($application->payments()->where('tier_price_id', $price->id)->whereIn('status', ['SUCCEEDED', 'MANUAL_REVIEW', 'REFUNDED_PARTIAL', 'DISPUTED'])->exists()) {
             return redirect()->route('portal.payments.index', $application)->with('status', 'This service fee is already paid or awaiting confirmation; nothing more is due.');
         }
         if (! $this->stripe->enabled()) {
@@ -128,7 +128,7 @@ class PaymentController extends Controller
         $data = $request->validate(['tier_price_id' => 'required|exists:tier_prices,id', 'accept_terms' => 'required|accepted', 'reference' => 'nullable|string|max:120']);
         $price = TierPrice::where('active', true)->findOrFail($data['tier_price_id']);
         abort_unless($price->service_tier_id === $application->service_tier_id && $price->amount_minor !== null, 403);
-        if ($application->isTerminal() || $application->payments()->where('tier_price_id', $price->id)->whereIn('status', ['SUCCEEDED', 'MANUAL_REVIEW'])->exists()) {
+        if ($application->isTerminal() || $application->payments()->where('tier_price_id', $price->id)->whereIn('status', ['SUCCEEDED', 'MANUAL_REVIEW', 'REFUNDED_PARTIAL', 'DISPUTED'])->exists()) {
             return back()->with('status', 'Nothing more is due for this service fee.');
         }
         $application->payments()->create(['tier_price_id' => $price->id, 'status' => 'MANUAL_REVIEW', 'amount_minor' => $price->amount_minor, 'currency' => $price->currency, 'method' => 'MANUAL_TRANSFER', 'terms_version_accepted' => $price->tier->terms_version ?? 'v1', 'note' => $data['reference'] ?? null]);

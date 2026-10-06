@@ -145,7 +145,7 @@ class StripeService
                 if ($payment->status === 'SUCCEEDED') {
                     return false;
                 }
-                if ($a->payments()->where('id', '!=', $payment->id)->where('tier_price_id', $payment->tier_price_id)->where('status', 'SUCCEEDED')->exists()) {
+                if ($a->payments()->where('id', '!=', $payment->id)->where('tier_price_id', $payment->tier_price_id)->whereIn('status', ['SUCCEEDED', 'REFUNDED_PARTIAL', 'DISPUTED'])->exists()) {
                     // The same fee was already paid through another checkout: never count it twice; staff refund it.
                     $payment->update(['status' => 'MANUAL_REVIEW', 'note' => 'Duplicate payment: this fee was already paid by another checkout. Refund it from the Stripe Dashboard.']);
                     $a->record('payment.duplicate', ['payment_id' => $payment->id]);

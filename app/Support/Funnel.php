@@ -59,17 +59,18 @@ final class Funnel
                 'occurred_at' => now(),
                 'visitor_hash' => self::visitorHash(),
                 'user_id' => $userId ?? $application?->user_id ?? $request?->user()?->id,
-                'application_hash' => $application ? hash('sha256', $application->application_number) : null,
+                'application_hash' => $application ? self::applicationHash($application) : null,
                 'tier' => $application?->tier?->code ?? ($properties['tier'] ?? null),
                 'intake_year' => $application?->intake_year ?? ($properties['intake_year'] ?? null),
-                'source_page' => $request?->path(),
+                'source_page' => $request ? self::maskedPath($request->path()) : null,
                 'utm' => $request ? array_filter($request->only('utm_source', 'utm_medium', 'utm_campaign')) ?: null : null,
                 'properties' => $properties ?: null,
             ]);
             if ($request && in_array($name, self::CLIENT_EVENTS, true) && $request->hasSession()) {
                 $request->session()->push('funnel.client', ['name' => $name, 'params' => self::clientParams($properties)]);
             }
-            if ($request && in_array($name, self::SERVER_EVENTS, true)) {
+            // GA4 sees only what the student does in their own browser: a staff action or a webhook is never sent
+            if ($request && in_array($name, self::SERVER_EVENTS, true) && ($properties['actor'] ?? 'student') === 'student') {
                 self::toGa4($request, $name, array_filter(self::clientParams($properties + ['tier' => $application?->tier?->code, 'intake_year' => $application?->intake_year]), fn ($v) => $v !== null));
             }
         } catch (Throwable $e) {
@@ -83,8 +84,20 @@ final class Funnel
         if (! $name) {
             return;
         }
-        $keep = array_intersect_key($payload, array_flip(['step', 'title', 'route_code', 'status', 'amount']));
+        $keep = array_intersect_key($payload, array_flip(['step', 'route_code', 'status', 'amount']));
         self::track($name, $keep + ['actor' => $actorId === $application->user_id ? 'student' : 'staff'], $application);
+    }
+
+    /** Keyed (HMAC) so the sequential application number cannot be recovered by hashing every possible number. */
+    public static function applicationHash(Application $application): string
+    {
+        return hash_hmac('sha256', (string) $application->application_number, (string) config('app.key'));
+    }
+
+    /** The page path without the application number (portal and admin URLs carry it). */
+    public static function maskedPath(string $path): string
+    {
+        return preg_replace('/SMUKN-\d{4}-\d{6}/i', '{application}', $path) ?? $path;
     }
 
     /** Measurement Protocol hit for a consented visitor, sent after the response so the student never waits for it. */

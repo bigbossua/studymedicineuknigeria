@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -34,12 +35,15 @@ class AuthController extends Controller
         $accountKey = 'login-account:'.Str::lower($data['email']);
         foreach ([[$key, 10], [$accountKey, 50]] as [$k, $max]) {
             if (RateLimiter::tooManyAttempts($k, $max)) {
+                Log::warning('auth.locked', ['account' => self::accountRef($data['email']), 'ip' => $request->ip(), 'limit' => $k === $key ? 'account+address' : 'account']);
                 throw ValidationException::withMessages(['email' => 'Too many attempts. Try again in '.ceil(RateLimiter::availableIn($k) / 60).' minutes.']);
             }
         }
         if (! Auth::attempt(['email' => $data['email'], 'password' => $data['password']], (bool) ($data['remember'] ?? false))) {
             RateLimiter::hit($key, 900);
             RateLimiter::hit($accountKey, 3600);
+            // security log: a keyed reference to the account, never the address or the password
+            Log::warning('auth.login_failed', ['account' => self::accountRef($data['email']), 'ip' => $request->ip()]);
             throw ValidationException::withMessages(['email' => 'These details do not match our records.']);
         }
         RateLimiter::clear($key);
@@ -132,5 +136,11 @@ class AuthController extends Controller
             ? redirect()->route('login')->with('status', 'Your password has been changed. You can sign in now.')
             // An unknown email gets the same message as a bad token, so this form never confirms that an account exists.
             : back()->withErrors(['email' => __($status === Password::InvalidUser ? Password::InvalidToken : $status)]);
+    }
+
+    /** A short keyed reference that lets staff group failures for one account without logging the email address. */
+    private static function accountRef(string $email): string
+    {
+        return substr(hash_hmac('sha256', Str::lower($email), (string) config('app.key')), 0, 16);
     }
 }

@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
@@ -101,11 +102,13 @@ class TwoFactorController extends Controller
         $data = $request->validate(['code' => 'required|string|max:20']);
         $key = 'two-factor:'.$user->id;
         if (RateLimiter::tooManyAttempts($key, 8)) {
+            Log::warning('auth.two_factor_locked', ['user_id' => $user->id, 'ip' => $request->ip()]);
             throw ValidationException::withMessages(['code' => 'Too many attempts. Try again in '.ceil(RateLimiter::availableIn($key) / 60).' minutes.']);
         }
 
         if (! $this->passesTotp($user, $data['code']) && ! $this->passesRecoveryCode($user, $data['code'])) {
             RateLimiter::hit($key, 900);
+            Log::warning('auth.two_factor_failed', ['user_id' => $user->id, 'ip' => $request->ip()]);
             throw ValidationException::withMessages(['code' => 'That code did not match.']);
         }
 

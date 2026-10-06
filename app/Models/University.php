@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 class University extends Model
 {
@@ -64,5 +65,23 @@ class University extends Model
     public function primaryCourse(): ?Course
     {
         return $this->courses->firstWhere('entry_type', 'standard') ?? $this->courses->first();
+    }
+
+    /** UK universities, regulators and admissions bodies only: a pathway agent's or a prep company's page is never "official". */
+    public static function isOfficialUrl(?string $url): bool
+    {
+        $host = strtolower((string) parse_url((string) $url, PHP_URL_HOST));
+
+        return $host !== '' && (bool) preg_match('/(^|\.)(ac\.uk|nhs\.uk|gov\.uk|gmc-uk\.org|ucas\.com|legislation\.gov\.uk)$/', $host);
+    }
+
+    /** The university's own pages behind its facts, for the "Official sources" box and the structured data. */
+    public function officialUrls(): Collection
+    {
+        return $this->facts->filter(fn ($f) => str_starts_with($f->key, 'source_'))->pluck('value_text')
+            ->merge($this->facts->pluck('source_url'))
+            ->merge($this->courses->pluck('official_url'))
+            ->merge([$this->website_url])
+            ->filter(fn ($u) => self::isOfficialUrl($u))->unique()->values();
     }
 }

@@ -94,7 +94,15 @@ document.addEventListener('submit', (e) => {
     });
     const elig = document.querySelector('form[action$="/eligibility"]');
     if (elig) elig.addEventListener('input', () => send('eligibility_started', { page: path() }), { once: true });
+    // Declining (or changing your mind) removes the Google Analytics cookies already set, on this host and its parent domain
+    const clearGa = () => document.cookie.split('; ').map((c) => c.split('=')[0]).filter((n) => /^_ga/.test(n)).forEach((n) => {
+        document.cookie = `${n}=; Max-Age=0; Path=/`;
+        document.cookie = `${n}=; Max-Age=0; Path=/; Domain=.${location.hostname.replace(/^www\./, '')}`;
+    });
     const banner = document.querySelector('[data-consent-banner]');
-    banner?.querySelectorAll('[data-consent]').forEach((b) => b.addEventListener('click', () => { remember(b.dataset.consent); banner.remove(); if (b.dataset.consent === 'granted') load(); }));
+    banner?.querySelectorAll('[data-consent]').forEach((b) => b.addEventListener('click', () => { remember(b.dataset.consent); banner.remove(); if (b.dataset.consent === 'granted') load(); else clearGa(); }));
+    // Footer "Cookie settings": forget the choice and the GA cookies, then show the banner again
+    document.querySelector('[data-consent-reset]')?.addEventListener('click', () => { document.cookie = 'smukn_consent=; Max-Age=0; Path=/'; clearGa(); location.reload(); });
+    if (cookie() === 'denied') clearGa();
     if (cookie() === 'granted') load();
 })();

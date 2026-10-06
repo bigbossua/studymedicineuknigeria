@@ -71,7 +71,7 @@ class VerificationAdminTest extends TestCase
         $this->seed(PlatformSeeder::class);
         $this->seed(TopicFactsSeeder::class);
         $r = $this->admin()->get('/admin')->assertOk()->assertSee('Launch readiness')->assertSee('Reference facts verified')->assertSee('3 price(s) set', false)->assertSee('STRIPE_SECRET not set');
-        $this->assertMatchesRegularExpression('/\d+ of 9 complete/', $r->getContent());
+        $this->assertMatchesRegularExpression('/\d+ of 11 complete/', $r->getContent());
         // the scheduler item tells the truth: no heartbeat yet means the cron job has never run
         $r->assertSee('Scheduler and email queue running')->assertSee('scheduler has never run');
         Cache::forever('scheduler.heartbeat', now()->timestamp);

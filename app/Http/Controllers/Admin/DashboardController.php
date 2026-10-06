@@ -15,6 +15,7 @@ use App\Models\University;
 use App\Models\User;
 use App\Services\Payments\StripeService;
 use App\Support\Seo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
@@ -60,6 +61,9 @@ class DashboardController extends Controller
                     config('site.analytics_decision') === 'first_party' => 'first-party funnel only (owner decision recorded); no Google script',
                     default => 'no decision recorded: first-party funnel runs; set SITE_ANALYTICS_DECISION=first_party, or add a GA4 Measurement ID',
                 }, 'url' => route('admin.funnel')],
+            ['label' => 'Privacy retention applied and deletion requests handled', 'done' => ($run = Cache::get('retention.last_run')) !== null && now()->diffInDays($run['at']) <= 8 && ($deletions = User::whereNotNull('deletion_requested_at')->whereNull('erased_at')->count()) === 0,
+                'detail' => ($run ? 'retention last ran '.Carbon::parse($run['at'])->diffForHumans() : 'retention has not run yet (weekly, Sunday)').'; '.User::whereNotNull('deletion_requested_at')->whereNull('erased_at')->count().' deletion request(s) open: php artisan smukn:erase-account <email>', 'url' => null],
+            ['label' => 'Image uploads can be re-encoded (PHP GD)', 'done' => function_exists('imagecreatefromstring'), 'detail' => function_exists('imagecreatefromstring') ? 'GD present: photos and scans are re-encoded before storage' : 'GD missing: JPG/PNG uploads are refused until the PHP gd extension is enabled in hPanel', 'url' => null],
             ['label' => 'Scheduler and email queue running', 'done' => $heartbeat !== null && $heartbeat <= 3 && $oldestJob <= 10 && $failedJobs === 0,
                 'detail' => ($heartbeat === null ? 'scheduler has never run: add the hPanel cron job' : "scheduler last ran {$heartbeat} min ago")."; {$queued} waiting".($queued ? " (oldest {$oldestJob} min)" : '')."; {$failedJobs} failed", 'url' => null],
         ];

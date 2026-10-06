@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Course;
 use App\Models\ReferenceFact;
+use App\Services\Reference\DatasetImporter;
 use App\Support\FactAudit;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -129,6 +130,7 @@ class ImportFactsDecisions extends Command
             // application log (warning level, because production logs at warning and above).
             DB::table('fact_imports')->updateOrInsert(['sha256' => $hash], ['file' => (string) $this->argument('file'), 'applied' => $applied, 'skipped' => $skipped, 'unknown' => $unknown, 'created_at' => now(), 'updated_at' => now()]);
             if ($applied) {
+                app(DatasetImporter::class)->syncCourseColumns(); // directory columns follow verified wording
                 Log::warning('fact.worksheet_import', ['file' => $this->argument('file'), 'sha256' => $hash, 'applied' => $applied, 'skipped' => $skipped, 'unknown' => $unknown]);
             }
         }

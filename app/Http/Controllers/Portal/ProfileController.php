@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lead;
 use App\Models\User;
 use App\Notifications\StaffNotification;
 use App\Support\Seo;
@@ -52,7 +53,10 @@ class ProfileController extends Controller
             'messages' => $a->messages->map(fn ($m) => ['from_you' => $m->sender_user_id === $a->user_id, 'body' => $m->body, 'at' => $m->created_at])->values(),
             'approvals' => $a->authorisations->map(fn ($x) => ['typed_name' => $x->typed_name, 'declaration_version' => $x->declaration_version, 'approved_at' => $x->created_at, 'revoked_at' => $x->revoked_at])->values(),
         ])->values();
-        $data = ['exported_at' => now()->toIso8601String(), 'user' => $user->only('name', 'email', 'phone', 'whatsapp', 'country', 'nigeria_state', 'created_at'), 'applications' => $applications];
+        $leads = Lead::where('user_id', $user->id)->orWhere('email', $user->email)->get()->map(fn ($l) => [
+            'name' => $l->name, 'email' => $l->email, 'phone' => $l->phone, 'whatsapp' => $l->whatsapp, 'answers' => $l->eligibility_answers, 'result' => $l->eligibility_result, 'consent_marketing' => (bool) $l->consent_marketing, 'created_at' => $l->created_at,
+        ])->values();
+        $data = ['exported_at' => now()->toIso8601String(), 'user' => $user->only('name', 'email', 'phone', 'whatsapp', 'country', 'nigeria_state', 'created_at'), 'eligibility_checks' => $leads, 'applications' => $applications];
 
         return response()->streamDownload(fn () => print (json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)), 'smukn-data-export-'.now()->format('Ymd').'.json', ['Content-Type' => 'application/json']);
     }
@@ -60,9 +64,11 @@ class ProfileController extends Controller
     public function requestDeletion(Request $request)
     {
         $request->validate(['confirm' => 'required|accepted']);
+        // a durable record of the request (Admin → Students lists it; smukn:erase-account completes it)
+        $request->user()->forceFill(['deletion_requested_at' => $request->user()->deletion_requested_at ?? now()])->save();
         $app = $request->user()->currentApplication();
         $app?->messages()->create(['sender_user_id' => $request->user()->id, 'body' => 'ACCOUNT DELETION REQUESTED by the student via their profile page.']);
-        User::where('role', 'admin')->get()->each->notify(new StaffNotification('Deletion request — '.$request->user()->email, ['The student requested account deletion. Check for legal hold (active submission) and action within 30 days.'], $app ? route('admin.applications.show', $app) : null));
+        User::where('role', 'admin')->get()->each->notify(new StaffNotification('Deletion request — '.$request->user()->email, ['The student requested account deletion. Check for legal hold (active submission), then run: php artisan smukn:erase-account <email> (within 30 days).'], $app ? route('admin.applications.show', $app) : null));
 
         return back()->with('status', 'We have received your deletion request and will complete it within 30 days unless a submission in progress requires us to retain records; we will tell you if so.');
     }

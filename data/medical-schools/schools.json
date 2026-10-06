@@ -1253,7 +1253,9 @@
         "Graduate-entry only: relevant to Nigerian applicants who already hold a degree, not school leavers.",
         "Graduate-entry programme only; no A100 (school-leaver) course found."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "entry_type": "graduate",
+      "course_slug": "a101"
     },
     {
       "university": {
@@ -4540,7 +4542,9 @@
       "notes": [
         "Graduate-entry only (A101). A 'medicine-mbchb' URL on worc.ac.uk also surfaced; whether a 5-year A100 exists was NOT confirmed in this session."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "entry_type": "graduate",
+      "course_slug": "a101"
     },
     {
       "university": {
@@ -4664,7 +4668,9 @@
       "notes": [
         "Not relevant for Nigerian applicants needing a Student visa."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "entry_type": "graduate",
+      "course_slug": "a102"
     },
     {
       "university": {
@@ -4905,7 +4911,9 @@
       "notes": [
         "Not otherwise researched in this session."
       ],
-      "last_researched": "2026-10-03"
+      "last_researched": "2026-10-03",
+      "entry_type": "graduate",
+      "course_slug": "medicine"
     },
     {
       "university": {

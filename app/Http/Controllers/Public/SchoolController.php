@@ -103,10 +103,10 @@ class SchoolController extends Controller
             ->article()
             ->breadcrumbs([['label' => 'Medical Schools', 'url' => route('schools.index')], ['label' => $university->name]])
             ->reviewed($this->lastVerified($university, $course) ?? '2026-10-03', '2027')
-            ->jsonLd(['@type' => 'CollegeOrUniversity', 'name' => $university->name, 'url' => $university->website_url ?? $course?->official_url, 'address' => ['@type' => 'PostalAddress', 'addressLocality' => $university->city, 'addressCountry' => 'GB']]);
+            ->jsonLd(['@type' => 'CollegeOrUniversity', 'name' => $university->name, 'url' => University::isOfficialUrl($university->website_url) ? $university->website_url : $university->officialUrls()->first(), 'address' => ['@type' => 'PostalAddress', 'addressLocality' => $university->city, 'addressCountry' => 'GB']]);
 
         if ($course) {
-            $courseLd = ['@type' => 'Course', 'name' => $course->title, 'provider' => ['@type' => 'CollegeOrUniversity', 'name' => $university->name], 'url' => $course->official_url ?? $university->website_url];
+            $courseLd = ['@type' => 'Course', 'name' => $course->title, 'provider' => ['@type' => 'CollegeOrUniversity', 'name' => $university->name], 'url' => University::isOfficialUrl($course->official_url) ? $course->official_url : $university->officialUrls()->first()];
             if ($course->shortUcasCode()) {
                 $courseLd['courseCode'] = $course->shortUcasCode();
             }

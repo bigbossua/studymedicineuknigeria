@@ -151,7 +151,7 @@ jobs:
         with:
           name: smukn-production-site-${{ github.run_id }}
           path: out/
-          retention-days: 90
+          retention-days: 30   # privacy notice: backups expire within 30 days
           if-no-files-found: error
       - uses: actions/upload-artifact@v7
         if: always()

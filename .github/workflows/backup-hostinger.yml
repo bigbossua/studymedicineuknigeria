@@ -148,5 +148,5 @@ jobs:
         with:
           name: smukn-${{ env.TARGET }}-${{ env.SCOPE }}-${{ github.run_id }}
           path: out/
-          retention-days: ${{ env.SCOPE == 'site' && 90 || (env.SCOPE == 'full' && 28 || 14) }}
+          retention-days: ${{ env.SCOPE == 'site' && 30 || (env.SCOPE == 'full' && 28 || 14) }}
           if-no-files-found: error

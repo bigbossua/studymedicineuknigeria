@@ -36,6 +36,7 @@ class DatasetImporter
         $this->importSchools("$dataPath/medical-schools/schools.json");
         $this->importFees("$dataPath/medical-schools/fees.json");
         $this->importStatements("$dataPath/qualifications/university-statements.json");
+        $this->syncCourseColumns();
 
         return $this->log;
     }
@@ -263,7 +264,10 @@ class DatasetImporter
                 $u = University::create(['slug' => $slug, 'name' => $row['university'], 'international_policy' => 'not_published']);
             }
             $isGem = (bool) preg_match('/A101|A102|graduate/i', $row['course'] ?? '');
-            $course = $u->courses()->where('entry_type', $isGem ? 'graduate' : 'standard')->first()
+            // a graduate-entry-only school (its schools row says entry_type graduate) has one course: a fee row that does
+            // not spell out "graduate" still belongs to it, never to a new empty standard record
+            $graduateOnly = ! $isGem && $u->courses()->where('entry_type', 'standard')->doesntExist() && $u->courses()->where('entry_type', 'graduate')->count() === 1;
+            $course = $u->courses()->where('entry_type', $isGem || $graduateOnly ? 'graduate' : 'standard')->first()
                 ?? Course::create(['university_id' => $u->id, 'slug' => $isGem ? 'graduate-entry' : 'medicine', 'title' => $row['course'] ?? 'Medicine', 'entry_type' => $isGem ? 'graduate' : 'standard', 'award' => $this->awardFrom($row['course'] ?? '')]);
             $status = match ($row['status'] ?? '') {
                 'NOT OPEN TO INTERNATIONAL' => ReferenceFact::NOT_PUBLISHED,
@@ -348,6 +352,10 @@ class DatasetImporter
         if (preg_match('/\bNOT\s+(THROUGH\s+|VIA\s+)?UCAS\b/', $u)) {
             return 'DIRECT';
         }
+        // "UCAS only ... late or direct applications are not accepted" is UCAS, not both
+        if (preg_match('/\bUCAS\s+ONLY\b|\bDIRECT\s+APPLICATIONS?\s+(ARE\s+|IS\s+)?NOT\s+ACCEPTED\b/', $u)) {
+            return 'UCAS';
+        }
         if (str_contains($u, 'UCAS') && (str_contains($u, 'DIRECT') || preg_match('/\bOR\b/', $u))) {
             return 'BOTH';
         }
@@ -367,6 +375,12 @@ class DatasetImporter
             return null;
         }
         $u = Str::upper($v);
+        // A test named only to say it is not needed or not accepted does not make the school require it:
+        // "None (no UCAT ...)", "UCAT NOT required for international applicants", "BMAT and GAMSAT not accepted instead".
+        if (preg_match('/^\s*NONE\b|\bNO (ADMISSIONS )?TEST\b|\bNO UCAT\b|\bUCAT\s+(IS\s+)?NOT\s+REQUIRED\b|\bNOT\s+REQUIRED\s+FOR\s+INTERNATIONAL\b|\bINTERNATIONAL APPLICANTS?:?\s+NO\b/', $u)) {
+            return 'NONE';
+        }
+        $u = preg_replace('/\b(BMAT\s+AND\s+)?GAMSAT\s+(IS\s+|ARE\s+)?NOT\s+ACCEPTED\b/', '', $u);
         if (str_contains($u, 'GAMSAT') && str_contains($u, 'UCAT')) {
             return 'UCAT/GAMSAT';
         }
@@ -376,10 +390,39 @@ class DatasetImporter
         if (str_contains($u, 'GAMSAT')) {
             return 'GAMSAT';
         }
-        if (str_contains($u, 'NONE') || str_contains($u, 'NO ')) {
-            return 'NONE';
-        }
 
         return 'NOT_PUBLISHED';
+    }
+
+    /**
+     * The directory filters read the course columns. Once a reviewer has VERIFIED the route, test, code or length on
+     * the official page, the column follows that wording, not the raw dataset string (run after every import).
+     */
+    public function syncCourseColumns(): int
+    {
+        $changed = 0;
+        foreach (Course::with(['facts' => fn ($q) => $q->where('verification_status', ReferenceFact::VERIFIED)])->get() as $course) {
+            $facts = $course->facts->keyBy('key');
+            $update = [];
+            if ($f = $facts->get('application_route')) {
+                $update['application_route'] = $this->routeFrom((string) $f->value_text) ?? $course->application_route;
+            }
+            if ($f = $facts->get('admissions_test')) {
+                $update['admissions_test'] = $this->testFrom((string) $f->value_text) ?? $course->admissions_test;
+            }
+            if (($f = $facts->get('ucas_code')) && preg_match('/\b([A-Z0-9]\d[A-Z0-9]\d|[A-Z]\d{3})\b/', (string) ($f->value_text ?? ''), $m)) {
+                $update['ucas_code'] = $m[1];
+            }
+            if (($f = $facts->get('course_length_years')) && is_numeric($f->value_number ?? $f->value_text)) {
+                $update['length_years'] = (int) floor((float) ($f->value_number ?? $f->value_text));
+            }
+            $course->fill($update);
+            if ($course->isDirty()) {
+                $course->save();
+                $changed++;
+            }
+        }
+
+        return $changed;
     }
 }

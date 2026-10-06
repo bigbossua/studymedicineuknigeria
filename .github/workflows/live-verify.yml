@@ -90,7 +90,7 @@ jobs:
               "public_storage_link" => file_exists(public_path("storage")),
               "queue_pending" => DB::table("jobs")->count(),
               "queue_oldest_pending_minutes" => ($t = DB::table("jobs")->min("created_at")) ? (int) round((time() - $t) / 60) : 0,
-              "failed_jobs" => DB::table("failed_jobs")->count(),
+              "failed_jobs" => DB::table("failed_jobs")->count(), "image_reencode_gd" => function_exists("imagecreatefromstring"), "retention_last_run" => (Cache::get("retention.last_run")["at"] ?? null), "deletion_requests_open" => DB::table("users")->whereNotNull("deletion_requested_at")->whereNull("erased_at")->count(),
               "scheduler_heartbeat_minutes" => ($b = Cache::get("scheduler.heartbeat")) ? (int) floor((time() - (int) $b) / 60) : null,
             ], JSON_PRETTY_PRINT), PHP_EOL;'
           # what Stripe shows customers (Checkout, receipts, card statements): yes/no only, never the values (public logs)
@@ -140,6 +140,7 @@ jobs:
           grep -q '"session_secure_cookie": true' server.txt || { echo "::error::session cookie is not marked Secure"; exit 1; }
           # the queue worker runs from the hPanel cron job (schedule:run every minute): nothing may wait longer than 10 minutes
           grep -q '"failed_jobs": 0' server.txt || { echo "::error::failed queue jobs exist: open Admin, or run the mail diagnosis"; exit 1; }
+          grep -q '"image_reencode_gd": true' server.txt || { echo "::error::PHP gd is missing on the server: photo uploads are refused until it is enabled (hPanel → PHP extensions)"; exit 1; }
           hb=$(grep -o '"scheduler_heartbeat_minutes": [0-9]*' server.txt | grep -o '[0-9]*$'); if [ -n "$hb" ] && [ "$hb" -gt 5 ]; then echo "::error::the scheduler last ran ${hb} minutes ago: the hPanel cron job has stopped"; exit 1; fi
           w=$(grep -o '"queue_oldest_pending_minutes": [0-9]*' server.txt | grep -o '[0-9]*$'); [ "${w:-0}" -le 10 ] || { echo "::error::queued emails have waited ${w} minutes: the scheduler cron job is not running (hPanel → Advanced → Cron Jobs)"; exit 1; }
           { echo '### Server state'; echo '```'; cat server.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

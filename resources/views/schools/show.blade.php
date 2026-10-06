@@ -132,7 +132,7 @@
                 <div class="card-raised">
                     <p class="eyebrow mb-3">Official sources</p>
                     <ul class="space-y-2 text-[0.875rem] break-words">
-                        @foreach($university->facts->filter(fn($f)=>str_starts_with($f->key,'source_'))->pluck('value_text')->merge($university->courses->pluck('official_url'))->filter()->unique()->take(8) as $url)
+                        @foreach($university->officialUrls()->take(8) as $url)
                             <li><a href="{{ $url }}" rel="noopener nofollow" target="_blank">{{ Str::limit(preg_replace('#^https?://(www\.)?#','',$url), 60) }} ↗</a></li>
                         @endforeach
                     </ul>

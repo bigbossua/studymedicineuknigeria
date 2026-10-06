@@ -114,7 +114,7 @@
     </div>
     <div class="border-t border-white/10">
         <div class="container-site py-6 flex flex-col md:flex-row gap-3 md:items-center justify-between text-[0.8125rem] text-white/55">
-            <p>&copy; {{ date('Y') }} {{ config('site.legal_name') ?? config('site.name') }} · <a href="mailto:{{ config('site.email') }}" class="text-white/85 underline decoration-white/40 hover:decoration-white">{{ config('site.email') }}</a>@if(config('site.whatsapp')) · <a href="https://wa.me/{{ config('site.whatsapp') }}?text={{ rawurlencode('Hello, I would like help studying Medicine in the UK from Nigeria.') }}" rel="noopener" target="_blank" class="text-white/85 underline decoration-white/40 hover:decoration-white">WhatsApp</a>@endif</p>
+            <p>&copy; {{ date('Y') }} {{ config('site.legal_name') ?? config('site.name') }} · <a href="mailto:{{ config('site.email') }}" class="text-white/85 underline decoration-white/40 hover:decoration-white">{{ config('site.email') }}</a>@if(config('site.ga4_id')) · <button type="button" data-consent-reset class="text-white/85 underline decoration-white/40 hover:decoration-white">Cookie settings</button> @endif @if(config('site.whatsapp')) · <a href="https://wa.me/{{ config('site.whatsapp') }}?text={{ rawurlencode('Hello, I would like help studying Medicine in the UK from Nigeria.') }}" rel="noopener" target="_blank" class="text-white/85 underline decoration-white/40 hover:decoration-white">WhatsApp</a>@endif</p>
             <p class="flex items-center gap-2"><x-icon name="badge-check" :size="15" class="text-gold-400" />Information is checked against official sources and shows a last-verified date. Admission decisions are made solely by universities.</p>
         </div>
     </div>

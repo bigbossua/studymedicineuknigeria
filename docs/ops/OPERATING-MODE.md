@@ -4,7 +4,14 @@ The build is finished. From now on, changes come from evidence: search data, a c
 defect. Nothing is built or deployed to keep busy. When every check passes and no data asks for a change, the
 right action is none.
 
-## 1. Production baseline (release `2026-10-06T14-01-16`, commit `1412b52`)
+## 1. Production baseline (release `2026-10-07T05-08-04`, commit `2977857`)
+
+This release is the 2026-10-06 baseline plus the read-only Search Console feed, which is the last infrastructure
+addition. Its re-verification on 2026-10-07 found the same results:
+- Live Verification run 37575126964: all checks passed, Google-readiness audit 83/0, journey passed.
+- Probe run 37575129985: passed.
+- Search report run 37575132180: the feed runs and reports "not connected".
+- Server state: 0 pending migrations, 0 failed jobs, GD present, payments open, webhook self-test passed, `gsc_connected: false` (awaiting the owner's key).
 
 | Area | Baseline | Evidence |
 |---|---|---|

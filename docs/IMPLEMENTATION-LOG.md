@@ -819,6 +819,12 @@ The one gap was Search Console data, which nothing here could read. The new feed
 - The sitemap URL list moved to `App\Support\Sitemap` so the sitemap and the inspection share it.
 - 5 tests (`SearchConsoleTest`); 253 in total.
 
+**Live after release `2026-10-07T05-08-04`** (commit `2977857`, deploy run 37573574526):
+- Live Verification (37575126964) passed: audit 83/0, all 65 legacy redirects, no public fee, all headers, journey on phone and desktop, 0 failed jobs, GD present, Stripe and webhook healthy.
+- Probe (37575129985) passed.
+- The weekly Search report (37575132180) runs on the server and reports "not connected" until the owner installs the key.
+- The project is now in maintenance and organic-growth mode (`docs/ops/OPERATING-MODE.md`): no new features without a production defect or a launch-critical gap.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

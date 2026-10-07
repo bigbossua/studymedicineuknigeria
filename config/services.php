@@ -44,4 +44,11 @@ return [
         'api_base' => env('STRIPE_API_BASE'),
     ],
 
+    // Google Search Console, read only (App\Services\Search\SearchConsole): the service-account key file, base64-encoded,
+    // and the property it was added to. Empty key = not connected; nothing is fetched.
+    'gsc' => [
+        'service_account' => env('GSC_SERVICE_ACCOUNT'),
+        'property' => env('SITE_GSC_PROPERTY', 'sc-domain:studymedicineuknigeria.com'),
+    ],
+
 ];

@@ -146,6 +146,43 @@ After the requests:
 - Sitemaps → open `sitemap.xml` and confirm *Discovered pages* reads 35 once the release with rows 13–15 is live (32 before it). Resubmit only if the count is still behind after a week.
 - Indexing → Pages: record the counts as in the routine below. Submitted or discovered is **not** indexed. A URL counts as indexed only when URL inspection says *URL is on Google*.
 
+## Data feed (connect once; replaces the manual exports below)
+
+The property already exists (Domain property, DNS-verified; sitemap read with status *Success*). Do not create a second
+property and do not change DNS. The feed reads it through Google's free Search Console API with a read-only service
+account. Nothing is fetched until the key is installed.
+
+Owner, once (about 15 minutes):
+1. https://console.cloud.google.com → create a project (any name) → *APIs & Services* → *Library* → enable
+   **Google Search Console API**.
+2. *IAM & Admin* → *Service accounts* → *Create service account* (name `search-reader`, no roles) → open it →
+   *Keys* → *Add key* → *JSON*. A key file downloads.
+3. Search Console → the `studymedicineuknigeria.com` property → *Settings* → *Users and permissions* → *Add user* →
+   the service account's email (`search-reader@…iam.gserviceaccount.com`) → permission **Restricted**.
+   If the weekly report then says URL inspection lacks permission, change it to *Full*. The key only has read
+   access (`webmasters.readonly`), so it cannot submit, remove or change anything.
+4. GitHub → *Settings* → *Secrets and variables* → *Actions* → *New repository secret* `GSC_SERVICE_ACCOUNT_JSON`.
+   Paste the whole key file, then delete the downloaded file.
+5. Actions → *Update server settings* (`update-env-hostinger.yml`, target production). Then Actions → *Search report*
+   (`search-report.yml`) with `sync` = `480`, which reads Google's full 16 months once.
+
+What it does after that:
+- `smukn:gsc-sync` runs nightly at 05:20. It reads performance (date × query × page × country) and Google's index
+  verdict for every sitemap URL.
+- Admin → Search shows everything.
+- `search-report.yml` posts the weekly summary every Monday:
+  - index status;
+  - totals for all countries and for Nigeria;
+  - Nigerian queries;
+  - pages gaining impressions;
+  - low CTR on page one;
+  - queries split across pages;
+  - new queries;
+  - searches naming unpublished schools.
+  The log is public, so a query is printed by name only with 20+ impressions in the period.
+- The manual routine below is only needed until the key is installed. Requesting indexing stays manual: the API
+  cannot do it.
+
 ### Owner routine (about 10 minutes, Search Console has no free API access configured here)
 
 - **Week 1:** URL inspection → *Request indexing* for the five priority pages: `/`, `/study-medicine-in-the-uk/from-nigeria`,

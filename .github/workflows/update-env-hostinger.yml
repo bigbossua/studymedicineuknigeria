@@ -27,7 +27,7 @@ jobs:
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}
           USER: ${{ vars.HOSTINGER_SSH_USER }}
           KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-          ANY: ${{ secrets.STRIPE_SECRET }}${{ secrets.SMUKN_MAIL_PASSWORD }}${{ vars.SITE_GA4_ID }}${{ secrets.SITE_GA4_API_SECRET }}${{ vars.SITE_GOOGLE_VERIFICATION }}${{ vars.SITE_ANALYTICS_DECISION }}${{ vars.SITE_LEGAL_NAME }}${{ vars.SITE_COMPANY_NUMBER }}${{ vars.SITE_ADDRESS }}${{ vars.SITE_ICO_NUMBER }}${{ vars.SITE_VAT_NUMBER }}${{ vars.SITE_HOSTING_REGION }}${{ vars.SITE_LEGAL_REVIEWED }}
+          ANY: ${{ secrets.STRIPE_SECRET }}${{ secrets.SMUKN_MAIL_PASSWORD }}${{ vars.SITE_GA4_ID }}${{ secrets.SITE_GA4_API_SECRET }}${{ vars.SITE_GOOGLE_VERIFICATION }}${{ vars.SITE_ANALYTICS_DECISION }}${{ vars.SITE_LEGAL_NAME }}${{ vars.SITE_COMPANY_NUMBER }}${{ vars.SITE_ADDRESS }}${{ vars.SITE_ICO_NUMBER }}${{ vars.SITE_VAT_NUMBER }}${{ vars.SITE_HOSTING_REGION }}${{ vars.SITE_LEGAL_REVIEWED }}${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}${{ vars.SITE_GSC_PROPERTY }}
         run: |
           m=""; [ -z "$HOST" ] && m="$m HOSTINGER_SSH_HOST"; [ -z "$USER" ] && m="$m HOSTINGER_SSH_USER"; [ -z "$KEY" ] && m="$m HOSTINGER_SSH_KEY"
           if [ -n "$m" ]; then echo "::error::Missing settings:$m"; exit 1; fi
@@ -61,10 +61,14 @@ jobs:
           SITE_VAT_NUMBER: ${{ vars.SITE_VAT_NUMBER }}
           SITE_HOSTING_REGION: ${{ vars.SITE_HOSTING_REGION }}
           SITE_LEGAL_REVIEWED: ${{ vars.SITE_LEGAL_REVIEWED }}
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          SITE_GSC_PROPERTY: ${{ vars.SITE_GSC_PROPERTY }}
           HOST: ${{ vars.HOSTINGER_SSH_HOST }}
           PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
           USER: ${{ vars.HOSTINGER_SSH_USER }}
         run: |
-          { for v in TARGET STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION SITE_ANALYTICS_DECISION SITE_LEGAL_NAME SITE_COMPANY_NUMBER SITE_ADDRESS SITE_ICO_NUMBER SITE_VAT_NUMBER SITE_HOSTING_REGION SITE_LEGAL_REVIEWED; do printf 'export %s=%q\n' "$v" "${!v}"; done
+          # the key file is JSON with newlines: it travels base64-encoded and is never printed
+          GSC_SERVICE_ACCOUNT=$( [ -n "${GSC_SERVICE_ACCOUNT_JSON:-}" ] && printf '%s' "$GSC_SERVICE_ACCOUNT_JSON" | base64 -w0 || true ); unset GSC_SERVICE_ACCOUNT_JSON
+          { for v in TARGET STRIPE_KEY STRIPE_SECRET STRIPE_WEBHOOK_SECRET MAIL_PASSWORD SITE_GA4_ID SITE_GA4_API_SECRET SITE_GOOGLE_VERIFICATION SITE_ANALYTICS_DECISION SITE_LEGAL_NAME SITE_COMPANY_NUMBER SITE_ADDRESS SITE_ICO_NUMBER SITE_VAT_NUMBER SITE_HOSTING_REGION SITE_LEGAL_REVIEWED GSC_SERVICE_ACCOUNT SITE_GSC_PROPERTY; do printf 'export %s=%q\n' "$v" "${!v}"; done
             cat ops/update-env.sh; } | \
             ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s'

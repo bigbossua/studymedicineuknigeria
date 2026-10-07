@@ -795,6 +795,30 @@ The remaining 16 were either already correct on re-reading, or need the owner (l
 - The Sitemap/Robots probe (run 37476042962) passed: all 36 URLs answer 200 to Googlebot, are indexable and self-canonical.
 - One earlier Live Verification run (37476038923) hit Hostinger's CDN browser challenge (HTTP 403) and an SSH timeout from that runner's IP. The probe passed from another runner at the same minute, and the re-run passed. It was a per-IP block at the host, not the release.
 
+## Stage 65: operating mode and the Search Console feed (2026-10-07)
+
+The build is finished; the project now runs by `docs/ops/OPERATING-MODE.md`. That document holds:
+- the production baseline of release `2026-10-06T14-01-16`;
+- what watches the site;
+- the evidence-led growth loop;
+- source-change handling and the report format.
+
+The monitoring was already complete (uptime, probe, live verification, launch checks, Lighthouse, source watcher, retention, backups). It is unchanged.
+
+The one gap was Search Console data, which nothing here could read. The new feed is read only and does nothing until the owner installs a service-account key (`docs/ops/SEARCH-CONSOLE-AND-GA4.md`, "Data feed"):
+- `smukn:gsc-sync` runs nightly and stores performance rows (date × query × page × country) and Google's URL Inspection verdict for every sitemap URL. Its scope is `webmasters.readonly`, so it never submits, removes or requests anything.
+- `SearchInsights` lists:
+  - Nigerian queries;
+  - pages gaining impressions;
+  - low CTR on page one;
+  - queries split across pages;
+  - new queries;
+  - Nigerian searches naming unpublished schools. This is evidence for DECISION-ENGINE §8 only; nothing is published automatically.
+- Admin → Search shows all of it.
+- `search-report.yml` runs weekly. Its public log names a query only when it drew 20+ impressions.
+- The sitemap URL list moved to `App\Support\Sitemap` so the sitemap and the inspection share it.
+- 5 tests (`SearchConsoleTest`); 253 in total.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

@@ -1,0 +1,58 @@
+name: Search report (read-only)
+# Weekly organic-search summary from the Search Console data the server stores (smukn:gsc-sync, nightly):
+# Google's index status for the sitemap URLs, clicks/impressions/CTR/position, Nigerian queries, pages gaining
+# impressions, low-CTR pages, queries split across pages, new queries and searches for unpublished schools.
+# This log is public: it holds no secrets and no personal data, and a query is named only when it drew 20+
+# impressions in the period (smukn:search-report). It changes nothing; until the owner connects Search Console it
+# reports "not connected".
+on:
+  schedule:
+    - cron: '43 6 * * 1'   # Mondays, after the nightly sync
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'Period in days'
+        required: false
+        default: '28'
+      sync:
+        description: 'Run smukn:gsc-sync first (yes for an on-demand refresh; days of data to re-read, up to 480, or no)'
+        required: false
+        default: 'no'
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+      DAYS: ${{ github.event.inputs.days || '28' }}
+      SYNC: ${{ github.event.inputs.sync || 'no' }}
+    steps:
+      - name: Check inputs
+        run: |
+          [[ "$DAYS" =~ ^[0-9]{1,3}$ ]] || { echo "::error::days must be a number"; exit 1; }
+          [[ "$SYNC" = no || "$SYNC" =~ ^[0-9]{1,3}$ ]] || { echo "::error::sync must be no or a number of days"; exit 1; }
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Report
+        run: |
+          { printf 'DAYS=%q\nSYNC=%q\n' "$DAYS" "$SYNC"; cat <<'REMOTE'
+          set -euo pipefail
+          cd ~/apps/smukn-production/current
+          PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
+          echo "release: $(basename "$(readlink -f .)")"
+          if [ "$SYNC" != no ]; then $PHP artisan smukn:gsc-sync --days="$SYNC" --no-ansi; fi
+          $PHP artisan smukn:search-report --days="$DAYS" --no-ansi
+          REMOTE
+          } | ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s' | tee report.txt
+          { echo '### Search report'; echo '```'; cat report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

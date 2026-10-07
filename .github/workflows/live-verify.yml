@@ -90,7 +90,7 @@ jobs:
               "public_storage_link" => file_exists(public_path("storage")),
               "queue_pending" => DB::table("jobs")->count(),
               "queue_oldest_pending_minutes" => ($t = DB::table("jobs")->min("created_at")) ? (int) round((time() - $t) / 60) : 0,
-              "failed_jobs" => DB::table("failed_jobs")->count(), "image_reencode_gd" => function_exists("imagecreatefromstring"), "retention_last_run" => (Cache::get("retention.last_run")["at"] ?? null), "deletion_requests_open" => DB::table("users")->whereNotNull("deletion_requested_at")->whereNull("erased_at")->count(),
+              "failed_jobs" => DB::table("failed_jobs")->count(), "image_reencode_gd" => function_exists("imagecreatefromstring"), "retention_last_run" => (Cache::get("retention.last_run")["at"] ?? null), "deletion_requests_open" => DB::table("users")->whereNotNull("deletion_requested_at")->whereNull("erased_at")->count(), "gsc_connected" => class_exists(App\Services\Search\SearchConsole::class) ? App\Services\Search\SearchConsole::configured() : "not deployed", "gsc_last_sync" => (Cache::get("gsc.last_sync")["at"] ?? null),
               "scheduler_heartbeat_minutes" => ($b = Cache::get("scheduler.heartbeat")) ? (int) floor((time() - (int) $b) / 60) : null,
             ], JSON_PRETTY_PRINT), PHP_EOL;'
           # what Stripe shows customers (Checkout, receipts, card statements): yes/no only, never the values (public logs)

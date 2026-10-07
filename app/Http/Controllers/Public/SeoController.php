@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\ReferenceFact;
-use App\Models\University;
-use App\Support\PublishGate;
+use App\Support\Sitemap;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Route;
 
 class SeoController extends Controller
 {
@@ -41,23 +38,7 @@ class SeoController extends Controller
      */
     public function sitemap(): Response
     {
-        $urls = [];
-        foreach (Route::getRoutes() as $route) {
-            $meta = $route->defaults['sitemap'] ?? null;
-            if (! $meta || ! in_array('GET', $route->methods(), true) || ! PublishGate::passes($meta['gate'] ?? null)) {
-                continue;
-            }
-            $urls[] = [
-                'loc' => url($route->uri() === '/' ? '/' : '/'.trim($route->uri(), '/')),
-                'lastmod' => $meta['lastmod'] ?? null,
-                'changefreq' => $meta['changefreq'] ?? 'monthly',
-            ];
-        }
-        // University pages are listed once staff (or the publication list) have published them: the same rule that makes them indexable
-        foreach (University::medicalSchools()->where('published', true)->orderBy('name')->get() as $u) {
-            $verified = $u->facts()->where('verification_status', ReferenceFact::VERIFIED)->max('verified_at');
-            $urls[] = ['loc' => route('schools.show', $u), 'lastmod' => $verified ? substr((string) $verified, 0, 10) : null, 'changefreq' => 'monthly'];
-        }
+        $urls = Sitemap::entries();
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($urls as $u) {
             $xml .= "  <url>\n    <loc>".e($u['loc'])."</loc>\n";

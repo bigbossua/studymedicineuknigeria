@@ -11,6 +11,8 @@ use App\Models\Profession;
 use App\Models\ServiceTier;
 use App\Models\TierPrice;
 use App\Models\User;
+use App\Services\Search\SearchConsole;
+use App\Services\Search\SearchInsights;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -146,6 +148,21 @@ class MiscAdminController extends Controller
         $sources = FunnelEvent::where('occurred_at', '>=', $since)->where('name', 'lead_created')->selectRaw("coalesce(json_extract(utm, '$.utm_source'), '(direct / organic)') src, count(*) c")->groupBy('src')->orderByDesc('c')->take(10)->get();
 
         return view('admin.funnel', ['seo' => Seo::make('Funnel')->noindex(), 'days' => $days, 'rows' => $rows, 'other' => $other, 'byTier' => $byTier, 'sources' => $sources, 'total' => FunnelEvent::count()]);
+    }
+
+    /** Search Console data (smukn:gsc-sync): index status, totals and the opportunity lists the organic-growth loop acts on. */
+    public function search(Request $request)
+    {
+        $days = (int) $request->integer('days', 28);
+        $days = in_array($days, [7, 28, 90], true) ? $days : 28;
+        $in = new SearchInsights($days);
+
+        return view('admin.search', [
+            'seo' => Seo::make('Search')->noindex(), 'days' => $days, 'connected' => SearchConsole::configured(), 'property' => SearchConsole::property(),
+            'account' => SearchConsole::accountEmail(), 'sync' => Cache::get('gsc.last_sync'), 'hasData' => $in->hasData(), 'period' => $in->period(),
+            'totals' => $in->hasData() ? $in->totals() : null, 'index' => $in->indexStatus(), 'nigeria' => $in->nigeriaQueries(50), 'gaining' => $in->pagesGaining(),
+            'lowCtr' => $in->lowCtrPages(), 'split' => $in->cannibalisation(), 'new' => $in->newQueries(), 'schools' => $in->schoolDemand(),
+        ]);
     }
 
     /** The SEO decision register (data/seo/decision-register.csv) with a status filter; read-only, edited in the repository. */

@@ -205,6 +205,7 @@ Route::middleware(['auth', 'auth.session', 'verified', 'staff', '2fa'])->prefix(
     Route::post('users/{user}/two-factor/reset', [MiscAdminController::class, 'userTwoFactorReset'])->name('users.two-factor.reset');
     Route::get('audit', [MiscAdminController::class, 'audit'])->name('audit');
     Route::get('funnel', [MiscAdminController::class, 'funnel'])->name('funnel');
+    Route::get('search', [MiscAdminController::class, 'search'])->name('search');
     Route::get('seo', [MiscAdminController::class, 'seo'])->name('seo');
     Route::get('professions', [MiscAdminController::class, 'professions'])->name('professions');
 });

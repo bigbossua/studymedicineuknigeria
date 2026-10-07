@@ -1,6 +1,6 @@
 # StudyMedicineUKNigeria.com — working notes for Claude sessions
 
-Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, then `docs/BASELINE-ASSESSMENT.md` and the latest stages in `docs/IMPLEMENTATION-LOG.md`. The owner's standing directive is in `ops/reports/owner-cycle-2026-10-03.md` (what is done, what only the owner can do).
+Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Operating mode since 2026-10-07: `docs/ops/OPERATING-MODE.md` (baseline, monitoring, the evidence-led growth loop; no batches without data). Read `README.md`, then `docs/BASELINE-ASSESSMENT.md` and the latest stages in `docs/IMPLEMENTATION-LOG.md`. The owner's standing directive is in `ops/reports/owner-cycle-2026-10-03.md` (what is done, what only the owner can do).
 
 ## Non-negotiable rules
 - Never fabricate fees, dates, requirements, rankings, partnerships, testimonials, student numbers or Semrush figures. Facts live in `reference_facts` with a verification status; unverified values are hidden in production. New dated facts go through `database/seeders/TopicFactsSeeder.php` or the admin verification queue, never into Blade prose.
@@ -15,7 +15,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Read `README.md`, the
 ```bash
 composer install && npm ci && cp .env.example .env && php artisan key:generate && php artisan migrate --seed
 npm run build && php artisan serve --host=127.0.0.1 --port=8000     # stop with: fuser -k 8000/tcp
-vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 248 tests; run before every commit
+vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 253 tests; run before every commit
 php artisan smukn:og          # regenerate Open Graph cards after changing a public title
 php artisan smukn:images      # build photo derivatives from brand/photos
 php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification round trip (data/verification/README.md)
@@ -24,6 +24,7 @@ php artisan smukn:sources-check --dry-run   # official-page change watcher (nigh
 node ops/qa/seo-crawl.cjs     # see ops/qa/README.md for the browser QA scripts (journey.cjs, staff-journey.cjs, public-journey.cjs)
 npm i --no-save world-atlas@2 d3-geo@3 topojson-client@3 lucide-static && node ops/design/build-maps.mjs && node ops/design/build-icons.mjs   # map illustrations and icon set (public-domain / ISC data; no stock photos)
 python3 ops/seo/google-audit.py      # Google-readiness audit of the live site (--connect http://127.0.0.1:8090 for a production-mode server; docs/seo/GOOGLE-READINESS.md)
+php artisan smukn:gsc-sync && php artisan smukn:search-report   # Search Console feed (read only; Admin → Search; search-report.yml weekly)
 python3 ops/seo/page-audit.py # regenerate docs/seo/PAGE-AUDIT.md (every indexable page: query, intent, links, routes to eligibility/apply)
 ```
 Local demo accounts: `student@example.test` / `Testpass12345`, `admin@example.test` / `Adminpass12345` (admin has TOTP enrolled; compute codes with `App\Support\Totp::code($secret)` in tinker).

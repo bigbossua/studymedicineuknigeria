@@ -825,6 +825,22 @@ The one gap was Search Console data, which nothing here could read. The new feed
 - The weekly Search report (37575132180) runs on the server and reports "not connected" until the owner installs the key.
 - The project is now in maintenance and organic-growth mode (`docs/ops/OPERATING-MODE.md`): no new features without a production defect or a launch-critical gap.
 
+## Stage 66: source watcher false positives took two pages out of the index (diagnosed 2026-10-24)
+
+**What failed.** Daily Live Verification failed from 2026-10-10. The Google-readiness check "every sitemap URL has a W3C lastmod date" read 34/35 on 10 October, 33/35 by 17 October and 32/34 by 23 October. The sitemap fell from 36 URLs to 35 by 10 October and to 34 by 23 October.
+
+The weekly Lighthouse runs name the two dropped URLs, each with SEO 69, which means noindex:
+- `/fees/cost-of-studying-medicine-in-the-uk` (gate `student-visa,costs-2026,ucat-2026,ucas-2027`), out by 12 October;
+- `/working-in-the-uk` (gate `student-visa,graduate-visa,gmc-registration`), out by 19 October.
+
+These are the only two gated pages. A gated page goes noindex and leaves the sitemap as soon as one fact in its topics is not VERIFIED. That gate worked as designed. The two sitemap entries without lastmod are published school pages: a school's lastmod is the newest verification date of its university-level facts, so they have none left verified.
+
+**Root cause.** `smukn:sources-check` (nightly) compared each verified fact's *value* with the changed page word for word. Many values are the reviewer's summary of the official wording, which never appears verbatim on the page; the wording itself is recorded in the fact's notes as `quote: "…"`. 18 of the 35 text facts behind the two pages are summaries. So the first harmless edit to any of their official pages (a date, a banner) un-verified them, whether or not the fact had changed.
+
+**Correction.** Smallest change: a fact also stays verified while every part of its recorded official quote is still published. The quote is split at the excerpt's line breaks and elisions, and a quote cut short in storage is read to its end. When neither the value nor the quote is on the page, the fact is still un-verified, as before. 3 tests in `SourceWatcherTest`; 256 in total.
+
+**Not done automatically.** Facts already flagged stay off the site until their official pages are re-read. The excerpt runner and a review go into a new `data/verification/decisions-*.csv`, which the next approved deploy applies. Some flags may be real: the UCAT site moves to the next cycle after the testing window closes on 24 September, and graduate-visa rules change for applications from 1 January 2027.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

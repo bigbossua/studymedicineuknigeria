@@ -17,8 +17,9 @@ use Throwable;
  * source. For each page: fetch, reduce to normalised text, compare with the last fingerprint.
  *  - first visit: record the fingerprint (no change);
  *  - page gone (404/410): every verified fact on it becomes SOURCE_CHANGED (hidden in production);
- *  - page changed: a verified fact whose wording or figure is still on the page stays verified (noted); one whose value
- *    is no longer found becomes SOURCE_CHANGED and goes back into the review queue;
+ *  - page changed: a verified fact whose wording or figure is still on the page stays verified (noted), and so does one
+ *    whose recorded official quote is still published word for word (a summarised value never appears verbatim); one
+ *    for which neither is found becomes SOURCE_CHANGED and goes back into the review queue;
  *  - network error or 5xx: nothing changes (recorded; retried next run).
  * Staff are emailed a summary when anything changes. Runs nightly on the server (routes/console.php); this build
  * environment cannot reach official domains.
@@ -123,8 +124,33 @@ class CheckSources extends Command
             return false;
         }
         $value = trim(mb_strtolower(preg_replace('/\s+/u', ' ', (string) $fact->value_text) ?? ''));
+        if ($value !== '' && str_contains($text, $value)) {
+            return true;
+        }
 
-        return $value !== '' && str_contains($text, $value);
+        // A text value is often the reviewer's summary of the page, never its exact wording; the official wording it was
+        // verified against is kept in the notes as quote: "…". The fact stays verified only while every part of that
+        // quote is still published (parts are split at the line breaks ⏎ and elisions ... of the original excerpt).
+        return self::quoteIsOnPage((string) $fact->notes, $text);
+    }
+
+    public static function quoteIsOnPage(string $notes, string $text): bool
+    {
+        // the last review's quote; a long one was cut short when stored, so it may end at "]" without its closing quote mark
+        if (($at = mb_strrpos($notes, 'quote: "')) === false) {
+            return false;
+        }
+        $quote = mb_substr($notes, $at + 8);
+        $quote = ($end = mb_strpos($quote, '"]')) !== false ? mb_substr($quote, 0, $end) : rtrim($quote, ']');
+        $parts = array_filter(array_map(fn ($p) => trim(mb_strtolower(preg_replace('/\s+/u', ' ', str_replace("\u{00A0}", ' ', $p)) ?? '')),
+            preg_split('/\s*(?:⏎|\.\.\.|…)\s*/u', html_entity_decode($quote, ENT_QUOTES | ENT_HTML5, 'UTF-8')) ?: []), fn ($p) => mb_strlen($p) >= 12);
+        foreach ($parts as $p) {
+            if (! str_contains($text, $p)) {
+                return false;
+            }
+        }
+
+        return $parts !== [];
     }
 
     private function flag(string $url, string $note, array &$report): int

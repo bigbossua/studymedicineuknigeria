@@ -1,0 +1,70 @@
+name: Operations summary (read-only)
+# Production state the daily checks do not show, safe for this public log:
+#  - eligibility-checker leads and the student funnel as counts only (never a name, email address, WhatsApp number or
+#    exact timestamp; staff see the people in Admin -> Leads);
+#  - facts the source watcher took off the site (SOURCE_CHANGED / REVIEW_DUE): subject, key and the official page,
+#    all public information;
+#  - each published school's verified-fact count, so a school page left without verified facts is visible.
+# Changes nothing.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  summary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    steps:
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh; printf '%s\n' "$KEY" > ~/.ssh/id_hostinger; chmod 600 ~/.ssh/id_hostinger
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true; fi
+      - name: Leads and funnel (counts only)
+        run: |
+          cat <<'REMOTE' | ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" 'bash -s' | tee summary.txt
+          set -euo pipefail
+          cd ~/apps/smukn-production/current
+          PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=$(command -v "$c" 2>/dev/null) && "$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=$p; break; }; done
+          echo "release: $(basename "$(readlink -f .)")"
+          $PHP artisan tinker --execute '
+            $l = App\Models\Lead::query()->get(["status", "user_id", "whatsapp", "eligibility_answers", "eligibility_result", "utm", "created_at", "updated_at"]);
+            $by = fn ($f) => $l->countBy($f)->sortKeys()->all();
+            $ans = fn ($k) => $by(fn ($x) => (string) ($x->eligibility_answers[$k] ?? "-"));
+            $new = $l->where("status", "new");
+            echo json_encode([
+              "leads_total" => $l->count(),
+              "created_last_7_days" => $l->where("created_at", ">=", now()->subDays(7))->count(),
+              "created_last_30_days" => $l->where("created_at", ">=", now()->subDays(30))->count(),
+              "by_week_created" => $by(fn ($x) => $x->created_at->startOfWeek()->toDateString()),
+              "by_status" => $by("status"),
+              "status_new_waiting_days" => ["oldest" => $new->isEmpty() ? null : (int) $new->min("created_at")->diffInDays(now()), "over_2_days" => $new->filter(fn ($x) => $x->created_at->lt(now()->subDays(2)))->count()],
+              "registered_an_account" => $l->whereNotNull("user_id")->count(),
+              "whatsapp_given" => $l->filter(fn ($x) => filled($x->whatsapp))->count(),
+              "qualification" => $ans("qualification"), "sciences" => $ans("sciences"), "english" => $ans("english"), "ucat" => $ans("ucat"), "intake_year" => $ans("intake_year"),
+              "suggested_service" => $by(fn ($x) => (string) ($x->eligibility_result["tier"] ?? "-")),
+              "utm_source" => $by(fn ($x) => (string) ($x->utm["utm_source"] ?? "(direct / organic)")),
+              "applications_by_stage" => App\Models\Application::selectRaw("stage, count(*) n")->groupBy("stage")->pluck("n", "stage"),
+              "students" => App\Models\User::where("role", "student")->count(),
+              "funnel_last_30_days" => App\Models\FunnelEvent::where("occurred_at", ">=", now()->subDays(30))->whereIn("name", App\Models\FunnelEvent::ORDER)->selectRaw("name, count(*) n")->groupBy("name")->pluck("n", "name"),
+            ], JSON_PRETTY_PRINT), PHP_EOL;'
+          $PHP artisan tinker --execute '
+            $f = App\Models\ReferenceFact::with("subject")->whereIn("verification_status", [App\Models\ReferenceFact::SOURCE_CHANGED, App\Models\ReferenceFact::REVIEW_DUE])->get();
+            $name = fn ($x) => $x->subject ? class_basename($x->subject)." ".($x->subject->slug ?? $x->subject->id) : "-";
+            echo json_encode([
+              "facts_by_status" => App\Models\ReferenceFact::selectRaw("verification_status, count(*) n")->groupBy("verification_status")->pluck("n", "verification_status"),
+              "flagged_facts" => $f->map(fn ($x) => $x->verification_status." | ".$name($x)." | ".$x->key.($x->academic_year ? " ".$x->academic_year : "")." | ".$x->source_url." | flagged ".optional($x->updated_at)->toDateString())->values(),
+              "published_schools_verified_facts" => App\Models\University::where("published", true)->orderBy("slug")->get()->mapWithKeys(fn ($u) => [$u->slug => $u->facts()->where("verification_status", App\Models\ReferenceFact::VERIFIED)->count() + App\Models\ReferenceFact::where("subject_type", App\Models\Course::class)->whereIn("subject_id", $u->courses()->pluck("id"))->where("verification_status", App\Models\ReferenceFact::VERIFIED)->count()]),
+              "sitemap_urls" => count(App\Support\Sitemap::urls()),
+              "sitemap_without_lastmod" => collect(App\Support\Sitemap::entries())->whereNull("lastmod")->pluck("loc")->values(),
+            ], JSON_PRETTY_PRINT), PHP_EOL;'
+          REMOTE
+          { echo '### Operations summary'; echo '```'; cat summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

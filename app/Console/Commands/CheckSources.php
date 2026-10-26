@@ -79,14 +79,17 @@ class CheckSources extends Command
             }
             // The page changed: check each verified value against the new text.
             foreach (ReferenceFact::where('verification_status', ReferenceFact::VERIFIED)->where('source_url', $url)->get() as $fact) {
-                if (self::valueIsOnPage($fact, $text)) {
+                $match = self::match($fact, $text);
+                if ($match === 'value' || $match === 'quote') {
                     $kept++;
                     if (! $this->option('dry-run')) {
-                        $fact->notes = trim(($fact->notes ? $fact->notes.' ' : '').'[Source changed '.now()->toDateString().'; verified value still on the page]');
+                        $fact->notes = trim(($fact->notes ? $fact->notes.' ' : '').'[Source changed '.now()->toDateString().'; '.($match === 'value' ? 'verified value still on the page' : 'the official wording it was verified against is still on the page word for word').']');
                         $fact->saveQuietly();
                     }
                 } else {
-                    $flagged += $this->flagOne($fact, 'Official page changed on '.now()->toDateString().' and the verified value was no longer found on it.', $report);
+                    $flagged += $this->flagOne($fact, 'Official page changed on '.now()->toDateString().($match === 'partial'
+                        ? '; part of the official wording this fact was verified against is gone. Manual review: confirm or correct the value on the current page.'
+                        : ' and neither the verified value nor its recorded official wording was found on it.'), $report);
                 }
             }
             $this->snapshot($url, $hash, $status, null, true);
@@ -110,7 +113,19 @@ class CheckSources extends Command
         return trim(mb_strtolower(preg_replace('/\s+/u', ' ', str_replace("\u{00A0}", ' ', $text)) ?? $text));
     }
 
-    public static function valueIsOnPage(ReferenceFact $fact, string $text): bool
+    /** 'value' (the value itself is on the page), 'quote' (all of its recorded official wording is), 'partial' (only some of that wording is: manual review) or 'none'. */
+    public static function match(ReferenceFact $fact, string $text): string
+    {
+        if (self::valueIsOnPage($fact, $text, false)) {
+            return 'value';
+        }
+        $parts = self::quoteParts((string) $fact->notes);
+        $found = count(array_filter($parts, fn ($p) => str_contains($text, $p)));
+
+        return $parts === [] || $found === 0 ? 'none' : ($found === count($parts) ? 'quote' : 'partial');
+    }
+
+    public static function valueIsOnPage(ReferenceFact $fact, string $text, bool $orQuote = true): bool
     {
         if ($fact->value_number !== null && $fact->value_text === null) {
             $n = (float) $fact->value_number;
@@ -131,26 +146,28 @@ class CheckSources extends Command
         // A text value is often the reviewer's summary of the page, never its exact wording; the official wording it was
         // verified against is kept in the notes as quote: "…". The fact stays verified only while every part of that
         // quote is still published (parts are split at the line breaks ⏎ and elisions ... of the original excerpt).
-        return self::quoteIsOnPage((string) $fact->notes, $text);
+        return $orQuote && self::quoteIsOnPage((string) $fact->notes, $text);
     }
 
     public static function quoteIsOnPage(string $notes, string $text): bool
     {
+        $parts = self::quoteParts($notes);
+
+        return $parts !== [] && count(array_filter($parts, fn ($p) => str_contains($text, $p))) === count($parts);
+    }
+
+    /** @return list<string> the recorded official quote, normalised and split into parts of 12+ characters */
+    private static function quoteParts(string $notes): array
+    {
         // the last review's quote; a long one was cut short when stored, so it may end at "]" without its closing quote mark
         if (($at = mb_strrpos($notes, 'quote: "')) === false) {
-            return false;
+            return [];
         }
         $quote = mb_substr($notes, $at + 8);
-        $quote = ($end = mb_strpos($quote, '"]')) !== false ? mb_substr($quote, 0, $end) : rtrim($quote, ']');
-        $parts = array_filter(array_map(fn ($p) => trim(mb_strtolower(preg_replace('/\s+/u', ' ', str_replace("\u{00A0}", ' ', $p)) ?? '')),
-            preg_split('/\s*(?:⏎|\.\.\.|…)\s*/u', html_entity_decode($quote, ENT_QUOTES | ENT_HTML5, 'UTF-8')) ?: []), fn ($p) => mb_strlen($p) >= 12);
-        foreach ($parts as $p) {
-            if (! str_contains($text, $p)) {
-                return false;
-            }
-        }
+        $quote = mb_substr($quote, 0, ($end = mb_strpos($quote, '"]')) !== false ? $end : (mb_strpos($quote, ']') !== false ? mb_strpos($quote, ']') : null));
 
-        return $parts !== [];
+        return array_values(array_filter(array_map(fn ($p) => trim(mb_strtolower(preg_replace('/\s+/u', ' ', str_replace("\u{00A0}", ' ', $p)) ?? '')),
+            preg_split('/\s*(?:⏎|\.\.\.|…)\s*/u', html_entity_decode($quote, ENT_QUOTES | ENT_HTML5, 'UTF-8')) ?: []), fn ($p) => mb_strlen($p) >= 12));
     }
 
     private function flag(string $url, string $note, array &$report): int

@@ -168,6 +168,11 @@ class PublicSeoTest extends TestCase
         $u = University::create(['slug' => 'testville', 'name' => 'University of Testville', 'nation' => 'England', 'international_policy' => 'accepts', 'published' => false]);
         $this->get('/medical-schools/testville')->assertOk()->assertSee('noindex', false)->assertSee('No Nigeria-specific statement located');
         $u->update(['published' => true]);
+        $this->get('/medical-schools/testville')->assertOk()->assertSee('noindex', false); // published, but no §8.1 core fact verified yet
+        $course = $u->courses()->create(['slug' => 'medicine', 'title' => 'Medicine', 'entry_type' => 'standard']);
+        foreach (University::CORE_FACTS as $key) {
+            (in_array($key, ['international_fee_gbp', 'application_route'], true) ? $course : $u)->facts()->create(['key' => $key, 'value_text' => 'x', 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now(), 'source_type' => 'official']);
+        }
         $this->get('/medical-schools/testville')->assertOk()->assertSee('index, follow', false);
     }
 

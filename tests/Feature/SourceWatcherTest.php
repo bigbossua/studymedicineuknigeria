@@ -45,7 +45,7 @@ class SourceWatcherTest extends TestCase
         $this->watch($page, str_replace('<main>', '<main><div>Open day: 14 November</div>', $page));
 
         $this->assertSame(ReferenceFact::VERIFIED, $fact->fresh()->verification_status);
-        $this->assertStringContainsString('verified value still on the page', $fact->fresh()->notes);
+        $this->assertStringContainsString('official wording it was verified against is still on the page', $fact->fresh()->notes);
     }
 
     public function test_a_changed_official_wording_still_takes_the_fact_off_the_site(): void
@@ -62,6 +62,26 @@ class SourceWatcherTest extends TestCase
         $fact = $this->fact('x', 'y');
         $fact->forceFill(['notes' => null, 'value_text' => '£198 a week'])->save();
         $this->watch('<p>£198 a week</p>', '<p>£198 a week</p><p>Updated</p>');
+        $this->assertSame(ReferenceFact::VERIFIED, $fact->fresh()->verification_status);
+    }
+
+    public function test_a_partly_changed_official_wording_goes_to_manual_review(): void
+    {
+        $fact = $this->fact('Leeds gives a mean of £198 a week for self-catered accommodation.', 'These figures are a guideline, not a quote. ⏎ mean average £198 (£122 to £273)');
+        $this->watch('<p>These figures are a guideline, not a quote.</p><td>mean average £198 (£122 to £273)</td>',
+            '<p>These figures are a guideline, not a quote.</p><td>mean average £204 (£125 to £280)</td>');
+
+        $this->assertSame(ReferenceFact::SOURCE_CHANGED, $fact->fresh()->verification_status, 'never kept verified on half the evidence');
+        $this->assertStringContainsString('Manual review', $fact->fresh()->notes);
+    }
+
+    public function test_a_quote_cut_short_in_storage_is_read_to_its_end_and_later_notes_are_ignored(): void
+    {
+        $fact = $this->fact('Leeds gives a mean of £198 a week.', 'x');
+        $fact->forceFill(['notes' => '[Review 2026-10-06: AI-assisted review; quote: "These figures are a guideline, not a quote. ⏎ mean average £198 (£122 to £273) ... adjusted for inflation for 2026/] [Source changed 2026-10-07; verified value still on the page]'])->save();
+        $page = '<p>These figures are a guideline, not a quote.</p><td>mean average £198 (£122 to £273)</td><p>adjusted for inflation for 2026/27</p>';
+        $this->watch($page, $page.'<p>New open day</p>');
+
         $this->assertSame(ReferenceFact::VERIFIED, $fact->fresh()->verification_status);
     }
 }

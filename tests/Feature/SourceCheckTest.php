@@ -41,7 +41,7 @@ class SourceCheckTest extends TestCase
         $this->artisan('smukn:sources-check')->expectsOutputToContain('1 fact(s) un-verified')->assertSuccessful();
 
         $this->assertSame(ReferenceFact::SOURCE_CHANGED, $deadline->fresh()->verification_status, 'the deadline wording is no longer on the page');
-        $this->assertStringContainsString('verified value was no longer found', $deadline->fresh()->notes);
+        $this->assertStringContainsString('neither the verified value nor its recorded official wording was found', $deadline->fresh()->notes);
         $this->assertSame(ReferenceFact::VERIFIED, $fee->fresh()->verification_status, 'the fee is still published as 28.95');
         Notification::assertSentTo($admin, StaffNotification::class);
     }

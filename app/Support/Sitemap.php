@@ -24,8 +24,8 @@ class Sitemap
                 'changefreq' => $meta['changefreq'] ?? 'monthly',
             ];
         }
-        // University pages are listed once staff (or the publication list) have published them: the same rule that makes them indexable
-        foreach (University::medicalSchools()->where('published', true)->orderBy('name')->get() as $u) {
+        // University pages are listed by the same rule that makes them indexable: published, with every §8.1 core fact verified
+        foreach (University::medicalSchools()->where('published', true)->orderBy('name')->get()->filter->isIndexable() as $u) {
             $verified = $u->facts()->where('verification_status', ReferenceFact::VERIFIED)->max('verified_at');
             $urls[] = ['loc' => route('schools.show', $u), 'lastmod' => $verified ? substr((string) $verified, 0, 10) : null, 'changefreq' => 'monthly'];
         }

@@ -41,9 +41,22 @@ class UniversityPublicationTest extends TestCase
         $this->assertStringNotContainsString('/medical-schools/'.$u->slug.'<', $this->get('/sitemap.xml')->getContent());
     }
 
+    /** Records the five §8.1 core facts as verified (as the committed decisions files do on production). */
+    private function verifyCore(University $u): void
+    {
+        $course = $u->courses()->first() ?? $u->courses()->create(['slug' => 'medicine', 'title' => 'Medicine', 'entry_type' => 'standard']);
+        foreach (University::CORE_FACTS as $key) {
+            $subject = in_array($key, ['international_fee_gbp', 'application_route'], true) ? $course : $u;
+            $subject->facts()->updateOrCreate(['key' => $key], ['value_text' => 'x', 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => '2026-10-05 09:00:00', 'source_type' => 'official']);
+        }
+    }
+
     public function test_published_schools_enter_the_sitemap_with_their_latest_verification_as_lastmod(): void
     {
         $this->seed([ReferenceDataSeeder::class, UniversityPublicationSeeder::class]);
+        foreach ($this->listed() as $entry) {
+            $this->verifyCore(University::where('slug', $entry['slug'])->firstOrFail());
+        }
         $first = University::where('slug', $this->listed()[0]['slug'])->firstOrFail();
         $first->facts()->create(['key' => 'test_fact', 'value_text' => 'x', 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => '2026-10-05 09:00:00', 'source_type' => 'official']);
 
@@ -57,6 +70,23 @@ class UniversityPublicationTest extends TestCase
         $this->assertStringContainsString(route('schools.show', $first)."</loc>\n    <lastmod>2026-10-05</lastmod>", $xml);
         $unlisted = University::medicalSchools()->where('published', false)->first();
         $this->assertStringNotContainsString(route('schools.show', $unlisted).'</loc>', $xml);
+    }
+
+    public function test_a_published_school_whose_core_fact_is_no_longer_verified_leaves_the_index_but_stays_online(): void
+    {
+        $this->seed([ReferenceDataSeeder::class, UniversityPublicationSeeder::class]);
+        $u = University::where('slug', $this->listed()[0]['slug'])->firstOrFail();
+        $this->verifyCore($u);
+        $this->assertTrue($u->isIndexable());
+
+        $u->facts()->where('key', 'waec_neco_statement')->update(['verification_status' => ReferenceFact::SOURCE_CHANGED]);
+        $this->assertFalse($u->fresh()->isIndexable(), 'DECISION-ENGINE §8.1: every core fact verified, or recorded as not published');
+        $this->get('/medical-schools/'.$u->slug)->assertOk()->assertSee('noindex', false);
+        $this->assertStringNotContainsString(route('schools.show', $u).'</loc>', $this->get('/sitemap.xml')->getContent());
+        $this->assertTrue($u->fresh()->published, 'the staff decision is kept; only indexing waits for re-verification');
+
+        $u->facts()->where('key', 'waec_neco_statement')->update(['verification_status' => ReferenceFact::NOT_PUBLISHED]);
+        $this->assertTrue($u->fresh()->isIndexable(), 'a statement the university does not publish counts as recorded');
     }
 
     public function test_every_listed_school_has_a_live_decision_register_row_that_points_at_it(): void

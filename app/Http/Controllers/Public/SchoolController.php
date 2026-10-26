@@ -114,8 +114,8 @@ class SchoolController extends Controller
             $seo->jsonLd($courseLd);
         }
 
-        // Public university pages stay noindex until the record is marked published by staff
-        if (! $university->published) {
+        // Public university pages stay noindex until published by staff and while any §8.1 core fact is not verified
+        if (! $university->isIndexable()) {
             $seo->noindex();
         }
 

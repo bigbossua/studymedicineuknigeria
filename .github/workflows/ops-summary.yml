@@ -4,7 +4,8 @@ name: Operations summary (read-only)
 #    exact timestamp; staff see the people in Admin -> Leads);
 #  - facts the source watcher took off the site (SOURCE_CHANGED / REVIEW_DUE): subject, key and the official page,
 #    all public information;
-#  - each published school's verified-fact count, so a school page left without verified facts is visible.
+#  - each published school's verified-fact count, so a school page left without verified facts is visible, and the
+#    status of its DECISION-ENGINE §8 core facts with its latest verification date.
 # Changes nothing.
 on:
   workflow_dispatch:
@@ -66,5 +67,14 @@ jobs:
               "sitemap_urls" => count(App\Support\Sitemap::urls()),
               "sitemap_without_lastmod" => collect(App\Support\Sitemap::entries())->whereNull("lastmod")->pluck("loc")->values(),
             ], JSON_PRETTY_PRINT), PHP_EOL;'
+          $PHP artisan tinker --execute '
+            $core = ["international_accepted" => "u", "waec_neco_statement" => "u", "english_requirement" => "u", "international_fee_gbp" => "c", "application_route" => "c"];
+            echo json_encode(["published_schools_core_facts" => App\Models\University::where("published", true)->orderBy("slug")->get()->mapWithKeys(function ($u) use ($core) {
+              $courseIds = $u->courses()->pluck("id");
+              $facts = App\Models\ReferenceFact::where(fn ($q) => $q->where(fn ($a) => $a->where("subject_type", App\Models\University::class)->where("subject_id", $u->id))->orWhere(fn ($b) => $b->where("subject_type", App\Models\Course::class)->whereIn("subject_id", $courseIds)))->get();
+              $status = collect($core)->map(fn ($t, $k) => ($s = $facts->where("key", $k)->pluck("verification_status")->unique()->values()) ->contains("VERIFIED") ? "VERIFIED" : ($s->implode("/") ?: "none"));
+              $v = $facts->where("verification_status", "VERIFIED");
+              return [$u->slug => ["core" => $status->all(), "core_verified" => $status->filter(fn ($x) => in_array($x, ["VERIFIED", "NOT_PUBLISHED"]))->count()."/5", "verified" => $v->count(), "flagged" => $facts->whereIn("verification_status", ["SOURCE_CHANGED", "REVIEW_DUE"])->count(), "latest_verified" => optional($v->max("verified_at"))->toDateString() ?? (($m = $v->max("verified_at")) ? substr((string) $m, 0, 10) : null)]];
+            })], JSON_PRETTY_PRINT), PHP_EOL;'
           REMOTE
           { echo '### Operations summary'; echo '```'; cat summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

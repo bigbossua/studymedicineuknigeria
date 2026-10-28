@@ -18,6 +18,16 @@ All three must be done in the mailbox before the first send. A university found 
 
 Bounces and non-delivery reports must be recorded as SEND FAILED or under delivery status. A message that appears in Sent has not necessarily been delivered.
 
+## Send attempts
+
+- **2026-10-28 12:12 UTC: blocked before any mailbox action.** The owner asked for the outreach to be executed from the locally authenticated Hostinger Mail session. This session has no browser or computer-control tool, and no Remote Control or other Claude session on the owner's computer was reachable (ListAgents: none). So:
+  - the mailbox was not opened;
+  - the Sent folder, replies and bounces were not checked;
+  - no e-mail was sent;
+  - no form was submitted.
+  
+  All 24 queue rows stay **READY TO SEND — NOT SENT**.
+
 ## Status definitions
 
 | Status | Meaning |

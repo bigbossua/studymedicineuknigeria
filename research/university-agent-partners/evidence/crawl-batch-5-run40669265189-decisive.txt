@@ -1,0 +1,145 @@
+
+################ glasgow
+  page 200 https://www.gla.ac.uk/international/ | University of Glasgow - International students (not agent-related)
+  page 404 https://www.gla.ac.uk/study/international/ | The University of Glasgow, Scotland, UK. A world top 100 university (not agent-related)
+  page 200 https://www.gla.ac.uk/international/inyourcountry/representatives | University of Glasgow - International students - In your country/regio
+  page 200 https://www.gla.ac.uk/international/counsellors/ | University of Glasgow - International students - Information for High 
+  page 200 https://www.gla.ac.uk/international/partnershipprogrammes/ | University of Glasgow - International students - International partner (not agent-related)
+  page 200 https://www.gla.ac.uk/media/Media_1083576_smxx.pdf | PDF (not agent-related)
+  page 200 https://www.gla.ac.uk/international/counsellors/frequentlyaskedquestions/ | University of Glasgow - International students - Information for High 
+  page 200 https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/ | University of Glasgow - International students - Information for High 
+  page 200 https://www.gla.ac.uk/international/country/usa/ | University of Glasgow - International students - Your country/region - (not agent-related)
+  page 200 https://www.gla.ac.uk/international/partnershipprogrammes/universityofbologna/ | University of Glasgow - International students - International partner (not agent-related)
+  page 200 https://www.gla.ac.uk/international/partnershipprogrammes/universitasgadjahmada/ | University of Glasgow - International students - International partner (not agent-related)
+  EMAIL student.recruitment@glasgow.ac.uk  <- https://www.gla.ac.uk/international/inyourcountry/representatives
+  EMAIL Student.Recruitment@glasgow.ac.uk  <- https://www.gla.ac.uk/international/inyourcountry/representatives
+  EMAIL alice.graham@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL fatema.jainuddin-bellare@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL jo.power@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL maral.dadourian@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL ashley.jeanson@glasgow.ac  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL ashley.jeanson@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL Maya.Butovskaya@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL rosie.houlding@glasgow.ac  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL bill.hoare@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL karla.plascencia@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL o@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL younan.li@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL chisom.okpala@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  EMAIL mark.stansfield@glasgow.ac.uk  <- https://www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/
+  > Chisom Okpala, International Officer for West Africa (based in Lagos, Nigeria)   [www.gla.ac.uk/international/counsellors/keycontactsandrepresentatives/]
+
+################ hertfordshire
+  page 404 https://www.herts.ac.uk/international/international-agents | 404 | | Uni of Herts
+  page 200 https://www.herts.ac.uk/international | International | University of Hertfordshire (not agent-related)
+  page 200 https://www.herts.ac.uk/for-business/skills/integrated-care-system-partnership-programme | Integrated Care System Partnership Programme | | Uni of Herts (not agent-related)
+  page 200 https://www.herts.ac.uk/about-us/our-leadership-strategy-and-plans/our-partnerships | Our partnerships | About us | Uni of Herts (not agent-related)
+  page 200 https://www.herts.ac.uk/about-us/our-leadership-strategy-and-plans/our-partnerships/partnership-with-watford-fc | Our partnership with Watford FC | About us | Uni of Herts (not agent-related)
+  page 200 https://www.herts.ac.uk/about-us/our-leadership-strategy-and-plans/our-partnerships/partnership-with-london-mavericks | Our partnership with London Mavericks | About us | Uni of Herts (not agent-related)
+  page 200 https://www.herts.ac.uk/about-us/our-leadership-strategy-and-plans/our-partnerships/our-partnership-with-bheccs | Our partnership with Bedfordshire and Hertfordshire Emergency Critical (not agent-related)
+
+################ kings-college-london
+  page 200 https://www.kcl.ac.uk/study/international | International | King's College London (not agent-related)
+  page 404 https://www.kcl.ac.uk/international-students | Page Not Found - 404 (not agent-related)
+  page 200 https://www.kcl.ac.uk/study/international/region/africa | Africa | King's College London
+  page 200 https://www.kcl.ac.uk/research/work-with-kings | Partner with King’s | King's College London (not agent-related)
+  page 200 https://www.kcl.ac.uk/london/kingslocal | Collaborating locally | King’s & London | King’s College London (not agent-related)
+  page 200 https://www.kcl.ac.uk/internationalisation/global-engagement | Global engagement and partnerships | Global | King’s College London (not agent-related)
+  page 200 https://www.kcl.ac.uk/about/international-education-partnerships | International education partnerships | King's College London (not agent-related)
+  > King's has a long history of welcoming around 570 students from countries such as South Africa, Nigeria, Kenya, Ghana, Tanzania and more each year across all levels of study.   [www.kcl.ac.uk/study/international/region/africa]
+  > Toyin, Nigeria, Conflict Security and Development MA   [www.kcl.ac.uk/study/international/region/africa]
+
+################ queen-mary-london
+  page 200 https://www.qmul.ac.uk/international-students/ | International students - Queen Mary University of London (not agent-related)
+  page 200 https://www.qmul.ac.uk/international-students/howtoapply/agents/ | CAS and Visa - Queen Mary University of London
+  page 200 https://www.qmul.ac.uk/international-students/regions/africa/ | Africa - Queen Mary University of London
+  page 200 https://www.qmul.ac.uk/international-students/agents/ | Agents - Queen Mary University of London
+  page 200 https://www.qmul.ac.uk/international-students/regions/africa/entry-requirements/ | Entry requirements - Queen Mary University of London
+  EMAIL cas-admissions@qmul.ac.uk  <- https://www.qmul.ac.uk/international-students/howtoapply/agents/
+  EMAIL africa@qmul.ac.uk  <- https://www.qmul.ac.uk/international-students/regions/africa/
+  EMAIL globalengagement@qmul.ac.uk  <- https://www.qmul.ac.uk/international-students/agents/
+  > These contracted agents undergo thorough training and r t enrols at Queen Mary, the agent may receive a commission.   [www.qmul.ac.uk/international-students/agents/]
+  > The guide also links to ‘The national code of ethical practice for UK education agents’ and the British Council’s UK database of certified counsellors.   [www.qmul.ac.uk/international-students/agents/]
+  > ⏎ In many instances, if a student who has utilized the services of a contracted agent enrols at Queen Mary, the agent may receive a commission.   [www.qmul.ac.uk/international-students/agents/]
+
+################ southampton
+  page 404 https://www.southampton.ac.uk/study/international-students | 404 | Page not found | University of Southampton (not agent-related)
+
+################ st-georges-london
+  page 404 https://www.citystgeorges.ac.uk/prospective-students/international-students | Page not found • City St George's, University of London (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/prospective-students/apply/study-abroad/partnership | Partnership programme • City St George's, University of London (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/grow/funding/knowledge-transfer-partnerships | Knowledge Transfer Partnerships (KTPs) • City St George's, University  (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/access/information-for-placement-partners | Information for placement partners • City St George's, University of L (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/access/information-for-placement-partners/speech-and-language-therapy-training-sessions | Speech and Language Therapy training sessions • City St George's, Univ (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/access/information-for-placement-partners/epad-training | ePAD and eMORA training • City St George's, University of London (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/about/schools/law/barrister-pathway/pupilage-advisory-service | Pupillage Advice Service • City St George's, University of London
+  page 200 https://www.citystgeorges.ac.uk/about/schools/law/solicitor-pathway/future-solicitor-advisory-service | Future Solicitor Advisory Service (FSAS) • City St George's, Universit
+  page 200 https://www.citystgeorges.ac.uk/about/schools/law/law-in-real-life/our-partners | Our partners • City St George's, University of London (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/about/schools/law/law-in-real-life-law-irl-new/our-partners | Our partners • City St George's, University of London (not agent-related)
+
+################ worcester
+  page 404 https://www.worcester.ac.uk/study/international-students/ | University of Worcester - Page not found (not agent-related)
+
+################ ulster
+  page 200 https://www.ulster.ac.uk/global/apply | Applying to Ulster University | Ulster University Global (not agent-related)
+  page 404 https://www.ulster.ac.uk/global/apply/agents | The Resource Was Not Found | Ulster University
+  > ⏎ Ulster University is registered with the Charity Commission for Northern Ireland (NIC100166).   [www.ulster.ac.uk/global/apply/agents]
+
+################ east-anglia
+  page 405 https://www.uea.ac.uk/study/international/international-agents | Human Verification
+
+################ dundee
+  page 403 https://www.dundee.ac.uk/international/agents | Just a moment...
+  page 403 https://www.dundee.ac.uk/guides/working-with-agents | Just a moment...
+
+################ leicester
+  page 200 https://le.ac.uk/study/international-students | International | University of Leicester (not agent-related)
+  page 403 https://le.ac.uk/international | Attention Required! | Cloudflare (not agent-related)
+
+################ oxford
+  page 404 https://www.ox.ac.uk/admissions/undergraduate/international-applicants | Page not found (404) | Oxford University (not agent-related)
+  page 403 https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/guide/agents | Just a moment...
+
+################ ucl
+  page 403 https://www.ucl.ac.uk/prospective-students/international/ | Just a moment... (not agent-related)
+  page 403 https://www.ucl.ac.uk/prospective-students/international/agents | Just a moment...
+
+################ edge-hill
+  page 403 https://www.edgehill.ac.uk/international/agents/ | Checking your browser...
+
+################ anglia-ruskin
+  page 404 https://www.aru.ac.uk/international/agents-and-representatives | 404 - ARU
+  page 200 https://www.aru.ac.uk/international | International - ARU (not agent-related)
+  page 200 https://www.aru.ac.uk/about-us/global-partnerships | Global partnerships - ARU (not agent-related)
+  page 200 https://www.aru.ac.uk/about-us/global-partnerships/aru-cairo | ARU Cairo - ARU (not agent-related)
+
+################ manchester-metropolitan
+  page 403 https://www.mmu.ac.uk/international/agents | Just a moment...
+  page 403 https://www.mmu.ac.uk/international | Just a moment... (not agent-related)
+
+################ northumbria
+  page 404 https://www.northumbria.ac.uk/study-at-northumbria/international-students/agents/ | Oops - 404 Error
+  page 404 https://www.northumbria.ac.uk/study-at-northumbria/international-students/ | Oops - 404 Error (not agent-related)
+  page 200 https://www.northumbria.ac.uk/international/entry-requirements/ | Entry Requirements and Representatives by Country | Northumbria Univer
+  page 200 https://www.northumbria.ac.uk/international/agent-information/ | Agents and Representatives | Northumbria University, Newcastle
+  page 200 https://www.northumbria.ac.uk/business-services/engage-with-us/research/knowledge-transfer-partnerships/ | Knowledge Transfer Partnerships (not agent-related)
+  page 200 https://www.northumbria.ac.uk/about-us/our-partners/ | Place and Partnerships (not agent-related)
+  page 200 https://www.northumbria.ac.uk/international/northumbria-and-your-country/africa/botswana/ | Botswana | Northumbria University, Newcastle
+  page 200 https://www.northumbria.ac.uk/international/northumbria-and-your-country/africa/cameroon/ | Cameroon
+  page 200 https://www.northumbria.ac.uk/international/northumbria-and-your-country/africa/egypt/ | Egypt
+  page 200 https://www.northumbria.ac.uk/international/northumbria-and-your-country/africa/ethiopia/ | Ethiopia
+  EMAIL u1.agent.comms.events@northumbria.ac.uk  <- https://www.northumbria.ac.uk/international/agent-information/
+  > ⏎ Prospective Agents / How to Apply   [www.northumbria.ac.uk/international/agent-information/]
+  > New Agent and Representatives Application Form   [www.northumbria.ac.uk/international/agent-information/]
+  > Apply to become an Agent or Representative for Northumbria on campuses, and academic partners across the world.   [www.northumbria.ac.uk/international/agent-information/]
+  > ⏎ Apply to Become an Agent   [www.northumbria.ac.uk/international/agent-information/]
+  > If you are interested in becoming an Agent with Northumbria University please complete the Agent & Representative Application Form.   [www.northumbria.ac.uk/international/agent-information/]
+  > ⏎ The UK Agent Quality Framework   [www.northumbria.ac.uk/international/agent-information/]
+  > ⏎ To access the AQF suite of guidance and quality assurance tools, please visit:  The UK Agent Quality Framework   [www.northumbria.ac.uk/international/agent-information/]
+  > Your application to become a Northumbria Agent will not be accepted if you do not commit to follow the Agent Quality Framework.   [www.northumbria.ac.uk/international/agent-information/]
+  > ⏎ I have already submitted an application to become an Agent/Representative Your application will tners across the world.   [www.northumbria.ac.uk/international/agent-information/]
+  > Apply to become an Agent or Representative for Northumbria  and London campuses, and academic partners across the world.   [www.northumbria.ac.uk/international/agent-information/]
+  > ⏎ We require all our recruitment partners to adhere to the Agent Quality Framework (AQF).   [www.northumbria.ac.uk/international/agent-information/]
+  > Apply to become an Agent or Representative for Northumbria n or wish to contact Northumbria, please view our Contact Us Form where you will find answers to Frequently Asked Questions and can contact relevant teams.   [www.northumbria.ac.uk/international/agent-information/]
+  > Apply to become an Agent or Representative for Northumbria  in key overseas countries, and works with over 150 recruitment partners in more than 30 markets.   [www.northumbria.ac.uk/international/agent-information/]
+  > If you are interested in becoming an Agent w k.   [www.northumbria.ac.uk/international/agent-information/]

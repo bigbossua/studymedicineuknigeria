@@ -910,6 +910,26 @@ So `data/verification/decisions-2026-10-28.csv` holds 39 decisions; the next app
 - set King's College London and the 18 schools without demand evidence or a medical course to noindex;
 - Buckingham has register evidence of demand (D13), so the gate lists it once this release is live.
 
+## Stage 69: university recruitment-partner research (2026-10-28)
+
+The owner reopened the agent and partnership work that doc 15 had archived. All 53 entries (the 55 database rows) were read on the universities' own sites by the official-page reader:
+- six crawl runs and two wider page reads;
+- specs are in `research/university-agent-partners/specs/`;
+- the decisive excerpts are in `evidence/`.
+
+**Result:**
+- 7 agent-relations contacts and 4 official agent forms;
+- 18 general international-recruitment contacts;
+- 3 universities that do not take new agents (Warwick, Swansea, Imperial);
+- Manchester's Nigeria territory held exclusively by IDP;
+- 21 still to verify, 7 of them blocked by bot protection.
+
+**Outreach.** 24 individually addressed enquiries are drafted. Every recipient address appears verbatim on an official page.
+
+**Not sent:** this cloud session cannot reach the owner's mailbox. `OUTREACH-LOG.md` records that, and the Sent-folder duplicate check still to be done.
+
+No production code, page or deployment changed.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

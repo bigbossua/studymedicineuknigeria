@@ -1,0 +1,204 @@
+
+################ st-marys-twickenham
+  page 200 https://www.stmarys.ac.uk/international/ | International students at St Mary's University, London | St Mary's Uni (not agent-related)
+  page 404 https://www.stmarys.ac.uk/international/agents.aspx | 404 error - St Mary's University
+  page 200 https://www.stmarys.ac.uk/academic-areas/structure/the-directorate-of-educational-excellence-and-student-outcomes/academic-partnerships | Academic Partnerships | St Mary's University, London | St Mary's Unive (not agent-related)
+  page 200 https://www.stmarys.ac.uk/international/agent-directory.aspx | Agent directory
+  page 200 https://www.stmarys.ac.uk/academic-areas/structure/the-directorate-of-educational-excellence-and-student-outcomes/academic-partnerships/our-academic-partners | Our Academic Partners | St Mary's University, London | St Mary's Unive (not agent-related)
+  page 200 https://www.stmarys.ac.uk/academic-areas/structure/the-directorate-of-educational-excellence-and-student-outcomes/academic-partnerships/forms-of-collaboration | Forms of Collaboration | Academic Partnerships at St Mary's University (not agent-related)
+  page 200 https://www.stmarys.ac.uk/academic-areas/structure/deeso/academic-partnerships/establishing-an-academic-partnership | Establishing an Academic Partnership with St Mary's University, London (not agent-related)
+  page 200 https://www.stmarys.ac.uk/international/student-guide-selecting-education-agent.aspx | Student's guide to selecting an education agent
+  EMAIL international@stmarys.ac.uk  <- https://www.stmarys.ac.uk/international/agent-directory.aspx
+  > At St Mary's University, we work with agents who meet the high standards set by the British Council and BUILA, ensuring you receive professional, ethical, and reliable support.   [www.stmarys.ac.uk/international/agent-directory.aspx]
+  > For more information on how to chose an Education Agent please refer to the British Council guide to choosing an agent   [www.stmarys.ac.uk/international/agent-directory.aspx]
+  > UK Agent Quality Framework – Our commitment to you   [www.stmarys.ac.uk/international/agent-directory.aspx]
+  > We are proud to support the UK Agent Quality Framework, ensuring international students like you receive trusted, high-quality advice when choosing to study in the UK.   [www.stmarys.ac.uk/international/agent-directory.aspx]
+  > ⏎ By signing a pledge with the British Council and BUILA, we commit to:   [www.stmarys.ac.uk/international/agent-directory.aspx]
+  > UK Agent Quality Framework – British Council   [www.stmarys.ac.uk/international/agent-directory.aspx]
+  > Dawagold Logistics Nigeria Limited   [www.stmarys.ac.uk/international/agent-directory.aspx]
+  > ide to Choosing an Education Agent, part of the UK Agent Quality Framework (AQF).   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > It also links to the National Code of Ethical Practice for UK Education Agents and the British Council’s database of certified counsellors.   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > ⏎ Have they completed the British Council Education Agent Training?   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > Visit the British Council website to check.   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > ⏎ Do they follow the UK’s National Code of Ethical Practice?   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > ⏎ You can find trained agents listed on the British Council’s website.   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > ⏎ For more information on how to chose an Education Agent please refer to the British Council guide to choosing an agent   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > ⏎ If you’re considering using an agent, we recommend reading the Student and Parent Guide to Choosing an Education Agent, part of the UK Agent Quality Framework (AQF).   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > ⏎ Check their credent ing using an agent, we recommend reading the Student and Parent Guide to Choosing an Education Agent, part of the UK Agent Quality Framework (AQF).   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+  > ⏎ Do or UK Education Agents and the British Council’s database of certified counsellors.   [www.stmarys.ac.uk/international/student-guide-selecting-education-agen]
+
+################ surrey
+  page 200 https://www.surrey.ac.uk/international | International students | University of Surrey (not agent-related)
+  page 404 https://www.surrey.ac.uk/international/agents | 404 error | University of Surrey
+  page 200 https://www.surrey.ac.uk/international/university-surrey-and-agent-quality-framework | University of Surrey and Agent Quality Framework | University of Surre
+  EMAIL international@surrey.ac.uk  <- https://www.surrey.ac.uk/international/university-surrey-and-agent-quality-framework
+  > British Council’s student and parent guide on choosing an education agent   [www.surrey.ac.uk/international/university-surrey-and-agent-quality-fra]
+  > Check our country-specific informat INTERNATIONALAGENT QUALITY FRAMEWORK   [www.surrey.ac.uk/international/university-surrey-and-agent-quality-fra]
+  > UNIVERSITY OF SURREY AND AGENT QUALITY FRAMEWORK   [www.surrey.ac.uk/international/university-surrey-and-agent-quality-fra]
+  > University of Surrey is a proud supporter of Agent Quality Framework (AQF).   [www.surrey.ac.uk/international/university-surrey-and-agent-quality-fra]
+
+################ swansea
+  page 200 https://www.swansea.ac.uk/international/ | International - Swansea University (not agent-related)
+  page 404 https://www.swansea.ac.uk/international/agents/ | 404 Not Found - Swansea University
+  page 200 https://www.swansea.ac.uk/international-students/our-agents/ | Our International Agents - Swansea University
+  page 200 https://www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_education_agent.pdf | PDF
+  page 200 https://www.swansea.ac.uk/international-students/our-agents/agent-resources/ | Agent Resources - Swansea University
+  EMAIL iro@swansea.ac.uk  <- https://www.swansea.ac.uk/international-students/our-agents/
+  > If you enrol with us, we pay the education agent working with us a commission.   [www.swansea.ac.uk/international-students/our-agents/]
+  > 3AG Global Resources Ltd Nigeria   [www.swansea.ac.uk/international-students/our-agents/]
+  > Unilink Education Services Ltd Nigeria   [www.swansea.ac.uk/international-students/our-agents/]
+  > Aims Education Ghana, Kenya and Nigeria   [www.swansea.ac.uk/international-students/our-agents/]
+  > Bridge House Counselling Nigeria   [www.swansea.ac.uk/international-students/our-agents/]
+  > Easy Apply Commission Agent Est.   [www.swansea.ac.uk/international-students/our-agents/]
+  > ⏎ WE ARE COMMITTED TO THE AGENT QUALITY FRAMEWORK   [www.swansea.ac.uk/international-students/our-agents/]
+  > As an institution, we are committed to the UK Agent Quality Framework and pledge to create and maintain the highest standards of agent management, ensuring the UK remains a leading study destination for international students.   [www.swansea.ac.uk/international-students/our-agents/]
+  > If you want to find out more about the UK Agent Quality Framework, click here.   [www.swansea.ac.uk/international-students/our-agents/]
+  > Global Study UK Ltd Nigeria   [www.swansea.ac.uk/international-students/our-agents/]
+  > MOD Education Ltd Nigeria Nigeria   [www.swansea.ac.uk/international-students/our-agents/]
+  > Study Across Globe Nigeria   [www.swansea.ac.uk/international-students/our-agents/]
+  > TG Marchnata Ghana, Nigeria and Uganda   [www.swansea.ac.uk/international-students/our-agents/]
+  > a commission payment, which covers the   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > whether the agent is paid a commission or   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > Completed the British Council   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > with the national code to see how your   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > providers, the British Council, and UK   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > UK Agent Quality Framework   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > Committed to the national code of   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > The national code sets out the behaviours and   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > ⏎ • They should know what the national code of   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > providers, the British Council, a   [www.swansea.ac.uk/media/student_and_parent_guide_to_choosing_an_educat]
+  > Are you recruiting new agents?   [www.swansea.ac.uk/international-students/our-agents/agent-resources/]
+  > ⏎ We are not currently recruiting new agents.   [www.swansea.ac.uk/international-students/our-agents/agent-resources/]
+  > ⏎ The British Council has provided a best practice guide for agents - we recommend that all our agents familiarise themselves.   [www.swansea.ac.uk/international-students/our-agents/agent-resources/]
+  > ⏎ Please visit the British Council and The National Code for Ethical Practice for further information.   [www.swansea.ac.uk/international-students/our-agents/agent-resources/]
+  > ⏎ SWANSEA UNIVERSITY AND AGENT QUALITY FRAMEWORK   [www.swansea.ac.uk/international-students/our-agents/agent-resources/]
+
+################ ucl
+  page 403 https://www.ucl.ac.uk/prospective-students/international/ | Just a moment... (not agent-related)
+  page 403 https://www.ucl.ac.uk/prospective-students/international/agents | Just a moment...
+
+################ ulster
+  page 200 https://www.ulster.ac.uk/global | Join our Global Community | Ulster University Global (not agent-related)
+  page 404 https://www.ulster.ac.uk/global/agents | The Resource Was Not Found | Ulster University
+  page 200 https://www.ulster.ac.uk/global/study-abroad/advisers | Study Advisers | Ulster University Global
+  page 200 https://www.ulster.ac.uk/global/global-partnerships | Global Partnerships | Ulster University Global (not agent-related)
+  page 200 https://www.ulster.ac.uk/global/staff/global-partnerships | Sign in to your account (not agent-related)
+  page 200 https://www.ulster.ac.uk/global/global-partnerships/tne | TNE | Ulster University Global (not agent-related)
+  page 200 https://www.ulster.ac.uk/global/global-partnerships/partner-with-us | Partner further with us | Ulster University Global (not agent-related)
+  EMAIL x.wang4@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL n.shah@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL c.mchugh@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL m.morgan@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL hrv.bennett@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL ci.woodside@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL ja.santos@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL pt.ramsey@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL b.payne@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL pd.ogorman@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  EMAIL j.uhomoibhi@ulster.ac.uk  <- https://www.ulster.ac.uk/global/study-abroad/advisers
+  > ⏎ Ulster University is registered with the Charity Commission for Northern Ireland (NIC100166).   [www.ulster.ac.uk/global/agents]
+
+################ warwick
+  page 200 https://warwick.ac.uk/study/international/ | International Students at University of Warwick (not agent-related)
+  page 404 https://warwick.ac.uk/study/international/agents/ | We're sorry, but the page you requested could not be found
+  page 200 https://warwick.ac.uk/study/international/agent/ | Agents
+  page 200 https://warwick.ac.uk/study/international/agent/conduct/ | conduct
+  page 200 https://warwick.ac.uk/study/international/agent/feedback/ | feedback
+  EMAIL int.recruitment@warwick.ac.uk  <- https://warwick.ac.uk/study/international/agent/
+  > ⏎ For further guidance, please also refer to the British Council's guidance for agents, the UKCISA Code of Ethics and the QAA's Quality Code for UK higher education.   [warwick.ac.uk/study/international/agent/]
+  > Applications submitted by individuals or organisations that have not been formally appointed by the University will be treated as direct student applications and will not be eligible for commission payments.   [warwick.ac.uk/study/international/agent/]
+  > ⏎ University of Warwick is not currently looking for any new agents or representation.   [warwick.ac.uk/study/international/agent/]
+  > ⏎ The University pays commission to authorised agents when the students they support subsequently enrol.   [warwick.ac.uk/study/international/agent/]
+  > ⏎ Please note that authorised education agents may receive a commission payment from the University for supporting student recruitment activities.   [warwick.ac.uk/study/international/agent/]
+  > The University does not pay commission to agents representing students from the United States or students eligible to  ional student recruitment activities, the University maintains a limited network of authorised education agents.   [warwick.ac.uk/study/international/agent/]
+  > versity of Warwick is committed to the UK Agent Quality Framework (AQF), which promotes ethical recruitment practices, student choice, transparency, and high standards of agent management.   [warwick.ac.uk/study/international/agent/]
+  > We have signed the AQF pledge with the British Universities' International Liaison Association (BUILA) and the British Council and are committed to ensuring that prospective students receive accurate information and appropriate support throughout the admissions process.   [warwick.ac.uk/study/international/agent/]
+  > ⏎ Support for the Agent Quality Framework   [warwick.ac.uk/study/international/agent/]
+  > The University of Warwick is committed to the UK Agent Quality Framework (AQF), which promotes ethical recruitment practices, student choice, transparency, and high standards of agent management.   [warwick.ac.uk/study/international/agent/]
+  > The University does not pay comm   [warwick.ac.uk/study/international/agent/]
+  > We expect all agents representing Warwick to act with professionalism, integrity and transparency, and to conduct their activities in accordance with our expectations and the principles of the UK Agent Quality Framework (AQF).   [warwick.ac.uk/study/international/agent/conduct/]
+  > ⏎ These standards outlined in this Code of Conduct reflect the principles of the UK Agent Quality Framework (AQF) and the National Code of Ethical Practice for UK Education Agents.   [warwick.ac.uk/study/international/agent/conduct/]
+  > Agents should engage in ongoing professional development and training and keep up to date with sector guidance, including the UK Agent Quality Framework (AQF) and associated resources.   [warwick.ac.uk/study/international/agent/conduct/]
+  > ⏎ Fe ur expectations and the principles of the UK Agent Quality Framework (AQF).   [warwick.ac.uk/study/international/agent/conduct/]
+  > Positive feedback helps us recognise good practice, while concerns and complaints allow us to review agent performance and maintain the high standards expected by the University and the UK Agent Quality Framework (AQF).   [warwick.ac.uk/study/international/agent/feedback/]
+
+################ wolverhampton
+  page 200 https://www.wlv.ac.uk/international/ | International - University of Wolverhampton (not agent-related)
+  page 404 https://www.wlv.ac.uk/international/agents/ | 404 - University of Wolverhampton
+  page 200 https://www.wlv.ac.uk/international/international-partnerships/ | International Partnerships - University of Wolverhampton (not agent-related)
+  page 200 https://www.wlv.ac.uk/international/education-agents-/ | Education Agents - University of Wolverhampton
+  > ⏎ WANT TO BECOME AN AGENT?   [www.wlv.ac.uk/international/education-agents-/]
+  > Our agent partnerships align with the British Council's Agent Quality Framework - a set of principles established to safeguard international students and ensure ethical recruitment practices.   [www.wlv.ac.uk/international/education-agents-/]
+  > ⏎ Please note - Agents receive a commission for students who enrol through their services.   [www.wlv.ac.uk/international/education-agents-/]
+  > Transparent fees – Agents should be transparent about any charges for their services (please note that we pay agents commission, so many do not charge students directly)   [www.wlv.ac.uk/international/education-agents-/]
+  > Easy Apply Education Commission Agents Est   [www.wlv.ac.uk/international/education-agents-/]
+  > ⏎ We are committed to maintaining the highest standards of agent conduct through regular performa a commission for students who enrol through their services.   [www.wlv.ac.uk/international/education-agents-/]
+  > British Council certification – Check whether the agent is British Council certified by searching the British Council Agent and Counsellor Database.   [www.wlv.ac.uk/international/education-agents-/]
+  > As a university we are committed to the UK Agent Quality Framework; as a member of British Universities International Liaisons Association (BUILA) we worked collaboratively with the British council, UKCISA, BUILA, UUKi and other key stakeholders to feed into the framework.   [www.wlv.ac.uk/international/education-agents-/]
+  > We are also one of the inaugural signatories of the Agent Quality Framework, as we truly believe it enhances the overall student experience.   [www.wlv.ac.uk/international/education-agents-/]
+  > ⏎ At the University of Wolverhampton, we require all our agents to uphold the highest standards by adhering and implementing the agent quality framework within the organisation, and this goes beyond counsellors being certified on the ism, and remain open and transparent with our partners and prospective students.   [www.wlv.ac.uk/international/education-agents-/]
+  > A student and parent guide to choosing an education agent- a guide supporting students and their parents on what they should look for when selecting an agent, including links to the national code of ethical practice for education agents.   [www.wlv.ac.uk/international/education-agents-/]
+  > ⏎ National code of ethical practice for education agents- a code of practice setting out the standards and best practice that education agents and agent aggregators, brokers and mark   [www.wlv.ac.uk/international/education-agents-/]
+
+################ worcester
+  page 404 https://www.worcester.ac.uk/international/ | University of Worcester - Page not found (not agent-related)
+
+################ sunderland
+  page 200 https://www.sunderland.ac.uk/international/agents-and-partners/ | Agents and partners | University of Sunderland
+  page 200 https://www.sunderland.ac.uk/international/agents-and-partners/compliance/ | Compliance | University of Sunderland
+  page 200 https://www.sunderland.ac.uk/international/agents-and-partners/admissions-entry-requirements | Admissions and entry requirements | University of Sunderland
+  page 200 https://www.sunderland.ac.uk/international/agents-and-partners/fees-and-payment | Fees and payment | University of Sunderland
+  page 200 https://www.sunderland.ac.uk/international/agents-and-partners/evision-guidance | e:Vision Agent Hub guidance | University of Sunderland
+  page 200 https://www.sunderland.ac.uk/international/agents-and-partners/additional-support | Additional support | University of Sunderland
+  EMAIL international.office@sunderland.ac.uk  <- https://www.sunderland.ac.uk/international/agents-and-partners/
+  > ⏎ We also manage overseas offices in China, India, Pakistan, Egypt, Malaysia, Vietnam, Greece, Nigeria, and Canada.   [www.sunderland.ac.uk/international/agents-and-partners/]
+  > ⏎ We've recently signed a pledge with the British Universities' International Liaison Association and the British Council, which declares that we're committed to:   [www.sunderland.ac.uk/international/agents-and-partners/compliance/]
+  > The National Code of Ethical Practice for UK Education Agents   [www.sunderland.ac.uk/international/agents-and-partners/compliance/]
+  > ⏎ UK Agent Quality Framework (AQF)   [www.sunderland.ac.uk/international/agents-and-partners/compliance/]
+
+################ lincoln
+  page 200 https://www.lincoln.ac.uk/international/ | International Students | University of Lincoln (not agent-related)
+  page 200 https://www.lincoln.ac.uk/international/agents/ | University of Lincoln
+  page 200 https://news.lincoln.ac.uk/2026/09/30/university-of-lincoln-and-university-of-florida-forge-international-partnership-in-agri-tech/ | University of Lincoln and University of Florida Forge International Pa (not agent-related)
+
+################ anglia-ruskin
+  page 200 https://www.aru.ac.uk/international | International - ARU (not agent-related)
+  page 404 https://www.aru.ac.uk/international/agents | 404 - ARU
+  page 200 https://www.aru.ac.uk/about-us/global-partnerships | Global partnerships - ARU (not agent-related)
+
+################ edge-hill
+  page 403 https://www.edgehill.ac.uk/international/ | Checking your browser... (not agent-related)
+
+################ bangor
+  page 200 https://www.bangor.ac.uk/international | International | Bangor University (not agent-related)
+  page 200 https://www.bangor.ac.uk/international/agents | Education Agents | Bangor University
+  page 200 https://www.bangor.ac.uk/worldwidepartners | Global Partners | Bangor University (not agent-related)
+  page 200 https://www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%20choosing%20an%20education%20agent.pdf | PDF
+  page 200 https://www.bangor.ac.uk/international/agent-portal | Agent Tool Kit | Bangor University
+  page 200 https://www.bangor.ac.uk/international/agent-complaint-information | Agent complaint information | Bangor University
+  page 200 https://www.bangor.ac.uk/international/meet-the-partnerships-team | Meet the Partnerships Team | Bangor University (not agent-related)
+  page 200 https://www.bangor.ac.uk/sites/default/files/2020-09/Guidelines_for_Agents%20-%20English%20Version%20V3.pdf | PDF
+  EMAIL kerry.jones@bangor.ac.uk  <- https://www.bangor.ac.uk/international/agents
+  EMAIL international@bangor.ac.uk  <- https://www.bangor.ac.uk/international/agent-complaint-information
+  EMAIL agentenquiries@bangor.ac.uk  <- https://www.bangor.ac.uk/sites/default/files/2020-09/Guidelines_for_Agents%20-%20English%20Version%20V3.pdf
+  EMAIL agentsenquiries@bangor.ac.uk  <- https://www.bangor.ac.uk/sites/default/files/2020-09/Guidelines_for_Agents%20-%20English%20Version%20V3.pdf
+  > As an institution, we are committed to the UK Agent Quality Framework and pledge to create and maintain the highest standards of agent management, ensuring the UK remains a leading study destination for international students.   [www.bangor.ac.uk/international/agents]
+  > ⏎ National code of ethical practice for education agents   [www.bangor.ac.uk/international/agents]
+  > The national code of ethical practice for UK education agents lies at the heart of the AQF.   [www.bangor.ac.uk/international/agents]
+  > Student sponsors are required to manage agents to ensure compliance with the national code as part of their sponsor duties.   [www.bangor.ac.uk/international/agents]
+  > INTERN e required to manage agents to ensure compliance with the national code as part of their sponsor duties.   [www.bangor.ac.uk/international/agents]
+  > ⏎ They should know what the National Code is and show you a copy.   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > yourself with the National Code to see how your education agent is doing.   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > ⏎ Are you paid a commission by the   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > ⏎ Most schools/colleges/universities pay a commission for the agent to represent   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > ⏎ Regardless of whether the agent is paid a commission or not, th   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > Completed the British Council   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > the British Council website: https://www.britishcouncil.   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > Committed to the National Code   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > The National Code  agents to recruit students to UK universities,   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > checking with your government’s education department or on the British Council’s website.   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > the British Council, and UK Visas and Immigration (UKVI).   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > The National Code sets out the behaviours and   [www.bangor.ac.uk/sites/default/files/2024-08/A%20student%20guide%20to%]
+  > If you're interested in becoming an agent for Bangor University you will need to complete the following application form and return the completed form and any other information required to Kerry Jones: kerry.jones@bangor.ac.uk   [www.bangor.ac.uk/international/agent-portal]
+  > Bangor University was one of the first signatories of the Agent Quality Framework in the UK.   [www.bangor.ac.uk/international/agent-portal]
+  > The National code of Ethical Practice for Education agents   [www.bangor.ac.uk/international/agent-portal]

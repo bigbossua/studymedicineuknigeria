@@ -1,0 +1,231 @@
+
+################ liverpool
+  page 200 https://www.liverpool.ac.uk/international/about-agents/ | About agents | International students | University of Liverpool
+  page 200 https://www.liverpool.ac.uk/international/about-agents/choosing-and-managing-agents/ | Choosing and managing our agents | International students | University
+  page 200 https://www.liverpool.ac.uk/global/partnerships/global-networks/ | Global networks | Global | University of Liverpool (not agent-related)
+  page 200 https://www.liverpool.ac.uk/international/applying/how-to-apply/applying-through-an-agent/ | Applying through an agent | International students | University of Liv
+  page 200 https://www.liverpool.ac.uk/international/applying/how-to-apply/applying-through-an-agent/approved-agents/ | Approved agents | International students | University of Liverpool
+  page 200 https://www.liverpool.ac.uk/xjtlu/the-xjtlu-partnership/meet-the-team/ | Meet the team | Xi’an Jiaotong-Liverpool University partnership | Univ (not agent-related)
+  > ⏎ The University of Liverpool works with a network of approved agents and we pay commission to agents for students who successfully enrol with us.   [www.liverpool.ac.uk/international/about-agents/]
+  > Some agents may charge fees for their services, while others are solely paid through commission from the University.   [www.liverpool.ac.uk/international/about-agents/]
+  > Being transparent about their relationship with the University, including commission arrangements   [www.liverpool.ac.uk/international/about-agents/]
+  > Agents supporting applications to the University are expected to meet the standards set out by the UK Agent Quality Framework.   [www.liverpool.ac.uk/international/about-agents/]
+  > For further guidance on choosing and working with an agent refer to the UK’s Agent Quality Framework.   [www.liverpool.ac.uk/international/about-agents/]
+  > ⏎ Transparency and commission   [www.liverpool.ac.uk/international/about-agents/choosing-and-managing-a]
+  > The University pays commission to approved agents for supporting students who successfully enrol with us.   [www.liverpool.ac.uk/international/about-agents/choosing-and-managing-a]
+  > Many agents work with multiple universities and may receive commission from them, too.   [www.liverpool.ac.uk/international/about-agents/choosing-and-managing-a]
+  > ⏎ We expect agents to complete relevant training, such as programmes delivered by the British Council.   [www.liverpool.ac.uk/international/about-agents/choosing-and-managing-a]
+  > We are committed to the principles of the UK Agent Quality Framework.   [www.liverpool.ac.uk/international/about-agents/choosing-and-managing-a]
+  > ⏎ For further guidance on choosing and working with an agent, visit the UK Agent Quality Framework.   [www.liverpool.ac.uk/international/about-agents/choosing-and-managing-a]
+  > The National Code of Ethical Practice for UK education agents   [www.liverpool.ac.uk/international/applying/how-to-apply/applying-throu]
+  > The British Council’s database of certified counsellors.   [www.liverpool.ac.uk/international/applying/how-to-apply/applying-throu]
+  > This guide is an important part of the UK Agent Quality Framework, a set of tools and guidance for ethical practice in international student recruitment.   [www.liverpool.ac.uk/international/applying/how-to-apply/applying-throu]
+  > Bridge House Counselling Nigeria   [www.liverpool.ac.uk/international/applying/how-to-apply/applying-throu]
+  > Sable International Study Abroad Limited South Africa, Nigeria, Uganda, Zambia, Zimbabwe and Mauritius   [www.liverpool.ac.uk/international/applying/how-to-apply/applying-throu]
+  > Transnational Academic Group Ghana (TAG)  West Africa (Ghana and Nigeria)   [www.liverpool.ac.uk/international/applying/how-to-apply/applying-throu]
+
+################ manchester
+  page 200 https://www.manchester.ac.uk/study/international/contact-international-team/educational-advisers | Educational advisers | The University of Manchester
+  page 200 https://www.manchester.ac.uk/study/international/ | International students at The University of Manchester (not agent-related)
+  page 200 https://www.manchester.ac.uk/research/strategy/partnerships/ | Partners | Research impact at The University of Manchester (not agent-related)
+  page 200 https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/ | Contacts | Information for students from Nigeria | The University of M
+  page 200 https://www.manchester.ac.uk/study/international/country-specific-information/south-africa/contacts/ | Contacts | Information for students from South Africa | The University
+  page 200 https://www.manchester.ac.uk/research/strategy/partnerships/civic-engagement-in-research/ | Civic engagement in research | The University of Manchester (not agent-related)
+  page 200 https://www.manchester.ac.uk/research/strategy/partnerships/nhs-collaborations/ | The University of Manchester's collaborations with the NHS (not agent-related)
+  page 200 https://www.manchester.ac.uk/research/strategy/partnerships/commercialisation/ | Commercialisation | Research impact at The University of Manchester (not agent-related)
+  page 200 https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/ | Information for students from Nigeria | The University of Manchester
+  page 200 https://www.manchester.ac.uk/study/international/country-specific-information/south-africa/ | Information for students from South Africa | The University of Manches
+  page 200 https://www.manchester.ac.uk/study/international/admissions/foundation-courses/international-students/ | Foundation courses for international students from outside EU | The Un (not agent-related)
+  EMAIL Damilola@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL info.lagos@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL Ikeja@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL Vi@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL Abuja@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL Ph@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL Enugu@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL Ibadan@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL Kano@idp.com  <- https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/contacts/
+  EMAIL ashleigh@global-education.co.za  <- https://www.manchester.ac.uk/study/international/country-specific-information/south-africa/contacts/
+  EMAIL miguel@global-education.co.za  <- https://www.manchester.ac.uk/study/international/country-specific-information/south-africa/contacts/
+  EMAIL international@manchester.ac.uk  <- https://www.manchester.ac.uk/study/international/country-specific-information/south-africa/contacts/
+  EMAIL panos@global-education.co.za  <- https://www.manchester.ac.uk/study/international/country-specific-information/south-africa/contacts/
+  > The University pays commission to a contracted agent if you’ve used their services and successfully enrol at our institution.   [www.manchester.ac.uk/study/international/contact-international-team/ed]
+  > As an institution, we’re committed to the UK Agent Quality Framework, meaning that we fully support the goals of upholding the highest standards of agent management, ensuring the UK remains a leading study destination for international students.   [www.manchester.ac.uk/study/international/contact-international-team/ed]
+  > ⏎ The Global Futures Scholarships for Africa are open to applicants domiciled in the following countries: Botswana, Ghana, Kenya, Mauritius, Nigeria, South Africa and Zimbabwe.   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > ⏎ GREAT Scholarship for Nigeria   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > The University of Manchester is proud to offer one GREAT award in partnership with the British Council and the GREAT Britain campaign for a Nigerian student applying for a one-year taught Master’s course starting in September 2027.   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > If you're planning to seek the support of an educational adviser or ‘agent’, we would strongly recommend that you first refer to sector guidance including the British Councils' Education agents page and the UK’s Student Guide to Choosing an Education Agent (PDF, 189KB).   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > IDP is the only agency representing The University of Manchester in Nigeria.   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > 52 - 54 Isaac John Street Ikeja GRA, 101233, Lagos State, Nigeria   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > The British Council offers advice to students who wish to study in the UK.   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > If you are planning to seek the support of an educational adviser or ‘agent’, we would strongly recommend that you first refer to British Councils' Education agents page.   [www.manchester.ac.uk/study/international/country-specific-information/]
+  > South Africa   or ‘agent’, we would strongly recommend that you first refer to British Councils' Education agents page.   [www.manchester.ac.uk/study/international/country-specific-information/]
+
+################ newcastle
+  page 200 https://www.ncl.ac.uk/international/agents/ | Representatives (Education Agents) | Newcastle University
+  page 200 https://www.ncl.ac.uk/international/ | International Students | Newcastle University (not agent-related)
+  page 200 https://www.ncl.ac.uk/international/country/education-agents-students/ | Education Agents for Students | Newcastle University
+  page 200 https://www.ncl.ac.uk/mediav8/international-students/files/Recruitment%20Partner%20Complaints%20SRSC070725.pdf | PDF (not agent-related)
+  > ⏎ The University pays commission to these agents if you receive their support and enrol at Newcastle.   [www.ncl.ac.uk/international/agents/]
+  > The guide also links to ‘The national code of ethical practice for UK education agents’ and the British Council’s UK database of certified counsellors.   [www.ncl.ac.uk/international/agents/]
+  > Newcastle University is signed up to the UK Agent Quality Framework pledge.   [www.ncl.ac.uk/international/agents/]
+  > The Agent Quality Framework (AQF) is a set of tools to enhance the experience of international students working with education agents and counsellors to apply to study in the UK.   [www.ncl.ac.uk/international/agents/]
+  > ⏎ If you are considering using an education agent, we recommend reading the student and parent guide to choosing an education agent, an important part of the UK Agent Quality Framework (AQF).   [www.ncl.ac.uk/international/agents/]
+  > The guide also links to ‘The national code of ethical practice for U  part of the UK Agent Quality Framework (AQF).   [www.ncl.ac.uk/international/agents/]
+  > ⏎ For further guidance, please refer to the British Council guide on choosing an education agent.   [www.ncl.ac.uk/international/country/education-agents-students/]
+  > ⏎ Read a British Council guide on choosing an education agent  cate about the University.   [www.ncl.ac.uk/international/country/education-agents-students/]
+  > ⏎ Newcastle University is signed up to the UK Agent Quality Framework pledge.   [www.ncl.ac.uk/international/country/education-agents-students/]
+
+################ nottingham
+  page 200 https://www.nottingham.ac.uk/studywithus/international-applicants/contact-us/representatives/representatives.aspx | Overseas representatives - The University of Nottingham
+  page 200 https://www.nottingham.ac.uk/studywithus/international-applicants/ | Information for international applicants (not agent-related)
+  page 200 https://www.nottingham.ac.uk/studywithus/international-applicants/contact-us/representatives/expectations.aspx | Our expectations - The University of Nottingham
+  page 200 https://www.nottingham.ac.uk/studywithus/international-applicants/country-info/countryinformation/nigeria.aspx | Nigeria - The University of Nottingham
+  page 200 https://www.nottingham.ac.uk/fabs/research-innovation/engagement-and-partnerships.aspx | Business Engagement - The University of Nottingham (not agent-related)
+  page 200 https://www.nottingham.ac.uk/studywithus/international-applicants/visa-help/adviser.aspx | Contact an Immigration Adviser - The University of Nottingham
+  page 200 https://su.nottingham.ac.uk/activities/view/nigerian-students | UoNSU
+  EMAIL agents@nottingham.ac.uk  <- https://www.nottingham.ac.uk/studywithus/international-applicants/contact-us/representatives/representatives.aspx
+  EMAIL nigerian-students@uonsu.com  <- https://su.nottingham.ac.uk/activities/view/nigerian-students
+  > As an institution, we are committed to the UK Agent Quality Framework (AQF) and pledge to create and maintain the highest standards of agent management, ensuring the UK remains le the UK Agent Quality Framework (AQF) and pledge to create and maintain the highest standards of agent management, ensuring the UK remains leading study destination for international students.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > ⏎ We have recently signed a pledge with the British Universities' International Liaison Association and the British Council, which declares that we are committed to:   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > All of the listed Country Representatives have provided us with evidence that they are trained by the British Council and have up to date awareness about UKVI Laws and compliance.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > The guide also links to ‘The national code of ethical practice for UK education agents’ and the British Council’s UK database of certified counsellors.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > Feedback on our agent services contributes to our commitment to the Agent Quality Framework.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > ⏎ If you are considering using an education agent, we recommend reading the student and parent guide to choosing an education agent, an important part of the UK Agent Quality Framework (AQF).   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > The guide also links to ‘The national code of ethical practice for UK t part of the UK Agent Quality Framework (AQF).   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > k on our agent services contributes to our commitment to the Agent Quality Framework.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > If you are interested in working with the University of Nottingham as one of our official representatives, please contact the Agent Relations Team who will forward your enquiry to the relevant person.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > ⏎ For further guidance, please also refer to the British Council's guidance for agents, the UKCISA Code of Ethics and the QAA's Quality Code for UK higher education.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > establish and maintain a good working relationship with the British Council (where applicable) for the promotion of UK education and culture   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > make offers of admission on the UK Agent Quality Framework (AQF) and pledge to create and maintain the highest standards of agent management, ensuring the UK remains leading study destination for international students.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > ⏎ All of the listed Country Representatives have provided us with evidence that they are trained by the British Council and have up to date awareness about UKVI Laws and compliance.   [www.nottingham.ac.uk/studywithus/international-applicants/contact-us/r]
+  > University of NottinghamStudy with usInternational studentsCountry-specific informationCountry InformationNigeria   [www.nottingham.ac.uk/studywithus/international-applicants/country-info]
+  > Information for students from Nigeria   [www.nottingham.ac.uk/studywithus/international-applicants/country-info]
+  > We also accept foundation certificates from selected providers in the UK and Nigeria.   [www.nottingham.ac.uk/studywithus/international-applicants/country-info]
+  > Home Activities View Nigerian Students Society   [su.nottingham.ac.uk/activities/view/nigerian-students]
+  > About Nigerian Students Society   [su.nottingham.ac.uk/activities/view/nigerian-students]
+  > The University of Nottingham Nigerian Students Society (UNNSS) is a vibrant, inclusive community dedicated to celebrating Nigerian culture and fosterin rian Students Society   [su.nottingham.ac.uk/activities/view/nigerian-students]
+  > Through diverse activities like social gatherings, cultural showcases, educational workshops, and networking events, UNNSS promotes Nigerian heritage while encouraging cross-cultural exchange within the university.   [su.nottingham.ac.uk/activities/view/nigerian-students]
+  > The society also collaborates with other societies shops, and networking events, UNNSS promotes Nigerian heritage while encouraging cross-cultural exchange within the university.   [su.nottingham.ac.uk/activities/view/nigerian-students]
+  > UNNSS is open to anyone interested in Nigerian culture and is committed to empowering its members to thrive during their time at Nottingham and beyond.   [su.nottingham.ac.uk/activities/view/nigerian-students]
+  > Nigerian Students Society Main   [su.nottingham.ac.uk/activities/view/nigerian-students]
+  > nigerian-students@uonsu.com   [su.nottingham.ac.uk/activities/view/nigerian-students]
+
+################ oxford
+  page 403 https://www.ox.ac.uk/admissions/undergraduate/international-applicants | Just a moment... (not agent-related)
+  page 403 https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/guide/agents | Just a moment...
+
+################ plymouth
+  page 200 https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria | Agents in Nigeria - University of Plymouth
+  page 200 https://www.plymouth.ac.uk/international | International students: study with us - University of Plymouth (not agent-related)
+  page 200 https://www.plymouth.ac.uk/business-partners/innovation | Innovation - University of Plymouth (not agent-related)
+  page 200 https://www.plymouth.ac.uk/business-partners/global-academic-partnerships/becoming-a-partner-of-the-university-of-plymouth | Becoming a partner of the University of Plymouth - University of Plymo (not agent-related)
+  page 200 https://www.plymouth.ac.uk/international/international-agent-toolkit | International agent toolkit - University of Plymouth
+  page 200 https://www.plymouth.ac.uk/business-partners/childrens-university | Devon & Cornwall Children's University - University of Plymouth (not agent-related)
+  EMAIL info@aiselgl.com  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL prince@amsbridgeblue.com  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL amsoneducation@gmail.com  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL enquiries@bcie.co.uk  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL info@chitnampenguinslink.com  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL info@comforteduserve.org  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL studyabroad@1stcrtgroup.com  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL info@dahenricrestconsult.com  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL diamondgiantconsulting@gmail.com  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  EMAIL diajiant@yahoo.co.uk  <- https://www.plymouth.ac.uk/international/study/international-students-country-guides/africa/nigeria-guide/agents-in-nigeria
+  > Home N International students: study with us N Apply from your country N Agents in Nigeria   [www.plymouth.ac.uk/international/study/international-students-country-]
+  > Contact information for our agents in Nigeria who can provide you with more information and help with your application   [www.plymouth.ac.uk/international/study/international-students-country-]
+  > If you're a stu s in Nigeria   [www.plymouth.ac.uk/international/study/international-students-country-]
+  > If you're a student in Nigeria thinking of studying at the University of Plymouth then why not speak to an agent near you to find out more?   [www.plymouth.ac.uk/international/study/international-students-country-]
+  > Suite 53, Terrace Wing, Tafawa Balewa Square, Race Course, Lagos Island, Lagos, Nigeria   [www.plymouth.ac.uk/international/study/international-students-country-]
+  > Working with us as a new agent   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > Support the UK Agent Quality Framework   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > Following the UK Agent Quality Framework ensures that all agents work to the same excellent standard to give s e:   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > The National Code of Ethical Practice for Education Agents   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > We also encourage all our agents to take the free British Council agent training.   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > Becoming certified by the British Council can add prestige and credibility to your business, making it especially attractive to students who have already encountered the British Council in their education.   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > ⏎ Learn more about the UK Agent Quality Framework   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > ⏎ Plea age all our agents to take the free British Council agent training.   [www.plymouth.ac.uk/international/international-agent-toolkit]
+  > ⏎ Learn more about the #WeAreInt UK Agent Quality Framework ensures that all agents work to the same excellent standard to give students an outstanding experience.   [www.plymouth.ac.uk/international/international-agent-toolkit]
+
+################ queen-mary-london
+  page 403 https://www.qmul.ac.uk/international/ | 403 Forbidden (not agent-related)
+  page 404 https://www.qmul.ac.uk/international/agents/ | Sorry, the page you requested could not be found - Queen Mary Universi
+
+################ queens-belfast
+  page 200 https://www.qub.ac.uk/home/International/International-students/Applying/Agents-and-partner-information | Agents and partner information | Study | Queen's University Belfast
+  page 404 https://www.qub.ac.uk/home/International/ |  (not agent-related)
+  page 200 https://www.qub.ac.uk/Study/international-students/your-country/middle-east-africa/ | Middle East and North Africa | Study | Queen's University Belfast
+  page 200 https://www.qub.ac.uk/Study/international-students/your-country/sub-saharan-africa/ | Sub Saharan Africa | Study | Queen's University Belfast
+  page 200 https://www.qub.ac.uk/Study/international-students/applying/agents-partners/ug-applications/ | Undergraduate Applications | Study | Queen's University Belfast
+  page 200 https://www.qub.ac.uk/Study/international-students/applying/agents-partners/pg-applications/ | Postgraduate Applications | Study | Queen's University Belfast
+  page 200 https://www.qub.ac.uk/Study/international-students/applying/agents-partners/isc-applications/ | International Study Centre Applications | Study | Queen's University B
+  page 200 https://www.qub.ac.uk/Study/international-students/applying/agents-partners/agents-by-country/ | Agents by Region | Study | Queen's University Belfast
+  page 200 https://www.qub.ac.uk/Study/international-students/applying/agents-partners/agent-quality-framework/ | Agent Quality Framework | Study | Queen's University Belfast
+  page 200 https://www.qub.ac.uk/International/global-partnerships/educational-partnerships/ | Educational Partnerships | International | Queen's University Belfast (not agent-related)
+  EMAIL mena@qub.ac.uk  <- https://www.qub.ac.uk/Study/international-students/your-country/middle-east-africa/
+  EMAIL africa@qub.ac.uk  <- https://www.qub.ac.uk/Study/international-students/your-country/sub-saharan-africa/
+  EMAIL international@qub.ac.uk  <- https://www.qub.ac.uk/Study/international-students/applying/agents-partners/ug-applications/
+  EMAIL intl.student@qub.ac.uk  <- https://www.qub.ac.uk/Study/international-students/applying/agents-partners/ug-applications/
+  EMAIL intl.admissions@qub.ac.uk  <- https://www.qub.ac.uk/Study/international-students/applying/agents-partners/ug-applications/
+  EMAIL agent@qub.ac.uk  <- https://www.qub.ac.uk/Study/international-students/applying/agents-partners/pg-applications/
+  EMAIL cherry.li@qub.ac.uk  <- https://www.qub.ac.uk/Study/international-students/applying/agents-partners/isc-applications/
+  > ⏎ Queen's has an African and Caribbean Society, an African and Caribbean Medical Society and a Nigerian Society.   [www.qub.ac.uk/Study/international-students/your-country/sub-saharan-af]
+  > ⏎ We are working in Kenya to reduce global   Ojile | Nigeria   [www.qub.ac.uk/Study/international-students/your-country/sub-saharan-af]
+  > From Nigeria to Belfast – why I chose to study my PhD at Queen’s Samuel Adebayo | Nigeria   [www.qub.ac.uk/Study/international-students/your-country/sub-saharan-af]
+  > Details of the application process can be obtained from your school, or from British Council offices.   [www.qub.ac.uk/Study/international-students/applying/agents-partners/ug]
+  > Algeria, Bahrain, Egypt, Ghana, Jordan, Kenya, Kuwait, Lebanon, Malawi, Mauritius, Morocco, Nigeria, Oman, Qatar, Seychelles, Saudi Arabia, South Africa, Tanzania, UAE, Uganda, Zimbabwe FIND AN AGENT   [www.qub.ac.uk/Study/international-students/applying/agents-partners/ag]
+  > English language requirement e UK Agent Quality Framework (AQF) and pledge to create and maintain the highest standards of agent management, ensuring the UK remains a leading study destination for international students.   [www.qub.ac.uk/Study/international-students/applying/agents-partners/ag]
+  > ⏎ We have recently signed a pledge with the British Universities' International Liaison Association and the British Council, which declares that we are committed to:   [www.qub.ac.uk/Study/international-students/applying/agents-partners/ag]
+  > Queen’s University Belfast are committed to the UK Agent Quality Framework (AQF) and pledge to create and maintain the highest standards of agent management, ensuring the UK remains a leading study destination for international students.   [www.qub.ac.uk/Study/international-students/applying/agents-partners/ag]
+
+################ sheffield
+  page 200 https://www.sheffield.ac.uk/international/representatives | Representatives in your region | International students | The Universi
+  page 200 https://sheffield.ac.uk/collaborate/home | Partnerships | Partnerships | The University of Sheffield (not agent-related)
+  page 200 https://sheffield.ac.uk/schools/teachers-advisors | Teachers and advisors | Schools and colleges | The University of Sheff
+  page 200 https://sheffield.ac.uk/international/what-expect | What to expect from your agent | International students | The Universi
+  page 200 https://sheffield.ac.uk/international/representatives/south-east-asia-office | South East Asia Office | International students | The University of Sh
+  page 200 https://sheffield.ac.uk/collaborate/contact | Contact us | Partnerships | The University of Sheffield (not agent-related)
+  EMAIL haley.drogus@sheffield.ac.uk  <- https://www.sheffield.ac.uk/international/representatives
+  EMAIL maggie1dowlut@yahoo.co.uk  <- https://www.sheffield.ac.uk/international/representatives
+  EMAIL indira.edabroad@hotmail.com  <- https://www.sheffield.ac.uk/international/representatives
+  EMAIL india@sheffield.ac.uk  <- https://www.sheffield.ac.uk/international/representatives
+  EMAIL udochika.ezeocha@sheffield.ac.uk  <- https://www.sheffield.ac.uk/international/representatives
+  EMAIL naomisebape@gmail.com  <- https://www.sheffield.ac.uk/international/representatives
+  EMAIL ggoule@gmail.com  <- https://www.sheffield.ac.uk/international/representatives
+  EMAIL international@sheffield.ac.uk  <- https://sheffield.ac.uk/international/what-expect
+  EMAIL seao@sheffield.ac.uk  <- https://sheffield.ac.uk/international/representatives/south-east-asia-office
+  > The University of Sheffield pays a commission to our official agents if you register with us after using their services.   [www.sheffield.ac.uk/international/representatives]
+  > Always clarify all costs with your agen  an important part of the UK Agent Quality Framework (AQF).   [www.sheffield.ac.uk/international/representatives]
+  > Access the ‘national code of ethical practice for UK education agents’ and the British Council’s UK database of certified counsellors.   [www.sheffield.ac.uk/international/representatives]
+  > British Council in Türkiye   [www.sheffield.ac.uk/international/representatives]
+  > You may also wish to visit any of the British Council offices, across Türkiye in Ankara, Istanbul and Izmir to get further information about living and studying in Sheffield.   [www.sheffield.ac.uk/international/representatives]
+  > ⏎ As an institution committed to the UK Agent Quality Framework, we pledge to create and maintain the highest standards of agent management, ensuring the UK remains a leading study destination for international students.   [www.sheffield.ac.uk/international/representatives]
+  > If you are considering using an education agent, we strongly recommend reading the student and parent guide to choosing an education agent — an important part of the UK Agent Quality Framework (AQF).   [www.sheffield.ac.uk/international/representatives]
+  > UK Agent Quality Framework   [www.sheffield.ac.uk/international/representatives]
+  > ading the student and parent guide to choosing an education agent — an important part of the UK Agent Quality Framework (AQF).   [www.sheffield.ac.uk/international/representatives]
+  > Nigeria and Sub-Saharan Africa   [www.sheffield.ac.uk/international/representatives]
+  > Our Regional Representative for Sub-Saharan Africa is based in Nigeria and she can offer advice and support on your application to study at Sheffield.   [www.sheffield.ac.uk/international/representatives]
+
+################ southampton
+  page 404 https://www.southampton.ac.uk/study/international | 404 | Page not found | University of Southampton (not agent-related)
+
+################ st-andrews
+  page 200 https://www.st-andrews.ac.uk/subjects/entry/local-representatives/ | Local representatives - Subjects - University of St Andrews
+  page 200 https://www.st-andrews.ac.uk/study/international/ | Study at St Andrews - University of St Andrews (not agent-related)
+  > ⏎ To support students in making informed choices, we encourage all applicants to read the British Council’s Student Guide to Choosing an Education Agent.   [www.st-andrews.ac.uk/subjects/entry/local-representatives/]
+  > ⏎ You may also check whether an individual counsellor has completed UK‑accredited training through the UK database of certified counsellors, maintained by the British Council.   [www.st-andrews.ac.uk/subjects/entry/local-representatives/]
+  > ⏎ Representatives must follow UK‑accredited training expectations (such as British Council UK Agent and Counsellor Certified Training).   [www.st-andrews.ac.uk/subjects/entry/local-representatives/]
+  > the standards of the UK Agent Quality Framework   [www.st-andrews.ac.uk/subjects/entry/local-representatives/]
+  > the National Code of Ethical Practice for UK Education Agents   [www.st-andrews.ac.uk/subjects/entry/local-representatives/]
+  > ⏎ All concerns will be reviewed under our agent‑monitoring and quality‑assurance processes, in line with the commitments of the UK Agent Quality Framework.   [www.st-andrews.ac.uk/subjects/entry/local-representatives/]
+
+################ st-georges-london
+  page 404 https://www.citystgeorges.ac.uk/prospective-students/international-students | Page not found • City St George's, University of London (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/prospective-students/apply/study-abroad/partnership | Partnership programme • City St George's, University of London (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/grow/funding/knowledge-transfer-partnerships | Knowledge Transfer Partnerships (KTPs) • City St George's, University  (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/access/information-for-placement-partners | Information for placement partners • City St George's, University of L (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/access/information-for-placement-partners/speech-and-language-therapy-training-sessions | Speech and Language Therapy training sessions • City St George's, Univ (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/business/access/information-for-placement-partners/epad-training | ePAD and eMORA training • City St George's, University of London (not agent-related)
+  page 200 https://www.citystgeorges.ac.uk/about/schools/law/barrister-pathway/pupilage-advisory-service | Pupillage Advice Service • City St George's, University of London
+  page 200 https://www.citystgeorges.ac.uk/about/schools/law/solicitor-pathway/future-solicitor-advisory-service | Future Solicitor Advisory Service (FSAS) • City St George's, Universit
+  page 200 https://www.citystgeorges.ac.uk/about/schools/law/law-in-real-life/our-partners | Our partners • City St George's, University of London (not agent-related)

@@ -1,5 +1,7 @@
 # 15. UK university recruitment-agent opportunities for Medicine (research, 2026-10-05)
 > **ARCHIVED (owner decision 2026-10-05).** Recruitment-agent, commission, partnership and university-recruitment-agreement work is **off the active roadmap**. This document is kept for reference only; do not extend it, act on it, or cite it on the site. The independence statements on *Our status* are unchanged.
+>
+> **Reopened by the owner on 2026-10-28.** The official-page research that replaces this snippet-based first pass is in `research/university-agent-partners/` (contacts CSV, report, outreach drafts and log).
 
 
 **Research date:** 2026-10-05 · **Status:** first pass, search-snippet evidence only · **Companion documents:** `docs/research/11-agent-partner-terminology.md` (terminology, DMCC Act, documentation ladder), `docs/research/06-uk-medical-school-database.md` (which schools take international Medicine applicants)

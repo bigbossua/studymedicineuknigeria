@@ -28,6 +28,8 @@ Bounces and non-delivery reports must be recorded as SEND FAILED or under delive
   
   All 24 queue rows stay **READY TO SEND — NOT SENT**.
 
+- **2026-10-28 12:16 UTC: blocked again, same cause.** The owner asked for the outreach to run with "the browser access available in this local session". This is still the cloud session; it has no browser or computer-control tool, and no session on the owner's computer was reachable (ListAgents: none). The mailbox was not opened and nothing was sent; all 24 rows stay READY TO SEND — NOT SENT.
+
 ## Status definitions
 
 | Status | Meaning |

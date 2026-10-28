@@ -860,7 +860,7 @@ These are the only two gated pages. A gated page goes noindex and leaves the sit
 - **Corrected (1 fact).** Buckingham's selection is now two stages (academic screening, then MMI); the record said three.
 - **Not restored, manual review (2 facts):**
   - Buckingham application route: the course page now shows an "Apply direct" section beside UCAS code 71A8, which is ambiguous.
-  - UCAS "submission opens 1 September 2026": no longer on the UCAS page, and the date has passed.
+  - UCAS "submission opens 1 September 2026": no longer on the UCAS page, and the date has passed. (Wrong: the page still shows it as "01 SEP" under 2026; corrected in stage 68.)
 
 So `data/verification/decisions-2026-10-28.csv` holds 39 decisions; the next approved deploy applies them.
 
@@ -870,6 +870,45 @@ So `data/verification/decisions-2026-10-28.csv` holds 39 decisions; the next app
 - `/fees/cost-of-studying-medicine-in-the-uk` stays noindex until the UCAS submission-opens fact is resolved.
 
 **Watcher.** A reviewer's `[bracketed remark]` saved inside a quote is not page text, and the watcher now ignores it (regression test).
+
+## Stage 68: live results of release 2026-10-28 and the follow-up re-verification (2026-10-28)
+
+**Release.** Commit bf65b27 went live through `deploy-hostinger.yml` (run 40661612113) with the owner's approval; release `2026-10-28T09-16-36`.
+
+**Live checks after the deploy:**
+- Live Verification (run 40663502531): all checks passed.
+  - Google-readiness audit: 81 passed, 0 failed, 34 sitemap URLs, every one with its own canonical and a lastmod date.
+  - Journey on phone and desktop: no problems.
+  - Server: no pending migrations, no failed jobs, scheduler heartbeat 0 minutes, and Stripe's three catalogue prices unchanged.
+- Operations Summary (run 40663511184): the stage 67 decisions are applied. Aberdeen, Brighton and Sussex, Edinburgh and Manchester have 5/5 core facts verified; Buckingham has 4/5.
+- Sitemap/Robots Probe (runs 40663507036, 40663898489): **failed**. Every request with a Googlebot user agent gets 403 from the Hostinger CDN (`hcdn`), and the same URLs return 200 to a plain client.
+  - The scheduled probe first failed on 2026-10-27, the day before this release.
+  - The application has no user-agent rule.
+  - Whether Google's own crawler (from Google's addresses) is affected can be confirmed only in Search Console (URL Inspection, live test) or in Hostinger's CDN or bot-protection settings.
+
+**Why two pages stayed out of the index.** The old source watcher flagged seven more topic facts on 2026-10-27, before the corrected watcher was deployed:
+- the Student visa term-time work limit (UKCISA);
+- five UCAT 2026 dates;
+- the UCAS submission date, already held for review.
+
+`/working-in-the-uk` and `/fees/cost-of-studying-medicine-in-the-uk` therefore stayed gated.
+
+**Follow-up evidence.** Pages were read on 2026-10-28 by runs 40664891543 and 40665198058. Every quote in `ops/verification/reviews/2026-10-28-followup.json` passes `check-quotes.py`.
+- **UKCISA work limit.** The page text has the same fingerprint as on 2026-10-05; the wording is unchanged. Restored.
+- **UCAT 2026 dates (5 facts).** All still published. The redesigned page adds that UCAT 2026 registration and booking are closed and that 2027 dates come by February 2027. Restored.
+- **UCAS submission opens.** Still published as "01 SEP ⏎ Completed applications can be submitted to UCAS" in the 2027-entry timeline. Restored; this corrects the stage 67 review.
+- **Buckingham application route.** Corrected. The course page's "How to apply" section offers a direct application on the University's website (no fee, until shortly before the course starts), and the overview still lists UCAS code 71A8; the record said UCAS only.
+
+**Decisions file.** The 8 decisions are in `data/verification/decisions-2026-10-28-followup.csv`. `decisions.py` takes an optional review name, so the follow-up does not change the decisions file the last deploy already imported.
+
+**Dry run on a copy of the production database:**
+- with the seven facts flagged again, 8 facts updated, 0 skipped;
+- `/working-in-the-uk` and the cost page pass their gates;
+- Buckingham's five core facts are verified, so the school gate lists it.
+
+**Not done here (owner decisions in Admin → Universities):**
+- set King's College London and the 18 schools without demand evidence or a medical course to noindex;
+- Buckingham has register evidence of demand (D13), so the gate lists it once this release is live.
 
 ## Open items carried forward
 

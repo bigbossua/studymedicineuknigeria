@@ -84,4 +84,13 @@ class SourceWatcherTest extends TestCase
 
         $this->assertSame(ReferenceFact::VERIFIED, $fact->fresh()->verification_status);
     }
+
+    public function test_a_reviewers_bracketed_remark_inside_the_quote_is_not_required_on_the_page(): void
+    {
+        $fact = $this->fact('A106 (2027 entry; institution code M20)', 'Apply through UCAS ⏎ UCAS course code: A106 / Institution code M20 [our earlier A100 came from a secondary source]');
+        $page = '<p>Apply through UCAS</p><p>UCAS course code: A106 / Institution code M20</p>';
+        $this->watch($page, $page.'<p>Open day 14 November</p>');
+
+        $this->assertSame(ReferenceFact::VERIFIED, $fact->fresh()->verification_status);
+    }
 }

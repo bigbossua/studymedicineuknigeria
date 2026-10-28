@@ -166,6 +166,9 @@ class CheckSources extends Command
         $quote = mb_substr($notes, $at + 8);
         $quote = mb_substr($quote, 0, ($end = mb_strpos($quote, '"]')) !== false ? $end : (mb_strpos($quote, ']') !== false ? mb_strpos($quote, ']') : null));
 
+        // a reviewer's [bracketed remark] inside the quote is not page text
+        $quote = preg_replace('/\[[^\]]*(?:\]|$)/su', ' ', $quote) ?? $quote;
+
         return array_values(array_filter(array_map(fn ($p) => trim(mb_strtolower(preg_replace('/\s+/u', ' ', str_replace("\u{00A0}", ' ', $p)) ?? '')),
             preg_split('/\s*(?:⏎|\.\.\.|…)\s*/u', html_entity_decode($quote, ENT_QUOTES | ENT_HTML5, 'UTF-8')) ?: []), fn ($p) => mb_strlen($p) >= 12));
     }

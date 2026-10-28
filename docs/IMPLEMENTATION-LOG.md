@@ -841,6 +841,36 @@ These are the only two gated pages. A gated page goes noindex and leaves the sit
 
 **Not done automatically.** Facts already flagged stay off the site until their official pages are re-read. The excerpt runner and a review go into a new `data/verification/decisions-*.csv`, which the next approved deploy applies. Some flags may be real: the UCAT site moves to the next cycle after the testing window closes on 24 September, and graduate-visa rules change for applications from 1 January 2027.
 
+## Stage 67: re-verification of the facts the source watcher flagged (2026-10-28)
+
+**Scope.** 41 flagged facts:
+- 30 on the five school pages with Nigerian demand evidence (Aberdeen, Brighton and Sussex, Buckingham, Edinburgh, Manchester);
+- 11 behind the two gated topic pages (UCAS 2027, UK Foundation Programme, living costs, funding).
+
+**Evidence.** Every page was read on 2026-10-28 by the excerpt runner (runs 40656600922 and 40660614013, the latter cited in every decision), and all 20 official pages answered 200. Each quote in `ops/verification/reviews/2026-10-28-recheck.json` passes `check-quotes.py` against run 40660614013.
+
+**Results:**
+- **Unchanged (28 facts).** The recorded official wording is still published word for word. The flags were the stage 66 false positive.
+- **Same claim, new layout (10 facts).** Re-verified with today's quote:
+  - Manchester UCAS code, international fee;
+  - Buckingham international fee and acceptance (January 2028 fee table);
+  - UCAS 13 JAN, 25 FEB Extra, 02 JUL Clearing;
+  - Leeds living costs, Birmingham funding exclusion;
+  - Aberdeen and Edinburgh application route (UCAS code A100).
+- **Corrected (1 fact).** Buckingham's selection is now two stages (academic screening, then MMI); the record said three.
+- **Not restored, manual review (2 facts):**
+  - Buckingham application route: the course page now shows an "Apply direct" section beside UCAS code 71A8, which is ambiguous.
+  - UCAS "submission opens 1 September 2026": no longer on the UCAS page, and the date has passed.
+
+So `data/verification/decisions-2026-10-28.csv` holds 39 decisions; the next approved deploy applies them.
+
+**Expected effect:**
+- All five core facts verified again for Aberdeen, Brighton and Sussex, Edinburgh and Manchester; Buckingham stays at 4/5 (route).
+- `/working-in-the-uk` passes its gate again.
+- `/fees/cost-of-studying-medicine-in-the-uk` stays noindex until the UCAS submission-opens fact is resolved.
+
+**Watcher.** A reviewer's `[bracketed remark]` saved inside a quote is not page text, and the watcher now ignores it (regression test).
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

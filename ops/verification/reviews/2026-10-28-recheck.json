@@ -1,0 +1,237 @@
+{
+ "university:brighton-sussex:international_accepted": {
+  "decision": "verified",
+  "quote": "BSMS has 10 places per year for international students from outside the European Union. Applicants should possess academic qualifications equivalent to those required from UK and EU applicants. We will be able to interview overseas applicants by video link.",
+  "page": "https://www.brighton.ac.uk/courses/study/medicine-bm-bs.aspx, read 2026-10-28 via page-excerpts run 40660614013, sha256 ca053b5c9e7c19c8",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "course:brighton-sussex/a100:application_route": {
+  "decision": "verified",
+  "quote": "UCAS code A100 ... APPLY NOW WITH UCAS FOR 2026 ... All applicants will be invited (via email) to upload any evidence of the above criteria after we receive your UCAS application.",
+  "page": "https://www.brighton.ac.uk/courses/study/medicine-bm-bs.aspx, read 2026-10-28 via page-excerpts run 40660614013, sha256 ca053b5c9e7c19c8",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:buckingham:international_accepted": {
+  "decision": "verified",
+  "quote": "Jan 2028 ... Full-time (4.5 Years) ... UK £41,500 £186,750 ... INT £47,000 £211,500",
+  "page": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree/, read 2026-10-28 via page-excerpts run 40660614013, sha256 e64b424a0e2ac98c",
+  "note": "Fee table for the January 2028 start lists an international (INT) fee."
+ },
+ "university:manchester:international_accepted": {
+  "decision": "verified",
+  "quote": "International students: ... For students starting in September 2026 on the Pre-Clinical part of the programme (Years 1-2), the fee for 2026/27 will be £39,900 per year. ... International students are currently considered in the same way as UK nationals in the allocation of Foundation Training posts.",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-28 via page-excerpts run 40660614013, sha256 c8838fa9ef1c40dd",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "course:manchester/a100:ucas_code": {
+  "decision": "verified",
+  "quote": "Apply through UCAS ... UCAS course code ... A106 ... UCAS institution code ... M20",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-28 via page-excerpts run 40660614013, sha256 c8838fa9ef1c40dd",
+  "note": "Same codes; the page now shows labels and values on separate lines."
+ },
+ "course:manchester/a100:application_route": {
+  "decision": "verified",
+  "quote": "Apply through UCAS ... UCAS course code ... UCAS institution code ... How to apply ... Apply through UCAS .",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-28 via page-excerpts run 40660614013, sha256 c8838fa9ef1c40dd",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "course:manchester/a100:clinical_years_fee_differs:2026/27": {
+  "decision": "verified",
+  "quote": "Pre-Clinical part of the programme (Years 1-2), the fee for 2026/27 will be £39,900 per year. ... Fees for the Clinical part of the programme (Years 3-5) are set at the rate applicable when entering Year 3",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-28 via page-excerpts run 40660614013, sha256 c8838fa9ef1c40dd",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:manchester:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "Due to differences in the Nigerian and UK education systems, applicants who have completed the WASSCE will need to successfully complete a University-recognised foundation programme before joining an undergraduate course. ... we can usually accept a high score in English in WAEC exams (if taken within the last seven years). The minimum grade requirement is B3 or B2 depending on the requirement of the course.",
+  "page": "https://www.manchester.ac.uk/study/international/country-specific-information/nigeria/entry-requirements/, read 2026-10-28 via page-excerpts run 40660614013, sha256 be0e88814ea02aeb",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:manchester:a_level_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "Year of entry: 2027 ... UCAS course code: A106 / Institution code: M20 ... KEY FEATURES: ... Accredited course ... Typical A-level offer: AAA (including specific subjects) ... Typical contextual A-level offer: AAB including specific subjects",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-28 via page-excerpts run 40660614013, sha256 c8838fa9ef1c40dd",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:manchester:gem_international:2027 entry": {
+  "decision": "verified",
+  "quote": "Country-specific entry requirements ... We welcome applications from overseas students. Country-specific information can be found on the University website .However, this is for general information only, as specific entry requirements may be different for the Graduate Entry Medicine course. Please contact us at ug.medicine@manchester.ac.uk to check specific requirements for",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/21177/mbchb-medicine-graduate-entry/, read 2026-10-28 via page-excerpts run 40660614013, sha256 f49bdbfe238b586a",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:manchester:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "Applicants from outside the UK (including non-native speakers) need to meet specific English language requirements to study at Manchester. We accept: ... IGCSE English first language at grade B; ... International English Language Testing Service (IELTS): A minimum average score of 7.0 and with not less than 6.5 in any one component taken at the same sitting; ... Pearson Test of English (PTE) Academic: An overall score of 65 with no less than 65 in each of the communicative skills domains taken at the same sitting; ... Cambridge English: Advanced (CAE), or Cambridge English: Proficiency (CPE): An overall score of 185 with no less than 185 in each",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-28 via page-excerpts run 40660614013, sha256 c8838fa9ef1c40dd",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:manchester:international_places_open:2027 entry": {
+  "decision": "verified",
+  "quote": "International students: ... Tuition fees for international students on the Pre-Clinical part of the programme (Years 1-2) will be £39,900 for the 2026/2027 academic year.",
+  "page": "https://www.manchester.ac.uk/study/undergraduate/courses/2027/01428/mbchb-medicine/, read 2026-10-28 via page-excerpts run 40660614013, sha256 c8838fa9ef1c40dd",
+  "note": "International fee still published for the 2027-entry course page."
+ },
+ "university:edinburgh:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "Students from Nigeria are admitted to the University of Edinburgh with a range of qualifications: GCE A Levels, the IB, Standardised Tests (SAT, ACT or AP) and other recognised regional systems. ... Applicants with either the West African Examinations Council (WAEC) or the Nigerian Examinations Council (NECO) Senior School Certificate will usually be required to complete a foundation year. ... The University of Edinburgh does not currently accept the above national qualification for direct entry to undergraduate study.",
+  "page": "https://www.ed.ac.uk/studying/international/country/africa/nigeria, read 2026-10-28 via page-excerpts run 40660614013, sha256 c0ce950b995837b4",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:edinburgh:international_places_open:2027 entry": {
+  "decision": "verified",
+  "quote": "As there are limited places for international students on our MBChB programme, you are required to pay a fee deposit equal to one-third of the first year's fees if: you are an international student who receives an offer ... you make us your Firm choice ... For 2026 entry, the deposit was £18,217.",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme, read 2026-10-28 via page-excerpts run 40660614013, sha256 6682572285041bba",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:aberdeen:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "Nigeria ... Unfortunately the WAEC Senior School Certificate cannot be considered for Medicine. ... Suitable alternative qualifications would be: ... GCE A-Level ... Scottish Higher ... International Baccalaureate ... If you have sat A-levels or IB then please refer to this page for information on entry requirements.",
+  "page": "https://www.abdn.ac.uk/smmsn/undergraduate/medicine/entrance-requirements/academic-requirements/international-requirements/, read 2026-10-28 via page-excerpts run 40660614013, sha256 3180134d118053f2",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:aberdeen:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "IELTS Academic or IELTS UKVI Academic ... Requirement for Medicine (MBChB): ... Listening - 5.5 or above ... Reading - 5.5 or above ... Speaking - 7.0 or above ... Writing - 6.0 or above ... Overall - 7.0 ... Please note certification must be within the two years prior to commencement of your course, unless otherwise stated.",
+  "page": "https://www.abdn.ac.uk/study/international/english/undergraduate-english-requirements/, read 2026-10-28 via page-excerpts run 40660614013, sha256 98497a2378861d3a",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:buckingham:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "We are currently not able to accept applications for Foundation & 1+2 Integrated Foundation Programmes from Nigeria. ... In order to study at undergraduate level (Bachelor’s degree), you will normally need to have attained one of the following: ... Grade C4 or better in five subjects in WAEC/NECO Senior School Certificate, acquired in one sitting, and completion of a recognised Foundation programme or Higher National Diploma ... Three A-levels at grade B or higher ... IB score of between 29 and 34 (depending on the degree subject)",
+  "page": "https://www.buckingham.ac.uk/international/coming-from/nigeria/, read 2026-10-28 via page-excerpts run 40660614013, sha256 dc4e698a31bc3ae3",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:buckingham:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "Applicants whose native language is not English must hold an IELTS UKVI or *IELTS Academic certificate with a minimum overall score of 7 and no less than 6.5 in each component. *Please note that IELTS Academic is unsuitable for MB ChB applicants who may be offered an alternative course following Selection (CertHE Medical Sciences (Pre-Med), so we strongly ... recommend all MB ChB applicants to take the IELTS UKVI test. IELTS General Training is not sufficient for either MB ChB or Pre-Med programmes. Alternatively, Cambridge English: Advances (CAE) certificate is accepted with an overall average score",
+  "page": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree/, read 2026-10-28 via page-excerpts run 40660614013, sha256 e64b424a0e2ac98c",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "university:buckingham:international_places_open:2027 entry": {
+  "decision": "verified",
+  "quote": "International fees ... From £47,000 per year* ... Jan 2028 ... INT £47,000 £211,500",
+  "page": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree/, read 2026-10-28 via page-excerpts run 40660614013, sha256 e64b424a0e2ac98c",
+  "note": "The MB ChB still lists the international fee for the January 2028 start."
+ },
+ "topic:ucas-2027:applications_open:2027": {
+  "decision": "verified",
+  "quote": "2027 entry application deadlines ... 12 MAY ... UCAS applications open for 2027 entry ... You can register and start your application in your UCAS Hub.",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-28 via page-excerpts run 40660614013, sha256 42ad35049e25e932",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:ucas-2027:deadline_medicine:2027": {
+  "decision": "verified",
+  "quote": "15 OCT (18:00 UK time) Equal consideration date for applications to the universities of Oxford and Cambridge, and for most courses in medicine, dentistry, and veterinary medicine/science",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-28 via page-excerpts run 40660614013, sha256 42ad35049e25e932",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:ucas-2027:deadline_main:2027": {
+  "decision": "verified",
+  "quote": "2027 ... 13 JAN ... (18:00 UK time) Equal consideration date for applications for most undergraduate courses",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-28 via page-excerpts run 40660614013, sha256 42ad35049e25e932",
+  "note": "Same date; the page now writes it as 13 JAN under 2027."
+ },
+ "topic:ucas-2027:extra_opens:2027": {
+  "decision": "verified",
+  "quote": "13 JAN ... 25 FEB ... Extra opens",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-28 via page-excerpts run 40660614013, sha256 42ad35049e25e932",
+  "note": "Same date in the 2027-entry list (25 FEB, after 13 JAN 2027)."
+ },
+ "topic:ucas-2027:clearing_opens:2027": {
+  "decision": "verified",
+  "quote": "02 JUL ... Clearing opens",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-28 via page-excerpts run 40660614013, sha256 42ad35049e25e932",
+  "note": "Same date in the 2027-entry list."
+ },
+ "topic:ucas-2027:final_date:2027": {
+  "decision": "verified",
+  "quote": "23 SEP ... (18:00 UK time) Final date for 2027 entry applications ... UCAS applications must be with us by 18:00 (UK time) today to meet the final deadline for 2027 entry courses.",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-28 via page-excerpts run 40660614013, sha256 42ad35049e25e932",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:ucas-2027:max_medicine_choices:2027": {
+  "decision": "verified",
+  "quote": "Applying for medicine, dentistry, veterinary medicine or veterinary science? ... For these subjects you can only apply to a maximum of four courses in any one of medicine, dentistry, veterinary medicine or veterinary science. ... you can only have five choices in total.",
+  "page": "https://www.ucas.com/applying/applying-to-university/filling-in-your-ucas-application, read 2026-10-28 via page-excerpts run 40660614013, sha256 3f1dab8d70c3ef65",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:ucas-2027:personal_statement_format:2027": {
+  "decision": "verified",
+  "quote": "the personal statement has changed recently from one longer piece of text to three separate questions. ... Each answer will have a minimum character count of 350 characters ... The 4,000 overall character limit (including spaces) remains the same",
+  "page": "https://www.ucas.com/applying/applying-to-university/writing-your-personal-statement/how-to-write-your-personal-statement-for-2026-entry-onwards, read 2026-10-28 via page-excerpts run 40660614013, sha256 c6ab9b135d728df6",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:ucas-2027:document_upload:2027": {
+  "decision": "verified",
+  "quote": "Uploading documents to your application ... UCAS is introducing a document upload service for applicants applying directly to Clearing for 2026 entry, or all students for 2027 entry. ... Designed to support inclusive admissions, it allows you to upload documents such as English Language certificates",
+  "page": "https://www.ucas.com/international/international-students/faqs-for-international-students, read 2026-10-28 via page-excerpts run 40660614013, sha256 530de5d7534cd467",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:ucas-2027:agent_statement:2027": {
+  "decision": "verified",
+  "quote": "Sometimes advisers are referred to as education agents or counsellors. ... They can sometimes help you with your UCAS application or visa application. ... It’s your choice whether you use an adviser or not – they can offer valuable support, but if you don’t use an adviser you’ll not be disadvantaged in any way. ... If the adviser is registered as a UCAS cen ... as a UCAS centre they'll have access to the best advice and can oversee your application through UCAS’ online system. ... Please note, some advisers may charge for their services if t",
+  "page": "https://www.ucas.com/international/international-students/support-for-international-students/tips-for-international-applications, read 2026-10-28 via page-excerpts run 40660614013, sha256 9ea704ed2130097d",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:gmc-registration:foundation_eligibility:2027": {
+  "decision": "verified",
+  "quote": "UK final year students will be nominated by their medical school to apply for the 2027 Foundation Programme if they are expected to qualify by 03 August 2027. ... Applicants are required to apply via the Eligibility application process ... The applicant is studying at or has qualified from a non-UK medical school; OR ... has qualified from a UK medical school on or prior to 03 August 2025 OR ... a UK medical school campus outside of the UK",
+  "page": "https://foundationprogramme.nhs.uk/programmes/2-year-foundation-programme/ukfp/application-process/nomination-and-eligibility/, read 2026-10-28 via page-excerpts run 40660614013, sha256 5466c551ebae3488",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:gmc-registration:f1_visa_route:2027": {
+  "decision": "verified",
+  "quote": "Graduate visa route ... Applicants considering applying for a Graduate visa will not require sponsorship ... The UKFPO do not arrange Skilled Worker visa sponsorship, this is arranged by the national sponsorship teams",
+  "page": "https://foundationprogramme.nhs.uk/resources/right-to-work-visas/, read 2026-10-28 via page-excerpts run 40660614013, sha256 13258636b32539ea",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:costs-2026:living_costs_note:2026/27": {
+  "decision": "verified",
+  "quote": "These figures are a guideline, not a quote. Always work out your own budget. ... If you are an international student and have met the financial requirements for your visa, still work out a personal budget separately. ... University accommodation, self-catered ... Accommodation type ... mean average £198 (£122 to £273) ... Groceries: food, toiletries and cleaning products ... mean average £36 (£32 to £40) ... Household bills: gas and electricity, water and internet, if not included in your rent ... mean average £17 (£15 to £18) ... Personal costs: transport, socialising, eating out, clothes and phone ... mean average £59 (£46 to £71) ... adjusted for inflation for 2026/",
+  "page": "https://www.leeds.ac.uk/international-fees-costs/doc/living-expenses, read 2026-10-28 via page-excerpts run 40660614013, sha256 8ca415e2dc684828",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "topic:costs-2026:funding_note:2026/27": {
+  "decision": "verified",
+  "quote": "The University of Birmingham is pleased to announce the scholarship awards of £5,000 for international students domiciled in Nigeria, Ghana, Kenya and South Africa who are applying for entry to an undergraduate programme at the University starting September 2026. ... students applying for MBChB Medicine and Surgery or BDS Dental Surgery are not eligible for this scholarship.",
+  "page": "https://www.birmingham.ac.uk/study/scholarships-funding/africa-high-fliers-undergraduate-scholarships, read 2026-10-28 via page-excerpts run 40660614013, sha256 f1ed0b180889b141",
+  "note": "The Medicine exclusion is unchanged; the page now shows the 2026 round as closed."
+ },
+ "university:aberdeen:international_accepted": {
+  "decision": "verified",
+  "quote": "International Applicants ... See our international entry requirements page ... EU / International students ... Tuition Fees for 2026/27 Academic Year ... £50,100",
+  "page": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/, read 2026-10-28 via page-excerpts run 40660614013, sha256 6e7f7bad948c9a54",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "course:aberdeen/medicine:application_route": {
+  "decision": "verified",
+  "quote": "UCAS Code ... A100 ... Applications will not be considered unless all areas of the UCAS form have been completed",
+  "page": "https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/, read 2026-10-28 via page-excerpts run 40660614013, sha256 6e7f7bad948c9a54; https://www.abdn.ac.uk/smmsn/undergraduate/medicine/entrance-requirements/academic-requirements/international-requirements/, read 2026-10-28 via page-excerpts run 40660614013, sha256 3180134d118053f2",
+  "note": "Course page still gives UCAS code A100; the School of Medicine international requirements page says applications will not be considered unless all areas of the UCAS form are completed."
+ },
+ "university:edinburgh:international_accepted": {
+  "decision": "verified",
+  "quote": "Applying as an international student ... As an international student, you apply for this degree programme through UCAS. ... As there are limited places for international students on our MBChB programme, you are required to pay a fee deposit equal to one-third of the first year's fees ... For 2026 entry, the deposit was £18,217.",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme, read 2026-10-28 via page-excerpts run 40660614013, sha256 6682572285041bba",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "course:edinburgh/medicine:application_route": {
+  "decision": "verified",
+  "quote": "UCAS Code ⏎ A100 ... 2027 entry UCAS deadline: 15 October 2026 (6:00pm GMT) ... This is the deadline for all UK, EU and international applicants. ... As an international student, you apply for this degree programme through UCAS.",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme, read 2026-10-28 via page-excerpts run 40660614013, sha256 6682572285041bba",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ },
+ "course:buckingham/medicine:interview_format": {
+  "decision": "verified",
+  "verified_value": "Two-stage selection: academic screening, then a Multiple Mini Interview (MMI)",
+  "quote": "Admissions and selection process ... The selection processes operate in two stages. The first stage is Academic Screening and the second stage is Multiple Mini Interview (MMI).",
+  "page": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree, read 2026-10-28 via page-excerpts run 40660614013, sha256 e64b424a0e2ac98c",
+  "note": "CORRECTED: the page now describes two stages; the earlier record said three (academic screening, digital MMA, MMI)."
+ },
+ "course:edinburgh/medicine:interview_format": {
+  "decision": "verified",
+  "quote": "We invite the top-scoring 800 applicants (approximately) to attend an assessment day (interview) either at Edinburgh Medical School or online.",
+  "page": "https://study.ed.ac.uk/programmes/undergraduate/354-mbchb-medicine-6-year-programme, read 2026-10-28 via page-excerpts run 40660614013, sha256 6682572285041bba",
+  "note": "Re-read after the source watcher flagged it on a page change; the recorded official wording is unchanged."
+ }
+}

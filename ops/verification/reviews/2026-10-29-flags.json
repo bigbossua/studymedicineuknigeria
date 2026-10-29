@@ -1,0 +1,15 @@
+{
+ "topic:ucas-2027:extra_opens:2027": {
+  "decision": "verified",
+  "quote": "2027 ⏎ 13 JAN ⏎ (18:00 UK time) Equal consideration date for applications for most undergraduate courses ⏎ 25 FEB ⏎ Extra opens ⏎ If you've used all five choices and are not holding any offers, you may be able to add another choice in your application.",
+  "page": "https://www.ucas.com/applying/applying-to-university/dates-and-deadlines-for-uni-applications, read 2026-10-29 via page-excerpts run 40942424622, sha256 42ad35049e25e932",
+  "note": "Re-read after the source watcher flagged it on 2026-10-29. Same date in the 2027-entry list; the page text has the same fingerprint as on 2026-10-28. The earlier quote held only short lines, which the watcher ignores, so it fell back to the value text that the page does not spell out; this quote includes a full sentence it can track."
+ },
+ "course:aberdeen/medicine:application_route": {
+  "decision": "verified",
+  "new_source_url": "https://www.abdn.ac.uk/smmsn/undergraduate/medicine/entrance-requirements/academic-requirements/international-requirements/",
+  "quote": "Advice for Completion of UCAS Form ⏎ Applications will not be considered unless all areas of the UCAS form have been completed including:",
+  "page": "https://www.abdn.ac.uk/smmsn/undergraduate/medicine/entrance-requirements/academic-requirements/international-requirements/, read 2026-10-29 via page-excerpts run 40942424622, sha256 3180134d118053f2; https://www.abdn.ac.uk/study/undergraduate/degree-programmes/796/A100/medicine-5-years/, sha256 6e7f7bad948c9a54",
+  "note": "Re-read after the source watcher flagged it on 2026-10-29. The course page still shows UCAS Code A100 and the international requirements page still requires a complete UCAS form. The source moves to the requirements page so that the watcher reads the page the quote comes from."
+ }
+}

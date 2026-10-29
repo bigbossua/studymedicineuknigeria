@@ -76,6 +76,7 @@ class DashboardController extends Controller
             'seo' => Seo::make('Admin')->noindex(),
             'counts' => [
                 'leads_new' => Lead::where('status', 'new')->count(),
+                'leads_overdue' => Lead::overdue()->count(),
                 'applications_active' => Application::whereNull('withdrawn_at')->whereNull('closed_at')->count(),
                 'docs_review' => Document::whereIn('status', [DocumentStatus::UPLOADED, DocumentStatus::UNDER_REVIEW])->count(),
                 'docs_complete_awaiting' => Application::where('stage', 'DOCUMENTS_COMPLETE')->count(),

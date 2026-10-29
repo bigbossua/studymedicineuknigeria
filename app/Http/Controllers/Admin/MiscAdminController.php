@@ -26,8 +26,12 @@ class MiscAdminController extends Controller
         if ($s = $request->string('status')->toString()) {
             $q->where('status', $s);
         }
+        $overdue = Lead::overdue();
+        if ($request->boolean('overdue')) {
+            $q->whereKey($overdue->modelKeys());
+        }
 
-        return view('admin.leads', ['seo' => Seo::make('Leads')->noindex(), 'leads' => $q->paginate(50)->withQueryString()]);
+        return view('admin.leads', ['seo' => Seo::make('Leads')->noindex(), 'leads' => $q->paginate(50)->withQueryString(), 'overdue' => $overdue->count()]);
     }
 
     public function leadStatus(Request $request, Lead $lead)

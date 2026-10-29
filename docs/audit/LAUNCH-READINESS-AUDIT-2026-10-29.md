@@ -105,3 +105,26 @@ Nothing was changed on the site, the server, DNS or the mail settings.
 5. Items 7, 11, 12 and 37: the indexing decisions, unpublishing schools without data, and re-verifying the four flagged facts.
 6. Items 17–18 and 20: one full test student journey in production, including email delivery.
 7. Item 33: refresh the SEO reports.
+
+## Addendum: status after the completion work (2026-10-29, evening)
+
+The audit above is kept as it was written. This table records what changed on `claude/new-session-p6gdm6`. Nothing below is live until the owner approves the next deploy. Details: `SITE-COMPLETION-REPORT.md`, `SITE-REMEDIATION-PLAN.md`, `OWNER-LEGAL-CHECKLIST.md` and `UNIVERSITY-VERIFICATION-REPORT-2026-10-29.md`.
+
+| Item | Was | Now (branch) | Remaining |
+|---|---|---|---|
+| 1 Trading identity | FAIL | FAIL. The admin checklist and Live Verification now report which values are missing | owner supplies the values (checklist §1) |
+| 2 Blank legal name | FAIL | FIXED (`config/site.php`, `?:` fallbacks; `LegalIdentityTest`) | deploy |
+| 3 ICO | FAIL | FAIL | owner |
+| 4 Legal review | FAIL | FAIL. Also found: no model cancellation form (CCR reg. 13(1)(b)) and no complaints procedure (Sch. 2 (o)); a draft procedure is ready | owner or adviser |
+| 5 Payment rehearsal | PARTIAL | PARTIAL. 48 payment tests and the T1–T3 stand-in journeys pass; real test mode is blocked (no `STRIPE_TEST_SECRET`) | owner |
+| 6 Leads | FAIL | FAIL. An overdue indicator was added (`LeadFollowUpTest`) | owner replies |
+| 7 Cambridge, QUB, KCL | FAIL | DECISION DOCUMENTED (university report): no demand evidence for any of the three; recommend unpublishing QUB and KCL, and holding Cambridge | owner, in Admin |
+| 11 Schools without core facts | FAIL | 30 facts re-verified: 18 schools at 5/5 after deploy (7 now) | about 121 flagged facts still to re-read |
+| 12 Watcher flags of 29 October | FAIL | FIXED. All four re-verified, and bot-check pages no longer raise flags (`CheckSources::isChallenge`) | deploy |
+| 24 Googlebot access | UNKNOWN | Probe no longer fails on the CDN's fake-Googlebot block (self-test in CI); real access still unproven | owner: URL Inspection live test |
+| 25 Search Console | NOT IMPLEMENTED | unchanged | owner (data feed steps) |
+| 33 SEO reports | FAIL | FIXED (`PAGE-AUDIT.md`: 36 URLs, 0 flagged) | — |
+| 37 Cost page | FAIL | FIXED (UCAS Extra opens re-verified) | deploy |
+| new | — | CI dependency audit failing since the `symfony/mime` advisory of 28 October: FIXED (7.4.22) | deploy |
+
+**Verdict after this work: NOT READY to take payments.** Items 1, 3 and 4 and the cancellation form are owner-only. The information site is technically sound.

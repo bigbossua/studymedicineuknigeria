@@ -65,6 +65,14 @@ class CheckSources extends Command
 
                 continue;
             }
+            if (self::isChallenge($res->body(), $text)) {
+                // A bot check answered instead of the page (often with 200): nothing about the page is known, so no
+                // fact is judged against it. On 2026-10-29 Buckingham served "Bot Verification" and two facts were flagged.
+                $this->snapshot($url, $prev?->content_hash, $status, 'bot challenge instead of the page');
+                $errors++;
+
+                continue;
+            }
             $hash = hash('sha256', $text);
             if (! $prev || ! $prev->content_hash) {
                 $this->snapshot($url, $hash, $status, null);
@@ -102,6 +110,17 @@ class CheckSources extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    /** A bot or browser check (Cloudflare, captcha, "Bot Verification") served in place of the official page. */
+    public static function isChallenge(string $html, string $text): bool
+    {
+        $title = preg_match('#<title[^>]*>(.*?)</title>#is', $html, $m) ? mb_strtolower(trim(html_entity_decode(strip_tags($m[1])))) : '';
+        if (preg_match('/just a moment|bot verification|human verification|checking your browser|attention required|verify you are (a )?human|security check|access denied|are you a robot/u', $title)) {
+            return true;
+        }
+
+        return mb_strlen($text) < 1500 && preg_match('/cf-chl|challenge-platform|_cf_chl_opt|cf-turnstile|h-captcha|hcaptcha|g-recaptcha|captcha-delivery|px-captcha|bot verification|human verification/i', $html) === 1;
     }
 
     /** Visible text only, entities decoded, whitespace collapsed, lower case. */

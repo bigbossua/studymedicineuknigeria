@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Console\Commands\CheckSources;
 use App\Models\ReferenceFact;
 use App\Models\Topic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -92,5 +93,43 @@ class SourceWatcherTest extends TestCase
         $this->watch($page, $page.'<p>Open day 14 November</p>');
 
         $this->assertSame(ReferenceFact::VERIFIED, $fact->fresh()->verification_status);
+    }
+
+    public function test_a_bot_check_served_instead_of_the_page_flags_nothing(): void
+    {
+        // Regression for 2026-10-29: Buckingham answered 200 with a "Bot Verification" page and two verified facts were
+        // flagged against that text. A challenge page is now an unreachable source, not a change of content.
+        $fact = $this->fact('Leeds gives a mean of £198 a week.', 'These figures are a guideline, not a quote. ⏎ mean average £198 (£122 to £273)');
+        $page = '<p>These figures are a guideline, not a quote.</p><td>mean average £198 (£122 to £273)</td>';
+        $this->watch($page, '<html><head><title>Bot Verification</title></head><body><p>Verifying that you are not a robot...</p></body></html>');
+
+        $this->assertSame(ReferenceFact::VERIFIED, $fact->fresh()->verification_status);
+        $this->assertSame(hash('sha256', CheckSources::normalise($page)), \DB::table('source_snapshots')->value('content_hash'), 'the last real fingerprint is kept');
+    }
+
+    public function test_cloudflare_and_captcha_challenges_are_recognised_but_a_real_page_is_not(): void
+    {
+        $c = CheckSources::class;
+        $this->assertTrue($c::isChallenge('<title>Just a moment...</title><div id="challenge-platform"></div>', 'just a moment...'));
+        $this->assertTrue($c::isChallenge('<title>Human Verification</title>', 'human verification'));
+        $this->assertTrue($c::isChallenge('<html><body><div class="h-captcha"></div></body></html>', 'please complete the check'));
+        $long = str_repeat('Applications will not be considered unless all areas of the UCAS form have been completed. ', 30);
+        $this->assertFalse($c::isChallenge('<title>Medicine (MBChB) | University</title><main>'.$long.'</main>', mb_strtolower($long)));
+        $this->assertFalse($c::isChallenge('<title>Medicine</title><main>'.$long.'<div class="g-recaptcha"></div></main>', mb_strtolower($long)), 'a real page with a form captcha is still a page');
+    }
+
+    public function test_a_real_change_after_a_challenge_is_still_caught(): void
+    {
+        $fact = $this->fact('Leeds gives a mean of £198 a week.', 'These figures are a guideline, not a quote. ⏎ mean average £198 (£122 to £273)');
+        Notification::fake();
+        Http::fake([self::URL => Http::sequence()
+            ->push('<p>These figures are a guideline, not a quote.</p><td>mean average £198 (£122 to £273)</td>')
+            ->push('<title>Just a moment...</title><div id="challenge-platform"></div>')
+            ->push('<p>These figures are a guideline, not a quote.</p><td>mean average £215 (£130 to £290)</td>')]);
+        foreach (range(1, 3) as $i) {
+            $this->artisan('smukn:sources-check')->assertSuccessful();
+        }
+
+        $this->assertSame(ReferenceFact::SOURCE_CHANGED, $fact->fresh()->verification_status);
     }
 }

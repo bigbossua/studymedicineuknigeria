@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\DecisionRegister;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -66,22 +67,36 @@ class University extends Model
     public const CORE_FACTS = ['international_accepted', 'waec_neco_statement', 'english_requirement', 'international_fee_gbp', 'application_route'];
 
     /**
-     * Indexable = published by staff (or the publication list) AND every §8.1 core fact currently VERIFIED, or recorded as
-     * NOT_PUBLISHED by the university. A core fact taken off the site (source changed, review due, never verified) puts the
-     * page back to noindex and out of the sitemap until it is re-verified, as the topic pages' PublishGate does. The page
-     * itself stays online and nothing is deleted.
+     * Indexable = published by staff (or the publication list) AND approved by a live row of the decision register
+     * (§8.3: Nigerian demand evidence and the publication decision) AND every §8.1 core fact currently VERIFIED, or
+     * recorded as NOT_PUBLISHED by the university. A core fact taken off the site (source changed, review due, never
+     * verified) puts the page back to noindex and out of the sitemap until it is re-verified, as the topic pages'
+     * PublishGate does; verified facts alone never index a page the register has not approved. The page itself stays
+     * online and nothing is deleted.
      */
     public function isIndexable(): bool
     {
+        return $this->indexBlocker() === null;
+    }
+
+    /** Why the page is noindex (for Admin), or null when it is indexable. */
+    public function indexBlocker(): ?string
+    {
         if (! $this->published) {
-            return false;
+            return 'not published';
+        }
+        if (! DecisionRegister::isLive('/medical-schools/'.$this->slug)) {
+            $row = DecisionRegister::rowFor('/medical-schools/'.$this->slug);
+
+            return 'no live decision-register row'.($row ? " ({$row['id']} {$row['status']})" : '').': demand evidence and publication approval not recorded';
         }
         $statuses = ReferenceFact::where(fn ($q) => $q->where(fn ($a) => $a->where('subject_type', self::class)->where('subject_id', $this->id))
             ->orWhere(fn ($b) => $b->where('subject_type', Course::class)->whereIn('subject_id', $this->courses()->select('id'))))
             ->whereIn('key', self::CORE_FACTS)->whereIn('verification_status', [ReferenceFact::VERIFIED, ReferenceFact::NOT_PUBLISHED])
             ->distinct()->pluck('key');
+        $missing = array_diff(self::CORE_FACTS, $statuses->all());
 
-        return $statuses->count() === count(self::CORE_FACTS);
+        return $missing ? 'core facts not verified: '.implode(', ', $missing) : null;
     }
 
     public function primaryCourse(): ?Course

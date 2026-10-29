@@ -173,7 +173,10 @@ class PublicSeoTest extends TestCase
         foreach (University::CORE_FACTS as $key) {
             (in_array($key, ['international_fee_gbp', 'application_route'], true) ? $course : $u)->facts()->create(['key' => $key, 'value_text' => 'x', 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now(), 'source_type' => 'official']);
         }
-        $this->get('/medical-schools/testville')->assertOk()->assertSee('index, follow', false);
+        // Verified facts alone do not index a school: its decision-register row must be live (§8.3)
+        $this->get('/medical-schools/testville')->assertOk()->assertSee('noindex', false);
+        $u->update(['slug' => 'aberdeen']); // D07 PUBLISHED in data/seo/decision-register.csv
+        $this->get('/medical-schools/aberdeen')->assertOk()->assertSee('index, follow', false);
     }
 
     public function test_no_unverified_fact_wording_reaches_any_public_page_in_production(): void

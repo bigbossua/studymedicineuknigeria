@@ -44,7 +44,7 @@ class DashboardController extends Controller
 
         return [
             ['label' => 'Reference facts verified', 'done' => $pending === 0 && $verified > 0, 'detail' => "{$verified} verified · {$pending} awaiting verification", 'url' => route('admin.reference.sources')],
-            ['label' => 'University pages published', 'done' => $published > 0, 'detail' => "{$published} of {$universities} indexable; a page is published only once its facts are verified", 'url' => route('admin.reference.universities')],
+            ['label' => 'University pages published', 'done' => $published > 0, 'detail' => "{$published} of {$universities} published, ".University::where('published', true)->get()->filter->isIndexable()->count().' indexable (core facts verified and a live decision-register row)', 'url' => route('admin.reference.universities')],
             ['label' => 'Service prices set', 'done' => $priced > 0, 'detail' => $priced ? "{$priced} price(s) set" : "no prices yet across {$tiers} active tier(s); students can still apply", 'url' => route('admin.tiers')],
             ['label' => 'Card payments enabled', 'done' => app(StripeService::class)->enabled(), 'detail' => match (true) {
                 ! config('services.stripe.secret') => 'STRIPE_SECRET not set: card payment closed (post-launch step)'.(config('site.bank_transfer') ? '; bank transfer open' : '; bank transfer off, so students cannot pay yet'),

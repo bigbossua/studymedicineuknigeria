@@ -143,6 +143,6 @@ class ReferenceAdminController extends Controller
         $university->update($data);
         AdminAction::log('university.publish', $university, $data);
 
-        return back()->with('status', $university->name.' '.($university->published ? 'is now indexable' : 'set to noindex').'.');
+        return back()->with('status', $university->name.' '.($university->published ? 'is now published'.(($why = $university->indexBlocker()) === null ? ' and indexable.' : '; it stays noindex ('.$why.').') : 'is unpublished and noindex.'));
     }
 }

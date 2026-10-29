@@ -63,9 +63,12 @@ class HealthcareTaxonomyTest extends TestCase
 
     public function test_every_course_record_belongs_to_a_known_subject(): void
     {
-        $this->seed(ProfessionSeeder::class);
+        // Seed the courses too: without them the loop below never runs and the test proves nothing.
+        $this->seed([ProfessionSeeder::class, ReferenceDataSeeder::class, HealthcareCoursesSeeder::class]);
         $known = Profession::pluck('slug')->all();
-        foreach (Course::pluck('profession')->unique() as $profession) {
+        $professions = Course::pluck('profession')->unique();
+        $this->assertGreaterThan(1, $professions->count(), 'course records for more than one subject are seeded');
+        foreach ($professions as $profession) {
             $this->assertContains($profession, $known, "course profession '{$profession}' is not in the taxonomy");
         }
     }

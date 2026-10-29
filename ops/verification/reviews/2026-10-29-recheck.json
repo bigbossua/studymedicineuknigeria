@@ -1,0 +1,140 @@
+{
+ "university:aston:international_accepted": {
+  "decision": "verified",
+  "quote": "We have 110 places for Home UK students and 30 places for international students.",
+  "page": "https://www.aston.ac.uk/study/courses/medicine-mbchb, read 2026-10-29 via page-excerpts run 40946710632, sha256 db21321f38996139",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:aston:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "For entry onto the MBChB a minimum grade of C4 in English Language in the West African Secondary School Certificate in Education is required. ⏎ ... Undergraduate ⏎ Students who have the West African Senior Secondary Certificate of Education (WASSCE) will be required to complete a recognised foundation programme.",
+  "page": "https://www.aston.ac.uk/international/aston-in-your-country/africa/nigeria, read 2026-10-29 via page-excerpts run 40946710632, sha256 3b9d418021d95e7c",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:aston:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "For entry onto an undergraduate or postgraduate taught degree a grade of C6 or higher is generally accepted from English Language in the West African Secondary School Certificate in Education. ⏎ For entry onto the MBChB a minimum grade of C4 in English Language in the West African Secondary School Certificate in Education is required.",
+  "page": "https://www.aston.ac.uk/international/aston-in-your-country/africa/nigeria, read 2026-10-29 via page-excerpts run 40946710632, sha256 3b9d418021d95e7c",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "course:aston/a100:application_route": {
+  "decision": "verified",
+  "quote": "UCAS code(s) ⏎ A100 ⏎ Start date ⏎ September 2027 … Deferred entry and gap years are permitted when applying via UCAS.",
+  "page": "https://www.aston.ac.uk/study/courses/medicine-mbchb, read 2026-10-29 via page-excerpts run 40946710632, sha256 db21321f38996139",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:brunel:international_accepted": {
+  "decision": "verified",
+  "quote": "International fee status: Please apply either through UCAS or directly to Brunel by 30 June 2027. … If you're an international fee-paying student, you can also apply directly to Brunel.",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-29 via page-excerpts run 40946710632, sha256 a17b0fda776fb007",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:brunel:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "We would also consider the following qualifications as proof of English language abilities: ⏎ SSSCE/WASSCE C6 or above ⏎ WAEC and NECO: C6 or above ⏎ View our course pages for specific entry requirements",
+  "page": "https://www.brunel.ac.uk/international/your-country-and-region/Nigeria, read 2026-10-29 via page-excerpts run 40946710632, sha256 216af2787e6ca55c",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:brunel:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "Entry requirements ⏎ 2027/8 ⏎ AAA (A-level) ... English language requirements ⏎ IELTS :7.0 overall (min 7.0 in all areas) ⏎ Pearson : 64 overall",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-29 via page-excerpts run 40946710632, sha256 a17b0fda776fb007",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "course:brunel/a100:application_route": {
+  "decision": "verified",
+  "quote": "International fee status: Please apply either through UCAS or directly to Brunel by 30 June 2027. Please note, the direct application deadline may close earlier, subject to course vacancies, so we recommend you apply early.",
+  "page": "https://www.brunel.ac.uk/study/courses/medicine-mbbs, read 2026-10-29 via page-excerpts run 40946710632, sha256 a17b0fda776fb007",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:keele:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "Nigeria ⏎ The Senior School Certificate Examination (SSC) and West African Senior School Certificate (WASSC) are not sufficient to enter Medicine at Keele directly, but may be supplemented with GCE A levels or equivalent. ⏎ The WASSC is acceptable at grades 1-3 in lieu of GCSE on a subject for subject basi",
+  "page": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements/internationalentryrequirements/, read 2026-10-29 via page-excerpts run 40946710632, sha256 7b18588bbb09dc3f",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:keele:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "Students whose first language is not English and those not taught in English will be expected to achieve IELTS 7.0 with a minimum of 7.0 in each sub-test. Please see our website for English Language Requirements.",
+  "page": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/medicineentryrequirements/internationalentryrequirements/, read 2026-10-29 via page-excerpts run 40946710632, sha256 7b18588bbb09dc3f",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "course:keele/a100:application_route": {
+  "decision": "verified",
+  "quote": "Year of entry ⏎ 2027 ⏎ - for 2027 entry see here ⏎ - for 2026 entry see here ⏎ UCAS code ⏎ A100",
+  "page": "https://www.keele.ac.uk/study/undergraduate/undergraduatecourses/medicine/, read 2026-10-29 via page-excerpts run 40946710632, sha256 7aae10a1e3b4b43e",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:kent-medway:international_accepted": {
+  "decision": "verified",
+  "quote": "Group E: International applicants with overseas fee status ⏎ KMMS will consider applicants with international secondary school qualifications according to their UK equivalencies (to GCSE and/or A level, if possible) as per the University of Kent policies.",
+  "page": "https://kmms.ac.uk/entry-requirements-2027/, read 2026-10-29 via page-excerpts run 40946710632, sha256 8d65e6bdcbd0149d",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:kent-medway:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "Group E: International applicants with overseas fee status ⏎ KMMS will consider applicants with international secondary school qualifications according to their UK equivalencies (to GCSE and/or A level, if possible) as per the University of Kent policies.",
+  "page": "https://kmms.ac.uk/entry-requirements-2027/, read 2026-10-29 via page-excerpts run 40946710632, sha256 8d65e6bdcbd0149d",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:kent-medway:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "The English language test results acceptable to KMMS are: ⏎ English Language Qualification KMMS Required Scores ⏎ IELTS Academic 7.0 overall and a minimum of 7.0 in each component (Reading, Writing, Speaking and Listening) ⏎ Cambridge English (including CAE and CPE) 191 overall with a minimum of 184 in Writing, Reading, Speaking and Listening ⏎ TOEFL iBT 104 overall including at least 26 in all components ... PTE Academic (Pearson) 70 overall with 70 in each component",
+  "page": "https://kmms.ac.uk/entry-requirements-2027/, read 2026-10-29 via page-excerpts run 40946710632, sha256 8d65e6bdcbd0149d",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "course:kent-medway/a100:application_route": {
+  "decision": "verified",
+  "quote": "KMMS only accepts applications through UCAS.",
+  "page": "https://kmms.ac.uk/entry-requirements-2027/, read 2026-10-29 via page-excerpts run 40946710632, sha256 8d65e6bdcbd0149d",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:lancaster:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "English language requirements ⏎ If English is not your first language, we require an IELTS score of 7.0 overall with at least 7.0 in each component for this programme.",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2026/, read 2026-10-29 via page-excerpts run 40946710632, sha256 d61229e858399a02",
+  "note": "Re-read after the source watcher flagged it. The sentence now begins \"If English is not your first language\"; the requirement (IELTS 7.0 overall, at least 7.0 in each component) is unchanged."
+ },
+ "course:lancaster/medicine:application_route": {
+  "decision": "verified",
+  "quote": "Medicine and Surgery ⏎ MBChB ⏎ UCAS code ⏎ A100 ⏎ Entry year ⏎ 2027 ⏎ A level requirements ⏎ AAA ⏎ Duration ⏎ Full time 5 years",
+  "page": "https://www.lancaster.ac.uk/study/undergraduate/courses/medicine-and-surgery-mbchb-a100/2027/, read 2026-10-29 via page-excerpts run 40946710632, sha256 d61229e858399a02",
+  "note": "Re-read after the source watcher flagged it. The page now shows entry year 2027 only (previously \"2027 or 2026\"); the UCAS route and code A100 are unchanged."
+ },
+ "university:surrey:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "Course options ⏎ BMBS ⏎ BMBS ⏎ Typical offer ⏎ 2:1 UK honours degree (or equivalent) ⏎ Start date ⏎ September 2027",
+  "page": "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry, read 2026-10-29 via page-excerpts run 40946710632, sha256 1014f8189a50c7f7",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:surrey:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "IELTS Academic: A score of at least 7.0 overall and at least 7.0 in all components.",
+  "page": "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry, read 2026-10-29 via page-excerpts run 40946710632, sha256 1014f8189a50c7f7",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "course:surrey/medicine:application_route": {
+  "decision": "verified",
+  "quote": "Apply for your chosen course online through UCAS, with the following course and institution codes. ⏎ Institution code S85 ⏎ Course UCAS code ⏎ BMBS A101",
+  "page": "https://www.surrey.ac.uk/undergraduate/medicine-graduate-entry, read 2026-10-29 via page-excerpts run 40946710632, sha256 1014f8189a50c7f7",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:swansea:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "AND achieved or predicted* to achieve a minimum of one of the following: ⏎ 2:1 (hons) undergraduate degree in any subject, or ⏎ Merit in an integrated master’s degree in any subject, or ⏎ 2:2 (hons) undergraduate degree AND a Pass in a postgraduate higher degree (Masters or PhD) in any subject",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch, read 2026-10-29 via page-excerpts run 40946710632, sha256 7403da29b271aa55",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:swansea:english_requirement:2027 entry": {
+  "decision": "verified",
+  "quote": "For applicants from majority non-English speaking countries, IELTS 7.0 with no less than 7.0 in speaking and 6.5 in listening, reading and writing is accepted as equivalent. ⏎ Details of approved tests of English proficiency can be found here. For this programme, the following are not acceptable as evidence of English proficiency if you are from a majority non-Eng ... speaking country: ⏎ Overseas secondary education in an English-medium school or education system ⏎ Previous degree at a British or English-medium overseas university ⏎ Working in a professional capacity in an English language environment",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-29 via page-excerpts run 40946710632, sha256 7403da29b271aa55",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "course:swansea/graduate-entry:application_route": {
+  "decision": "verified",
+  "quote": "How to Apply ⏎ All applications must be submitted via UCAS before 6pm (British Summer Time) on the stated closing date. This deadline applies to UK, EU and International applicants. There is no facility to accept late or direct applications.",
+  "page": "https://www.swansea.ac.uk/undergraduate/courses/medicine/medicine-graduate-entry-mbbch/, read 2026-10-29 via page-excerpts run 40946710632, sha256 7403da29b271aa55",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ }
+}

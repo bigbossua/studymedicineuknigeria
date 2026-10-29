@@ -17,10 +17,11 @@
 | 1, 3: identity not visible to the admin | Launch checklist item "Trading identity published". Live Verification reports `legal_name_set`, `address_set`, `ico_number_set`, `legal_reviewed_set` and `analytics_decision` without printing values | `app/Http/Controllers/Admin/DashboardController.php`, `.github/workflows/live-verify.yml` | `LegalIdentityTest`, `VerificationAdminTest` |
 | 6, 40: leads waiting unseen | Overdue marker: a lead still `new` after 2 working days. Shown as a dashboard tile, a banner and `?overdue=1` filter in Admin → Leads, and a per-row "Overdue: N working days" | `app/Models/Lead.php`, `Admin/MiscAdminController.php`, `admin/leads.blade.php`, `admin/dashboard.blade.php` | `tests/Feature/LeadFollowUpTest.php` (5 tests) |
 | 12, 37: watcher false flags | A bot-verification page counts as unreachable, not as a page change | `app/Console/Commands/CheckSources.php` | 3 new tests in `SourceWatcherTest` |
-| 12, 37, 11: flagged facts | 30 facts re-verified from official pages; Imperial's route corrected. 18 schools reach 5/5 core facts (7 today), and the cost page returns | `ops/verification/reviews/2026-10-29-*.json`, `data/verification/decisions-2026-10-29-*.csv` | `check-quotes.py`: 0 problems; import dry run: 0 unknown. `docs/audit/UNIVERSITY-VERIFICATION-REPORT-2026-10-29.md` |
+| 12, 37, 11: flagged facts | 30 facts re-verified from official pages; Imperial's route corrected. 18 schools reach 5/5 core facts (7 today), and the cost page returns. Indexing still needs a live register row | `ops/verification/reviews/2026-10-29-*.json`, `data/verification/decisions-2026-10-29-*.csv` | `check-quotes.py`: 0 problems; import dry run: 0 unknown. `docs/audit/UNIVERSITY-VERIFICATION-REPORT-2026-10-29.md` |
 | 24: sitemap probe failing daily | The CDN's 403 to a fake Googlebot from GitHub's addresses is now a warning that points to URL Inspection. Content is judged as a browser receives it, and a real outage still fails | `ops/sitemap-probe.sh`, `.github/workflows/sitemap-probe.yml` | `ops/qa/sitemap-probe-selftest.sh` (3 cases, in CI) |
 | 33: stale SEO report | `docs/seo/PAGE-AUDIT.md` regenerated: 36 local sitemap URLs, 0 flagged | — | `python3 ops/seo/page-audit.py` |
 | (new) security advisory | `symfony/mime` 7.4.19 → 7.4.22 (CVE-2026-45070, email header injection). CI's dependency audit had failed on it since the advisory of 28 October | `composer.lock` | `composer audit`: none; CI green |
+| 7: indexing without demand evidence | Indexing needs a live decision-register row as well as verified facts and publication; Admin shows each school's index status and why | `app/Support/DecisionRegister.php`, `app/Models/University.php`, Admin universities view | `SchoolRegisterGateTest` (4 tests) |
 | (new) vacuous test | The course-to-subject test ran on an empty table and proved nothing | `tests/Feature/HealthcareTaxonomyTest.php` | 11 assertions, no risky test |
 
 ## B. Owner actions (in order)
@@ -31,12 +32,10 @@
    - adds the overdue-lead indicator;
    - applies the security update;
    - imports the 30 decisions;
-   - brings 12 URLs back into the sitemap (`UNIVERSITY-VERIFICATION-REPORT`).
-3. **Before or after that deploy, decide on the schools without Nigerian demand evidence:**
-   - indexed today: Cambridge, Queen's Belfast and King's College London;
-   - returning: Aston, Brunel, Chester, Imperial, Keele, Kent and Medway, Lancaster, Surrey and Swansea.
-
-   Keep them, or unpublish them in Admin → Universities.
+   - changes three school URLs in the sitemap: Cambridge, King's College London and Queen's Belfast leave; Aberdeen, Buckingham and the cost page join, so the total stays at 36 (`PRE-DEPLOYMENT-CHECKLIST.md`).
+3. **Before approving that deploy, confirm the index decision for the schools without Nigerian demand evidence.** Since commit ab0894f a school is indexed only when its register row is live, so verified facts alone never index it.
+   - **Cambridge, Queen's Belfast and King's College London** (indexed today) leave the index on deploy. To keep any of them, the owner gives a directive and its register row is moved to PUBLISHED with that reason before the deploy.
+   - **Aston, Brunel, Chester, Imperial, Keele, Kent and Medway, Lancaster, Surrey and Swansea** stay noindex. Recommended: wait for Search Console evidence.
 4. **Trading identity, ICO registration and legal review:** `docs/audit/OWNER-LEGAL-CHECKLIST.md` §1 and §6. Then set the production variables and run *Update server settings*.
 5. **Statutory model cancellation form** (CCR 2013 reg. 13(1)(b)) and **complaints procedure** (Schedule 2 (o)): checklist §2 and §3. The form text must be copied from legislation.gov.uk's image of Schedule 3 Part B. The complaints draft needs two time limits chosen.
 6. **Stripe:**

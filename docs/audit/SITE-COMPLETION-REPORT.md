@@ -55,14 +55,15 @@ Work on the plan in `docs/audit/LAUNCH-READINESS-AUDIT-2026-10-29.md`:
 | d29286b | SEO page audit regenerated (36 URLs, 0 flagged) | `docs/seo/PAGE-AUDIT.md` |
 | 41e2a80 | A vacuous test now checks real course records | `tests/Feature/HealthcareTaxonomyTest.php` |
 | efa5fbd | `symfony/mime` 7.4.22 (CVE-2026-45070) | `composer.lock` |
-| c5105a9, f12fac8, this commit | Owner legal checklist, university report, remediation plan, this report, audit addendum | `docs/audit/*` |
+| ab0894f | A school is indexed only with a live decision-register row as well as verified facts and publication; Admin → Universities shows the reason a page is noindex | `app/Support/DecisionRegister.php`; `app/Models/University.php`; `app/Http/Controllers/Admin/{ReferenceAdminController,DashboardController}.php`; `resources/views/admin/reference/universities.blade.php`; `tests/Feature/SchoolRegisterGateTest.php`; `tests/Feature/PublicSeoTest.php` |
+| c5105a9, f12fac8, 22e71d9 and later | Owner legal checklist, university report, remediation plan, this report, audit addendum, pre-deployment checklist | `docs/audit/*` |
 
 ## Tests and results (29 October)
 
 | Command | Result |
 |---|---|
 | `vendor/bin/pint --test` | passed |
-| `php -d memory_limit=1G vendor/bin/phpunit` | **274 passed**, 19,335 assertions, 0 risky |
+| `php -d memory_limit=1G vendor/bin/phpunit` | **278 passed**, 19,374 assertions, 0 risky (after the register gate) |
 | `php -d memory_limit=1G vendor/bin/phpunit --filter 'Stripe\|Payment\|Pricing\|Checkout\|Webhook'` | 48 passed: webhook signature, idempotency, livemode, amount and currency match, duplicates, price privacy |
 | `ops/qa/sitemap-probe-selftest.sh` | 3/3 (open, fake-Googlebot block, outage) |
 | `ops/production-rehearsal.sh 8090` (production mode, throwaway database) | all production checks passed (44 ok) |
@@ -72,7 +73,7 @@ Work on the plan in `docs/audit/LAUNCH-READINESS-AUDIT-2026-10-29.md`:
 | `node ops/qa/stripe-e2e.cjs` (stand-in, T1–T3) | T1 declined card shown, then paid £125; T2 £695; T3 £1,295; each read back: `livemode false`, `paid`. One earlier attempt timed out at the admin step (likely the reused two-step code from the previous run); the rerun passed |
 | `composer audit`, `npm audit --omit=dev` | no advisories |
 | `python3 ops/verification/check-quotes.py` (four review files) | 0 problems |
-| CI on `c5105a9` | green (all three jobs) |
+| CI | green on every push from `c5105a9` to `22e71d9`; see `PRE-DEPLOYMENT-CHECKLIST.md` for the final head |
 
 **Stripe.** Sandbox testing against real Stripe is BLOCKED: there is no `STRIPE_TEST_SECRET`. Everything that can be tested without it passes:
 - the mocked unit tests;
@@ -91,8 +92,8 @@ The server verifies the webhook signature and never trusts the return URL.
 - **A `sk_test_` key** for `STRIPE_TEST_SECRET`.
 - **Analytics choice:** `first_party` or `ga4`.
 - **Decisions on the 12 schools that have no Nigerian demand evidence:**
-  - Cambridge, Queen's Belfast and King's College London (indexed now);
-  - Aston, Brunel, Chester, Imperial, Keele, Kent and Medway, Lancaster, Surrey and Swansea (return on deploy).
+  - Cambridge, Queen's Belfast and King's College London: indexed now, and leave the sitemap on deploy unless the owner records a publication directive in their register rows;
+  - Aston, Brunel, Chester, Imperial, Keele, Kent and Medway, Lancaster, Surrey and Swansea: facts verified, but they stay noindex until the register records demand evidence or an owner directive.
 
 ## Production changes awaiting approval
 
@@ -102,7 +103,9 @@ The server verifies the webhook signature and never trusts the return URL.
    - watcher fix;
    - security update;
    - 30 fact decisions imported;
-   - sitemap expected to go from 36 to 48 URLs (`UNIVERSITY-VERIFICATION-REPORT-2026-10-29.md`).
+   - the sitemap stays at 36 URLs, with different members:
+     - out: Cambridge, King's College London and Queen's Belfast (no live register row);
+     - in: Aberdeen, Buckingham and the cost page (see `PRE-DEPLOYMENT-CHECKLIST.md`).
 2. **Set the identity variables** on the production environment, then run *Update server settings*. Do this only after the owner supplies the values.
 3. **Admin actions (owner):** publish or unpublish decisions for the schools listed above, and reply to the three leads.
 

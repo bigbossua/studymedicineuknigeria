@@ -930,6 +930,27 @@ The owner reopened the agent and partnership work that doc 15 had archived. All 
 
 No production code, page or deployment changed.
 
+## Stage 70: site completion work and pre-deployment verification (2026-10-29)
+
+On `claude/new-session-p6gdm6`, not deployed. Reports in `docs/audit/`: `SITE-COMPLETION-REPORT.md`, `PRE-DEPLOYMENT-CHECKLIST.md`.
+
+**Code:**
+- Empty legal-identity settings count as unset, so no page prints a blank name.
+- Overdue-lead indicator in Admin.
+- The source watcher treats bot-check pages as unreachable.
+- The sitemap probe warns, instead of failing, on the CDN's 403 to a fake Googlebot.
+- `symfony/mime` 7.4.22 (CVE-2026-45070).
+- **A school is indexed only with a live decision-register row** (`App\Support\DecisionRegister`), as well as verified core facts and publication in Admin. Factual verification, demand evidence and publication approval are now separate decisions.
+
+**Facts:** 30 flagged facts re-verified from official pages (`ops/verification/reviews/2026-10-29-*.json`); Imperial's application route corrected.
+
+**Expected effect of the deploy:**
+- The sitemap stays at 36 URLs.
+- Cambridge, King's College London and Queen's Belfast leave (their register rows are RESEARCH).
+- Aberdeen, Buckingham and the cost page join.
+
+**Owner-only blockers:** trading identity, ICO registration, model cancellation form, complaints procedure, legal review, Stripe support email and test key, three leads waiting.
+
 ## Open items carried forward
 
 1. Hostinger access → server report → deployment (docs/architecture/21).

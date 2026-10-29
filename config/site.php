@@ -1,17 +1,21 @@
 <?php
 
+// An optional setting that is unset, empty or only spaces is null, so a template's fallback text shows instead of a
+// blank (production once had SITE_LEGAL_NAME= and printed '("we") is the data controller' with no name).
+$optional = fn (string $key): ?string => trim((string) env($key)) !== '' ? trim((string) env($key)) : null;
+
 return [
     'name' => 'Study Medicine UK Nigeria',
     'short_name' => 'SMUKN',
     'domain' => 'studymedicineuknigeria.com',
     'email' => 'info@studymedicineuknigeria.com',
     'whatsapp' => env('SITE_WHATSAPP') ?: '447842292527', // E.164 without plus (owner's number +44 7842 292527); an empty .env value keeps this default
-    'legal_name' => env('SITE_LEGAL_NAME'), // set when the registered company name is confirmed
-    'company_number' => env('SITE_COMPANY_NUMBER'),
-    'address' => env('SITE_ADDRESS'),
-    'ico_number' => env('SITE_ICO_NUMBER'),          // UK ICO registration (data protection fee) reference, once registered
-    'vat_number' => env('SITE_VAT_NUMBER'),          // only if VAT-registered
-    'hosting_region' => env('SITE_HOSTING_REGION'),  // data-centre location shown in hPanel, e.g. "the United Kingdom"
+    'legal_name' => $optional('SITE_LEGAL_NAME'), // set when the registered company name is confirmed
+    'company_number' => $optional('SITE_COMPANY_NUMBER'),
+    'address' => $optional('SITE_ADDRESS'),
+    'ico_number' => $optional('SITE_ICO_NUMBER'),          // UK ICO registration (data protection fee) reference, once registered
+    'vat_number' => $optional('SITE_VAT_NUMBER'),          // only if VAT-registered
+    'hosting_region' => $optional('SITE_HOSTING_REGION'),  // data-centre location shown in hPanel, e.g. "the United Kingdom"
     'tagline' => 'Evidence. Guidance. Application.',
     'default_description' => 'Independent, evidence-led guidance for Nigerian students applying to study Medicine in the United Kingdom: published entry requirements, verified fees, the UK medical school directory, UCAT and UCAS timelines, and an online application service.',
     'og_image' => '/images/brand/og-default.png',
@@ -22,7 +26,7 @@ return [
     'staging_basic_password' => env('STAGING_BASIC_PASSWORD'),
 
     // Set to any value (e.g. the review date) once a solicitor has reviewed the legal pages; clears the launch checklist item.
-    'legal_reviewed' => env('SITE_LEGAL_REVIEWED'),
+    'legal_reviewed' => $optional('SITE_LEGAL_REVIEWED'),
 
     // GA4 measurement ID (G-XXXXXXX). Blank = no third-party analytics at all. When set, the public site shows a
     // consent banner and loads gtag only after consent; the portal and admin never load it (funnel_events covers them).

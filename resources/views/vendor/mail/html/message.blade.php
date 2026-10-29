@@ -21,7 +21,7 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-© {{ date('Y') }} {{ config('site.legal_name') ?? config('site.name') }} · {{ config('site.email') }}<br>
+© {{ date('Y') }} {{ config('site.legal_name') ?: config('site.name') }} · {{ config('site.email') }}<br>
 Independent application-support service. We are not an agent of any university, UCAS, the British Council or the GMC. Admission decisions are made solely by universities.
 </x-mail::footer>
 </x-slot:footer>

@@ -1,0 +1,21 @@
+{
+ "university:chester:waec_neco_statement:2027 entry": {
+  "decision": "verified",
+  "quote": "Foundation Year ⏎ Successful completion of West African School Certificate (WAEC) or Senior School Certificate with grades 1-8 in 4 relevant subjects. ⏎ Undergraduate Study ⏎ International Foundation Programme from GEC Academy with 55% or above ⏎ Diploma/National Diploma from a recognised institution with GPA 2.5 out of 5 or 2.0 out of 4 ... We accept the following English Language qualifications: ⏎ WAEC, Neco: ⏎ Undergraduate: C or C6 or above",
+  "page": "https://www.chester.ac.uk/international/countries/nigeria/, read 2026-10-29 via page-excerpts runs 40946710632 and 40947461259 (same page fingerprint), sha256 076f169c73632941",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "university:imperial:international_accepted": {
+  "decision": "verified",
+  "quote": "We consider all applicants on an individual basis, welcoming students from all over the world. ... Overseas fee ⏎ Overseas fee ⏎ 2027 entry ⏎ £61,550 ⏎ per year ... For 2026 entry, the number of Home places is 271 and Overseas places was 74.",
+  "page": "https://www.imperial.ac.uk/study/courses/undergraduate/medicine/, read 2026-10-29 via page-excerpts run 40947461259, sha256 51dedfd4b2f9266e",
+  "note": "Re-read after the source watcher flagged it (SOURCE_CHANGED). The recorded official wording is still on the page; the value is unchanged."
+ },
+ "course:imperial/a100:application_route": {
+  "decision": "verified",
+  "verified_value": "UCAS (UCAS course code A100); the 2027-entry deadline was Thursday 15 October 2026 at 18.00 UK time, and applications for 2027 entry are now closed",
+  "quote": "Applications for this course are now closed. ... UCAS course code ⏎ A100 ... How to apply ⏎ Applications for this course are now closed. ⏎ Application deadlines – Thursday 15 October 2026 at 18.00 (UK time)",
+  "page": "https://www.imperial.ac.uk/study/courses/undergraduate/medicine/, read 2026-10-29 via page-excerpts run 40947461259, sha256 51dedfd4b2f9266e",
+  "note": "CORRECTED after the source watcher flagged it: the page no longer shows the \"Apply via UCAS\" block or the institution code I50; it now says applications for this course are closed. The UCAS route, course code A100 and the 15 October 2026 deadline are unchanged."
+ }
+}

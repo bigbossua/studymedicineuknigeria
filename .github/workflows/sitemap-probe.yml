@@ -2,6 +2,8 @@ name: Sitemap and robots probe (read-only)
 # What an external crawler receives for /sitemap.xml and /robots.txt: every user agent Google uses for sitemaps and
 # pages, plain and compressed, HEAD and GET, both IP families, apex and www. Validates the XML strictly (xmllint), counts
 # the URLs and checks each one answers 200, self-canonical and indexable. Public URLs only; no secret is used.
+# Content is judged as a browser receives it. A 403 only to user agents claiming Googlebot (sent from GitHub, not Google)
+# is a WARN, not a failure: confirm real Googlebot in Search Console -> URL Inspection -> Test live URL.
 on:
   workflow_dispatch:
   schedule:

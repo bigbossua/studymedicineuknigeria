@@ -35,7 +35,7 @@ from another runner passes, it is not a site fault.
 | Check | When | Covers |
 |---|---|---|
 | `uptime-check.yml` | every 30 min | smoke tests; opens one issue while failing |
-| `sitemap-probe.yml` | daily 05:41 | sitemap and robots as Googlebot; every URL 200, indexable, self-canonical |
+| `sitemap-probe.yml` | daily 05:41 | sitemap and robots as a browser, curl and Googlebot user agents; every URL 200, indexable, self-canonical. A 403 only to the fake Googlebot is a WARN (CDN bot protection; confirm in Search Console URL Inspection) |
 | `live-verify.yml` | daily 06:23 | redirects, 404s, fee leak, canonicals, JSON-LD, staging/test/placeholder text, headers, private areas, journey, Google-readiness audit, server state, Stripe and webhook, cron and queue, GD, Search Console connection |
 | `launch-checks.yml` | Mondays | DNS, mail records, certificates, Search Console TXT |
 | `performance-check.yml` | Mondays | Lighthouse on landing pages |

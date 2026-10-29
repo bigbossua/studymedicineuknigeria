@@ -1,0 +1,14 @@
+{
+ "university:buckingham:international_accepted": {
+  "decision": "verified",
+  "quote": "International fees ⏎ From £47,000 per year* ... The fees for this course are: ⏎ Start Type 1st Year Total cost ⏎ Jan 2028 ⏎ Full-time (4.5 Years) ⏎  UK £41,500 £186,750 ⏎ INT £47,000 £211,500",
+  "page": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree/, read 2026-10-29 via page-excerpts run 40943430188, sha256 05dcf138f8d70dbe",
+  "note": "Re-read after the source watcher flagged it on 2026-10-29. The flag came from a bot-verification page served instead of the course page (the watcher now treats that as unreachable); the real page still lists an international (INT) fee for the January 2028 start. The quote now includes a full sentence the watcher can track."
+ },
+ "university:buckingham:international_places_open:2027 entry": {
+  "decision": "verified",
+  "quote": "International fees ⏎ From £47,000 per year* ... The fees for this course are: ⏎ Start Type 1st Year Total cost ⏎ Jan 2028 ⏎ Full-time (4.5 Years) ⏎  UK £41,500 £186,750 ⏎ INT £47,000 £211,500",
+  "page": "https://www.buckingham.ac.uk/courses/undergraduate/mb-chb-medicine-4.5-year-degree/, read 2026-10-29 via page-excerpts run 40943430188, sha256 05dcf138f8d70dbe",
+  "note": "Re-read after the source watcher flagged it on 2026-10-29 (a bot-verification page, not a page change). The MB ChB still lists the international fee for the January 2028 start; the stored value is unchanged."
+ }
+}

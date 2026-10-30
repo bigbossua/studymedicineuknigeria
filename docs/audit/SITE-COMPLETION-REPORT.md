@@ -52,10 +52,11 @@ Work on the plan in `docs/audit/LAUNCH-READINESS-AUDIT-2026-10-29.md`:
 | 7a1372c | The source watcher treats bot-verification pages as unreachable | `app/Console/Commands/CheckSources.php`; `tests/Feature/SourceWatcherTest.php` |
 | 2fc065e, f61987e, 48a2f9a, 1d3e72a | 30 facts re-verified from official pages; Imperial's route corrected | `ops/verification/reviews/2026-10-29-*.json`; `data/verification/decisions-2026-10-29-*.csv` |
 | 05eb2cd | Sitemap probe: CDN 403 to a fake Googlebot is a warning; a real outage fails; self-test in CI | `ops/sitemap-probe.sh`; `ops/qa/sitemap-probe-selftest.sh`; `ops/qa/fixtures/fake-cdn.py`; `.github/workflows/{ci,sitemap-probe}.yml` |
-| d29286b | SEO page audit regenerated (36 URLs, 0 flagged) | `docs/seo/PAGE-AUDIT.md` |
+| d29286b, then this update | SEO page audit regenerated; now 39 URLs, 0 flagged, from a production-mode build that mirrors production | `docs/seo/PAGE-AUDIT.md` |
 | 41e2a80 | A vacuous test now checks real course records | `tests/Feature/HealthcareTaxonomyTest.php` |
 | efa5fbd | `symfony/mime` 7.4.22 (CVE-2026-45070) | `composer.lock` |
 | ab0894f | A school is indexed only with a live decision-register row as well as verified facts and publication; Admin → Universities shows the reason a page is noindex | `app/Support/DecisionRegister.php`; `app/Models/University.php`; `app/Http/Controllers/Admin/{ReferenceAdminController,DashboardController}.php`; `resources/views/admin/reference/universities.blade.php`; `tests/Feature/SchoolRegisterGateTest.php`; `tests/Feature/PublicSeoTest.php` |
+| (30 October) | Owner-approved indexing exception for Cambridge, King's College London and Queen's Belfast: register rows D14, D27 and D34 stay RESEARCH with a dated exception marker; `DecisionRegister::approves()` accepts exactly that marker; tests pin the list to these three | `ops/seo/build-register.py`; `data/seo/decision-register.csv`; `app/Support/DecisionRegister.php`; `tests/Feature/SchoolRegisterGateTest.php`; `tests/Feature/SeoDecisionRegisterTest.php`; `CLAUDE.md` |
 | c5105a9, f12fac8, 22e71d9 and later | Owner legal checklist, university report, remediation plan, this report, audit addendum, pre-deployment checklist | `docs/audit/*` |
 
 ## Tests and results (29 October)
@@ -63,7 +64,7 @@ Work on the plan in `docs/audit/LAUNCH-READINESS-AUDIT-2026-10-29.md`:
 | Command | Result |
 |---|---|
 | `vendor/bin/pint --test` | passed |
-| `php -d memory_limit=1G vendor/bin/phpunit` | **278 passed**, 19,374 assertions, 0 risky (after the register gate) |
+| `php -d memory_limit=1G vendor/bin/phpunit` | **281 passed**, 19,457 assertions, 0 risky (after the register gate and the owner exception, 30 October) |
 | `php -d memory_limit=1G vendor/bin/phpunit --filter 'Stripe\|Payment\|Pricing\|Checkout\|Webhook'` | 48 passed: webhook signature, idempotency, livemode, amount and currency match, duplicates, price privacy |
 | `ops/qa/sitemap-probe-selftest.sh` | 3/3 (open, fake-Googlebot block, outage) |
 | `ops/production-rehearsal.sh 8090` (production mode, throwaway database) | all production checks passed (44 ok) |
@@ -92,7 +93,7 @@ The server verifies the webhook signature and never trusts the return URL.
 - **A `sk_test_` key** for `STRIPE_TEST_SECRET`.
 - **Analytics choice:** `first_party` or `ga4`.
 - **Decisions on the 12 schools that have no Nigerian demand evidence:**
-  - Cambridge, Queen's Belfast and King's College London: indexed now, and leave the sitemap on deploy unless the owner records a publication directive in their register rows;
+  - Cambridge, Queen's Belfast and King's College London: decided by the owner on 2026-10-30. They stay indexed as an owner-approved exception (register D14, D34 and D27 remain RESEARCH; demand is not claimed). Revisit with Search Console data;
   - Aston, Brunel, Chester, Imperial, Keele, Kent and Medway, Lancaster, Surrey and Swansea: facts verified, but they stay noindex until the register records demand evidence or an owner directive.
 
 ## Production changes awaiting approval
@@ -103,9 +104,11 @@ The server verifies the webhook signature and never trusts the return URL.
    - watcher fix;
    - security update;
    - 30 fact decisions imported;
-   - the sitemap stays at 36 URLs, with different members:
-     - out: Cambridge, King's College London and Queen's Belfast (no live register row);
-     - in: Aberdeen, Buckingham and the cost page (see `PRE-DEPLOYMENT-CHECKLIST.md`).
+   - the sitemap grows from 36 to **39 URLs**:
+     - Aberdeen, Buckingham and the cost page are added;
+     - nothing is removed;
+     - Cambridge, King's College London and Queen's Belfast stay indexed by the owner's exception of 2026-10-30;
+     - recalculated with a production-mode build that mirrors production (`PRE-DEPLOYMENT-CHECKLIST.md` §3).
 2. **Set the identity variables** on the production environment, then run *Update server settings*. Do this only after the owner supplies the values.
 3. **Admin actions (owner):** publish or unpublish decisions for the schools listed above, and reply to the three leads.
 

@@ -15,7 +15,7 @@
 
 A flagged fact is hidden and puts the page back to noindex.
 
-**Change of 29 October (commit ab0894f): indexing now needs three separate approvals.**
+**Change of 29 October (commit ab0894f): indexing now needs three separate approvals** (one exception, owner decision of 2026-10-30, below).
 
 | Approval | What it means | Where it is recorded |
 |---|---|---|
@@ -23,7 +23,7 @@ A flagged fact is hidden and puts the page back to noindex.
 | Demand evidence and publication approval | a live row (PUBLISHED, INDEXING, MEASURING or UPDATE) names `/medical-schools/<slug>` | `data/seo/decision-register.csv` (§8.3) |
 | Publication | the page is put online | Admin → Universities |
 
-Before this change, the code checked only publication and facts, so Admin publication alone indexed Cambridge, Queen's Belfast and King's College London. Their register rows are RESEARCH. `SchoolRegisterGateTest` covers the new rule.
+Before this change, the code checked only publication and facts, so Admin publication alone indexed Cambridge, Queen's Belfast and King's College London. Their register rows are RESEARCH. On 2026-10-30 the owner decided to keep those three indexed as an explicit exception (section below). `SchoolRegisterGateTest` covers both the rule and the exception.
 
 ## What was re-verified today (30 decisions, all quotes checked by `ops/verification/check-quotes.py`)
 
@@ -53,33 +53,41 @@ Labels used below: **[Fact]** is read from production or from the code; **[Expec
 
 - **[Fact]** The live sitemap has 36 URLs today (page-excerpts run 40949529039, read 29 October 20:29 UTC). They include Cambridge, King's College London and Queen's Belfast, but not Aberdeen, Buckingham or the cost page.
 - **[Expected]** Schools with all five core facts go from 7 to 18 after the import. That is factual verification only; indexing is decided separately, as below.
-- **[Expected]** After the deploy the sitemap has **36 URLs**, but not the same ones. Three leave and three join.
+- **[Expected]** After the deploy the sitemap has **39 URLs**: three are added and none removed. This was recalculated on 30 October with a production-mode build that mirrors production; see `PRE-DEPLOYMENT-CHECKLIST.md` §3 for the method and the full list.
 
   | Change | URL | Why |
   |---|---|---|
-  | removed | `/medical-schools/cambridge` | D14 RESEARCH: no live register row (the facts stay verified; the page stays online, noindex) |
-  | removed | `/medical-schools/kings-college-london` | D27 RESEARCH: no live register row |
-  | removed | `/medical-schools/queens-belfast` | D34 RESEARCH: no live register row |
+  | unchanged, indexed | `/medical-schools/cambridge` | owner-approved exception (2026-10-30), recorded in D14 |
+  | unchanged, indexed | `/medical-schools/kings-college-london` | owner-approved exception, D27 |
+  | unchanged, indexed | `/medical-schools/queens-belfast` | owner-approved exception, D34 |
   | added | `/medical-schools/aberdeen` | D07 PUBLISHED; application route re-verified |
   | added | `/medical-schools/buckingham` | D13 PUBLISHED; international acceptance re-verified (the flag was a bot check) |
   | added | `/fees/cost-of-studying-medicine-in-the-uk` | its gate's only flagged fact (UCAS Extra opens) is re-verified |
 
-- **[Fact]** The 36 expected URLs are exactly the sitemap of a local production-mode build with every decision imported (`docs/seo/PAGE-AUDIT.md`).
-- **[Assumption]** Nothing else changes in production before the deploy. The nightly watcher (03:40) can flag more facts. An owner action in Admin can publish or unpublish. Either would change the count. The deploy's Live Verification and the next Operations Summary give the real figure.
-- **[Fact]** These schools have verified core facts after the import, and stay noindex because their register rows are RESEARCH: Aston, Brunel, Chester, Imperial, Keele, Kent and Medway, Lancaster, Surrey and Swansea. Their pages stay online with the corrected facts.
+- **[Fact]** The production-mirror build reproduces today's live sitemap (36 URLs, 0 differences) before the decisions are imported, and gives 39 after.
+- **[Assumption]** Nothing else changes in production before the deploy. The nightly watcher (03:40) can flag more facts, and an owner action in Admin can publish or unpublish. Either would change the count. The deploy's Live Verification and the next Operations Summary give the real figure.
+- **[Fact]** These schools have verified core facts after the import, but stay noindex because their register rows are RESEARCH with no exception: Aston, Brunel, Chester, Imperial, Keele, Kent and Medway, Lancaster, Surrey and Swansea. Their pages stay online with the corrected facts.
 
-**Facts verified, demand not shown, publication not approved.** Twelve schools are in this position: Cambridge, Queen's Belfast and King's College London (now leaving the index), and the nine above.
-- **[Owner]** Each can be indexed only by moving its register row to PUBLISHED with a recorded reason. Under §8.3 that means Search Console impressions or a Nigeria-specific search naming the school, or an explicit owner directive recorded as the reason.
-- **[Recommendation]** Wait for Search Console data rather than override §8.3.
-- **[Owner]** If the owner wants Cambridge, Queen's Belfast or King's College London to stay indexed through this deploy, say so before approving it. Their rows can then be updated with the owner's directive as the recorded reason; nothing in the repository supplies demand evidence for them today.
+**Facts verified, demand not shown.**
+- **[Owner]** For the nine schools above, indexing needs a live register row (Search Console impressions, or a Nigeria-specific search naming the school) or another explicit owner exception.
+- **[Recommendation]** Wait for Search Console data.
 
-## Cambridge, Queen's Belfast and King's College London
+## Cambridge, Queen's Belfast and King's College London: owner decision of 2026-10-30
 
-| School | Core facts **[Fact]** | Register **[Fact]** | Evidence of Nigerian demand **[Fact]** | After deploy **[Expected]** | Recommendation |
+**[Owner] Decision.** The owner decided that these three pages stay indexed for now. The decision is recorded in the register as an exception; it is not evidence of Nigerian demand.
+- **What changed in each row:**
+  - status stays RESEARCH, and the original evidence and reason text are kept;
+  - `current_url` is set to the page;
+  - `decided_on` is 2026-10-30;
+  - `indexation_decision` reads "index: owner-approved exception (2026-10-30), pending Search Console evidence";
+  - a dated note says that Nigerian search demand is NOT verified.
+- **How the code treats it:** `App\Support\DecisionRegister::approves()` recognises only that marker on a RESEARCH row. Publication and five verified core facts are still required. `SchoolRegisterGateTest` pins the list to these three.
+
+| School | Core facts **[Fact]** | Register **[Fact]** | Evidence of Nigerian demand **[Fact]** | After deploy **[Expected]** | Next step |
 |---|---|---|---|---|---|
-| Cambridge | 5/5 verified | D14 RESEARCH | Google autocomplete only, which is not evidence: the same seeds also complete with Queensland, Virginia, Zurich and Kentucky (`data/seo/autocomplete-ng-2026-10-06b.jsonl`) | noindex, out of the sitemap | keep noindex until Search Console shows impressions |
-| Queen's University Belfast | 5/5 verified | D34 RESEARCH | none recorded | noindex | keep noindex |
-| King's College London | 5/5 (WAEC statement recorded as NOT_PUBLISHED by the university) | D27 RESEARCH; its reason text still says core facts are incomplete, which is out of date | none recorded | noindex | keep noindex; this matches the owner's earlier instruction for KCL |
+| Cambridge | 5/5 verified | D14 RESEARCH + owner exception | Google autocomplete only, which is not evidence: the same seeds also complete with Queensland, Virginia, Zurich and Kentucky (`data/seo/autocomplete-ng-2026-10-06b.jsonl`) | indexed, in the sitemap | review with Search Console data |
+| Queen's University Belfast | 5/5 verified | D34 RESEARCH + owner exception | none recorded | indexed | review with Search Console data |
+| King's College London | 5/5 (Nigeria/WAEC statement recorded as NOT_PUBLISHED by the university) | D27 RESEARCH + owner exception. The exception note records the current 5/5 position; the older assessment text said "core facts incomplete" | none recorded | indexed | review with Search Console data |
 
 Semrush was not used (no API units), and no demand figure is invented.
 
@@ -103,7 +111,7 @@ V = verified, NP = not published by the university, SC = flagged by the watcher,
 | University of Bristol | V | — | V | V | V | 4/5 | 4/5 | 0 | — | D41 RESEARCH | no → no | Stays noindex; re-read the flagged or missing core facts |
 | Brunel University of London | VOP/SC | SC | SC | V | SC | 1/5 | 5/5 | 8 | Intl, WAEC, Eng, Route | D20 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | University of Buckingham | SC | V | V | V | V | 4/5 | 5/5 | 2 | Intl | D13 PUBLISHED | no → yes | Indexed: register approved, facts verified; keep under the watcher |
-| University of Cambridge | V | V | V | V | V | 5/5 | 5/5 | 0 | — | D14 RESEARCH | yes → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
+| University of Cambridge | V | V | V | V | V | 5/5 | 5/5 | 0 | — | D14 RESEARCH + owner exception (2026-10-30) | yes → yes | Owner exception (2026-10-30): stays indexed; no demand evidence claimed. Revisit with Search Console data |
 | Cardiff University | V | V | V | V | V | 5/5 | 5/5 | 0 | — | D08 PUBLISHED | yes → yes | Indexed: register approved, facts verified; keep under the watcher |
 | University of Chester | V | SC | V | V | V | 4/5 | 5/5 | 2 | WAEC | D42 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | University of Dundee | — | NP | NF | VOP | — | 1/5 | 1/5 | 0 | — | D43 RESEARCH | no → no | Stays noindex; re-read the flagged or missing core facts |
@@ -113,7 +121,7 @@ V = verified, NP = not published by the university, SC = flagged by the watcher,
 | Imperial College London | SC | NP | V | V | SC | 3/5 | 5/5 | 7 | Intl, Route | D24 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | Keele University | V | SC | SC | V | SC | 2/5 | 5/5 | 7 | WAEC, Eng, Route | D25 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | Kent and Medway Medical School | SC | SC | SC | V | SC | 1/5 | 5/5 | 7 | Intl, WAEC, Eng, Route | D26 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
-| King's College London | V | NP | V | V | V | 5/5 | 5/5 | 1 | — | D27 RESEARCH | yes → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
+| King's College London | V | NP | V | V | V | 5/5 | 5/5 | 1 | — | D27 RESEARCH + owner exception (2026-10-30) | yes → yes | Owner exception (2026-10-30): stays indexed; no demand evidence claimed. Revisit with Search Console data |
 | Lancaster University | V | V | SC | V | SC | 3/5 | 5/5 | 5 | Eng, Route | D28 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | University of Manchester | V | V | V | V | V | 5/5 | 5/5 | 0 | — | D10 PUBLISHED | yes → yes | Indexed: register approved, facts verified; keep under the watcher |
 | Manchester Metropolitan University | — | — | — | VOP | — | 0/5 | 0/5 | 0 | — | D29 REJECTED | no → no | Owner: register REJECTED, so consider unpublishing in Admin; already noindex |
@@ -121,7 +129,7 @@ V = verified, NP = not published by the university, SC = flagged by the watcher,
 | Northumbria University | VOP | — | — | — | — | 0/5 | 0/5 | 0 | — | D31 REJECTED | no → no | Owner: register REJECTED, so consider unpublishing in Admin; already noindex |
 | Pears Cumbria School of Medicine | V | — | — | — | V | 2/5 | 2/5 | 2 | — | D32 REJECTED | no → no | Owner: register REJECTED, so consider unpublishing in Admin; already noindex |
 | Queen Mary University of London | SC | NF | SC | VOP | V | 1/5 | 1/5 | 6 | — | D33 RESEARCH | no → no | Stays noindex; re-read the flagged or missing core facts |
-| Queen's University Belfast | V | V | V | V | V | 5/5 | 5/5 | 0 | — | D34 RESEARCH | yes → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
+| Queen's University Belfast | V | V | V | V | V | 5/5 | 5/5 | 0 | — | D34 RESEARCH + owner exception (2026-10-30) | yes → yes | Owner exception (2026-10-30): stays indexed; no demand evidence claimed. Revisit with Search Console data |
 | ScotGEM (St Andrews and Dundee) | V | — | — | — | — | 1/5 | 1/5 | 0 | — | D35 REJECTED | no → no | Owner: register REJECTED, so consider unpublishing in Admin; already noindex |
 | City St George's, University of London | V | — | V | V | V | 4/5 | 4/5 | 0 | — | D21 RESEARCH | no → no | Stays noindex; re-read the flagged or missing core facts |
 | St Mary's University, Twickenham | V | — | — | — | — | 1/5 | 1/5 | 0 | — | D36 RESEARCH | no → no | Stays noindex; re-read the flagged or missing core facts |

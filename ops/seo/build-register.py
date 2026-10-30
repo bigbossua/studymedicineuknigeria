@@ -226,6 +226,29 @@ if os.path.exists("docs/seo/UNIVERSITY-ASSESSMENT.md"):
             "no Nigerian demand evidence recorded (Semrush: no API units; not yet in Search Console)", "—", "—", "/medical-schools (directory record; page noindex)", "/requirements/waec; /fees", 1,
             "docs/seo/UNIVERSITY-ASSESSMENT.md; decisions-*.csv", _status, _why + " Assessment: " + _reason[:300])
 
+# Owner-approved indexation exceptions. The owner decided on 2026-10-30 that these three school pages stay indexed while
+# Nigerian demand is unproven. Status stays RESEARCH (no demand evidence is claimed); the URL and the marker below let
+# App\Support\DecisionRegister approve exactly these paths. Verified core facts and publication in Admin are still
+# required. Add an entry only on an explicit owner decision; SchoolRegisterGateTest pins the list.
+OWNER_EXCEPTION = "index: owner-approved exception"
+_OWNER_EXCEPTIONS = {
+    "University of Cambridge": ("cambridge", "core facts verified (5/5)"),
+    "King's College London": ("kings-college-london", "core facts complete (5/5): four verified and the Nigeria/WAEC statement recorded as not published by the university (NOT_PUBLISHED); the assessment text above predates that record"),
+    "Queen's University Belfast": ("queens-belfast", "core facts verified (5/5)"),
+}
+for r in rows:
+    _name = r["query_family"].split(" Medicine for Nigerian")[0]
+    if r["cluster"] == "D" and _name in _OWNER_EXCEPTIONS:
+        _slug, _facts = _OWNER_EXCEPTIONS.pop(_name)
+        assert r["status"] == "RESEARCH", f"{_name}: an owner exception is only for a RESEARCH row, found {r['status']}"
+        r["current_url"] = f"/medical-schools/{_slug}"
+        r["decided_on"] = "2026-10-30"
+        r["status_reason"] += (f" OWNER EXCEPTION 2026-10-30: the owner decided that this page stays indexed for now. Factual position: {_facts}"
+            " (Operations Summary run 40939685566, 2026-10-29). Nigerian search demand is NOT verified: no Search Console, Semrush ng or"
+            " Nigeria-specific SERP evidence is recorded, so the status stays RESEARCH. Rationale: the owner's explicit decision to keep an"
+            " already indexed page while evidence is gathered; revisit when Search Console data is available (weekly search report).")
+assert not _OWNER_EXCEPTIONS, f"owner exception without a register row: {_OWNER_EXCEPTIONS}"
+
 # Trust / legal (navigational, required in the register because every sitemap URL needs a row)
 for path,name in [("/","Home"),("/about","About"),("/contact","Contact"),("/how-we-verify","How we verify (editorial and verification policy)"),("/privacy","Privacy notice"),("/terms","Terms of use"),("/application-terms","Application terms"),("/refund-policy","Refund policy")]:
     add("T",f"{name} (navigational / trust)",f"studymedicineuknigeria {name.lower()}","navigational","n/a: brand and trust page for every applicant, including Nigerian applicants checking who we are","n/a: not a search target","n/a",path,path,"/about; /our-status; /how-we-verify; /contact" if path!="/" else "/study-medicine-in-the-uk/from-nigeria; /requirements; /medical-schools; /fees; /apply-online",0 if path!="/" else 5,"register row 23 (row 1 for home)","PUBLISHED","Trust or navigational page; not a keyword target. Home is the journey entry and links to every hub and to the core landing page." if path=="/" else "Trust page required by the asset register (row 23); carries no keyword target and no FAQ schema.")
@@ -245,6 +268,7 @@ for r in rows:
     elif "?" in url: r["indexation_decision"]="noindex (filter view)"
     elif "{" in url: r["indexation_decision"]="index (one URL per record)"
     elif r["status"]=="DRAFT": r["indexation_decision"]="noindex until the gated facts are verified"
+    elif "OWNER EXCEPTION 2026-10-30" in r["status_reason"]: r["indexation_decision"]=OWNER_EXCEPTION+" (2026-10-30), pending Search Console evidence"
     elif r["status"] in LIVE: r["indexation_decision"]="index"
     else: r["indexation_decision"]="none (not built)"
     base=url.split("#")[0].split("?")[0]

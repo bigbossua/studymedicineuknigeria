@@ -118,12 +118,12 @@ The audit above is kept as it was written. This table records what changed on `c
 | 4 Legal review | FAIL | FAIL. Also found: no model cancellation form (CCR reg. 13(1)(b)) and no complaints procedure (Sch. 2 (o)); a draft procedure is ready | owner or adviser |
 | 5 Payment rehearsal | PARTIAL | PARTIAL. 48 payment tests and the T1–T3 stand-in journeys pass; real test mode is blocked (no `STRIPE_TEST_SECRET`) | owner |
 | 6 Leads | FAIL | FAIL. An overdue indicator was added (`LeadFollowUpTest`) | owner replies |
-| 7 Cambridge, QUB, KCL | FAIL | FIXED IN CODE (ab0894f): a school is indexed only with a live register row, so all three leave the sitemap on deploy (their rows are RESEARCH, with no demand evidence) | owner confirms before deploy; to keep any, record a directive in its register row |
+| 7 Cambridge, QUB, KCL | FAIL | DECIDED BY THE OWNER (2026-10-30): all three stay indexed as an explicit exception, recorded in D14, D27 and D34. Their status stays RESEARCH and no demand evidence is claimed. Code (ab0894f and the exception update): register approval is required for every other school | revisit with Search Console data |
 | 11 Schools without core facts | FAIL | 30 facts re-verified: 18 schools at 5/5 after deploy (7 now) | about 121 flagged facts still to re-read |
 | 12 Watcher flags of 29 October | FAIL | FIXED. All four re-verified, and bot-check pages no longer raise flags (`CheckSources::isChallenge`) | deploy |
 | 24 Googlebot access | UNKNOWN | Probe no longer fails on the CDN's fake-Googlebot block (self-test in CI); real access still unproven | owner: URL Inspection live test |
 | 25 Search Console | NOT IMPLEMENTED | unchanged | owner (data feed steps) |
-| 33 SEO reports | FAIL | FIXED (`PAGE-AUDIT.md`: 36 URLs, 0 flagged) | — |
+| 33 SEO reports | FAIL | FIXED (`PAGE-AUDIT.md`: 39 expected URLs, 0 flagged) | — |
 | 37 Cost page | FAIL | FIXED (UCAS Extra opens re-verified) | deploy |
 | new | — | CI dependency audit failing since the `symfony/mime` advisory of 28 October: FIXED (7.4.22) | deploy |
 

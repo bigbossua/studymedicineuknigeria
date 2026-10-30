@@ -67,12 +67,12 @@ class University extends Model
     public const CORE_FACTS = ['international_accepted', 'waec_neco_statement', 'english_requirement', 'international_fee_gbp', 'application_route'];
 
     /**
-     * Indexable = published by staff (or the publication list) AND approved by a live row of the decision register
-     * (§8.3: Nigerian demand evidence and the publication decision) AND every §8.1 core fact currently VERIFIED, or
-     * recorded as NOT_PUBLISHED by the university. A core fact taken off the site (source changed, review due, never
-     * verified) puts the page back to noindex and out of the sitemap until it is re-verified, as the topic pages'
-     * PublishGate does; verified facts alone never index a page the register has not approved. The page itself stays
-     * online and nothing is deleted.
+     * Indexable = published by staff (or the publication list) AND approved by the decision register (a live row:
+     * §8.3 Nigerian demand evidence and the publication decision, or a recorded owner-approved exception) AND every
+     * §8.1 core fact currently VERIFIED, or recorded as NOT_PUBLISHED by the university. A core fact taken off the
+     * site (source changed, review due, never verified) puts the page back to noindex and out of the sitemap until it
+     * is re-verified, as the topic pages' PublishGate does; verified facts alone never index a page the register has
+     * not approved. The page itself stays online and nothing is deleted.
      */
     public function isIndexable(): bool
     {
@@ -85,7 +85,7 @@ class University extends Model
         if (! $this->published) {
             return 'not published';
         }
-        if (! DecisionRegister::isLive('/medical-schools/'.$this->slug)) {
+        if (! DecisionRegister::approves('/medical-schools/'.$this->slug)) {
             $row = DecisionRegister::rowFor('/medical-schools/'.$this->slug);
 
             return 'no live decision-register row'.($row ? " ({$row['id']} {$row['status']})" : '').': demand evidence and publication approval not recorded';

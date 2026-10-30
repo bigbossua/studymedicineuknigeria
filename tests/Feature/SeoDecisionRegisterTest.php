@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\User;
+use App\Support\DecisionRegister;
 use App\Support\Totp;
 use Database\Seeders\ReferenceDataSeeder;
 use Database\Seeders\TopicFactsSeeder;
@@ -60,10 +61,12 @@ class SeoDecisionRegisterTest extends TestCase
     {
         $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
         preg_match_all('#<loc>([^<]+)</loc>#', $xml, $m);
-        $live = collect($this->rows())->whereIn('status', self::LIVE)->map(fn ($r) => strtok($r['current_url'], '#'))->unique()->all();
+        // a live row, or an owner-approved exception recorded in a RESEARCH row (App\Support\DecisionRegister)
+        $live = collect($this->rows())->filter(fn ($r) => in_array($r['status'], self::LIVE, true) || str_starts_with($r['indexation_decision'], DecisionRegister::OWNER_EXCEPTION))
+            ->map(fn ($r) => strtok($r['current_url'], '#'))->unique()->all();
         foreach ($m[1] as $url) {
             $path = parse_url($url, PHP_URL_PATH) ?: '/';
-            $this->assertContains($path, $live, "$path is in the sitemap without a PUBLISHED/UPDATE row in data/seo/decision-register.csv");
+            $this->assertContains($path, $live, "$path is in the sitemap without a PUBLISHED/UPDATE row (or an owner exception) in data/seo/decision-register.csv");
         }
     }
 

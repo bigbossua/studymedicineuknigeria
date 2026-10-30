@@ -101,11 +101,11 @@ waiting student once. Bank transfer stays off unless `SITE_BANK_TRANSFER=true` i
 | `STRIPE_WEBHOOK_SECRET` (after launch) | Stripe (live mode) → Developers → Webhooks → Add endpoint `https://studymedicineuknigeria.com/webhooks/stripe`, the six events listed in section 2 → reveal the signing secret `whsec_…` |
 | Required reviewers | protection rule on `production` (yourself) |
 
-Stripe products and prices need no manual setup: *Stripe catalogue* (`production`, `create`), every deploy and the first
+Stripe products and prices need no manual setup: *Stripe catalogue* (`production`, `create`) and the first
 checkout create or find one product per service (`smukn_t1`..`t3`) with one active one-time GBP price matching the
 service record (T1 £125, T2 £695, T3 £1,295). Checkout charges that price, chosen by the server; an admin price change
 creates a new Stripe price and switches the old one off. Do not create Payment Links: they would bypass the profile
-review.
+review. A deploy only checks the catalogue (`smukn:stripe-sync --check`) and never changes it.
 
 **Already checked from outside (Launch checks workflow, 2026-10-04):** the domain's email DNS is in place (Hostinger MX,
 one SPF record `include:_spf.mail.hostinger.com`, DMARC `p=none`, DKIM keys at `hostingermail-a/-b/-c`); the certificate

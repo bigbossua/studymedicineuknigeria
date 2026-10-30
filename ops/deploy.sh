@@ -66,8 +66,9 @@ fi
 echo "db backup verified: \$BK (\$(du -h "\$BK" | cut -f1))"
 \$PHP artisan migrate --force
 \$PHP artisan smukn:reference-sync   # repository reference data; never touches reviewed facts or owner prices
-# Stripe products and one-time prices for the service fees (idempotent; a failure here only delays it to the first checkout)
-if [ -n "\$STRIPE_SECRET" ]; then \$PHP artisan smukn:stripe-sync || echo "warn: Stripe catalogue not synced now; the first checkout creates or finds it"; fi
+# Stripe catalogue: read-only check (products, prices and Payment Links are only read, nothing is written at Stripe or in
+# the database). Creating or changing the live catalogue is a separate, deliberate run of the Stripe catalogue workflow.
+if [ -n "\$STRIPE_SECRET" ]; then \$PHP artisan smukn:stripe-sync --check || echo "warn: Stripe catalogue check reported a difference (nothing was changed); see the Stripe catalogue workflow"; fi
 bash ops/import-decisions.sh "\$PHP"   # lists the files this release applied in .facts-imported (undone on rollback)
 \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && \$PHP artisan event:cache
 PREV=\$(readlink $APP/current 2>/dev/null || true)

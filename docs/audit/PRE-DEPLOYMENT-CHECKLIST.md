@@ -46,7 +46,8 @@ These are separate questions.
 | efa5fbd | `symfony/mime` 7.4.22, `symfony/polyfill-mbstring` 1.43.3 | security fix (CVE-2026-45070) |
 | ab0894f | Register approval required for school indexing | robots meta, sitemap, Admin index status |
 | 3034f0a | Owner exception for D14, D27 and D34 | Cambridge, King's College London and Queen's Belfast stay indexed |
-| this review | Rollback safety: `smukn:facts-revert`, `ops/import-decisions.sh`, `ops/revert-release-facts.sh`; `ops/deploy.sh`, `ops/rollback.sh` and `rollback-hostinger.yml` use them; `FactsRevertTest`; `ops/qa/rollback-proof/` | a rollback (manual or automatic) undoes the release's fact decisions before switching code |
+| 8f5fcea | Rollback safety: `smukn:facts-revert`, `ops/import-decisions.sh`, `ops/revert-release-facts.sh`; `ops/deploy.sh`, `ops/rollback.sh` and `rollback-hostinger.yml` use them; `FactsRevertTest`; `ops/qa/rollback-proof/` | a rollback (manual or automatic) undoes the release's fact decisions before switching code |
+| this change | Deploy runs only the read-only Stripe catalogue check (`smukn:stripe-sync --check`); a test pins it | no Stripe write during the deploy (§6, "Stripe step") |
 | 41e2a80 | Test only | none |
 
 **[Fact] Not changed:**
@@ -59,9 +60,10 @@ These are separate questions.
 | Check | Command | Result |
 |---|---|---|
 | Code style | `vendor/bin/pint --test` | passed |
-| Full test suite | `php -d memory_limit=1G vendor/bin/phpunit` | **283 passed**, 19,477 assertions, 0 failed |
+| Full test suite | `php -d memory_limit=1G vendor/bin/phpunit` | **284 passed**, 19,498 assertions, 0 failed |
+| Stripe and payments | `phpunit --filter 'Pricing\|Stripe\|Payment\|Checkout\|Webhook\|DeploymentSafety'` | 66 passed, including the new check-never-writes test |
 | Revert command | `phpunit --filter FactsRevertTest` | 2 passed: restore, keep a later change, reopen the ledger, re-apply on redeploy, dry run |
-| Indexability, register, sitemap | `SchoolRegisterGateTest`, `PublicSeoTest`, `SeoDecisionRegisterTest`, `Sitemap`, `GoogleReadiness` | included in the 283; all pass |
+| Indexability, register, sitemap | `SchoolRegisterGateTest`, `PublicSeoTest`, `SeoDecisionRegisterTest`, `Sitemap`, `GoogleReadiness` | included in the 284; all pass |
 | Ops scripts parse | `bash -n ops/*.sh ops/qa/rollback-proof/*.sh`; workflows parse as YAML | ok |
 | Sitemap probe self-test | `ops/qa/sitemap-probe-selftest.sh` | 3/3 |
 | Production rehearsal | `.env` moved aside, then `ops/production-rehearsal.sh 8090` | "rehearsal: all production checks passed" (44 ok, 0 fail) |
@@ -205,7 +207,7 @@ After the deploy, *Live Verification* reports the real count.
 - **[Fact] Database:**
   - `php artisan migrate --force` (no new migrations in this diff);
   - `smukn:reference-sync`;
-  - `smukn:stripe-sync` (live key present; idempotent catalogue check; with unchanged prices it finds the existing products and prices and changes nothing);
+  - `smukn:stripe-sync --check`: **read-only since 30 October**; see "Stripe step" below;
   - `ops/import-decisions.sh` (4 new files expected).
 - **[Fact] Switch:** config, route, view and event caches; `current` symlink switch; release history; the 5 newest releases are kept; the document root is published.
 
@@ -214,6 +216,35 @@ After the deploy, *Live Verification* reports the real count.
   - `ops/smoke.sh https://studymedicineuknigeria.com production`; on failure, automatic rollback (now with the fact revert) and a red run;
   - then the `review` job (`staging-review.yml` with target production): page review for CSP, accessibility, H1, status, and indexable sitemap pages with their own canonical.
 - **[Recommendation] Afterwards:** run *Live Verification* (expect 39 sitemap URLs) and *Operations summary*.
+
+### Stripe step (inspected and made read-only, 2026-10-30)
+
+**[Fact] Before this change,** `ops/deploy.sh` ran `smukn:stripe-sync` in write mode against live Stripe whenever `STRIPE_SECRET` was set (it is set in production). For each active service price (T1–T3) that mode can:
+
+| Stripe API call | When |
+|---|---|
+| `products.retrieve`, `prices.all` (by lookup key; by product, active) | always (reads) |
+| `products.create` (id `smukn_tN`) | the product does not exist |
+| `products.update` (`active`, `name`, `description`) | the product is inactive or its name or description differs from the service record |
+| `prices.create` (one-time GBP, `transfer_lookup_key`) | no matching active price for the lookup key |
+| `prices.update` `active: false` (never deleted) | a superseded price, or any other active price on our product (for example one made in the Dashboard) |
+| `paymentLinks.all`, `paymentLinks.allLineItems` | always (reads; links are reported, never changed) |
+
+It never creates Payment Links or touches webhook endpoints, account settings, customers, charges or refunds. It also wrote the Stripe ids back to `tier_prices`. With an unchanged catalogue it would only have read, but a Dashboard edit (a renamed product, an extra price) would have been overwritten by the deploy.
+
+**[Fact] Now:** the deploy runs `smukn:stripe-sync --check`. In check mode `StripeCatalog::sync($price, false)` returns before any create, update or database write. The only calls are the reads above: `products.retrieve`, `prices.all` and `paymentLinks.all`/`allLineItems`. A difference is printed as a warning ("nothing was changed") and never fails or changes the deploy. Changing the live catalogue is now only a separate, deliberate run of the *Stripe catalogue* workflow (`mode=create`), which needs its own approval.
+
+**[Fact] Pinned by a test:** `PricingVisibilityTest::test_the_deploy_only_checks_the_stripe_catalogue_and_the_check_never_writes`.
+- It asserts that the only Stripe command in `ops/deploy.sh` is `smukn:stripe-sync --check`.
+- In five states (empty catalogue, drifted product, stray price, changed amount, active Payment Link), it asserts that the check makes **no write call** (`FakeStripeClient::$writes` records every create, update and expire) and leaves Stripe and `tier_prices` unchanged.
+- Mutation-checked: removing `--check` from the script, or forcing write mode in the command, fails the test.
+
+**[Fact] Nothing else in the deploy calls Stripe.**
+- The preflight only reads `.env` to check key prefixes.
+- No Stripe code, payment code, migration, seeder or schedule changed between `5d76858` and this branch (`git diff --stat` is empty for `app/Services/Payments`, the payment and webhook controllers, the Stripe commands, `config/services.php`, `TierPrice`, `ServiceTier`, `database/` and `routes/console.php`).
+- *Update server settings* (`ops/update-env.sh`, which can e-mail waiting students when payments open) is not part of the deploy and is not run.
+
+**[Fact] Unchanged runtime behaviour, not part of the deploy:** while payments are open, a student's checkout calls `StripeCatalog::ensure()`. It uses the stored price id when it matches the amount and mode. Only when it does not would it create the missing entry, exactly as the live release does today.
 
 ## 7. Deployment steps (only after the owner's explicit approval)
 

@@ -206,6 +206,40 @@ class PricingVisibilityTest extends TestCase
         $this->assertStringNotContainsString('sk_test_fake', Artisan::output());
     }
 
+    /**
+     * Owner requirement of 2026-10-30: a deploy never modifies the live Stripe catalogue. ops/deploy.sh runs only the
+     * read-only check, and the check makes no write call at Stripe and changes no price record, whatever it finds.
+     */
+    public function test_the_deploy_only_checks_the_stripe_catalogue_and_the_check_never_writes(): void
+    {
+        $deploy = file_get_contents(base_path('ops/deploy.sh'));
+        preg_match_all('/artisan smukn:stripe-[a-z-]+[^\n|;]*/', $deploy, $calls);
+        $this->assertSame(['artisan smukn:stripe-sync --check '], $calls[0], 'the deploy runs the catalogue check and nothing else at Stripe');
+
+        // every state a check can meet: nothing at Stripe, a drifted product, a stray price, a changed amount, a Payment Link
+        $states = [
+            'empty' => fn () => null,
+            'drifted product' => fn () => $this->stripe->productStore['smukn_t1']->name = 'Renamed in the Dashboard',
+            'stray price' => fn () => $this->stripe->addManualPrice('smukn_t2', 50000),
+            'changed amount' => fn () => TierPrice::query()->update(['amount_minor' => 99900]),
+            'payment link' => fn () => $this->stripe->linkStore['plink_1'] = ['active' => true, 'prices' => [array_key_first($this->stripe->priceStore)]],
+        ];
+        foreach ($states as $label => $arrange) {
+            if ($label === 'drifted product') {
+                Artisan::call('smukn:stripe-sync'); // a catalogue exists from here on (test setup only)
+            }
+            $arrange();
+            $stripe = serialize([$this->stripe->productStore, $this->stripe->priceStore, $this->stripe->linkStore]);
+            $records = TierPrice::orderBy('id')->get()->toArray();
+            $this->stripe->writes = [];
+            Artisan::call('smukn:stripe-sync', ['--check' => true]);
+            $this->assertSame([], $this->stripe->writes, "{$label}: the check made no write call at Stripe");
+            $this->assertSame($stripe, serialize([$this->stripe->productStore, $this->stripe->priceStore, $this->stripe->linkStore]), "{$label}: Stripe unchanged");
+            $this->assertSame($records, TierPrice::orderBy('id')->get()->toArray(), "{$label}: price records unchanged");
+            $this->assertStringContainsString('check only, nothing changed', Artisan::output());
+        }
+    }
+
     public function test_each_service_keeps_exactly_one_active_price_and_payment_links_are_refused(): void
     {
         $this->assertSame(0, Artisan::call('smukn:stripe-sync'));

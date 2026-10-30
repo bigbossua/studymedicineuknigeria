@@ -953,6 +953,8 @@ On `claude/new-session-p6gdm6`, not deployed. Reports in `docs/audit/`: `SITE-CO
 - Fix: the deploy now lists the decision files it applied, and every rollback (manual or automatic) undoes them first with `smukn:facts-revert`.
 - Proven by `ops/qa/rollback-proof/run.sh`: after the revert, 36 URLs and identical facts.
 
+**Deploy never changes Stripe (2026-10-30):** the deploy ran `smukn:stripe-sync` in write mode against live Stripe, which could create or update products and deactivate prices. It now runs `smukn:stripe-sync --check` (reads only: products, prices, Payment Links; no database write). Changing the catalogue is only a deliberate *Stripe catalogue* run. A test records every write call of the fake Stripe client and pins this (`PRE-DEPLOYMENT-CHECKLIST.md` "Stripe step").
+
 **Owner-only blockers:** trading identity, ICO registration, model cancellation form, complaints procedure, legal review, Stripe support email and test key, three leads waiting.
 
 ## Open items carried forward

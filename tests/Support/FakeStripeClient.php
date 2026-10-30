@@ -41,6 +41,9 @@ class FakeStripeClient
 
     public int $priceCreates = 0;
 
+    /** @var array<int, string> every call that would change something at Stripe, in order */
+    public array $writes = [];
+
     public function __construct()
     {
         $root = $this;
@@ -50,6 +53,7 @@ class FakeStripeClient
 
             public function create(array $params): object
             {
+                $this->root->writes[] = 'checkout.sessions.create';
                 $priceId = $params['line_items'][0]['price'] ?? null;
                 if ($priceId !== null && (! isset($this->root->priceStore[$priceId]) || ! $this->root->priceStore[$priceId]->active)) {
                     throw InvalidRequestException::factory('No such price: '.$priceId, 400);
@@ -62,6 +66,7 @@ class FakeStripeClient
 
             public function expire(string $id): object
             {
+                $this->root->writes[] = 'checkout.sessions.expire';
                 $this->root->expired[] = $id;
 
                 return (object) ['id' => $id];
@@ -78,6 +83,7 @@ class FakeStripeClient
 
             public function create(array $p): object
             {
+                $this->root->writes[] = 'products.create';
                 $this->root->productCreates++;
 
                 return $this->root->productStore[$p['id']] = (object) ($p + ['active' => true, 'object' => 'product']);
@@ -85,6 +91,7 @@ class FakeStripeClient
 
             public function update(string $id, array $p): object
             {
+                $this->root->writes[] = 'products.update';
                 foreach ($p as $k => $v) {
                     $this->root->productStore[$id]->{$k} = $v;
                 }
@@ -103,6 +110,7 @@ class FakeStripeClient
 
             public function create(array $p): object
             {
+                $this->root->writes[] = 'webhookEndpoints.create';
                 $id = 'we_test_'.(count($this->root->endpointStore) + 1);
                 $this->root->endpointStore[$id] = (object) ['id' => $id, 'url' => $p['url'], 'enabled_events' => $p['enabled_events'], 'status' => 'enabled'];
 
@@ -137,6 +145,7 @@ class FakeStripeClient
 
             public function create(array $p): object
             {
+                $this->root->writes[] = 'prices.create';
                 $this->root->priceCreates++;
                 if (! empty($p['transfer_lookup_key'])) {
                     foreach ($this->root->priceStore as $old) {
@@ -152,6 +161,7 @@ class FakeStripeClient
 
             public function update(string $id, array $p): object
             {
+                $this->root->writes[] = 'prices.update';
                 foreach ($p as $k => $v) {
                     $this->root->priceStore[$id]->{$k} = $v;
                 }

@@ -1,7 +1,7 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10"><div class="max-w-3xl prose-site">
     @include('content._page-head', ['eyebrow' => 'Legal', 'title' => 'Refund policy', 'lede' => 'Plain rules for refunds of our service fee. University and third-party fees are outside our control and are not covered here.', 'seo' => $seo])
-    <p class="text-[0.8125rem] text-ink-500 mt-4">Version 0.9.2, 4 October 2026 (single service fee per service) — under legal review.</p>
+    <x-legal-version version="0.9.2" date="4 October 2026">Single service fee per service.</x-legal-version>
     <p>This policy forms part of the <a href="{{ route('legal.application-terms') }}">application service terms</a>; use of the website itself is governed by the <a href="{{ route('legal.terms') }}">terms of use</a>.</p>
     <h2>Your right to cancel</h2><p>If you are a consumer you may cancel within 14 days of paying, without giving a reason. If you asked us to start work within those 14 days (you confirm this when you pay), cancelling still entitles you to a refund less a proportionate amount for the work already done; once the service has been fully performed within that period, the right to cancel ends. To cancel, write to <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a> or use your portal messages; a short statement that you are cancelling is enough.</p>
     <h2>Within 14 days, before work starts</h2><p>Full refund, no questions asked.</p>

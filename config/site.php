@@ -10,9 +10,13 @@ return [
     'domain' => 'studymedicineuknigeria.com',
     'email' => 'info@studymedicineuknigeria.com',
     'whatsapp' => env('SITE_WHATSAPP') ?: '447842292527', // E.164 without plus (owner's number +44 7842 292527); an empty .env value keeps this default
-    'legal_name' => $optional('SITE_LEGAL_NAME'), // set when the registered company name is confirmed
-    'company_number' => $optional('SITE_COMPANY_NUMBER'),
-    'address' => $optional('SITE_ADDRESS'),
+    // Trading identity (App\Support\LegalIdentity reads these; none is ever invented). The legal name is the registered
+    // company name, or the sole trader's own name (a trading name may follow, e.g. "Ada Obi trading as ...").
+    'legal_name' => $optional('SITE_LEGAL_NAME'),
+    'entity_type' => in_array($optional('SITE_ENTITY_TYPE'), ['sole_trader', 'partnership', 'limited_company', 'llp'], true) ? $optional('SITE_ENTITY_TYPE') : null,
+    'company_number' => $optional('SITE_COMPANY_NUMBER'),  // companies and LLPs only
+    'registered_in' => $optional('SITE_REGISTERED_IN'),    // companies and LLPs only, e.g. "England and Wales"
+    'address' => $optional('SITE_ADDRESS'),                // geographic address where the business is established (a company: its registered office)
     'ico_number' => $optional('SITE_ICO_NUMBER'),          // UK ICO registration (data protection fee) reference, once registered
     'vat_number' => $optional('SITE_VAT_NUMBER'),          // only if VAT-registered
     'hosting_region' => $optional('SITE_HOSTING_REGION'),  // data-centre location shown in hPanel, e.g. "the United Kingdom"

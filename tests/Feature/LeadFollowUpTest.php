@@ -6,6 +6,7 @@ use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\Lead;
 use App\Models\User;
 use App\Notifications\StaffNotification;
+use App\Support\LeadReplyDraft;
 use App\Support\Totp;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -107,5 +108,32 @@ class LeadFollowUpTest extends TestCase
         $this->assertSame('new', $lead->status);
         $this->assertFalse($lead->isOverdue());
         Notification::assertSentTo($this->admin, StaffNotification::class);
+    }
+
+    /** Workstream 5 (2026-10-30): staff get a reply draft built from the lead's own answers; the site sends nothing. */
+    public function test_an_overdue_lead_gets_a_reply_draft_from_its_own_answers_and_nothing_is_sent(): void
+    {
+        Notification::fake();
+        Carbon::setTestNow('2026-10-30 10:00');
+        $this->post(route('apply.eligibility.submit'), [
+            'qualification' => 'waec_only', 'sciences' => 'yes', 'english' => 'waec_english', 'ucat' => 'none', 'intake_year' => 2028,
+            'name' => 'Ada Example', 'email' => 'ada@example.test', 'consent' => '1',
+        ]);
+        $lead = Lead::where('email', 'ada@example.test')->firstOrFail();
+        Carbon::setTestNow('2026-11-06 10:00'); // five working days later
+        Notification::fake();
+
+        $draft = LeadReplyDraft::for($lead->fresh());
+        $this->assertStringStartsWith('Dear Ada,', $draft['body']);
+        $this->assertStringContainsString('30 October 2026', $draft['body']);
+        $this->assertStringContainsString('longer than the two working days', $draft['body']);
+        $this->assertStringContainsString('- Your qualifications: WAEC or NECO (WASSCE) only', $draft['body']);
+        $this->assertStringContainsString('Foundation year leading to Medicine (possible)', $draft['body'], 'the routes are the ones the checker already showed');
+        $this->assertStringContainsString(route('requirements.waec'), $draft['body']);
+        $this->assertStringContainsString('We cannot guarantee an offer', $draft['body']);
+        $this->assertStringNotContainsString('ada@example.test', $draft['body']);
+
+        $this->asAdmin()->get(route('admin.leads'))->assertOk()->assertSee('Draft reply (review and send yourself)')->assertSee('Dear Ada,')->assertSee('mailto:ada%40example.test?subject=', false);
+        Notification::assertNothingSent();
     }
 }

@@ -1,7 +1,7 @@
 <x-layouts.public :seo="$seo">
 <article class="container-site pt-6 pb-10"><div class="max-w-3xl prose-site">
     @include('content._page-head', ['eyebrow' => 'Legal', 'title' => 'Application service terms', 'lede' => 'What you are buying when you pay for one of our services, what is not included, when work begins, and your and our responsibilities.', 'seo' => $seo])
-    <p class="text-[0.8125rem] text-ink-500 mt-4">Version v1 (0.9.1 draft), 4 October 2026 — under legal review. The version you accept is recorded with your payment.</p>
+    <x-legal-version version="v1 (0.9.1)" date="4 October 2026">The version you accept is recorded with your payment.</x-legal-version>
     <p>These terms apply to our paid application-support service and sit alongside the <a href="{{ route('legal.terms') }}">website terms of use</a>, the <a href="{{ route('legal.privacy') }}">privacy notice</a> and the <a href="{{ route('legal.refunds') }}">refund policy</a>.</p>
     <h2>1. What is included</h2><p>Exactly the deliverables listed for your chosen service on the <a href="{{ route('apply.services') }}">services page</a> and on the confirmation page in your portal at the time of payment. The fee for each service is shown in your portal once our team has reviewed your profile, and always before you pay. Nothing else is implied.</p>
     <h2>2. What is not included</h2><ul><li>University tuition, deposits and application fees</li><li>UCAS fees</li><li>UCAT, GAMSAT or other test fees</li><li>English language tests</li><li>Visa fees, the Immigration Health Surcharge, TB tests, travel and insurance</li><li>Document certification, notarisation or translation</li><li>Any guarantee of an offer, interview, visa or scholarship</li></ul>

@@ -14,6 +14,7 @@ use App\Models\TierPrice;
 use App\Models\University;
 use App\Models\User;
 use App\Services\Payments\StripeService;
+use App\Support\LegalIdentity;
 use App\Support\Seo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -54,8 +55,8 @@ class DashboardController extends Controller
             }, 'url' => null],
             ['label' => 'Transactional email configured', 'done' => (bool) config('mail.mailers.smtp.password'), 'detail' => config('mail.mailers.smtp.password') ? 'SMTP password present' : (config('mail.default') === 'smtp' ? 'MAIL_PASSWORD not set' : 'development mailer ('.config('mail.default').'); set MAIL_* on the server'), 'url' => null],
             ['label' => 'All staff enrolled in two-step verification', 'done' => $staff > 0 && $staffWith2fa === $staff, 'detail' => "{$staffWith2fa} of {$staff} staff accounts", 'url' => route('admin.users')],
-            ['label' => 'Trading identity published', 'done' => config('site.legal_name') !== null && config('site.address') !== null, 'detail' => ($missing = collect(['SITE_LEGAL_NAME' => config('site.legal_name'), 'SITE_ADDRESS' => config('site.address'), 'SITE_ICO_NUMBER' => config('site.ico_number')])->filter(fn ($v) => $v === null)->keys())->isEmpty() ? 'legal name, geographic address and ICO reference published on Our status, Contact and the legal pages' : 'not set: '.$missing->implode(', ').' (shown as "To be published"; needed before taking payments)', 'url' => route('status')],
-            ['label' => 'Legal pages reviewed', 'done' => (bool) config('site.legal_reviewed'), 'detail' => config('site.legal_reviewed') ? 'SITE_LEGAL_REVIEWED set' : 'privacy, terms, application terms and refunds are version 0.9 drafts', 'url' => route('legal.terms')],
+            ['label' => 'Trading identity published', 'done' => LegalIdentity::isPublished() && config('site.ico_number') !== null, 'detail' => ($missing = LegalIdentity::missing()) === [] ? 'legal name, business structure, geographic address and ICO reference published on Our status, Contact and the legal pages' : 'not set: '.implode(', ', $missing).' (shown as "To be published"; needed before taking payments)', 'url' => route('status')],
+            ['label' => 'Legal pages reviewed', 'done' => (bool) config('site.legal_reviewed'), 'detail' => config('site.legal_reviewed') ? 'SITE_LEGAL_REVIEWED set' : 'privacy, terms, application terms and refunds are marked DRAFT — LEGAL REVIEW REQUIRED', 'url' => route('legal.terms')],
             ['label' => 'Analytics decision made', 'done' => config('site.ga4_id') !== null || config('site.analytics_decision') === 'first_party',
                 'detail' => match (true) {
                     config('site.ga4_id') !== null => 'GA4 on, loaded only after consent; never in the portal or admin',

@@ -84,7 +84,7 @@ jobs:
               "tier_prices" => App\Models\TierPrice::count(),
               "stripe_live_key" => str_starts_with((string) config("services.stripe.secret"), "sk_live_") || str_starts_with((string) config("services.stripe.secret"), "rk_live_"),
               "webhook_secret_set" => filled(config("services.stripe.webhook_secret")),
-              "legal_name_set" => config("site.legal_name") !== null, "address_set" => config("site.address") !== null, "ico_number_set" => config("site.ico_number") !== null, "legal_reviewed_set" => config("site.legal_reviewed") !== null, "analytics_decision" => config("site.analytics_decision") ?? "none recorded", "ga4_id_set" => filled(config("site.ga4_id")), "ga4_api_secret_set" => filled(config("site.ga4_api_secret")),
+              "legal_name_set" => config("site.legal_name") !== null, "entity_type" => config("site.entity_type"), "address_set" => config("site.address") !== null, "ico_number_set" => config("site.ico_number") !== null, "legal_reviewed_set" => config("site.legal_reviewed") !== null, "analytics_decision" => config("site.analytics_decision") ?? "none recorded", "ga4_id_set" => filled(config("site.ga4_id")), "ga4_api_secret_set" => filled(config("site.ga4_api_secret")),
               "session_secure_cookie" => (bool) config("session.secure"), "session_http_only" => (bool) config("session.http_only"),
               "session_same_site" => config("session.same_site"), "app_key_set" => filled(config("app.key")),
               "public_storage_link" => file_exists(public_path("storage")),

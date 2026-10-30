@@ -955,6 +955,15 @@ On `claude/new-session-p6gdm6`, not deployed. Reports in `docs/audit/`: `SITE-CO
 
 **Deploy never changes Stripe (2026-10-30):** the deploy ran `smukn:stripe-sync` in write mode against live Stripe, which could create or update products and deactivate prices. It now runs `smukn:stripe-sync --check` (reads only: products, prices, Payment Links; no database write). Changing the catalogue is only a deliberate *Stripe catalogue* run. A test records every write call of the fake Stripe client and pins this (`PRE-DEPLOYMENT-CHECKLIST.md` "Stripe step").
 
+**Final completion programme (2026-10-30), `docs/launch/`:**
+- **Legal identity.** One identity configuration (`App\Support\LegalIdentity`). New settings `SITE_ENTITY_TYPE` and `SITE_REGISTERED_IN`. No wording assumes a company.
+- **Legal pages.** Every legal page carries "DRAFT — LEGAL REVIEW REQUIRED" until `SITE_LEGAL_REVIEWED` is set.
+- **Lead replies.** Reply drafts in Admin → Leads, built from each lead's own answers; nothing is sent.
+- **Documents.** Legal review pack (CCR 2013 gap analysis, ICO self-assessment, ADR change of 6 April 2026, complaints and cancellation drafts), Stripe test and live-rehearsal procedure, student journey report, operations manual, owner action register, readiness report, launch checklist.
+- **Results.** 288 tests; rehearsal 44 ok; journeys 0 problems; Google readiness 86/0 on 39 URLs.
+- **Fact re-check.** 52 of 54 indexed-page facts still match their official pages; Cardiff's fee page changed.
+- **Semrush.** Returned `no_api_units`.
+
 **Owner-only blockers:** trading identity, ICO registration, model cancellation form, complaints procedure, legal review, Stripe support email and test key, three leads waiting.
 
 ## Open items carried forward

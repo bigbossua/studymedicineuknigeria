@@ -1,6 +1,6 @@
 # StudyMedicineUKNigeria.com — working notes for Claude sessions
 
-Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Operating mode since 2026-10-07: `docs/ops/OPERATING-MODE.md` (baseline, monitoring, the evidence-led growth loop; no batches without data). Read `README.md`, then `docs/BASELINE-ASSESSMENT.md` and the latest stages in `docs/IMPLEMENTATION-LOG.md`. The owner's standing directive is in `ops/reports/owner-cycle-2026-10-03.md` (what is done, what only the owner can do).
+Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Operating mode since 2026-10-07: `docs/ops/OPERATING-MODE.md` (baseline, monitoring, the evidence-led growth loop; no batches without data). Read `README.md`, then `docs/BASELINE-ASSESSMENT.md` and the latest stages in `docs/IMPLEMENTATION-LOG.md`. The owner's standing directive is in `ops/reports/owner-cycle-2026-10-03.md` (what is done, what only the owner can do). Launch status, owner actions and the legal review pack (2026-10-30): `docs/launch/`.
 
 ## Non-negotiable rules
 - Never fabricate fees, dates, requirements, rankings, partnerships, testimonials, student numbers or Semrush figures. Facts live in `reference_facts` with a verification status; unverified values are hidden in production. New dated facts go through `database/seeders/TopicFactsSeeder.php` or the admin verification queue, never into Blade prose.
@@ -15,7 +15,7 @@ Laravel 13 (PHP 8.3) monolith, Blade + Tailwind v4 + Vite. Operating mode since 
 ```bash
 composer install && npm ci && cp .env.example .env && php artisan key:generate && php artisan migrate --seed
 npm run build && php artisan serve --host=127.0.0.1 --port=8000     # stop with: fuser -k 8000/tcp
-vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 284 tests; run before every commit
+vendor/bin/pint --dirty && php -d memory_limit=1G vendor/bin/phpunit   # 288 tests; run before every commit
 php artisan smukn:og          # regenerate Open Graph cards after changing a public title
 php artisan smukn:images      # build photo derivatives from brand/photos
 php artisan smukn:facts-export data/verification/worksheet-YYYY-MM-DD.csv --sources=data/verification/sources-YYYY-MM-DD.csv && php artisan smukn:facts-import data/verification/decisions-YYYY-MM-DD.csv   # verification round trip (data/verification/README.md)

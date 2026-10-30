@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Middleware\EnsureTwoFactor;
 use App\Models\User;
+use App\Support\LegalIdentity;
 use App\Support\Totp;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
@@ -64,9 +65,9 @@ class LegalIdentityTest extends TestCase
         config(['site.legal_name' => null, 'site.address' => null, 'site.ico_number' => null]);
 
         $this->get(route('legal.privacy'))->assertOk()->assertSee('Study Medicine UK Nigeria ("we") is the data controller', false);
-        $this->get(route('status'))->assertOk()->assertSee('To be published on incorporation')->assertSee('To be published once registered');
+        $this->get(route('status'))->assertOk()->assertSee('To be published')->assertDontSee('incorporation')->assertSee('To be published once registered');
         $this->get(route('about'))->assertOk()->assertSee('operated by an independent team');
-        $this->get(route('contact'))->assertOk()->assertSee('Registered address to be published');
+        $this->get(route('contact'))->assertOk()->assertSee('To be published on Our status.');
         $this->get(route('legal.terms'))->assertOk()->assertSee('operated by Study Medicine UK Nigeria');
         $this->get(route('home'))->assertOk()->assertSee('&copy; '.date('Y').' Study Medicine UK Nigeria', false);
     }
@@ -77,8 +78,8 @@ class LegalIdentityTest extends TestCase
         config(['site.legal_name' => '', 'site.address' => '']);
 
         $this->get(route('legal.privacy'))->assertSee('Study Medicine UK Nigeria ("we") is the data controller', false)->assertDontSee('<p> ("we")', false);
-        $this->get(route('status'))->assertSee('To be published on incorporation');
-        $this->get(route('contact'))->assertSee('Registered address to be published');
+        $this->get(route('status'))->assertSee('To be published')->assertDontSee('incorporation');
+        $this->get(route('contact'))->assertSee('To be published on Our status.');
     }
 
     public function test_a_published_identity_appears_on_the_legal_pages(): void
@@ -86,7 +87,7 @@ class LegalIdentityTest extends TestCase
         config(['site.legal_name' => 'Example Trading Ltd', 'site.company_number' => '01234567', 'site.address' => '1 Example Street, London', 'site.ico_number' => 'ZA000000']);
 
         $this->get(route('legal.privacy'))->assertSee('Example Trading Ltd ("we") is the data controller', false);
-        $this->get(route('status'))->assertSee('Example Trading Ltd · 01234567', false)->assertSee('1 Example Street, London')->assertSee('Registration ZA000000');
+        $this->get(route('status'))->assertSee('Example Trading Ltd, company number 01234567', false)->assertSee('1 Example Street, London')->assertSee('Registration ZA000000');
         $this->get(route('legal.terms'))->assertSee('Example Trading Ltd, company number 01234567, 1 Example Street, London', false);
         $this->get(route('contact'))->assertSee('1 Example Street, London');
     }
@@ -95,9 +96,57 @@ class LegalIdentityTest extends TestCase
     {
         $admin = User::factory()->create();
         $admin->forceFill(['role' => 'admin', 'two_factor_secret' => Totp::generateSecret(), 'two_factor_confirmed_at' => now()])->save();
-        config(['site.legal_name' => null, 'site.address' => null, 'site.ico_number' => null]);
+        config(['site.legal_name' => null, 'site.entity_type' => null, 'site.address' => null, 'site.ico_number' => null]);
 
         $this->actingAs($admin)->withSession([EnsureTwoFactor::SESSION_KEY => $admin->id])->get(route('admin.dashboard'))
-            ->assertOk()->assertSee('Trading identity published')->assertSee('not set: SITE_LEGAL_NAME, SITE_ADDRESS, SITE_ICO_NUMBER');
+            ->assertOk()->assertSee('Trading identity published')->assertSee('not set: SITE_LEGAL_NAME, SITE_ENTITY_TYPE, SITE_ADDRESS, SITE_ICO_NUMBER');
+
+        // a company also needs its number and the part of the UK it is registered in
+        config(['site.legal_name' => 'Example Trading Ltd', 'site.entity_type' => 'limited_company', 'site.address' => '1 Example Street, London', 'site.ico_number' => 'ZA000000']);
+        $this->assertSame(['SITE_COMPANY_NUMBER', 'SITE_REGISTERED_IN'], LegalIdentity::missing());
+        $this->assertFalse(LegalIdentity::isPublished());
+    }
+
+    /** One identity, worded by structure; nothing assumes incorporation while the structure is unknown. */
+    public function test_the_identity_is_worded_by_business_structure(): void
+    {
+        config(['site.legal_name' => null, 'site.entity_type' => null, 'site.address' => null, 'site.company_number' => null, 'site.registered_in' => null, 'site.vat_number' => null]);
+        $this->get(route('status'))->assertOk()->assertSee('Business address')->assertDontSee('incorporation')->assertDontSee('Registered address');
+        $this->get(route('contact'))->assertOk()->assertSee('To be published on Our status.')->assertDontSee('Registered address');
+
+        config(['site.legal_name' => 'Ada Example trading as Study Medicine UK Nigeria', 'site.entity_type' => 'sole_trader', 'site.address' => '2 Example Road, Leeds']);
+        $this->assertSame('Ada Example trading as Study Medicine UK Nigeria, a sole trader, 2 Example Road, Leeds', LegalIdentity::summary());
+        $this->assertSame('Business address', LegalIdentity::addressLabel());
+        $this->assertNotContains('SITE_COMPANY_NUMBER', LegalIdentity::missing(), 'a sole trader has no company number');
+
+        config(['site.legal_name' => 'Example Trading Ltd', 'site.entity_type' => 'limited_company', 'site.company_number' => '01234567', 'site.registered_in' => 'England and Wales', 'site.address' => '1 Example Street, London', 'site.vat_number' => 'GB123456789']);
+        $this->assertSame('Example Trading Ltd, a private limited company, company number 01234567, registered in England and Wales, registered office: 1 Example Street, London, VAT number GB123456789', LegalIdentity::summary());
+        $this->get(route('legal.terms'))->assertSee('operated by Example Trading Ltd, a private limited company, company number 01234567, registered in England and Wales, registered office: 1 Example Street, London', false);
+        $this->get(route('status'))->assertSee('Registered office')->assertSee('Example Trading Ltd, a private limited company, company number 01234567, registered in England and Wales, VAT number GB123456789', false);
+        $this->assertTrue(LegalIdentity::isPublished());
+    }
+
+    public function test_an_unknown_business_structure_is_ignored(): void
+    {
+        $_ENV['SITE_ENTITY_TYPE'] = $_SERVER['SITE_ENTITY_TYPE'] = 'charity';
+        try {
+            $this->assertNull((require config_path('site.php'))['entity_type']);
+        } finally {
+            unset($_ENV['SITE_ENTITY_TYPE'], $_SERVER['SITE_ENTITY_TYPE']);
+        }
+    }
+
+    /** Owner instruction 2026-10-30: unapproved legal wording is marked DRAFT — LEGAL REVIEW REQUIRED until the review is recorded. */
+    public function test_every_legal_page_is_marked_draft_until_the_review_is_recorded(): void
+    {
+        $pages = ['legal.terms', 'legal.privacy', 'legal.refunds', 'legal.application-terms'];
+        config(['site.legal_reviewed' => null]);
+        foreach ($pages as $page) {
+            $this->get(route($page))->assertOk()->assertSee('DRAFT — LEGAL REVIEW REQUIRED.')->assertSee('has not yet been approved by a legal adviser');
+        }
+        config(['site.legal_reviewed' => '2026-11-15']);
+        foreach ($pages as $page) {
+            $this->get(route($page))->assertOk()->assertDontSee('DRAFT — LEGAL REVIEW REQUIRED')->assertSee('Legal review recorded 2026-11-15');
+        }
     }
 }

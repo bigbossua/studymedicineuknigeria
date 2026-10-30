@@ -34,3 +34,7 @@ brand/photos/*.png
 # per-university OG cards are rendered on demand
 public/images/og/schools/
 __pycache__/
+
+# written by ops/import-decisions.sh in a release directory
+/.facts-imported
+/.facts-imported.reverted-*

@@ -948,6 +948,11 @@ On `claude/new-session-p6gdm6`, not deployed. Reports in `docs/audit/`: `SITE-CO
 - The sitemap goes from 36 to 39 URLs: Aberdeen, Buckingham and the cost page join.
 - Cambridge, King's College London and Queen's Belfast stay indexed by the owner's explicit exception of 2026-10-30. Their register rows D14, D27 and D34 stay RESEARCH with an exception marker (`ops/seo/build-register.py`); no demand evidence is claimed.
 
+**Rollback safety (2026-10-30):**
+- Problem: a code rollback used to leave the imported fact decisions behind. On a production mirror the old code then served 47 URLs instead of 36.
+- Fix: the deploy now lists the decision files it applied, and every rollback (manual or automatic) undoes them first with `smukn:facts-revert`.
+- Proven by `ops/qa/rollback-proof/run.sh`: after the revert, 36 URLs and identical facts.
+
 **Owner-only blockers:** trading identity, ICO registration, model cancellation form, complaints procedure, legal review, Stripe support email and test key, three leads waiting.
 
 ## Open items carried forward

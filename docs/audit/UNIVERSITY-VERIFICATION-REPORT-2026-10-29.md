@@ -52,7 +52,7 @@ Flags stay until each fact is re-read. About 121 remain after today; this is an 
 Labels used below: **[Fact]** is read from production or from the code; **[Expected]** follows from the code and today's production state; **[Recommendation]** is advice; **[Owner]** marks an owner action.
 
 - **[Fact]** The live sitemap has 36 URLs today (page-excerpts run 40949529039, read 29 October 20:29 UTC). They include Cambridge, King's College London and Queen's Belfast, but not Aberdeen, Buckingham or the cost page.
-- **[Expected]** Schools with all five core facts go from 7 to 18 after the import. That is factual verification only; indexing is decided separately, as below.
+- **[Expected]** Schools with all five core facts go from 7 to 17 after the import. The figure was 18 on 29 October; the watcher flagged Imperial's English requirement on 30 October (Operations Summary run 41009504601). That is factual verification only; indexing is decided separately, as below.
 - **[Expected]** After the deploy the sitemap has **39 URLs**: three are added and none removed. This was recalculated on 30 October with a production-mode build that mirrors production; see `PRE-DEPLOYMENT-CHECKLIST.md` §3 for the method and the full list.
 
   | Change | URL | Why |
@@ -118,7 +118,7 @@ V = verified, NP = not published by the university, SC = flagged by the watcher,
 | Edge Hill University | VOP | SC | — | — | VOP | 0/5 | 0/5 | 1 | — | D22 REJECTED | no → no | Owner: register REJECTED, so consider unpublishing in Admin; already noindex |
 | University of Edinburgh | V | V | V | V | V | 5/5 | 5/5 | 0 | — | D11 PUBLISHED | yes → yes | Indexed: register approved, facts verified; keep under the watcher |
 | Hull York Medical School | V | SC | — | SC | SC | 1/5 | 1/5 | 6 | — | D23 RESEARCH | no → no | Stays noindex; re-read the flagged or missing core facts |
-| Imperial College London | SC | NP | V | V | SC | 3/5 | 5/5 | 7 | Intl, Route | D24 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
+| Imperial College London | SC | NP | V (SC since 30 Oct) | V | SC | 3/5 | 4/5 (5/5 before the 30 October flag) | 7 | Intl, Route | D24 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | Keele University | V | SC | SC | V | SC | 2/5 | 5/5 | 7 | WAEC, Eng, Route | D25 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | Kent and Medway Medical School | SC | SC | SC | V | SC | 1/5 | 5/5 | 7 | Intl, WAEC, Eng, Route | D26 RESEARCH | no → no | Owner: facts verified, but no demand evidence or publication approval in the register, so noindex. Index only after a live register row |
 | King's College London | V | NP | V | V | V | 5/5 | 5/5 | 1 | — | D27 RESEARCH + owner exception (2026-10-30) | yes → yes | Owner exception (2026-10-30): stays indexed; no demand evidence claimed. Revisit with Search Console data |

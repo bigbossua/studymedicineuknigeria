@@ -6,7 +6,14 @@ Work on the plan in `docs/audit/LAUNCH-READINESS-AUDIT-2026-10-29.md`:
 - **What was done:** repository fixes with tests, read-only checks of production, and official-page reads from GitHub runners.
 - **What was not done:** no deploy, no change to the server, environment, DNS, Stripe, database records, legal declarations or email; no message to a lead or a university.
 
-## Verdict: NOT READY (to take payments)
+## Two separate verdicts (updated 2026-10-30)
+
+| Question | Verdict |
+|---|---|
+| **Technical deployment** of the branch | **Ready, subject to the owner's explicit approval.** Tests, rehearsal and CI pass; the post-deploy sitemap is computed exactly (39 URLs); a rollback restores the previous behaviour automatically, proven on a production mirror (`PRE-DEPLOYMENT-CHECKLIST.md` §3–§5) |
+| **Public commercial launch** (taking students' money) | **NOT READY.** The legal and Stripe blockers below are unresolved; the deploy does not resolve them |
+
+## Verdict on commercial launch: NOT READY (to take payments)
 
 **Payments are open** in production with a live Stripe key. Required consumer-law information is still missing:
 - the trader's legal name and geographic address;
@@ -98,7 +105,7 @@ The server verifies the webhook signature and never trusts the return URL.
 
 ## Production changes awaiting approval
 
-1. **Deploy this branch** with *Deploy to Hostinger*, target production. It runs the production rehearsal, takes a backup, needs approval, and rolls back on a failed smoke test. Effect:
+1. **Deploy this branch** with *Deploy to Hostinger*, target production. It runs the production rehearsal, takes a backup and needs approval. On a failed smoke test it rolls back automatically, now undoing the release's fact decisions too (`PRE-DEPLOYMENT-CHECKLIST.md` §5). Effect:
    - legal-name fallback;
    - overdue-lead indicator;
    - watcher fix;

@@ -3,6 +3,7 @@
 # Usage: ops/rollback.sh user@host port staging|production [site_url]   (SSH_OPTS as for deploy.sh)
 # The database is never restored automatically: migrations are add-only for one release (docs/architecture/21.4),
 # and the script names the backup taken before the release being abandoned, for a deliberate restore (ops/RESTORE.md).
+# The fact decisions that release applied on deploy are undone first (ops/revert-release-facts.sh; REVERT_FACTS=0 skips).
 set -euo pipefail
 HOST=${1:?user@host}; PORT=${2:?ssh port}; TARGET=${3:?staging|production}; SITE_URL=${4:-}
 case "$TARGET" in staging|production) ;; *) echo "target must be staging or production"; exit 1;; esac
@@ -26,7 +27,8 @@ SITE
   exit 0
 fi
 
-$SSH "$HOST" bash -s <<REMOTE
+rc=0   # a failed fact revert (exit 4) still lets the smoke test run, then fails this rollback
+$SSH "$HOST" bash -s <<REMOTE || rc=$?
 set -euo pipefail
 CUR=\$(readlink $APP/current 2>/dev/null || true); [ -n "\$CUR" ] || { echo "no current release on $TARGET"; exit 2; }
 CUR=\${CUR%/}; PREV=""
@@ -37,6 +39,13 @@ while read -r d; do d=\${d/#\~/\$HOME}; [ "\$d" = "\$CUR" ] && continue; [ -d "\
 [ -n "\$PREV" ] || { echo "no earlier live release of $TARGET to roll back to"; exit 2; }
 PHP=""; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v "\$c" 2>/dev/null) && "\$p" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done
 [ -n "\$PHP" ] || { echo "no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)"; exit 3; }
+# Undo the fact decisions the abandoned release applied on deploy (ops/import-decisions.sh listed them), with that
+# release's own code, so the earlier release is not served facts it was never deployed with. A failure does not stop
+# the code rollback (the reason to roll back may be a broken release) but fails this run loudly at the end.
+FACTS_OK=1
+if [ "${REVERT_FACTS:-1}" != 1 ]; then echo "fact revert skipped on request (revert_facts=false)"
+elif [ -f "\$CUR/.facts-imported" ]; then bash "\$CUR/ops/revert-release-facts.sh" "\$CUR" "\$PHP" || FACTS_OK=0
+else echo "no fact decisions recorded for \$(basename "\$CUR"): nothing to undo"; fi
 ln -sfn "\$PREV" $APP/current
 cd $APP/current && \$PHP artisan config:cache >/dev/null && \$PHP artisan route:cache >/dev/null && \$PHP artisan view:cache >/dev/null
 # the document root is a real folder (ops/publish-docroot.sh): it gets the earlier release's public files again
@@ -46,6 +55,9 @@ echo "\$PREV" >> $APP/releases/.history
 echo "rolled back $TARGET: \$(basename "\$CUR") -> \$(basename "\$PREV")"
 B=\$(ls -1 ~/backups/$TARGET-db-\$(basename "\$CUR").* 2>/dev/null | head -1 || true)
 [ -n "\$B" ] && echo "database backup taken before \$(basename "\$CUR") was deployed: \$B (restore only deliberately, see ops/RESTORE.md)" || echo "no database backup found for \$(basename "\$CUR")"
+[ "\$FACTS_OK" = 1 ] || { echo "FACT REVERT FAILED: the code is rolled back, but facts imported by \$(basename "\$CUR") may remain; run 'bash \$CUR/ops/revert-release-facts.sh \$CUR' on the server, or restore \$B deliberately (ops/RESTORE.md)"; exit 4; }
 REMOTE
+[ "$rc" = 0 ] || [ "$rc" = 4 ] || exit "$rc"
 
 if [ -n "$SITE_URL" ]; then ops/smoke.sh "$SITE_URL" "$TARGET"; fi
+exit "$rc"

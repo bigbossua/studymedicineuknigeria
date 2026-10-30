@@ -46,6 +46,12 @@ Rollback = repoint `current` to the previous release and clear caches. Takes sec
   release that actually went live (`releases/.history`; a deploy that failed before its switch is never a candidate),
   rebuilds caches, smoke-tests, and names the database backup taken before the abandoned release. Production runs in
   the `production` environment, so the required reviewer approves a rollback too.
+- **Fact decisions (since 2026-10-30):** the deploy records which decision files it applied in
+  `<release>/.facts-imported` (`ops/import-decisions.sh`). Both rollback paths first run
+  `ops/revert-release-facts.sh` with the abandoned release's code (`smukn:facts-revert`). It restores the facts those
+  files changed, keeps facts changed since, and reopens the import ledger, so the earlier release never serves facts
+  it was not deployed with. The *Roll back Hostinger release* input `revert_facts` (default `true`) can skip it.
+  Proven on a production mirror with `ops/qa/rollback-proof/run.sh` (`docs/audit/PRE-DEPLOYMENT-CHECKLIST.md` §5).
 - **Database:** never restored automatically. Restore deliberately from `~/backups/<target>-db-<release>.sql.gz` or an
   off-site artifact (`ops/RESTORE.md`).
 Database migrations are written to be backward-compatible for one release (add-only; destructive changes land one release after the code stops using the column).

@@ -68,7 +68,7 @@ echo "db backup verified: \$BK (\$(du -h "\$BK" | cut -f1))"
 \$PHP artisan smukn:reference-sync   # repository reference data; never touches reviewed facts or owner prices
 # Stripe products and one-time prices for the service fees (idempotent; a failure here only delays it to the first checkout)
 if [ -n "\$STRIPE_SECRET" ]; then \$PHP artisan smukn:stripe-sync || echo "warn: Stripe catalogue not synced now; the first checkout creates or finds it"; fi
-for f in data/verification/decisions-*.csv; do [ -e "\$f" ] && \$PHP artisan smukn:facts-import "\$f"; done
+bash ops/import-decisions.sh "\$PHP"   # lists the files this release applied in .facts-imported (undone on rollback)
 \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && \$PHP artisan event:cache
 PREV=\$(readlink $APP/current 2>/dev/null || true)
 ln -sfn $REL $APP/current
@@ -133,7 +133,7 @@ if [ -n "$SITE_URL" ]; then
       # (kept for diagnosis, never deleted)
       $SSH "$HOST" 'R=$HOME/apps/smukn-'"$TARGET"'/releases; F=$R/.cutover; IFS="|" read -r D OLD < "$F"; [ -e "$OLD" ] && [ -f "$D/.smukn-docroot" ] && mv "$D" "$D.smukn-failed-'"$TS"'" && mv "$OLD" "$D" && mv "$F" "$F.reverted" && rm -f "$R/.docroot" && echo "previous site restored at $D"'
     fi
-    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); PHP=\"\"; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v \"\$c\" 2>/dev/null) && \"\$p\" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done; [ -n \"\$PHP\" ] || { echo \"no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)\"; exit 3; }; if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && echo \$PREV >> $APP/releases/.history && cd $APP/current && \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && echo rolled back to \$PREV; f=$APP/releases/.docroot; [ ! -f \$f ] || bash $APP/current/ops/publish-docroot.sh \$(cat \$f) \$(cd $APP && pwd); else echo 'no previous release to roll back to'; fi"
+    $SSH "$HOST" "PREV=\$(sed 's/previous=//' $APP/releases/.last_switch); PHP=\"\"; for c in php83 php8.3 /opt/alt/php83/usr/bin/php php; do p=\$(command -v \"\$c\" 2>/dev/null) && \"\$p\" -r 'exit(PHP_VERSION_ID >= 80300 ? 0 : 1);' && { PHP=\$p; break; }; done; [ -n \"\$PHP\" ] || { echo \"no PHP 8.3+ command-line binary found (tried php83, php8.3, /opt/alt/php83/usr/bin/php, php)\"; exit 3; }; CUR=\$(readlink $APP/current || true); if [ -n \"\$PREV\" ] && [ -f \"\$CUR/.facts-imported\" ]; then bash \$CUR/ops/revert-release-facts.sh \$CUR \$PHP || echo \"FACT REVERT FAILED: the earlier release may show facts it was not deployed with; restore the database backup taken before this deploy (ops/RESTORE.md)\"; fi; if [ -n \"\$PREV\" ]; then ln -sfn \$PREV $APP/current && echo \$PREV >> $APP/releases/.history && cd $APP/current && \$PHP artisan config:cache && \$PHP artisan route:cache && \$PHP artisan view:cache && echo rolled back to \$PREV; f=$APP/releases/.docroot; [ ! -f \$f ] || bash $APP/current/ops/publish-docroot.sh \$(cat \$f) \$(cd $APP && pwd); else echo 'no previous release to roll back to'; fi"
     exit 1
   fi
 fi

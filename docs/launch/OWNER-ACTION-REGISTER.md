@@ -1,72 +1,84 @@
-# Owner action register (2026-10-30)
+# Owner action register (updated 2026-10-31)
 
 **Status values:** complete · awaiting owner · awaiting legal review · blocked.
-**Blocks:** D = technical deployment; L = commercial launch (taking students' money); — = neither, but recommended.
+**Blocks:**
+- **D:** technical deployment.
+- **L:** commercial launch (accepting student payments).
+- **—:** neither, but recommended.
 
-Settings named `SITE_*` are GitHub → Settings → Environments → **production** → Environment variables. They are public values, not secrets. Apply them with *Update server settings* (target `production`), then check with *Live verification*.
+**Who:**
+- **Owner:** only the owner can do it.
+- **Adviser:** a qualified legal adviser.
+- **Claude:** Claude can complete it once the input exists.
+
+**Settings.** `SITE_*` values go in GitHub → Settings → Environments → **production** → Environment variables. They are public values, not secrets. Apply them with *Update server settings* (target `production`), then check with *Live verification*.
 
 ## Legal identity and registrations
 
-| # | Item | Status | Exact action | Who | Evidence to close | Blocks |
+| # | What is missing | Why it matters | Evidence that closes it | Blocks | Who | Status |
 |---|---|---|---|---|---|---|
-| O1 | Legal name and business structure | awaiting owner | State whether the business is a sole trader, partnership, limited company or LLP. Set `SITE_LEGAL_NAME` (company: registered name; sole trader: own name, optionally "trading as Study Medicine UK Nigeria") and `SITE_ENTITY_TYPE` (`sole_trader` / `partnership` / `limited_company` / `llp`) | Owner | Our status, footer, terms and emails show the name; Admin checklist "Trading identity published" lists no missing name or structure | L |
-| O2 | Geographic address | awaiting owner | Set `SITE_ADDRESS`: where the business is established (a company: its registered office). Not a PO box unless the adviser confirms it is enough | Owner | Contact and Our status show it; the checklist no longer lists `SITE_ADDRESS` | L |
-| O3 | Company details (only if a company or LLP) | awaiting owner | Set `SITE_COMPANY_NUMBER` and `SITE_REGISTERED_IN` (e.g. "England and Wales") | Owner | Terms of use read "…, company number …, registered in …, registered office: …" | L (if a company) |
-| O4 | ICO data protection fee | awaiting owner | Complete the ICO self-assessment (ico.org.uk → Data protection fee → "Do I need to pay a fee?"). The pack §2 explains why an exemption looks unlikely; tier 1 is £52 if turnover ≤ £632,000 or staff ≤ 10. Pay if required, then set `SITE_ICO_NUMBER`. If exempt, keep the ICO's result and tell Claude | Owner | ICO registration reference (or the saved exemption result); Our status shows "Registration Z…" | L |
-| O5 | VAT number | awaiting owner | Set `SITE_VAT_NUMBER` only if VAT-registered; otherwise say "not registered" | Owner | Answer recorded | — |
-| O6 | Hosting region (privacy notice transfers) | awaiting owner | Read the data-centre location in hPanel; set `SITE_HOSTING_REGION` (e.g. "the United Kingdom") | Owner | Privacy notice states it | L |
-| O7 | Nigeria Data Protection Commission position | awaiting legal review | The adviser assesses whether NDPC registration applies (Our status says "status to be published") | Adviser | A written position; Our status updated | L |
+| O1 | Legal name and business structure (`SITE_LEGAL_NAME`, `SITE_ENTITY_TYPE`) | The law requires the trader's name before a distance contract (CCR 2013 Sch. 2; E-Commerce Regs reg. 6) | Footer, terms and Our status show the name and structure; the Admin checklist "Trading identity published" no longer lists them | L | Owner (supply); Claude (nothing to build) | awaiting owner |
+| O2 | Geographic business address (`SITE_ADDRESS`; a company: registered office) | The same disclosure rules; complaints and cancellations need an address | Contact and Our status show it | L | Owner | awaiting owner |
+| O3 | Company number and part of the UK (`SITE_COMPANY_NUMBER`, `SITE_REGISTERED_IN`), only if a company or LLP | Company disclosure rules (registered name, number, registered office on the website) | Terms read "…, company number …, registered in …" | L (if a company) | Owner | awaiting owner |
+| O4 | ICO data protection fee decision (`SITE_ICO_NUMBER`) | The site holds identity documents; the ICO expects a fee unless exempt (tier 1 £52) | The ICO registration reference, or the saved self-assessment result showing an exemption | L | Owner | awaiting owner |
+| O5 | VAT status (`SITE_VAT_NUMBER`) | The VAT number must be shown if registered | The number, or "not registered" | — | Owner | awaiting owner |
+| O6 | Hosting region (`SITE_HOSTING_REGION`) | The privacy notice must state where data is held, for international transfers | The privacy notice states it | L | Owner (read it in hPanel) | awaiting owner |
+| O7 | Nigeria Data Protection Commission position | Our status says "status to be published" | The adviser's written position; Our status updated | L | Adviser | awaiting legal review |
 
 ## Legal documents
 
-| # | Item | Status | Exact action | Who | Evidence to close | Blocks |
+| # | What is missing | Why it matters | Evidence that closes it | Blocks | Who | Status |
 |---|---|---|---|---|---|---|
-| O8 | Legal review | awaiting legal review | The adviser reviews the four legal pages and `LEGAL-REVIEW-PACK.md` items L1–L13. Claude applies the approved wording; then set `SITE_LEGAL_REVIEWED` to the review date | Adviser, then owner | The adviser's written approval; the DRAFT banner disappears | L |
-| O9 | Cancellation form | awaiting legal review | The adviser copies CCR 2013 Schedule 3 Part B (published as an image on legislation.gov.uk) and confirms the UK wording (the pack §3 gives the Directive text for comparison) | Adviser | Approved text; it appears on the refund policy and in the contract confirmation | L |
-| O10 | Complaints procedure | awaiting owner | Decide the complaints address, the stage 1 and stage 2 response targets and the reviewer (`LEGAL-REVIEW-PACK.md` §5); the adviser approves | Owner, adviser | Approved text published, linked from Contact and the terms | L |
-| O11 | ADR position | awaiting legal review | The adviser confirms what, if anything, the trader must now say about ADR (the 2015 Regulations were revoked; the DMCCA 2024 ADR chapter has been in force since 6 April 2026) | Adviser | A written position | L |
-| O12 | Contract confirmation email (CCR reg. 16) | awaiting legal review | Approve the content list in the pack §6; Claude then builds it | Adviser, then Claude | Email template merged and tested | L |
+| O8 | Legal review of the four pages and the pack's clauses L1–L13 | Every legal page is marked DRAFT — LEGAL REVIEW REQUIRED; the refund timing conflicts with the 14-day rule (pack C4) | The adviser's written approval. Claude applies the wording; the owner sets `SITE_LEGAL_REVIEWED` and the banner disappears | L | Adviser; then Claude and Owner | awaiting legal review |
+| O9 | UK model cancellation form (CCR Sch. 3 Part B) | Required before the contract (reg. 13(1)(b)); legislation.gov.uk publishes it only as an image | The approved text, shown on the refund policy and in the contract confirmation | L | Adviser; then Claude | awaiting legal review |
+| O10 | Complaints procedure: address, stage targets, reviewer | CCR Sch. 2 (k); also the practical route for unhappy students | Approved text published and linked from Contact | L | Owner (decide); Adviser (approve); Claude (publish) | awaiting owner |
+| O11 | ADR position | The 2015 ADR Regulations were revoked; the DMCCA 2024 chapter has been in force since 6 April 2026 | The adviser's written position | L | Adviser | awaiting legal review |
+| O12 | Contract-confirmation email (CCR reg. 16) | The trader must confirm the contract, with the Sch. 2 information, on a durable medium before performance begins | Template built from the approved wording and tested | L | Adviser (wording); Claude (build) | awaiting legal review |
 
 ## Payments and Stripe
 
-| # | Item | Status | Exact action | Who | Evidence to close | Blocks |
+| # | What is missing | Why it matters | Evidence that closes it | Blocks | Who | Status |
 |---|---|---|---|---|---|---|
-| O13 | Stripe account details | awaiting owner | Stripe Dashboard (live): set the support email, the statement descriptor, and the business name and address (= O1, O2) | Owner | *Live verification* shows `support_email_set: true` | L |
-| O14 | Stripe test key | awaiting owner | Add the repository secret `STRIPE_TEST_SECRET` (`sk_test_…`) | Owner | *Stripe test-mode journey* passes T1–T3 | L |
-| O15 | £125 live rehearsal | awaiting owner | Approve and perform `STRIPE-TEST-AND-LIVE-REHEARSAL.md` §6 (pay £125 with your own card, then refund) | Owner | Payment and refund ids; Admin shows REFUNDED_FULL | L |
-| O16 | Payments open decision | awaiting owner | Payments are open in production with a live key. Confirm that no student is approved for service selection until O1–O15 are done (the recommended option), or ask Claude to propose a closure | Owner | Written decision | L |
+| O13 | Stripe Dashboard details: support email, statement descriptor, business name and address | Shown on receipts and Checkout; must match O1 and O2 | *Live verification* reports `support_email_set: true` | L | Owner | awaiting owner |
+| O14 | Repository secret `STRIPE_TEST_SECRET` | The only way to prove T1–T3 against real Stripe, in test mode | *Stripe test-mode journey* passes | L | Owner (key); Claude (run) | blocked on owner |
+| O15 | £125 live rehearsal and refund | Proves the live charge, webhook, receipt and refund once | The payment and refund ids; Admin shows REFUNDED_FULL | L | Owner (approve and pay); Claude (prepare and verify) | awaiting owner |
+| O16 | **Commercial-launch approval** (`SITE_COMMERCIAL_LAUNCH_APPROVED`, the approval date) | After this deploy, production starts no new payment until it is set; existing payments and refunds are unaffected | Set only after B1–B17 of the launch checklist; then *Live verification* shows `commercial_launch_approved: true` and payments open | L (this **is** the launch switch) | Owner | awaiting owner (deliberately last) |
 
 ## Students and operations
 
-| # | Item | Status | Exact action | Who | Evidence to close | Blocks |
+| # | What is missing | Why it matters | Evidence that closes it | Blocks | Who | Status |
 |---|---|---|---|---|---|---|
-| O17 | Three overdue enquiries | awaiting owner | Admin → Leads → overdue: reply to each from the business mailbox, then set "contacted" (`STUDENT-JOURNEY-TEST-REPORT.md` §3) | Owner | Three leads marked contacted | — (urgent) |
-| O18 | Second admin account | awaiting owner | Create a second admin with two-step verification, so the business does not depend on one person | Owner | Admin → Users shows 2 admins enrolled | L (recommended) |
-| O19 | Restore test | awaiting owner | Monthly: restore the latest off-site backup into a throwaway database (`ops/RESTORE.md`); record the date | Owner | Dated note | — |
+| O17 | **Replies to the three overdue enquiries** | They are the site's only conversions; the 2-working-day promise has been missed | Download the artifact `lead-drafts-encrypted-41168273841` (run 41168273841, expires 7 Nov) and decrypt it with the backup passphrase, as in `ops/RESTORE.md`. Review and edit each draft, send it from the business mailbox, then set each lead to "contacted" | — (urgent) | Owner (send); Claude (drafts done) | awaiting owner |
+| O18 | Second admin with two-step verification | Avoids a single point of failure | Admin → Users shows 2 admins enrolled | L (recommended) | Owner | awaiting owner |
+| O19 | Monthly restore test | Proves backups restore | A dated note. The daily backup also restore-tests automatically; attempt 2 of run 41030369264 passed | — | Owner | ongoing |
+| O20 | Pin the server's SSH host key (`HOSTINGER_SSH_KNOWN_HOSTS`) | Every server workflow currently trusts the key on first use; the 30 October failure also showed `ssh-keyscan` timing out | The variable is set, and the workflows log `SSH_STRICT=yes` | — | Owner (read the key in hPanel, or let Claude print it from a run) | awaiting owner |
 
 ## Deployment
 
-| # | Item | Status | Exact action | Who | Evidence to close | Blocks |
+| # | What is missing | Why it matters | Evidence that closes it | Blocks | Who | Status |
 |---|---|---|---|---|---|---|
-| O20 | Deployment approval | awaiting owner | Approve *Deploy to Hostinger* (target production) for the branch head named in `FINAL-LAUNCH-CHECKLIST.md`, after a fresh *Operations summary* | Owner | Deploy run green; *Live verification* afterwards shows the expected sitemap | D |
-| O21 | Cardiff fee | awaiting owner | Cardiff's 2026/27 overseas fee page now redirects to the 2027-entry page, where the fee is "awaiting confirmation". Decide: keep the 2026/27 figure as historical, or record "not published" until Cardiff confirms 2027/28. The watcher will probably flag it tonight, after which Cardiff goes noindex automatically (38 URLs) | Owner or reviewer | Decision file imported; Cardiff indexed or not, by the rule | — |
+| O21 | Deployment approval for the branch head in the final report | Production still runs `5d76858` | The deploy run is green; *Live verification* afterwards shows **38** sitemap URLs (Cardiff now noindex) and payments closed by the gate | D | Owner | awaiting owner |
 
-## Search and measurement
+## Facts and SEO
 
-| # | Item | Status | Exact action | Who | Evidence to close | Blocks |
+| # | What is missing | Why it matters | Evidence that closes it | Blocks | Who | Status |
 |---|---|---|---|---|---|---|
-| O22 | Search Console feed | awaiting owner | Add the secret `GSC_SERVICE_ACCOUNT_JSON` and the variable `SITE_GSC_PROPERTY`, then run *Update server settings* (`docs/ops/SEARCH-CONSOLE-AND-GA4.md`) | Owner | Admin → Search shows data; *Search report* runs | — |
-| O23 | Analytics decision | awaiting owner | Set `SITE_ANALYTICS_DECISION` to `first_party` or `ga4` (and `SITE_GA4_ID` if GA4) | Owner | Live verification shows the decision | — |
-| O24 | Semrush data | blocked | The account has no API units (`no_api_units`, 30 October); buying them is excluded by the owner's rules. Instead export the Nigeria database keyword reports from the Semrush web interface and send the CSV files | Owner | Files imported with `smukn:semrush-import`; register rows updated | — |
-| O25 | Noindex schools | awaiting owner | After 8 weeks of Search Console data, decide which of the 8 schools at 5/5 core facts (Aston, Brunel, Chester, Keele, Kent and Medway, Lancaster, Surrey, Swansea) have Nigerian demand evidence (`OPERATIONS-MANUAL.md` §8) | Owner | Register rows updated with the evidence; exceptions stay limited to Cambridge, KCL and QUB | — |
+| O22 | Cardiff 2027/28 overseas fee | Cardiff's page is noindex until the fee and international acceptance are re-verified | Cardiff publishes the fee; Claude reads it and records the fact; register D08 returns to PUBLISHED | — | Claude (when Cardiff publishes) | waiting on Cardiff |
+| O23 | Review of the changed quotes at Hertfordshire (3) and City St George's (2), and of Cardiff's IB wording | The runner watch shows the recorded wording is no longer on those pages; none of these schools is indexed | A decision file per school: verified with the new wording, or source changed | — | Claude | open (next cycle) |
+| O24 | Leicester pages unreadable from GitHub runners ("Just a moment…") as well as from the server | Leicester facts cannot be watched automatically at all | A manual read, or removal of Leicester facts from public display (the page is not indexed) | — | Owner or Claude | open |
+| O25 | Search Console feed (repository secret `GSC_SERVICE_ACCOUNT_JSON`; steps in `OPERATIONS-MANUAL.md` §7) | The only first-party demand evidence; needed before any further school is indexed | Admin → Search shows data; *Search report* runs | — | Owner | awaiting owner |
+| O26 | Analytics decision (`SITE_ANALYTICS_DECISION`) | Records the owner's choice between first-party analytics and GA4 | *Live verification* shows it | — | Owner | awaiting owner |
+| O27 | Semrush exports (no API units; none will be bought) | Semrush is the SEO research input; without exports there is no keyword evidence | `semrush-ng-YYYY-MM-DD.csv` (main 50 themes) and `semrush-ng-schools-YYYY-MM-DD.csv` (36 school themes) exported from the Semrush web interface and imported as `data/semrush/README.md` describes | — | Owner (export); Claude (import, then register decisions) | awaiting owner |
+| O28 | Decisions on further school pages | Eight schools have 5/5 core facts but no demand evidence | Evidence from O25 or O27 recorded in each register row, then the owner's approval | — | Owner (approve); Claude (record) | awaiting evidence |
 
-## Completed this programme (no owner action needed)
+## Completed in this cycle (no owner action)
 
 | Item | Evidence |
 |---|---|
-| A rollback undoes the release's fact decisions automatically | commit 8f5fcea; `PRE-DEPLOYMENT-CHECKLIST.md` §5 |
-| The deploy only reads the live Stripe catalogue | commit 07c1b63; `PricingVisibilityTest` |
-| One legal identity configuration; no wording that assumes a company | `App\Support\LegalIdentity`; `LegalIdentityTest` |
-| DRAFT — LEGAL REVIEW REQUIRED banner on every unapproved legal page | `x-legal-version`; `LegalIdentityTest` |
-| Lead reply drafts in Admin, sending nothing | `App\Support\LeadReplyDraft`; `LeadFollowUpTest` |
-| The nine indexed schools' and the cost page's facts re-checked against official pages today | `evidence/REVERIFY-2026-10-30.md`: 52 of 54 still match; 2 changed (Cardiff, O21) |
+| New payments gated behind the commercial-launch approval | `CommercialLaunchGateTest`; commit `f52be93` |
+| Watcher follows redirects; watcher health reported | `SourceWatcherTest`; *Operations summary* 41168271747 |
+| Runner-side watch for refused hosts | *Blocked sources watch* 41168890758 |
+| Cardiff's withdrawn fee hidden; register, publication list and page audit consistent | commits `5ce3b62`, `8abff80`; mirror shows 38 URLs |
+| Three lead drafts generated and encrypted, nothing sent | run 41168273841 (`drafts=3`) |
+| Failed 30 October backup re-run, with restore test | run 41030369264, attempt 2: success |
+| School-level Semrush workflow prepared | `data/semrush/school-lookup-sheet.csv`; `SemrushImportTest` |

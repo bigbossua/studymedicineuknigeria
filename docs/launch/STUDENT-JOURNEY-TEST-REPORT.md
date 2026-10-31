@@ -1,6 +1,15 @@
-# Student journey test report (2026-10-30)
+# Student journey test report (updated 2026-10-31)
 
 **Data:** synthetic only: accounts `journey-…@example.test`, the seeded local demo accounts, and the Stripe stand-in. **Where:** this branch, served locally (`php -S`) on a local SQLite database. Nothing touched production, Stripe or any real person.
+
+**Re-run 2026-10-31** on the current branch, with the payment gate and the watcher changes. All six browser journeys passed with `problems: []`:
+- `public-journey`;
+- `journey` (student);
+- `staff-journey`;
+- `payment-journey`, phone and desktop;
+- `stripe-e2e` for T1, T2 and T3.
+
+The payment gate is off outside production, so these journeys exercise the full payment path. `CommercialLaunchGateTest` covers the gated production behaviour.
 
 ## 1. Results by stage
 
@@ -41,55 +50,55 @@ There are also 4 `submission_events` and 2 `admin_actions`. Document views and d
 | Staff areas need the staff role and two-step verification | Pass | `TwoFactorTest`; `EnsureStaff`, `EnsureTwoFactor` (unchanged) |
 | Documents never at public URLs | Pass: private disk, served only through an authorised controller, every access logged | `FinalSecurityAuditTest::test_documents_live_only_on_the_private_disk…`, `::test_uploads_and_downloads_are_written_to_the_audit_trail`; `DocumentSecurityTest` |
 | Private pages not indexed or cached | Pass | `PublicSeoTest::test_private_routes_carry_noindex_and_no_store_headers` |
-| Emails disclose no unnecessary personal data | Pass. They contain the first name, the application number, document titles and university names; message content is never emailed ("You have a new message in your portal") | `ApplicationNotification`; `NotificationRenderingTest` |
+| Emails disclose no unnecessary personal data | Pass. They contain the first name, the application number, document titles and university names; message content is never emailed ("You have a new message in your portal") | `ApplicationNotification`; `NotificationRenderTest` |
 | Stripe data minimised | Pass: the stored webhook keeps ids, amounts and statuses, not name, email, address or card | `StripeWebhookController::minimal` |
 | Funnel events hold no personal data | Pass | `App\Support\Funnel`; privacy tests |
 | Overdue enquiries visible to staff | Pass: dashboard and Admin → Leads highlight leads still "new" after 2 working days | `LeadFollowUpTest` |
 
-## 3. Workstream 5: the three unanswered enquiries
+## 3. The three unanswered enquiries (Workstream 3; updated 2026-10-31)
 
-**Identified.** The 29 October audit and the *Operations summary* (counts only) show three eligibility-checker leads still marked new, past the 2-working-day promise on the Contact page.
+**Identified.** *Operations summary* (counts only) shows 3 leads, all still "new" and past the 2-working-day promise. Production has 0 student accounts.
 
-**Why the drafts are not in this report.** The repository and its GitHub Actions logs are public. A lead's name, email and answers are personal data, and reading them out of production into a log or this file would publish them. So no individual draft is written here.
+**Individual drafts, produced without exposing anyone.** The repository and its GitHub Actions logs are public, so a lead's name, email or answers must never be printed.
 
-**What was built instead (in this branch, deployed with the next release).**
-- Admin → Leads now shows, under each lead, a **Draft reply (review and send yourself)**, with an "Open in your email program" link.
-- It is built only from that lead's own answers: qualification, sciences, English, UCAT, intended start, and the date of the check. It uses the route assessment the checker already showed them, so it adds no requirement, date or promise.
-- For a lead past 2 working days it apologises for the delay. It says the assessment is not an admissions decision, links the pages that hold each school's published requirements, and invites a reply or registration, without any guarantee.
-- **Nothing is sent by the site.** Test: `LeadFollowUpTest::test_an_overdue_lead_gets_a_reply_draft_from_its_own_answers_and_nothing_is_sent`.
+The workflow **Lead reply drafts (encrypted, nothing sent)** (`lead-drafts.yml`, run 41168273841, 31 October):
+1. builds one draft per lead **on the server**, from that lead's own answers and the assessment the checker showed them (`App\Support\LeadReplyDraft`, the same code as Admin → Leads after the deploy);
+2. encrypts the drafts **on the server** with the backup passphrase (AES-256-CBC, PBKDF2 200k, as the backups are);
+3. downloads only the ciphertext, verifies its checksum, deletes it from the server and uploads it as a 7-day artifact.
 
-**Example (synthetic lead "Ada Example", WAEC only, 2028 entry), as the test produces it:**
+The log shows only `drafts=3` and the encrypted file's path. The artifact is `lead-drafts-encrypted-41168273841` (id 13029637886, expires 7 November 2026).
 
-```
-Dear Ada,
+**What each draft contains:**
+- the address it should go to and the date of the enquiry;
+- an apology for the delay;
+- the lead's answers;
+- the routes the checker showed, with their published-requirement explanations;
+- links to the requirement pages;
+- the statement that only universities decide.
 
-Thank you for using the eligibility checker on Study Medicine UK Nigeria on 30 October 2026. I am sorry this reply has taken longer than the two working days we promise.
+Because student registration is still closed on production, the drafts do **not** invite the lead to create an account (no dead link). They invite a reply instead. Nothing was sent.
 
-You told us:
-- Your qualifications: WAEC or NECO (WASSCE) only
-- Sciences: Chemistry and Biology
-- English evidence: WAEC or NECO English
-- UCAT: not planned yet
-- Intended start: 2028
+**Owner action (`OWNER-ACTION-REGISTER.md` O17):**
+1. GitHub → Actions → the run → Artifacts → download.
+2. Decrypt: `openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass env:BACKUP_PASSPHRASE -in lead-drafts-*.tar.enc | tar -xf -`
+3. Read and edit each `drafts/lead-N.txt`, send it from the business mailbox, then set the lead to "contacted" in Admin → Leads.
 
-Based on the requirements universities publish (this is not an admissions decision; only universities decide):
-- Standard-entry Medicine (A100) directly on WASSCE/NECO (not open): None of the UK medical schools we reviewed publishes direct entry on WASSCE or NECO alone; …
-- Foundation year leading to Medicine (possible): …
-- A-levels or IB first, then standard entry (possible): …
-- English language evidence (depends on conditions): …
-- UCAT (depends on conditions): …
+**Tested.** `LeadFollowUpTest` covers:
+- the draft's content;
+- the registration-closed variant;
+- that nothing is sent.
 
-These pages set out each school's published requirements:
-- https://studymedicineuknigeria.com/requirements/waec …
+The generator was also simulated end to end locally: the plaintext was removed, the ciphertext did not contain the address, and it decrypted with the passphrase.
 
-If you would like us to look at your situation in more detail, reply to this email with your results so far, or create an account at … to start an application profile. We cannot guarantee an offer from any university.
+## 4. Notifications and delivery handling (checked 2026-10-31)
 
-Kind regards,
-[your name]
-Study Medicine UK Nigeria
-```
-
-**Owner action** (`OWNER-ACTION-REGISTER.md` O9). The three replies can be sent today, without waiting for the deploy:
-1. Open Admin → Leads → Show only overdue leads.
-2. For each lead, write from the "Eligibility result" column using the structure above; after the deploy, the draft appears there ready to edit.
-3. Send it from the business mailbox, then set the status to "contacted".
+- **Wording:** every student email is in `ApplicationNotification`.
+  - Content minimised: first name, application number, document titles, university names.
+  - Message content is never emailed.
+  - The service-approval email says "nothing is charged until you confirm and pay", which stays true under the payment gate.
+- **Delivery:**
+  - every student and staff notification is queued;
+  - the queue worker runs every minute with 3 tries;
+  - failed jobs are kept 30 days;
+  - *Live verification* fails if the scheduler stops or mail waits more than 10 minutes.
+- **Tests:** `NotificationRenderTest` renders every notification type.

@@ -1,68 +1,64 @@
-# Final readiness report (2026-10-30)
+# Final readiness report (updated 2026-10-31)
 
 **Scope:** StudyMedicineUKNigeria.com, branch `claude/new-session-p6gdm6`. **Production:** release `2026-10-28T11-12-26` (commit `5d76858`), unchanged.
 
-**Not done** (owner rules): no deploy, no production change, no live Stripe change, no payment or refund, no email to a student or lead.
+**Not done** (owner rules): no deploy, no production data change, no live Stripe change or transaction, no refund, and no email to a student, lead or university. This cycle's work is listed in `NEXT-EXECUTION-LOG.md`.
 
 ## 1. Verdicts (two separate decisions)
 
 | Decision | Verdict | Why |
 |---|---|---|
-| **Technical deployment** of the branch head | **Ready, awaiting the owner's explicit approval** | All tests, the rehearsal, the journeys, the SEO and security checks pass (§3). The sitemap is computed exactly (39 URLs). A rollback undoes the release's fact decisions automatically. The deploy only reads Stripe. No migrations |
-| **Commercial launch** (taking students' money) | **NOT READY** | The legal identity, ICO position, legal review, cancellation form, complaints procedure, contract-confirmation email and Stripe settings are unresolved (`OWNER-ACTION-REGISTER.md`, items marked L) |
+| **Technical deployment** of the branch head | **Ready, awaiting the owner's explicit approval** | Tests, rehearsal, journeys, SEO and security checks pass (§3). After the deploy: 38 sitemap URLs; Cardiff noindex because its fee was withdrawn; new payments closed by the gate. Rollback undoes fact decisions; the deploy only reads Stripe; no migrations |
+| **Commercial launch** (accepting student payments) | **NOT READY** | These are unresolved (`OWNER-ACTION-REGISTER.md`, items marked L):<br>• legal identity and ICO;<br>• legal review, cancellation form, complaints procedure and ADR position;<br>• the contract-confirmation email;<br>• Stripe details and a real test-mode run;<br>• the £125 rehearsal.<br>After the deploy, the code itself keeps payments closed until the owner sets `SITE_COMMERCIAL_LAUNCH_APPROVED` |
 
-**One change to watch.** Cardiff's 2026/27 overseas fee source page now redirects to the 2027-entry page, where the fee is "awaiting confirmation" (`evidence/REVERIFY-2026-10-30.md`). The nightly source watcher will probably flag it. Cardiff then turns noindex automatically and the live sitemap would show 38 URLs, not 39, until a reviewer decides (O21). The design intends this; it is not a fault.
+## 2. What changed since `92e4c7f`
 
-## 2. Work completed in this programme
-
-| Workstream | Completed | Files |
+| Area | Change | Evidence |
 |---|---|---|
-| 1 Legal identity | **Inspected:** every public page, footer, email template, checkout and legal page. **Found:** four different version labels on the legal pages; wording that assumed incorporation ("To be published on incorporation", "Registered address"); no setting for the business structure. **Built:** one identity configuration (`LegalIdentity`: name, structure, company number, part of the UK, address, VAT, ICO) used by Our status, Contact, terms, privacy, footer, emails and the admin checklist; settings `SITE_ENTITY_TYPE` and `SITE_REGISTERED_IN` plumbed through *Update server settings*; *Live verification* reports the structure. ICO self-assessment written against the official criteria (no assumption) | `app/Support/LegalIdentity.php`, `config/site.php`, views, `ops/update-env.sh`, `update-env-hostinger.yml`, `live-verify.yml`, `LegalIdentityTest` |
-| 2 Legal documents | Gap analysis against CCR 2013, the E-Commerce Regulations, the trading disclosure rules, the CRA 2015, the 2018 fee regulations and the DMCCA 2024, with verbatim quotes read today. Draft cancellation information, complaints procedure and contract-confirmation content; 13 clauses listed for the adviser. **Every legal page now says "DRAFT — LEGAL REVIEW REQUIRED"** until `SITE_LEGAL_REVIEWED` is set. No legal wording was otherwise changed | `LEGAL-REVIEW-PACK.md`, `resources/views/components/legal-version.blade.php` |
-| 3 Stripe | Inspected tiers, checkout, webhook signature, duplicate events, mode, amount and currency checks, refunds, disputes and access rules; ran T1–T3 against the stand-in; wrote the test-mode workflow and the £125 live rehearsal procedure. The deploy's Stripe step is read-only (commit 07c1b63) | `STRIPE-TEST-AND-LIVE-REHEARSAL.md` |
-| 4 Student journeys | Visitor → enquiry → account → application → upload → staff review → approval → payment → submission → export, on synthetic data; privacy and access checks; every transition recorded | `STUDENT-JOURNEY-TEST-REPORT.md` |
-| 5 Enquiries | The three overdue leads were identified by count. Their details stay on the server (the repository and its logs are public). **Built:** a reply draft for each lead in Admin → Leads, from its own answers, sending nothing | `app/Support/LeadReplyDraft.php`, `resources/views/admin/leads.blade.php`, `LeadFollowUpTest` |
-| 6 SEO | Register and exceptions intact (D14, D27, D34; tests pin them, and no demand is claimed). 39 URLs, robots and canonicals re-checked on the production mirror. The nine indexed schools' and the cost page's 54 facts re-checked against official pages today: 52 still match, 2 changed (Cardiff). Evidence needs listed for the 30 noindex schools. Search Console plan written. **Semrush blocked:** no API units | `OPERATIONS-MANUAL.md` §7–§8, `evidence/REVERIFY-2026-10-30.md` |
-| 7 Operations | Scheduled jobs, workflows, backups, restore, watcher, audit logs, email, access, incidents and rollback documented, with each workflow's latest result | `OPERATIONS-MANUAL.md` |
-| Earlier today | A rollback undoes fact decisions (8f5fcea); the deploy only checks Stripe (07c1b63) | `docs/audit/PRE-DEPLOYMENT-CHECKLIST.md` |
+| **Payment safety** | Production starts no new payment, by card or bank transfer, until the owner records the commercial-launch approval. Payments made, checkouts in flight, refunds and paid access are preserved. Exposure today is nil in practice (0 students, 0 applications on production) | `CommercialLaunchGateTest` (4); `STRIPE-TEST-AND-LIVE-REHEARSAL.md` §2a (opening, recovery, rollback) |
+| **Source watcher** | Follows redirects and checks values where a page lands. *Operations summary* reports the watcher's view of the indexed schools' sources. That report showed the server is refused (HTTP 403) by Cambridge, Cardiff, Queen's Belfast and five more hosts, which have never been watched. A new runner-side *Blocked sources watch* covers them twice a week | `SourceWatcherTest` (+2); runs 41168271747 and 41168890758 |
+| **Cardiff** | The 2026/27 overseas fee is withdrawn; 2027/28 is "awaiting confirmation". Three facts are recorded as source changed (nothing inferred). Register D08 is DRAFT; Cardiff moved to "withdrawn" in the publication list. The page stays published and noindex | `decisions-2026-10-31-cardiff.csv`; `reviews/2026-10-31-cardiff.json`; mirror |
+| **Leads** | Three individual drafts were generated on the server and encrypted with the backup passphrase. The log shows only `drafts=3`; nothing was sent | run 41168273841; artifact 13029637886 (expires 7 Nov) |
+| **Backups** | The 30 October failure was an SSH timeout, not a backup fault. Re-run: success, with its restore test | run 41030369264, attempt 2 |
+| **Semrush** | The manual export/import route is extended to school-level evidence: 36 themes tied to register rows. No API units used or bought | `data/semrush/README.md`; `SemrushImportTest` (+2) |
 
-## 3. Verification results (exact)
+## 3. Verification results (2026-10-31, exact)
 
-| Check | Command or run | Result |
-|---|---|---|
-| Automated tests | `php -d memory_limit=1G vendor/bin/phpunit` | **288 passed**, 19,555 assertions, 0 failed |
-| Formatting | `vendor/bin/pint --test` | passed |
-| Dependency audits | `composer audit`; `npm audit --omit=dev` | no advisories; 0 vulnerabilities |
-| Script syntax | `bash -n ops/*.sh ops/qa/rollback-proof/*.sh` | ok |
-| Sitemap probe self-test | `ops/qa/sitemap-probe-selftest.sh` | 3/3 (open; fake-Googlebot block with warnings; outage fails) |
-| Production rehearsal | `.env` moved aside, `ops/production-rehearsal.sh 8090` | "rehearsal: all production checks passed" (44 ok, 0 fail) |
-| Public journey | `public-journey.cjs` (phone) | `problems: []` |
-| Student journey | `journey.cjs` | `problems: []` (application SMUKN-2028-000010) |
-| Staff journey | `staff-journey.cjs` | `problems: []`; SUBMITTED with reference |
-| Payment journey | `payment-journey.cjs` phone and desktop | SUCCEEDED 69500 GBP; the page amount equals the charge |
-| Payments, all tiers | `stripe-e2e.cjs` against the stand-in | T1 (declined, then paid) 12500, T2 69500, T3 129500: SUCCEEDED, `livemode false`, `ok: true` |
-| Payments, real Stripe test mode | *Stripe test-mode journey* | **BLOCKED**: no `STRIPE_TEST_SECRET` (O14) |
-| SEO and Google readiness | `google-audit.py --connect` (production mode, post-deploy mirror) | **86 passed, 0 failed**; 39 sitemap URLs, 85 internal URLs |
-| Sitemap and indexability | `ops/qa/rollback-proof/serve.sh` on the mirror | 39 URLs, identical to `docs/seo/PAGE-AUDIT.md`. The nine schools are `index, follow, max-image-preview:large` with self canonicals; Aston and Imperial are `noindex, nofollow` |
-| Facts on indexed pages | page-excerpts runs 41027257475, 41027754353 | 52 of 54 still match; 2 changed (Cardiff) |
-| Security and privacy | security, document, two-step, pricing-leak and access tests in the suite | pass (`STUDENT-JOURNEY-TEST-REPORT.md` §2) |
-| Live operations | GitHub Actions history | backups 27–29 Oct success; uptime success (30 Oct 08:32); CI green |
-| Known red runs | — | Sitemap probe 28–29 Oct: a false alarm fixed in 05eb2cd, after those runs. Performance check 29 Oct: SEO 69 on Aberdeen and the cost page, which are noindex on live today and become indexable with this deploy. Stripe test-mode journey: no test key |
-| CI on the final head | GitHub Actions *CI* | see `FINAL-LAUNCH-CHECKLIST.md` (filled after the push) |
+| Check | Result |
+|---|---|
+| Full test suite (`phpunit`) | **296 passed**, 19,789 assertions, 0 failed |
+| Formatting (`pint --test`) | passed |
+| Dependency audits | `composer audit`: no advisories; `npm audit --omit=dev`: 0 vulnerabilities |
+| Production rehearsal | "rehearsal: all production checks passed" (44 ok, 0 fail) |
+| Browser journeys (stand-in Stripe) | `public-journey`, `journey`, `staff-journey`, `payment-journey` phone and desktop: `problems: []`. `stripe-e2e`: T1 12500, T2 69500 and T3 129500 all SUCCEEDED, test mode |
+| Google readiness (`google-audit.py`, production mode, post-deploy mirror) | **85 passed, 0 failed**; 38 sitemap URLs, 85 internal URLs |
+| Sitemap and indexation (mirror) | 38 URLs; `docs/seo/PAGE-AUDIT.md` regenerated (38 pages, 0 flagged). Indexed school pages: Aberdeen, Brighton and Sussex, Buckingham, Edinburgh, Manchester, plus the three owner exceptions. Cardiff: `noindex, nofollow` |
+| Owner exceptions | Cambridge (D14), King's College London (D27) and Queen's Belfast (D34) still indexed by exception; `SchoolRegisterGateTest` pins exactly these three; no demand evidence claimed |
+| Sitemap-probe self-test | 3/3 |
+| Live operations | Uptime success (30 Oct 23:43); *Live verification* success (30 Oct); sitemap probe success (30 Oct); backup re-run success with restore test |
+| *Operations summary* | runs 41167257013 and 41168271747: no new flags since 30 October; 0 students; 3 leads |
+| *Blocked sources watch* | run 41168890758 **fails, as designed**, on 18 quotes:<br>• **Cardiff:** 4 (3 corrected now; the IB wording is open);<br>• **Hertfordshire:** 3;<br>• **City St George's:** 2;<br>• **Leicester:** 9, all bot-checked ("Just a moment…"), now reported as unreachable.<br>None of these is on an indexed page except Cardiff, which is corrected |
+| CI | the intermediate push `5ce3b62` was red (register row not yet updated) and was fixed in `8abff80` (green). The final head's run is in the final report |
 
-## 4. Failures and limits, stated plainly
+## 4. Failures, limits and open items, stated plainly
 
-- **No real-Stripe test.** Payments were proven against the local stand-in only.
-- **Semrush:** `no_api_units`, so no keyword data was obtained, and no demand is claimed anywhere.
-- **The model cancellation form** is not reproduced from the UK regulations: legislation.gov.uk publishes it only as an image. The pack gives the Directive's text, which is marked for the adviser.
-- **ADR.** The 2015 Regulations are revoked, and the DMCCA 2024 chapter has been in force since 6 April 2026. What a trader must now tell consumers was not found in the text read; it is left to the adviser.
-- **The ICO self-assessment** itself must be completed by the owner; its questions were not machine-readable.
-- **The three lead replies** are not individually drafted in this repository, for privacy. The drafts are generated in Admin after the deploy.
+- **Payments were not tested against real Stripe.** There is no `STRIPE_TEST_SECRET`; the stand-in only.
+- **No Semrush keyword data exists.** `no_api_units`. The owner's web-interface export is the route.
+- **Watcher blind spots:**
+  - Leicester refuses both the server and GitHub runners, so its facts can only be read by hand;
+  - the other refused hosts are now covered twice a week from runners, not nightly.
+- **Changed wording not yet reviewed:**
+  - Hertfordshire (3 quotes);
+  - City St George's (2);
+  - Cardiff's IB wording.
+
+  None of these is on an indexed page.
+- **The 2027/28 overseas fee for Cardiff is not published yet.** Cardiff stays noindex until it is.
+- **Pending legal review:** every legal-wording item in the legal review pack (`LEGAL-REVIEW-PACK.md`).
+- **Rollback caveat.** Rolling the code back removes the payment gate, and live payments would reopen. In that case remove the live key instead (`STRIPE-TEST-AND-LIVE-REHEARSAL.md` §2a).
 
 ## 5. Recommendation
 
-1. **Deployment:** approve the deploy of the branch head named in `FINAL-LAUNCH-CHECKLIST.md`, after a fresh *Operations summary*. It is safe on the evidence above and reversible, facts included.
-2. **Commercial launch:**
-   - do not approve any student for paid services until items O1–O16 are closed;
-   - the first step is O1–O4 (identity and ICO), which unlocks the legal review (O8–O12) and the Stripe details (O13).
-3. **Today:** reply to the three overdue enquiries (O17). This needs no deploy.
+1. **Today, no deploy needed:** send the three lead replies. Decrypt the drafts (`STUDENT-JOURNEY-TEST-REPORT.md` §3), review them and send from the business mailbox.
+2. **Deploy:** approve the deploy of the branch head named in the final report, after a fresh *Operations summary*. It closes new payments by code, hides Cardiff's withdrawn fee and is reversible.
+3. **Commercial launch:** supply O1–O4 (identity, ICO) first, which unlocks the legal review (O8–O12) and the Stripe details (O13). Set `SITE_COMMERCIAL_LAUNCH_APPROVED` only after every B row in `FINAL-LAUNCH-CHECKLIST.md` is evidenced.

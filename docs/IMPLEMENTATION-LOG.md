@@ -964,6 +964,14 @@ On `claude/new-session-p6gdm6`, not deployed. Reports in `docs/audit/`: `SITE-CO
 - **Fact re-check.** 52 of 54 indexed-page facts still match their official pages; Cardiff's fee page changed.
 - **Semrush.** Returned `no_api_units`.
 
+**Next execution cycle (2026-10-31), `docs/launch/NEXT-EXECUTION-LOG.md`:**
+- **Payments.** Production accepts no new payment until `SITE_COMMERCIAL_LAUNCH_APPROVED` is set (`StripeService::launchApproved`); existing payments, webhooks, refunds and paid access are unaffected.
+- **Source watcher.** It follows redirects, and *Operations summary* reports what it last saw. The server is refused (403) by Cambridge, Cardiff, Queen's Belfast and five other hosts, so a runner-side *Blocked sources watch* now covers them.
+- **Cardiff.** Its withdrawn 2026/27 fee is source-changed, register D08 is DRAFT, and the sitemap after the deploy has 38 URLs.
+- **Leads.** Reply drafts are produced encrypted on the server (`lead-drafts.yml`), with nothing sent.
+- **Semrush.** A school-level lookup sheet was added.
+- **Results.** 296 tests; rehearsal 44 ok; Google readiness 85/0.
+
 **Owner-only blockers:** trading identity, ICO registration, model cancellation form, complaints procedure, legal review, Stripe support email and test key, three leads waiting.
 
 ## Open items carried forward

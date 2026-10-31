@@ -1,4 +1,4 @@
-# Stripe: test-mode workflow and controlled live rehearsal (2026-10-30)
+# Stripe: test-mode workflow and controlled live rehearsal (updated 2026-10-31)
 
 **Nothing here was run against live Stripe.** No live payment, refund, catalogue change or Dashboard change was made. The live rehearsal in §5 needs the owner's separate approval.
 
@@ -27,10 +27,34 @@
 | Expired, failed | `checkout.session.expired` → EXPIRED; `payment_intent.payment_failed` → FAILED | `StripeService` |
 | Refund | Issued by staff in the Stripe Dashboard (the site has no refund button). `charge.refunded` sets `REFUNDED_PARTIAL` or `REFUNDED_FULL` with the refunded amount | `StripeService` line 186 |
 | Dispute | `charge.dispute.created` → DISPUTED | `StripeService` line 195 |
-| Paid-service access | Only a `SUCCEEDED` payment counts (`Application::isPaid`), so a refund or a dispute ends paid access | `Application.php` line 108 |
+| Paid-service access | Only a `SUCCEEDED` payment counts (`Application::hasSucceededPayment`), so a refund or a dispute ends paid access | `Application.php` line 105 |
+| **Commercial-launch gate** (2026-10-31) | In production no new payment starts, by card or bank transfer, until `SITE_COMMERCIAL_LAUNCH_APPROVED` is set; see §2a | `StripeService::launchApproved` |
 | Receipt | Stripe sends its receipt (needs the Dashboard support email, §4). The site emails "Payment received — £X" | `ApplicationNotification` `payment.succeeded` |
 | Stored data | The stored webhook keeps ids, amounts, currency and status only, never name, email, address or card | `StripeWebhookController::minimal` |
 | Bank transfer | Off by default (`SITE_BANK_TRANSFER`). A transfer is `MANUAL_REVIEW` until an admin confirms it | `manualTransfer`; admin confirm |
+
+## 2a. The commercial-launch gate (prepared 2026-10-31, live after the deploy)
+
+**[Fact] Exposure today (before the deploy).** Production has a live key, so `payments_open` is true. A student whom staff approve for service selection could pay before the legal and commercial blockers are closed. Production has **0 students and 0 applications** (*Operations summary* 41167257013), so no one can reach a payment today without the admin's own action.
+
+**[Fact] After the deploy.**
+
+| Behaviour | |
+|---|---|
+| Refused while the gate is closed | **new** Stripe Checkout sessions and bank-transfer requests. The payment page shows "Payment is not open yet", and the dashboard's next action says the same. Waiting students are not emailed |
+| Unaffected | webhooks (a checkout started before the deploy still completes), refunds, disputes, paid access and `MANUAL_REVIEW` confirmation by an admin |
+| Shown to staff | the Admin checklist item "Commercial launch approved (new payments accepted)" |
+
+Tests: `CommercialLaunchGateTest` (4 tests; mutation-checked).
+
+**Opening payments (launch).**
+1. After every B item of `FINAL-LAUNCH-CHECKLIST.md`, set the production variable `SITE_COMMERCIAL_LAUNCH_APPROVED` to the approval date (`YYYY-MM-DD`).
+2. Run *Update server settings*. It rebuilds the configuration and tells waiting students once (`smukn:payments-open-notify`).
+3. Run *Live verification*; it now expects payments open.
+
+**Closing again (recovery).** Delete the `SITE_COMMERCIAL_LAUNCH_APPROVED` line from `~/apps/smukn-production/shared/.env` (hPanel File Manager), then run `php artisan config:cache` in `current/` (hPanel terminal). *Update server settings* only writes non-empty values, so it cannot remove a setting. Payments already made stay valid.
+
+**Rolling back the code** (*Roll back Hostinger release*) removes the gate itself, and payments open as before. To keep payments closed in that case, remove the live key instead.
 
 **Gap carried to the legal pack.** The site's payment email is not yet the "confirmation of the contract on a durable medium" that CCR 2013 regulation 16 requires (`LEGAL-REVIEW-PACK.md` C8, R2). It blocks commercial launch, not deployment.
 
@@ -41,7 +65,8 @@
 | `stripe-e2e.cjs` (stand-in), T1 | declined test card shown, then paid: SUCCEEDED, 12500 GBP, `payment_status` paid, `livemode` false |
 | `stripe-e2e.cjs`, T2 | SUCCEEDED, 69500 GBP, paid, test mode |
 | `stripe-e2e.cjs`, T3 | SUCCEEDED, 129500 GBP, paid, test mode; `problems: []`, `ok: true` |
-| `payment-journey.cjs` phone and desktop | T2: cancel at checkout → retry → pay → signed webhook → SUCCEEDED 69500 GBP; the amount on the page equals the amount charged; no problems |
+| `payment-journey.cjs` phone and desktop | T2: cancel at checkout → retry → pay → signed webhook → SUCCEEDED 69500 GBP; the amount on the page equals the amount charged; no problems (30 and 31 October) |
+| `CommercialLaunchGateTest` | gated production: no Checkout session, no bank transfer, no payment row, nobody notified; earlier payments, an in-flight checkout's webhook and a refund still processed; the approval date reopens payment |
 | PHPUnit `Pricing\|Stripe\|Payment\|Checkout\|Webhook\|DeploymentSafety` | included in the full run (`FINAL-READINESS-REPORT.md` §3) |
 
 **Real Stripe test mode is BLOCKED.** There is no `STRIPE_TEST_SECRET` repository secret.

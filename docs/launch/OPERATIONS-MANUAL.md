@@ -1,4 +1,4 @@
-# Operations manual (2026-10-30)
+# Operations manual (updated 2026-10-31)
 
 How to run StudyMedicineUKNigeria.com day to day. Everything is done from **GitHub → Actions** (workflows on branch `claude/new-session-p6gdm6`) or **Admin** on the site. No step needs a server password, and none prints a secret.
 
@@ -11,7 +11,12 @@ How to run StudyMedicineUKNigeria.com day to day. Everything is done from **GitH
    - Payments under review.
 2. **Admin → Leads → Show only overdue leads.** Reply to each one, using the draft reply under the lead (after this release), and set the status to "contacted". The Contact page promises a reply within 2 working days.
 3. **Admin → Messages:** answer portal messages, including complaints and cancellation requests (§5).
-4. **Email:** GitHub sends failure emails for scheduled workflows. Check for any from *Uptime check*, *Backup Hostinger*, *Live verification* or *Sitemap and robots probe*.
+4. **Email:** GitHub sends failure emails for scheduled workflows. Check for any from:
+   - *Uptime check*;
+   - *Backup Hostinger*;
+   - *Live verification*;
+   - *Sitemap and robots probe*;
+   - *Blocked sources watch*. A failure there means a recorded official quote is gone: a reviewer re-reads the page.
 
 ## 2. What runs automatically
 
@@ -29,21 +34,25 @@ How to run StudyMedicineUKNigeria.com day to day. Everything is done from **GitH
 | Sunday 04:10 | `smukn:retention` | applies the privacy notice's retention periods |
 | weekly | `queue:prune-failed` | removes failed jobs older than 30 days |
 
-**On GitHub (scheduled workflows; recent results on 30 October):**
+**On GitHub (scheduled workflows; latest results on 31 October):**
 
 | Workflow | Schedule | Last results |
 |---|---|---|
-| *Backup Hostinger (encrypted, off-site)* | daily database; full copy (database, shared `.env`, documents) Sundays 03:20 UTC | success 27, 28 and 29 October |
-| *Uptime check* | every 30 minutes | success, latest 30 Oct 08:32 |
-| *Live verification (read-only)* | daily 06:23 UTC | success, 28 and 29 October |
-| *Sitemap and robots probe* | daily | **failed** 28 and 29 October: a false alarm (the CDN refuses fake Googlebots from GitHub). The fix is commit 05eb2cd, pushed after the last run; the next run should pass |
+| *Backup Hostinger (encrypted, off-site)* | daily database; full copy (database, shared `.env`, documents) Sundays 03:20 UTC. Every run also restore-tests the backup | success 25–29 October. **30 October failed**: SSH from the runner timed out, not a backup fault. Re-run on 31 October: success, restore test included (run 41030369264, attempt 2) |
+| *Uptime check* | every 30 minutes | success, latest 30 Oct 23:43 |
+| *Live verification (read-only)* | daily 06:23 UTC | success, latest 30 October |
+| *Sitemap and robots probe* | daily | success 30 October, after the false-alarm fix 05eb2cd |
+| *Blocked sources watch* (new) | Tuesdays and Fridays 05:23 UTC | reads, in Chrome on a runner, the official pages that refuse the server's watcher, and fails when a recorded quote is gone. 31 October: fails, as expected, on the Cardiff, Hertfordshire and City St George's changes, and reports Leicester as unreadable (bot check) |
+| *Lead reply drafts* (new, dispatch only) | on demand | encrypted drafts for leads still "new"; nothing sent (`STUDENT-JOURNEY-TEST-REPORT.md` §3) |
 | *Search report* | weekly | waits for Search Console (§7) |
 
 ## 3. Backups and restore
 
 - **What:** the daily encrypted database backup off-site (GitHub, encrypted before it leaves the server; the key is not on GitHub), a weekly full backup, and a dump before every deploy (`~/backups/production-db-<timestamp>.sql.gz`, verified before migrating). Encrypted backups expire within 30 days.
 - **Restore:** `ops/RESTORE.md` step by step. The first production launch used a restore-tested backup (`launch-production.yml`).
-- **Owner check, monthly:** run a restore test from the latest off-site backup into a throwaway database, following `ops/RESTORE.md`, and record the date. This is recommended rather than automated, because a restore test touches nothing in production.
+- **Automatic restore test:** every daily backup run decrypts its backup on the runner and loads it into a throwaway MariaDB before it counts as a success.
+- **Owner check, monthly:** restore the latest off-site backup by hand following `ops/RESTORE.md` and record the date. This proves the owner can do it without Claude.
+- **If a run fails with an SSH timeout:** re-run the failed job once. If it fails again, check hPanel (server up, SSH enabled, IP blocks). Pin the host key with `HOSTINGER_SSH_KNOWN_HOSTS` (`OWNER-ACTION-REGISTER.md` O20).
 
 ## 4. Facts, the source watcher and the audit trail
 
@@ -60,7 +69,17 @@ How to run StudyMedicineUKNigeria.com day to day. Everything is done from **GitH
   - `fact_imports` records each decision file;
   - `admin_actions` records staff actions;
   - `application_events`, `document_events`, `document_access_log` and `submission_events` cover student files.
-- **Known now (30 October):** Cardiff's 2026/27 overseas fee page now redirects to the 2027-entry page, which says the 2027/28 fee is "awaiting confirmation" (`evidence/REVERIFY-2026-10-30.md`). The watcher will probably flag it, and Cardiff then goes noindex (38 URLs) until a reviewer decides what to record.
+- **Watcher coverage (found 31 October).** The server's watcher is refused (HTTP 403) by:
+  - Cambridge, Cardiff and Queen's Belfast (three indexed schools);
+  - Leicester, Hertfordshire, Ulster, City St George's and the GMC.
+
+  It has never fingerprinted those pages. *Operations summary* now prints what the watcher last saw for every core source of the indexed schools (`source_watcher`). *Blocked sources watch* covers the refused hosts from GitHub runners. Leicester also refuses the runners ("Just a moment…"), so its facts must be read by hand.
+- **Redirects:** since 31 October the watcher follows a redirect and checks each value on the page it lands on, every run.
+- **Cardiff (31 October):** the 2026/27 overseas fee is withdrawn. The 2027/28 fee is "awaiting confirmation". Three facts are recorded as source changed (`decisions-2026-10-31-cardiff.csv`), register D08 is DRAFT, and Cardiff is noindex after the deploy (38 URLs). When Cardiff publishes the 2027/28 fee:
+  1. read it with *Official page excerpts*;
+  2. record it as a new fact;
+  3. return D08 to PUBLISHED and Cardiff to `publication.json`.
+- **Open reviews:** Hertfordshire (3 quotes), City St George's (2), Cardiff's IB wording. None is on an indexed page.
 
 ## 5. Students: enquiries, cancellations, refunds, complaints
 
@@ -68,7 +87,7 @@ How to run StudyMedicineUKNigeria.com day to day. Everything is done from **GitH
 |---|---|---|
 | New lead | staff | reply within 2 working days; set the status |
 | Document uploaded | staff | Admin → application → review; accept or return it with a reason |
-| Profile ready | staff | approve for service selection; the student then sees the prices |
+| Profile ready | staff | approve for service selection; the student then sees the prices. **After the deploy, payment stays closed until the owner sets `SITE_COMMERCIAL_LAUNCH_APPROVED`** (the student sees "Payment is not open yet") |
 | Payment "Manual review" | admin | the amount, currency or service differed, or it is a bank transfer: check it in Stripe; confirm or reject |
 | "Duplicate payment to refund" alert | admin | refund the second payment in the Stripe Dashboard |
 | Cancellation request (within 14 days) | admin | refund in the Stripe Dashboard **within 14 days of the request** (CCR 2013 reg. 34; the refund policy text is under legal review). The webhook records it and paid access ends |
@@ -91,11 +110,17 @@ How to run StudyMedicineUKNigeria.com day to day. Everything is done from **GitH
   3. Run *Update server settings*.
   4. `smukn:gsc-sync` then fills Admin → Search daily, and *Search report* writes the weekly report.
 - **What to measure first (8 weeks after the deploy):**
-  - impressions and clicks for the 39 indexed URLs, by query and country (Nigeria first);
+  - impressions and clicks for the 38 indexed URLs, by query and country (Nigeria first);
   - for the 30 noindex schools, impressions of directory and requirement pages that mention them.
 
   This is the demand evidence the decision register needs (§8).
-- **Indexing:** submit `/sitemap.xml` and run a URL Inspection live test of it, plus the nine school pages, after the deploy.
+- **Indexing:** after the deploy, submit `/sitemap.xml` and run a URL Inspection live test of it, plus the eight indexed school pages. Cardiff is noindex until its fee is re-verified.
+- **Connection steps** (from `docs/ops/SEARCH-CONSOLE-AND-GA4.md`, "Data feed"; owner, about 15 minutes). The Domain property already exists and is DNS-verified: do not create another or change DNS.
+  1. Google Cloud console → create a project → enable the **Google Search Console API**.
+  2. Create a service account (`search-reader`, no roles) → *Keys* → *Add key* → JSON.
+  3. Search Console → property → *Settings* → *Users and permissions* → add the service account's email with **Restricted** permission. Change it to *Full* only if the weekly report says URL inspection lacks permission; the key is read-only either way.
+  4. GitHub → repository secret `GSC_SERVICE_ACCOUNT_JSON` = the whole key file; then delete the downloaded file.
+  5. Run *Update server settings* (production), then *Search report* with `sync` = `480` to read the full 16 months once.
 - **GA4:** loads only after consent on public pages, never in the portal. The owner records `SITE_ANALYTICS_DECISION` (`first_party` or `ga4`). Funnel events hold no personal data.
 
 ## 8. SEO evidence rules (do not bypass)
@@ -114,7 +139,11 @@ How to run StudyMedicineUKNigeria.com day to day. Everything is done from **GitH
     - Anglia Ruskin, Bangor, Birmingham, Dundee, Edge Hill, Hull York;
     - Manchester Metropolitan, Northumbria, Pears Cumbria, Queen Mary;
     - ScotGEM, St Mary's, Ulster, UCL, Warwick.
-- **Semrush:** the account has a subscription but **no API units**, so `no_api_units` was returned on 30 October and no data was obtained. Buying units is excluded. Use the Semrush web interface instead: export keyword reports for the Nigeria database and import them with `php artisan smukn:semrush-import`.
+- **Semrush is the central SEO research input.** The account has a subscription but **no API units** (`no_api_units`, 30 October), and buying units is excluded. Use the web interface instead (`data/semrush/README.md`):
+  - **main themes:** paste `paste-list.txt` (50 keywords) into Keyword Overview, database Nigeria, and export CSV;
+  - **school evidence:** paste `school-paste-list.txt` (36 keywords) and import with `--sheet=data/semrush/school-lookup-sheet.csv`.
+
+  `php artisan smukn:semrush-import` writes each figure next to its database and date into the research doc and the school's register row. A volume is evidence for a decision, never the decision.
 - **Do not create pages without a register row, evidence and the owner's approval.**
 
 ## 9. Incidents and rollback

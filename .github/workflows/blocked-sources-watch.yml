@@ -39,5 +39,9 @@ jobs:
           python3 ops/verification/parse-excerpts.py excerpts.txt parsed.json
       - name: Every recorded quote still published
         run: |
+          set -o pipefail   # the check's exit status, not tee's, decides the run
           python3 ops/verification/blocked-watch.py check items.json parsed.json | tee result.txt
-          { echo '### Blocked sources watch'; echo '```'; cat result.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Summary
+        if: always()
+        run: |
+          { echo '### Blocked sources watch'; echo '```'; cat result.txt 2>/dev/null; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

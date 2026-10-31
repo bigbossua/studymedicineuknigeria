@@ -132,4 +132,48 @@ class SemrushImportTest extends TestCase
             $this->assertSame('', $r['volume'].$r['keyword_difficulty'].$r['cpc'], 'no figures in the sheet before a recorded Semrush export');
         }
     }
+
+    /** Evidence for further school pages (2026-10-31): school-level themes, one register row each, Nigeria first. */
+    public function test_the_school_lookup_sheet_maps_each_keyword_to_its_schools_register_row(): void
+    {
+        $rows = array_map('str_getcsv', file(base_path('data/semrush/school-lookup-sheet.csv'), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+        $header = array_shift($rows);
+        $rows = array_map(fn ($r) => array_combine($header, $r), $rows);
+        $register = array_map('str_getcsv', file(base_path('data/seo/decision-register.csv'), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+        $regIds = array_column(array_slice($register, 1), 0);
+        $keywords = array_map(fn ($r) => mb_strtolower(trim($r['semrush_keyword_used'])), $rows);
+        $this->assertLessThanOrEqual(100, count($rows), 'fits one Keyword Overview bulk paste');
+        $this->assertSame([], array_keys(array_filter(array_count_values($keywords), fn ($c) => $c > 1)));
+        $this->assertSame($keywords, array_map(fn ($l) => mb_strtolower(trim($l)), file(base_path('data/semrush/school-paste-list.txt'), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)));
+        $main = array_map(fn ($r) => (int) $r[0], array_slice(array_map('str_getcsv', file(base_path('data/semrush/lookup-sheet.csv'), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)), 1));
+        foreach ($rows as $r) {
+            $this->assertNotContains((int) $r['id'], $main, 'ids do not collide with the main sheet');
+            $this->assertSame('ng', $r['database']);
+            $this->assertMatchesRegularExpression('/^D\d+$/', $r['register_ids']);
+            $this->assertContains($r['register_ids'], $regIds);
+            $this->assertSame('', $r['volume'].$r['keyword_difficulty'].$r['cpc'], 'no figures before a recorded export');
+        }
+    }
+
+    public function test_a_school_sheet_export_keeps_its_own_record(): void
+    {
+        $dir = storage_path('framework/testing');
+        File::ensureDirectoryExists($dir);
+        $sheet = "{$dir}/school-lookup-sheet.csv";
+        File::put($sheet, "id,query_theme,intent_hypothesis,semrush_keyword_used,database,volume,keyword_difficulty,cpc,intent_semrush,top_3_urls,trend_note,looked_up_on,register_ids\n".
+            "101,Aston University Medicine for Nigerian applicants,Informational,aston university medicine nigeria,ng,,,,,,,,D18\n");
+        $export = "{$dir}/semrush-school.csv";
+        File::put($export, "Keyword,Intent,Volume,Keyword Difficulty,CPC (USD)\naston university medicine nigeria,Informational,40,12,0.1\n");
+        $doc = "{$dir}/demand.md";
+        File::put($doc, "| # | x |\n");
+        $register = "{$dir}/register.csv";
+        File::put($register, "id,query_family,volume,keyword_difficulty,sources,status\nD18,aston,DATA UNAVAILABLE (pending),DATA UNAVAILABLE (pending),06,RESEARCH\n");
+        $rel = fn ($p) => str_replace(base_path().'/', '', $p);
+        $this->artisan('smukn:semrush-import', ['file' => $rel($export), '--sheet' => $rel($sheet), '--doc' => $rel($doc), '--register' => $rel($register), '--date' => '2026-11-02'])->assertSuccessful();
+        $recorded = base_path('data/semrush/lookups-school-2026-11-02.csv');
+        $this->assertFileExists($recorded);
+        $this->assertFileDoesNotExist(base_path('data/semrush/lookups-2026-11-02.csv'));
+        $this->assertStringContainsString('D18,aston,40,12,', File::get($register), 'the school\'s register row records the figure');
+        File::delete([$sheet, $export, $doc, $register, $recorded]);
+    }
 }

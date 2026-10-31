@@ -62,11 +62,12 @@ def spec(hosts, spec_path, items_path):
 
 def check(items_path, parsed_path):
     items = json.load(open(items_path, encoding='utf-8'))
-    pages = {}
+    pages, meta = {}, {}
     for url, d in json.load(open(parsed_path, encoding='utf-8')).items():
         text = norm(' '.join(e.strip('…') for ex in d.get('excerpts', {}).values() for e in ex))
         for key in {url, d.get('final') or url}:
             pages[key.rstrip('/')] = (pages.get(key.rstrip('/'), ('', d.get('status')))[0] + ' ' + text, d.get('status'))
+            meta[key.rstrip('/')] = d
     missing = unreachable = 0
     for it in items:
         text, status = pages.get(it['url'].rstrip('/'), ('', None))
@@ -74,7 +75,13 @@ def check(items_path, parsed_path):
             print(f"UNREACHABLE  {it['ref']}: {it['url']} (status {status})"); unreachable += 1; continue
         gone = [s for s in it['segments'] if s not in text]
         if gone:
-            print(f"QUOTE GONE   {it['ref']}: {it['url']} — \"{gone[0][:110]}\""); missing += 1
+            d = meta.get(it['url'].rstrip('/'), {})
+            # what the reader saw for that segment's search term: tells a real change from a page that was not really read
+            found = [e for t, ex in d.get('excerpts', {}).items() if norm(t) == gone[0][:50].strip() for e in ex]
+            print(f"QUOTE GONE   {it['ref']}: {it['url']} — \"{gone[0][:110]}\"")
+            print(f"             page: status {d.get('status')}, title \"{str(d.get('title', ''))[:70]}\", final {d.get('final') or it['url']}; "
+                  + (f"term found {len(found)}x, e.g. \"{norm(found[0])[:220]}\"" if found else 'term not on the page'))
+            missing += 1
     print(f"{len(items)} checked: {missing} quote(s) gone, {unreachable} page(s) unreachable")
     sys.exit(1 if missing or unreachable else 0)
 

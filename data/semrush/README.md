@@ -18,6 +18,27 @@ keywords are distinct, each points at a live decision-register row, and `paste-l
 in order (a test enforces all three). Semrush figures are only ever recorded next to their database and date; SERP,
 People-also-ask and autocomplete observations in the register's `sources` column are labelled as observations, not volumes.
 
+## School-level demand (evidence for more university pages; added 2026-10-31)
+
+A school page is indexed only when its register row records demand evidence (or the owner decides an exception), so
+the evidence must be about that school. `school-lookup-sheet.csv` holds 36 themes:
+- three per school, for the eight schools whose five core facts are verified but which stay noindex (Aston, Brunel,
+  Chester, Keele, Kent and Medway, Lancaster, Surrey, Swansea);
+- the same three for the three owner exceptions (Cambridge, King's College London, Queen's Belfast), so the exception
+  can later be confirmed or ended on evidence;
+- and Cardiff.
+
+Each theme names its school's register row (D18, D20, …).
+
+1. Semrush → **Keyword Overview** → paste the 36 lines of `school-paste-list.txt`, database **Nigeria**, run, **Export** (CSV).
+2. `php artisan smukn:semrush-import data/semrush/semrush-ng-schools-YYYY-MM-DD.csv --sheet=data/semrush/school-lookup-sheet.csv --date=YYYY-MM-DD`
+   The record is written as `lookups-school-YYYY-MM-DD.csv`, so it never overwrites the main sheet's record of the same
+   day, and each school's register row receives its volume and difficulty.
+3. Commit the export and the record.
+
+**A volume is evidence for a decision, not a decision.** A school row moves from RESEARCH only through
+`ops/seo/build-register.py` with the owner's approval, and its five core facts must still be verified.
+
 ## Row by row (if you prefer)
 
 1. Open `lookup-sheet.csv` (one row per query theme from research 02 §4). For each row, in Semrush → Keyword Overview,

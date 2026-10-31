@@ -222,7 +222,9 @@ class ImportSemrushLookups extends Command
         }
         $this->info("{$matched} of ".count($sheet).' lookup theme(s) found in the Semrush export ('.count($rows).' keyword row(s)).');
         // Keep the converted record in the repository, next to the export it came from.
-        $record = 'data/semrush/lookups-'.$date.'.csv';
+        // a second sheet (e.g. the school-level one) keeps its own record, so two exports on one day never overwrite
+        $prefix = preg_match('/^(.+)-lookup-sheet$/', pathinfo((string) $this->option('sheet'), PATHINFO_FILENAME), $m) ? $m[1].'-' : '';
+        $record = 'data/semrush/lookups-'.$prefix.$date.'.csv';
         $h = fopen(base_path($record), 'w');
         fputcsv($h, $sheetHeader, ',', '"', '');
         foreach ($out as $row) {

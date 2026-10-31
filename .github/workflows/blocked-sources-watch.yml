@@ -1,0 +1,43 @@
+name: Blocked sources watch (read-only)
+# The nightly source watcher runs on the server, and some universities refuse the server's address (HTTP 403:
+# Cambridge, Cardiff, Queen's Belfast, Leicester, Hertfordshire, Ulster, City St George's, the GMC; found 2026-10-31
+# in the Operations summary). Their facts were never re-checked. This run reads those official pages in Chrome on a
+# GitHub runner, as the reviewers do, and checks that every recorded official quote behind a verified fact is still
+# published word for word (ops/verification/blocked-watch.py). It changes nothing anywhere: a missing quote or an
+# unreachable page fails the run, GitHub emails the failure, and a reviewer re-reads the page and commits a decision.
+on:
+  schedule:
+    - cron: '23 5 * * 2,5'   # twice a week, Tuesdays and Fridays
+  workflow_dispatch:
+    inputs:
+      hosts:
+        description: 'Comma-separated hosts to watch'
+        required: false
+        default: 'cardiff.ac.uk,qub.ac.uk,undergraduate.study.cam.ac.uk,le.ac.uk,herts.ac.uk,ulster.ac.uk,gmc-uk.org,citystgeorges.ac.uk'
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HOSTS: ${{ github.event.inputs.hosts || 'cardiff.ac.uk,qub.ac.uk,undergraduate.study.cam.ac.uk,le.ac.uk,herts.ac.uk,ulster.ac.uk,gmc-uk.org,citystgeorges.ac.uk' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: Spec from the committed evidence
+        run: python3 ops/verification/blocked-watch.py spec "$HOSTS" spec.txt items.json
+      - name: Read the official pages (Chrome)
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+        run: |
+          npm i --no-save playwright@1 pdf-parse@1 >/dev/null 2>&1
+          node ops/verification/page-excerpts.cjs spec.txt 700 > excerpts.txt
+          python3 ops/verification/parse-excerpts.py excerpts.txt parsed.json
+      - name: Every recorded quote still published
+        run: |
+          python3 ops/verification/blocked-watch.py check items.json parsed.json | tee result.txt
+          { echo '### Blocked sources watch'; echo '```'; cat result.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

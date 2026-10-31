@@ -1,0 +1,9 @@
+{
+  "reviewed": "2026-10-31",
+  "reviewer": "AI-assisted review of official page excerpts; decisions are source_changed only (no new value recorded)",
+  "decisions": {
+    "course:cardiff/a100:international_fee_gbp:2026/27": {"decision": "source_changed", "quote": "Tuition fees for 2027 entry ... Fees for overseas status ⏎ We are currently awaiting confirmation on tuition fees for the 2027/28 academic year.", "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/medicine-mbbch, read 2026-10-31 via page-excerpts run 41168636613, sha256 475ec49ced3c6535 (https://www.cardiff.ac.uk/study/undergraduate/courses/2026/medicine-mbbch redirects here, run 41167881085)", "note": "The 2026/27 figure (47,450) is no longer on the course page or on https://www.cardiff.ac.uk/study/undergraduate/tuition-fees/overseas-undergraduate-fees (sha256 22d39b6fcddc5a7e, no Medicine entry)."},
+    "course:cardiff/a100:clinical_years_fee_differs:2026/27": {"decision": "source_changed", "quote": "Fees for overseas status ⏎ We are currently awaiting confirmation on tuition fees for the 2027/28 academic year.", "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/medicine-mbbch, read 2026-10-31 via page-excerpts run 41168636613, sha256 475ec49ced3c6535", "note": "Relied on the 2026/27 year-by-year table, now removed."},
+    "university:cardiff:international_accepted": {"decision": "source_changed", "quote": "Your fee status could be home, island or overseas.", "page": "https://www.cardiff.ac.uk/study/undergraduate/courses/course/medicine-mbbch, read 2026-10-31 via page-excerpts run 41168636613, sha256 475ec49ced3c6535", "note": "The previous evidence (the overseas fee table) is gone; the fee-status sentence alone does not state that international students are admitted to Medicine, so the fact is not re-verified on inference."}
+  }
+}

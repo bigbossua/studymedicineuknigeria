@@ -71,11 +71,13 @@ def check(items_path, parsed_path):
     missing = unreachable = 0
     for it in items:
         text, status = pages.get(it['url'].rstrip('/'), ('', None))
-        if not text.strip():
-            print(f"UNREACHABLE  {it['ref']}: {it['url']} (status {status})"); unreachable += 1; continue
+        d = meta.get(it['url'].rstrip('/'), {})
+        # a refusal or a bot check ("Just a moment...", Cloudflare) says nothing about the page: unreachable, not changed
+        blocked = (isinstance(status, int) and status >= 400) or re.search(r'just a moment|attention required|bot verification|access denied|verify you are human', str(d.get('title', '')), re.I)
+        if not text.strip() or blocked:
+            print(f"UNREACHABLE  {it['ref']}: {it['url']} (status {status}, title \"{str(d.get('title', ''))[:60]}\")"); unreachable += 1; continue
         gone = [s for s in it['segments'] if s not in text]
         if gone:
-            d = meta.get(it['url'].rstrip('/'), {})
             # what the reader saw for that segment's search term: tells a real change from a page that was not really read
             found = [e for t, ex in d.get('excerpts', {}).items() if norm(t) == gone[0][:50].strip() for e in ex]
             print(f"QUOTE GONE   {it['ref']}: {it['url']} — \"{gone[0][:110]}\"")

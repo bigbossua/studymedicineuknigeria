@@ -132,4 +132,43 @@ class SourceWatcherTest extends TestCase
 
         $this->assertSame(ReferenceFact::SOURCE_CHANGED, $fact->fresh()->verification_status);
     }
+
+    /**
+     * Cardiff, found 2026-10-30: the 2026-entry page now forwards to the 2027-entry page, where the 2026/27 fee is gone.
+     * The redirect predated the fingerprint, so the page never "changed"; the value must still be checked where it lands.
+     */
+    public function test_a_source_that_now_redirects_is_checked_where_it_lands_even_without_a_change(): void
+    {
+        $old = 'https://www.example.ac.uk/courses/2026/medicine';
+        $topic = Topic::create(['slug' => 'fee-test', 'title' => 'Fee']);
+        $fee = ReferenceFact::create(['subject_type' => Topic::class, 'subject_id' => $topic->id, 'key' => 'international_fee_gbp', 'value_number' => 47450,
+            'source_url' => $old, 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now(), 'notes' => '[quote: "Year one £47,450"]']);
+        $landed = '<main><h1>Medicine (2027 entry)</h1><p>We are currently awaiting confirmation on tuition fees for the 2027/28 academic year.</p></main>';
+        Notification::fake();
+        Http::fake([$old => Http::response($landed, 200, ['X-Guzzle-Redirect-History' => 'https://www.example.ac.uk/courses/course/medicine'])]);
+
+        $this->artisan('smukn:sources-check')->assertSuccessful(); // first visit already lands on the new page
+        $this->assertSame(ReferenceFact::SOURCE_CHANGED, $fee->fresh()->verification_status);
+        $this->assertStringContainsString('Official address now redirects to https://www.example.ac.uk/courses/course/medicine', $fee->fresh()->notes);
+    }
+
+    public function test_a_redirect_that_still_shows_the_value_and_trivial_redirects_change_nothing(): void
+    {
+        $old = 'https://example.ac.uk/fees';
+        $topic = Topic::create(['slug' => 'fee-test-2', 'title' => 'Fee']);
+        $fee = ReferenceFact::create(['subject_type' => Topic::class, 'subject_id' => $topic->id, 'key' => 'international_fee_gbp', 'value_number' => 47450,
+            'source_url' => $old, 'verification_status' => ReferenceFact::VERIFIED, 'verified_at' => now()]);
+        Notification::fake();
+        Http::fake([$old => Http::response('<p>Overseas: £47,450 a year</p>', 200, ['X-Guzzle-Redirect-History' => 'https://example.ac.uk/fees/new'])]);
+        $this->artisan('smukn:sources-check')->assertSuccessful();
+        $this->artisan('smukn:sources-check')->assertSuccessful();
+        $this->assertSame(ReferenceFact::VERIFIED, $fee->fresh()->verification_status, 'the value is on the page it lands on');
+        $this->assertStringNotContainsString('Source changed', (string) $fee->fresh()->notes, 'an unchanged page gets no repeated notes');
+
+        foreach (['https://www.example.ac.uk/fees/', 'http://EXAMPLE.ac.uk/fees?utm=1', 'https://example.ac.uk/fees'] as $same) {
+            $this->assertNull(CheckSources::redirectedTo($same, $old), $same);
+        }
+        $this->assertSame('https://example.ac.uk/fees/new', CheckSources::redirectedTo('https://www.example.ac.uk/fees, https://example.ac.uk/fees/new', $old));
+        $this->assertNull(CheckSources::redirectedTo('', $old));
+    }
 }

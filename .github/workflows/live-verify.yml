@@ -76,7 +76,7 @@ jobs:
             echo json_encode([
               "env" => app()->environment(), "debug" => config("app.debug"), "url" => config("app.url"),
               "registration_open" => config("site.registration_open"), "bank_transfer" => config("site.bank_transfer"),
-              "publish_unverified" => config("site.publish_unverified"), "stripe_enabled" => $s->enabled(), "payments_open" => $s->paymentsOpen(),
+              "publish_unverified" => config("site.publish_unverified"), "stripe_enabled" => $s->enabled(), "payments_open" => $s->paymentsOpen(), "commercial_launch_approved" => method_exists($s, "launchApproved") ? $s->launchApproved() : null,
               "mailer" => config("mail.default"),
               "universities" => App\Models\University::count(), "courses" => App\Models\Course::count(),
               "facts" => App\Models\ReferenceFact::count(), "redirects" => DB::table("redirects")->count(),
@@ -130,7 +130,14 @@ jobs:
           # unsigned webhook: 400 = signature checked (secret installed), 503 = no secret installed
           echo "webhook endpoint, unsigned POST: $(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' https://studymedicineuknigeria.com/webhooks/stripe)" | tee -a server.txt
           if [ "${{ github.event.inputs.payments || 'open' }}" = open ]; then
-            for k in '"payments_open": true' '"stripe_enabled": true' '"stripe_live_key": true' '"webhook_secret_set": true' 'unsigned POST: 400' 'Webhook self-test passed' '"stripe_charges_enabled": true'; do grep -q "$k" server.txt || { echo "::error::live payments not fully wired: missing $k"; exit 1; }; done
+            # payments wired; open only once the owner approved commercial launch (an older release reports null: open as before)
+            if grep -q '"commercial_launch_approved": false' server.txt; then
+              grep -q '"payments_open": false' server.txt || { echo "::error::payments are open without the owner's commercial-launch approval"; exit 1; }
+              echo "::notice::Commercial launch not approved: new payments are closed (expected until SITE_COMMERCIAL_LAUNCH_APPROVED is set)"
+            else
+              grep -q '"payments_open": true' server.txt || { echo "::error::live payments not fully wired: missing \"payments_open\": true"; exit 1; }
+            fi
+            for k in '"stripe_enabled": true' '"stripe_live_key": true' '"webhook_secret_set": true' 'unsigned POST: 400' 'Webhook self-test passed' '"stripe_charges_enabled": true'; do grep -q "$k" server.txt || { echo "::error::live payments not fully wired: missing $k"; exit 1; }; done
           else
             grep -q '"payments_open": false' server.txt || { echo "::error::payment is not closed"; exit 1; }
           fi

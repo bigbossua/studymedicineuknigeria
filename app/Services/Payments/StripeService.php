@@ -39,7 +39,16 @@ class StripeService
      */
     public function paymentsOpen(): bool
     {
-        return $this->enabled() || (bool) config('site.bank_transfer');
+        return ($this->enabled() || (bool) config('site.bank_transfer')) && $this->launchApproved();
+    }
+
+    /**
+     * False in production until the owner records the commercial-launch approval (config/site.php). While false, no new
+     * payment can start; everything already paid or in flight is handled as before.
+     */
+    public function launchApproved(): bool
+    {
+        return ! config('site.commercial_launch_gate') || config('site.commercial_launch_approved') !== null;
     }
 
     public function liveAllowed(): bool

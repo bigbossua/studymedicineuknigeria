@@ -29,6 +29,13 @@ return [
     'staging_basic_user' => env('STAGING_BASIC_USER'),
     'staging_basic_password' => env('STAGING_BASIC_PASSWORD'),
 
+    // Commercial launch gate (owner instruction 2026-10-31): in production no new payment is accepted (no Stripe
+    // Checkout, no bank-transfer request) until SITE_COMMERCIAL_LAUNCH_APPROVED records the date the owner approved the
+    // commercial launch. Payments already made, webhooks for checkouts already started, refunds and paid access are
+    // unaffected (App\Services\Payments\StripeService::launchApproved). Other environments are not gated.
+    'commercial_launch_gate' => env('APP_ENV') === 'production',
+    'commercial_launch_approved' => $optional('SITE_COMMERCIAL_LAUNCH_APPROVED'),
+
     // Set to any value (e.g. the review date) once a solicitor has reviewed the legal pages; clears the launch checklist item.
     'legal_reviewed' => $optional('SITE_LEGAL_REVIEWED'),
 

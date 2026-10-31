@@ -132,6 +132,13 @@ class LeadFollowUpTest extends TestCase
         $this->assertStringContainsString(route('requirements.waec'), $draft['body']);
         $this->assertStringContainsString('We cannot guarantee an offer', $draft['body']);
         $this->assertStringNotContainsString('ada@example.test', $draft['body']);
+        $this->assertStringContainsString(route('register'), $draft['body'], 'registration open: the draft offers an account');
+        config(['site.registration_open' => false]);
+        $closed = LeadReplyDraft::for($lead->fresh(), true);
+        $this->assertStringNotContainsString(route('register'), $closed['body'], 'registration closed: no dead link');
+        $this->assertStringContainsString('reply to this email with your results so far. We cannot guarantee', $closed['body']);
+        $this->assertStringContainsString('longer than the two working days', $closed['body'], 'the overdue flag can be passed in');
+        config(['site.registration_open' => true]);
 
         $this->asAdmin()->get(route('admin.leads'))->assertOk()->assertSee('Draft reply (review and send yourself)')->assertSee('Dear Ada,')->assertSee('mailto:ada%40example.test?subject=', false);
         Notification::assertNothingSent();

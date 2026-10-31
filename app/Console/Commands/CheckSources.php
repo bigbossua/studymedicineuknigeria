@@ -20,6 +20,9 @@ use Throwable;
  *  - page changed: a verified fact whose wording or figure is still on the page stays verified (noted), and so does one
  *    whose recorded official quote is still published word for word (a summarised value never appears verbatim); one
  *    for which neither is found becomes SOURCE_CHANGED and goes back into the review queue;
+ *  - address now redirects to a different page (e.g. a 2026-entry course page forwarded to the 2027 one): every run,
+ *    first visit included, each verified value is checked against the page it lands on, even when that page has not
+ *    changed since it was fingerprinted (the redirect may predate the fingerprint, as with Cardiff found 2026-10-30);
  *  - network error or 5xx: nothing changes (recorded; retried next run).
  * Staff are emailed a summary when anything changes. Runs nightly on the server (routes/console.php); this build
  * environment cannot reach official domains.
@@ -43,7 +46,8 @@ class CheckSources extends Command
         $report = [];
         foreach ($urls as $url) {
             try {
-                $res = Http::timeout(20)->withHeaders(['User-Agent' => 'StudyMedicineUKNigeria-source-check/1.0 (+'.config('app.url').'/how-we-verify)'])->get($url);
+                $res = Http::timeout(20)->withOptions(['allow_redirects' => ['max' => 5, 'track_redirects' => true]])
+                    ->withHeaders(['User-Agent' => 'StudyMedicineUKNigeria-source-check/1.0 (+'.config('app.url').'/how-we-verify)'])->get($url);
                 $status = $res->status();
                 $text = $res->successful() ? self::normalise($res->body()) : null;
             } catch (Throwable $e) {
@@ -74,33 +78,35 @@ class CheckSources extends Command
                 continue;
             }
             $hash = hash('sha256', $text);
+            $movedTo = self::redirectedTo((string) $res->header('X-Guzzle-Redirect-History'), $url);
+            $changed = $prev && $prev->content_hash && $prev->content_hash !== $hash;
             if (! $prev || ! $prev->content_hash) {
                 $this->snapshot($url, $hash, $status, null);
                 $baselined++;
-
-                continue;
-            }
-            if ($prev->content_hash === $hash) {
+                if ($movedTo === null) {
+                    continue;
+                }
+            } elseif (! $changed && $movedTo === null) {
                 $this->snapshot($url, $hash, $status, null);
 
                 continue;
             }
-            // The page changed: check each verified value against the new text.
+            // The page changed, or the address forwards to another page: check each verified value against the text served.
             foreach (ReferenceFact::where('verification_status', ReferenceFact::VERIFIED)->where('source_url', $url)->get() as $fact) {
                 $match = self::match($fact, $text);
                 if ($match === 'value' || $match === 'quote') {
                     $kept++;
-                    if (! $this->option('dry-run')) {
+                    if ($changed && ! $this->option('dry-run')) {
                         $fact->notes = trim(($fact->notes ? $fact->notes.' ' : '').'[Source changed '.now()->toDateString().'; '.($match === 'value' ? 'verified value still on the page' : 'the official wording it was verified against is still on the page word for word').']');
                         $fact->saveQuietly();
                     }
                 } else {
-                    $flagged += $this->flagOne($fact, 'Official page changed on '.now()->toDateString().($match === 'partial'
+                    $flagged += $this->flagOne($fact, ($changed ? 'Official page changed on ' : 'Official address now redirects to '.$movedTo.'; checked on ').now()->toDateString().($match === 'partial'
                         ? '; part of the official wording this fact was verified against is gone. Manual review: confirm or correct the value on the current page.'
                         : ' and neither the verified value nor its recorded official wording was found on it.'), $report);
                 }
             }
-            $this->snapshot($url, $hash, $status, null, true);
+            $this->snapshot($url, $hash, $status, null, $changed);
         }
         $summary = ($this->option('dry-run') ? '[dry run] ' : '')."{$urls->count()} page(s) checked: {$flagged} fact(s) un-verified (source changed), {$kept} still on a changed page, {$baselined} first fingerprint(s), {$errors} unreachable.";
         $this->info($summary);
@@ -110,6 +116,18 @@ class CheckSources extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * The address a request ended at after redirects, when it is a different page from the one recorded (scheme, case,
+     * "www.", a trailing slash and the query string do not count). Null when the page was served at its own address.
+     */
+    public static function redirectedTo(string $history, string $url): ?string
+    {
+        $last = trim((string) collect(explode(',', $history))->filter(fn ($u) => trim($u) !== '')->last());
+        $key = fn (string $u) => preg_replace('/^www\./', '', mb_strtolower(rtrim((parse_url($u, PHP_URL_HOST) ?? '').(parse_url($u, PHP_URL_PATH) ?? ''), '/')));
+
+        return $last !== '' && $key($last) !== $key($url) ? $last : null;
     }
 
     /** A bot or browser check (Cloudflare, captcha, "Bot Verification") served in place of the official page. */

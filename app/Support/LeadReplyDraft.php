@@ -23,8 +23,12 @@ final class LeadReplyDraft
 
     private const STATUS = ['open' => 'appears open', 'possible' => 'possible', 'conditional' => 'depends on conditions', 'closed' => 'not open'];
 
-    /** @return array{subject: string, body: string} */
-    public static function for(Lead $lead): array
+    /**
+     * $overdue is passed by ops/lead-drafts.php, which also runs on a release whose Lead model predates isOverdue().
+     *
+     * @return array{subject: string, body: string}
+     */
+    public static function for(Lead $lead, ?bool $overdue = null): array
     {
         $answers = $lead->eligibility_answers ?? [];
         $result = $lead->eligibility_result ?? [];
@@ -32,7 +36,7 @@ final class LeadReplyDraft
 
         $lines = ["Dear {$first},", ''];
         $lines[] = 'Thank you for using the eligibility checker on Study Medicine UK Nigeria on '.$lead->created_at->format('j F Y').'.'
-            .($lead->isOverdue() ? ' I am sorry this reply has taken longer than the two working days we promise.' : '');
+            .(($overdue ?? $lead->isOverdue()) ? ' I am sorry this reply has taken longer than the two working days we promise.' : '');
         if ($answers) {
             $lines[] = '';
             $lines[] = 'You told us:';
@@ -56,7 +60,9 @@ final class LeadReplyDraft
             array_push($lines, ...$reads);
         }
         $lines[] = '';
-        $lines[] = 'If you would like us to look at your situation in more detail, reply to this email with your results so far, or create an account at '.route('register').' to start an application profile. We cannot guarantee an offer from any university.';
+        // registration may still be closed on production (it opens after the first successful test email): no dead link
+        $lines[] = 'If you would like us to look at your situation in more detail, reply to this email with your results so far'
+            .(config('site.registration_open') ? ', or create an account at '.route('register').' to start an application profile' : '').'. We cannot guarantee an offer from any university.';
         $lines[] = '';
         $lines[] = 'Kind regards,';
         $lines[] = '[your name]';

@@ -1,0 +1,55 @@
+name: Lead reply drafts (encrypted, nothing sent)
+# One reply draft per eligibility-checker lead still marked "new", built on the server from the lead's own answers
+# (App\Support\LeadReplyDraft, the same drafts Admin → Leads shows). The drafts are encrypted on the server with
+# BACKUP_PASSPHRASE (AES-256-CBC, PBKDF2 200k, exactly like the backups) before they leave it, so no name, email or
+# answer appears in this public repository's logs; the log shows only the count. Nothing is emailed and no lead record
+# changes. Decrypt like a backup (ops/RESTORE.md): openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass env:BACKUP_PASSPHRASE -in lead-drafts-*.tar.enc | tar -xf -
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drafts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Like the backups: repository secrets, no deployment environment (this reads, it changes nothing)
+    env:
+      HOST: ${{ vars.HOSTINGER_SSH_HOST }}
+      PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+      USER: ${{ vars.HOSTINGER_SSH_USER }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prepare SSH
+        env:
+          KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.HOSTINGER_SSH_KNOWN_HOSTS }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          [ -n "$HOST" ] && [ -n "$USER" ] && [ -n "$KEY" ] && [ -n "$PASSPHRASE" ] || { echo "::error::needs HOSTINGER_SSH_HOST, HOSTINGER_SSH_USER, HOSTINGER_SSH_KEY and BACKUP_PASSPHRASE"; exit 1; }
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_hostinger && chmod 600 ~/.ssh/id_hostinger
+          if [ -n "${KNOWN_HOSTS:-}" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts; echo "SSH_STRICT=yes" >> "$GITHUB_ENV"; else ssh-keyscan -p "$PORT" -T 15 "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || echo "::warning::ssh-keyscan failed; will accept host key on first connect"; fi
+      - name: Generate and encrypt on the server
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          # the passphrase is the first stdin line (read into a variable), never on a command line or in a file
+          { printf '%s\n' "$BACKUP_PASSPHRASE"; printf 'CLASS_B64=%q\n' "$(base64 -w0 app/Support/LeadReplyDraft.php)"; printf 'GEN_B64=%q\n' "$(base64 -w0 ops/lead-drafts.php)"; cat ops/lead-drafts.sh; } | \
+            ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -o ConnectTimeout=20 -p "$PORT" "$USER@$HOST" \
+            "read -r BACKUP_PASSPHRASE && export BACKUP_PASSPHRASE && bash -s" 2>&1 | grep -E '^(drafts=[0-9]+|file=/[^ ]+\.tar\.enc|draft generation failed.*|BACKUP_PASSPHRASE is not set|production is not bootstrapped|no PHP .*)$' | tee server.log || true
+          grep -q '^file=' server.log || { echo "::error::no encrypted drafts were produced"; exit 1; }
+          echo "FILE=$(grep '^file=' server.log | cut -d= -f2-)" >> "$GITHUB_ENV"
+      - name: Fetch the encrypted file and remove it from the server
+        run: |
+          mkdir out
+          scp -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -P "$PORT" "$USER@$HOST:$FILE" "$USER@$HOST:$FILE.sha256" out/
+          (cd out && sha256sum -c "$(basename "$FILE").sha256")
+          ssh -i ~/.ssh/id_hostinger -o StrictHostKeyChecking=${SSH_STRICT:-accept-new} -p "$PORT" "$USER@$HOST" "rm -f '$FILE' '$FILE.sha256'"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: lead-drafts-encrypted-${{ github.run_id }}
+          path: out/
+          retention-days: 7
+          if-no-files-found: error

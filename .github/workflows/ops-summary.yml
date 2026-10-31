@@ -76,5 +76,23 @@ jobs:
               $v = $facts->where("verification_status", "VERIFIED");
               return [$u->slug => ["core" => $status->all(), "core_verified" => $status->filter(fn ($x) => in_array($x, ["VERIFIED", "NOT_PUBLISHED"]))->count()."/5", "verified" => $v->count(), "flagged" => $facts->whereIn("verification_status", ["SOURCE_CHANGED", "REVIEW_DUE"])->count(), "latest_verified" => optional($v->max("verified_at"))->toDateString() ?? (($m = $v->max("verified_at")) ? substr((string) $m, 0, 10) : null)]];
             })], JSON_PRETTY_PRINT), PHP_EOL;'
+          # source watcher health (no personal data): what the nightly smukn:sources-check last saw for the official
+          # pages behind the core facts of the indexed school pages, and overall fetch errors by host
+          $PHP artisan tinker --execute '
+            $nine = ["aberdeen", "brighton-sussex", "buckingham", "cardiff", "edinburgh", "manchester", "cambridge", "kings-college-london", "queens-belfast"];
+            $core = ["international_accepted", "waec_neco_statement", "english_requirement", "international_fee_gbp", "application_route"];
+            $urls = collect();
+            foreach (App\Models\University::whereIn("slug", $nine)->orderBy("slug")->get() as $u) {
+              $ids = $u->courses()->pluck("id");
+              $urls = $urls->merge(App\Models\ReferenceFact::where(fn ($q) => $q->where(fn ($a) => $a->where("subject_type", App\Models\University::class)->where("subject_id", $u->id))->orWhere(fn ($b) => $b->where("subject_type", App\Models\Course::class)->whereIn("subject_id", $ids)))->whereIn("key", $core)->where("verification_status", "VERIFIED")->whereNotNull("source_url")->get()->map(fn ($f) => [$u->slug, $f->key, $f->source_url]));
+            }
+            $snap = fn ($url) => DB::table("source_snapshots")->where("url_hash", hash("sha256", $url))->first();
+            $all = DB::table("source_snapshots")->get(["url", "status_code", "fetched_at", "changed_at", "last_error"]);
+            echo json_encode(["source_watcher" => [
+              "pages_watched" => $all->count(),
+              "fetched_last_26_hours" => $all->filter(fn ($r) => $r->fetched_at && $r->fetched_at >= now()->subHours(26)->toDateTimeString())->count(),
+              "last_error_by_host" => $all->whereNotNull("last_error")->countBy(fn ($r) => parse_url($r->url, PHP_URL_HOST))->sortKeys(),
+              "core_sources_of_indexed_schools" => $urls->unique(fn ($x) => $x[2])->values()->map(function ($x) use ($snap) { $r = $snap($x[2]); return $x[0]." | ".$x[1]." | ".$x[2]." | status ".($r->status_code ?? "never fetched")." | fetched ".substr((string) ($r->fetched_at ?? "-"), 0, 16)." | changed ".substr((string) ($r->changed_at ?? "-"), 0, 16).($r && $r->last_error ? " | error: ".substr($r->last_error, 0, 60) : ""); }),
+            ]], JSON_PRETTY_PRINT), PHP_EOL;'
           REMOTE
           { echo '### Operations summary'; echo '```'; cat summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

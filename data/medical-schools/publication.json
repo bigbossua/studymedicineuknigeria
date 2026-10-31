@@ -10,11 +10,6 @@
       "decided_on": "2026-10-05"
     },
     {
-      "slug": "cardiff",
-      "register": "D08",
-      "decided_on": "2026-10-05"
-    },
-    {
       "slug": "manchester",
       "register": "D10",
       "decided_on": "2026-10-05"
@@ -33,6 +28,14 @@
       "slug": "buckingham",
       "register": "D13",
       "decided_on": "2026-10-05"
+    }
+  ],
+  "withdrawn": [
+    {
+      "slug": "cardiff",
+      "register": "D08",
+      "withdrawn_on": "2026-10-31",
+      "reason": "Cardiff withdrew the 2026/27 overseas fee (the 2027/28 fee is 'awaiting confirmation'); fee, clinical-years and international-acceptance facts are SOURCE_CHANGED (decisions-2026-10-31-cardiff.csv). The page stays published but noindex; relist when the 2027/28 fee is verified. Removing it from this list never unpublishes it: the seeder only publishes."
     }
   ]
 }

@@ -26,7 +26,7 @@ jobs:
       HOSTS: ${{ github.event.inputs.hosts || 'cardiff.ac.uk,qub.ac.uk,undergraduate.study.cam.ac.uk,le.ac.uk,herts.ac.uk,ulster.ac.uk,gmc-uk.org,citystgeorges.ac.uk' }}
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with: { node-version: 22 }
       - name: Spec from the committed evidence
         run: python3 ops/verification/blocked-watch.py spec "$HOSTS" spec.txt items.json
